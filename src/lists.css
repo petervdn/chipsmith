@@ -294,3 +294,25 @@
     width: 28px;
   }
 }
+
+/* a phone: a song's title has the top line to itself; ▶, its tags and facts, ★ ✕ and ▾ below */
+@media (max-width: 759px) {
+  .item-row.has-play.has-expand {
+    grid-template-columns: auto 1fr auto auto;
+    grid-template-areas:
+      'title title title title'
+      'play tags status expand'
+      'play facts status expand';
+    row-gap: 0;
+  }
+  .item-row.has-expand .item-main {
+    display: contents;
+  }
+  .item-row.has-expand .item-title {
+    grid-area: title;
+    margin-bottom: 4px;
+  }
+  .item-row.has-expand .item-tags {
+    grid-area: tags;
+  }
+}
