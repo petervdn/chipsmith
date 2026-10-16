@@ -1,0 +1,67 @@
+// A song's blocks become stretches of audio: repeats back to back, trims as offsets, in seconds.
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import type { Clip } from '../../shared/clip.types.ts';
+import type { Song } from '../../shared/song.types.ts';
+import { TICKS_PER_BEAT } from '../../shared/song.types.ts';
+import { getEnd, getStretches } from './schedule.ts';
+
+test('repeats follow each other and trims become offsets', () => {
+  const song: Song = {
+    id: 's1',
+    title: '',
+    created: '',
+    updated: '',
+    bpm: 120,
+    beats: 4,
+    tags: [],
+    status: 'new',
+    tracks: [
+      {
+        id: 't1',
+        name: 'A',
+        blocks: [
+          { clip: 'c1', start: 0, trim: null, repeats: 2 },
+          {
+            clip: 'c1',
+            start: TICKS_PER_BEAT * 16,
+            trim: { offset: TICKS_PER_BEAT, length: TICKS_PER_BEAT * 2 },
+            repeats: 1,
+          },
+          { clip: 'missing', start: 0, trim: null, repeats: 1 },
+        ],
+      },
+    ],
+  };
+  const clips: Clip[] = [{ ...SOME_CLIP, id: 'c1', seconds: 4 }];
+  const stretches = getStretches(song, clips);
+  assert.deepEqual(
+    stretches.map(({ start, offset, duration }) => ({ start, offset, duration })),
+    [
+      { start: 0, offset: 0, duration: 4 },
+      { start: 4, offset: 0, duration: 4 },
+      { start: 8, offset: 0.5, duration: 1 },
+    ],
+  );
+  assert.equal(getEnd(stretches), 9);
+});
+
+const SOME_CLIP: Clip = {
+  id: '',
+  created: '',
+  prompt: '',
+  promptId: '',
+  name: { section: null, stem: null },
+  bars: null,
+  channels: null,
+  parent: null,
+  madeFor: null,
+  tags: [],
+  status: 'new',
+  bpm: 120,
+  beats: 4,
+  key: null,
+  chips: [],
+  seconds: 0,
+  furnace: null,
+};

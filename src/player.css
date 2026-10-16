@@ -1,0 +1,114 @@
+/* Playing: the ▶ on a song's row and page, and the player bar at the bottom of every page. Uses the
+   tokens of style.css. */
+
+/* ▶ on a song's row and page */
+.play-button {
+  position: relative;
+  z-index: 1;
+  width: var(--touch);
+  height: var(--touch);
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: var(--card);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+}
+.play-button:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.item-row.has-play {
+  grid-template-columns: auto 1fr auto;
+  grid-template-areas:
+    'play main status'
+    'play facts status';
+}
+.item-row.has-play .play-button {
+  grid-area: play;
+}
+@media (min-width: 760px) {
+  .item-row.has-play {
+    grid-template-columns: auto 1fr auto auto;
+    grid-template-areas: 'play main facts status';
+  }
+}
+.song-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 8px;
+}
+.song-head .song-title {
+  margin: 0;
+}
+
+/* the player bar at the bottom of every page */
+.app {
+  padding-bottom: 80px;
+}
+.player-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 10;
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  align-items: center;
+  gap: 4px 12px;
+  padding: 8px 16px;
+  padding-bottom: max(8px, env(safe-area-inset-bottom));
+  background: var(--card);
+  border-top: 1px solid var(--line);
+}
+.player-play {
+  width: 48px;
+  height: 48px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--card);
+  font-size: 16px;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+}
+.player-play.is-loading {
+  font-size: 12px;
+}
+.player-middle {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.player-title {
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-decoration: none;
+}
+.player-seek {
+  width: 100%;
+  accent-color: var(--accent);
+}
+.player-time {
+  color: var(--muted);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.player-mute {
+  width: var(--touch);
+  height: var(--touch);
+  border: 0;
+  background: none;
+  font-size: 18px;
+  cursor: pointer;
+}
+.player-error {
+  grid-column: 1 / -1;
+  margin: 0;
+  color: var(--reject);
+  font-size: 13px;
+}

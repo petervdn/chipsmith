@@ -4,6 +4,7 @@ import { ClipsPage } from './pages/ClipsPage.tsx';
 import { SongPage } from './pages/SongPage.tsx';
 import { SongsPage } from './pages/SongsPage.tsx';
 import { useRoute } from './router.ts';
+import { PlayerBar } from './PlayerBar.tsx';
 import { TopBar } from './TopBar.tsx';
 
 /** The whole page. */
@@ -20,6 +21,7 @@ export function App() {
           <SongPage key={route.songId} songId={route.songId} onTitle={setSongTitle} />
         )}
       </main>
+      <PlayerBar />
     </div>
   );
 }

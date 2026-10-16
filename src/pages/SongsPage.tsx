@@ -4,6 +4,7 @@ import { useState } from 'react';
 import type { Status } from '../../shared/catalogue.types.ts';
 import type { SongListing } from '../../shared/api.types.ts';
 import { FilterBar } from '../FilterBar.tsx';
+import { PlayButton } from '../PlayButton.tsx';
 import { formatMeter, formatSeconds } from '../format.ts';
 import type { ListFilter } from '../list-filter.ts';
 import { EMPTY_FILTER, getTagCounts, isShown } from '../list-filter.ts';
@@ -44,7 +45,8 @@ export function SongsPage() {
       <ul className="item-list">
         {shown.map(({ listing: { song, seconds, clipCount } }) => (
           <li key={song.id}>
-            <div className="item-row">
+            <div className="item-row has-play">
+              <PlayButton songId={song.id} />
               <span className="item-main">
                 <a className="item-title item-link" href={`/songs/${encodeURIComponent(song.id)}`}>
                   {song.title}

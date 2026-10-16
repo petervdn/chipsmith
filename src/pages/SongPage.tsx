@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import type { SongDetail } from '../../shared/api.types.ts';
 import { formatMeter } from '../format.ts';
+import { PlayButton } from '../PlayButton.tsx';
 import { useServerData } from '../server-api.ts';
 import { getClipLabel } from './ClipsPage.tsx';
 
@@ -21,7 +22,10 @@ export function SongPage({ songId, onTitle }: SongPageProps) {
   const clipsById = new Map(clips.map((clip) => [clip.id, clip]));
   return (
     <section className="song-page">
-      <h1 className="song-title">{song.title}</h1>
+      <div className="song-head">
+        <PlayButton songId={song.id} />
+        <h1 className="song-title">{song.title}</h1>
+      </div>
       <p className="song-facts">
         {Math.round(song.bpm)} bpm · {formatMeter(song.beats)} · {song.tracks.length}{' '}
         {song.tracks.length === 1 ? 'track' : 'tracks'}

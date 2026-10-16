@@ -8,7 +8,7 @@ import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 
 /** The folders that hold source. */
-const ROOTS = ['src', 'server', 'shared', 'fur'];
+const ROOTS = ['src', 'server', 'shared', 'fur', 'render', 'make'];
 /** The lines past which a file is split by its subjects. */
 const LIMIT = 400;
 const SOURCE = /\.(ts|tsx|css)$/;

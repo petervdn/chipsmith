@@ -1,0 +1,157 @@
+/* The lists of songs and clips: the filter bar above them, their rows (wrapping on a phone, one
+   line on a desktop) and the status buttons. Uses the tokens of style.css. */
+
+/* the filter bar */
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  margin-bottom: 12px;
+}
+.filter-words {
+  flex: 1 1 240px;
+  min-height: var(--touch);
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--card);
+}
+.filter-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted);
+}
+.tag-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  width: 100%;
+}
+.tag-chip {
+  min-height: 32px;
+  padding: 0 10px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--card);
+  cursor: pointer;
+}
+.tag-chip.is-on {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.tag-count {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+/* a list of songs or clips: on a phone each row wraps, its facts under its title */
+.item-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--card);
+  overflow: hidden;
+}
+.item-list > li + li {
+  border-top: 1px solid var(--line);
+}
+.item-row {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas:
+    'main status'
+    'facts status';
+  align-items: center;
+  gap: 2px 12px;
+  padding: 10px 12px;
+}
+.item-row:hover {
+  background: var(--raised);
+}
+.item-main {
+  grid-area: main;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.item-title {
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-decoration: none;
+}
+/* the title's link covers the whole row, under the status buttons */
+.item-link::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+}
+.item-id {
+  font-weight: 400;
+  color: var(--muted);
+  font-size: 13px;
+}
+.item-tags,
+.item-prompt {
+  color: var(--muted);
+  font-size: 13px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.item-facts {
+  grid-area: facts;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 12px;
+  color: var(--muted);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+.status-buttons {
+  grid-area: status;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  gap: 4px;
+}
+.status-buttons button {
+  width: var(--touch);
+  height: var(--touch);
+  border: 0;
+  border-radius: 8px;
+  background: none;
+  font-size: 20px;
+  color: var(--muted);
+  cursor: pointer;
+}
+.status-buttons button:hover {
+  background: var(--raised);
+}
+.status-keep.is-on {
+  color: var(--keep);
+}
+.status-reject.is-on {
+  color: var(--reject);
+}
+
+/* on a desktop a row is one line: title, facts, status */
+@media (min-width: 760px) {
+  .item-row {
+    grid-template-columns: 1fr auto auto;
+    grid-template-areas: 'main facts status';
+  }
+  .item-facts {
+    flex-wrap: nowrap;
+  }
+  .item-facts > span {
+    min-width: 56px;
+    text-align: right;
+  }
+}

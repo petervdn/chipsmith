@@ -6,11 +6,11 @@
     "dev": "vite",
     "build": "vite build",
     "typecheck": "tsc --noEmit",
-    "lint": "oxlint src server shared fur test vite.config.ts",
-    "test": "node --test \"src/**/*.test.ts\" \"server/**/*.test.ts\" \"shared/**/*.test.ts\" \"fur/**/*.test.ts\" \"test/**/*.test.ts\"",
+    "lint": "oxlint src server shared fur render make test vite.config.ts",
+    "test": "node --test \"src/**/*.test.ts\" \"server/**/*.test.ts\" \"shared/**/*.test.ts\" \"fur/**/*.test.ts\" \"render/**/*.test.ts\" \"make/**/*.test.ts\" \"test/**/*.test.ts\"",
     "check": "npm run typecheck && npm run lint && npm test && npm run format:check",
-    "format": "prettier --log-level warn --write \"src/**/*.{ts,tsx,css}\" \"server/**/*.ts\" \"shared/**/*.ts\" \"fur/**/*.ts\" \"test/**/*.ts\" vite.config.ts",
-    "format:check": "prettier --check --log-level warn \"src/**/*.{ts,tsx,css}\" \"server/**/*.ts\" \"shared/**/*.ts\" \"fur/**/*.ts\" \"test/**/*.ts\" vite.config.ts"
+    "format": "prettier --log-level warn --write \"src/**/*.{ts,tsx,css}\" \"server/**/*.ts\" \"shared/**/*.ts\" \"fur/**/*.ts\" \"render/**/*.ts\" \"make/**/*.ts\" \"test/**/*.ts\" vite.config.ts",
+    "format:check": "prettier --check --log-level warn \"src/**/*.{ts,tsx,css}\" \"server/**/*.ts\" \"shared/**/*.ts\" \"fur/**/*.ts\" \"render/**/*.ts\" \"make/**/*.ts\" \"test/**/*.ts\" vite.config.ts"
   },
   "dependencies": {
     "react": "19.2.8",

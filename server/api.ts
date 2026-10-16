@@ -14,7 +14,14 @@ import { sendError, sendFile, sendJson, readJsonBody } from './http.ts';
 import { getObject } from './json-checks.ts';
 import { checkStatus, checkTags } from './model-checks.ts';
 import type { Store } from './store.ts';
-import { getClipFolder, getSongsUsingClip, openStore, saveClip, saveSong } from './store.ts';
+import {
+  getClipFolder,
+  getSongsUsingClip,
+  openStore,
+  rescanStore,
+  saveClip,
+  saveSong,
+} from './store.ts';
 
 /** The plugin, serving the clips and songs under `root`. */
 export function chiptuneServer(root: string): Plugin {
@@ -51,6 +58,10 @@ async function route(
     return;
   }
   if (area !== 'api') return sendError(response, 404, 'not found');
+  if (kind === 'rescan' && method === 'POST') {
+    rescanStore(store);
+    return sendJson(response, { songs: store.songs.size, clips: store.clips.size });
+  }
   if (kind === 'songs' && !id && method === 'GET') return sendJson(response, listSongs(store));
   if (kind === 'clips' && !id && method === 'GET') return sendJson(response, listClips(store));
   if (kind === 'songs' && id && method === 'GET') {

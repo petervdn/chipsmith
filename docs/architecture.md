@@ -69,12 +69,27 @@ one back, `instrument.ts` and `pattern.ts` build the blocks, `dump.ts` shows a m
 the port of the Python tools (0002), and `fur/check-archive.ts` holds it to them: every .fur the
 Python writer made (1,534 in the archive) is read and written again, byte for byte.
 
+## Rendering and making songs
+
+- `render/`: a clip's source.fur rendered by the Furnace app's command line to a WAV, one at a time
+  with a pause between (0015), encoded as audio.flac with ffmpeg.
+- `make/`: new songs on disk. `make-song.ts` makes a song of one whole clip from a module: claims the
+  ids (`ids.ts`, by making the folders), writes the clip's source.fur and script, renders its audio,
+  writes clip.json and song.json, and the server is told to look again (`POST /api/rescan`).
+  `import-archive.ts` brought the user's 74 favourites of the old batches in this way, tagged with their
+  thread and `archive`, as keepers.
+
+## Playback
+
+`src/playback/`: `schedule.ts` turns a song's blocks into stretches of clips' audio in seconds;
+`audio-engine.ts` plays them with Web Audio, each on the audio clock, loading a few clips at a time;
+`player.ts` is the one player all pages share. The player bar (`src/PlayerBar.tsx`) sits at the
+bottom of every page: ▶ / ■ (the share loaded while loading), the title, a slider to move in the song,
+and a mute switch for testing (localStorage `chiptune.mute`). Every song row and song page has ▶.
+
 ## Still to build
 
-1. Rendering a clip to FLAC without starting the Furnace app. The app's binary with `-output` still
-   starts the whole app (its CoreMIDI client failing after many quick launches was a side effect).
-   First look: a console-only build of Furnace from source, without its GUI (unverified).
-2. Making songs from a prompt: a Claude job writes a script, the script writes .fur files, each is
+1. Making songs from a prompt: a Claude job writes a script, the script writes .fur files, each is
    rendered, and clips and songs are written.
-3. Playback (Web Audio, blocks scheduled on the audio clock) and the song editor.
-4. Cutting a whole clip into sections and stems (0010), and versions of a clip (0014).
+2. The song editor: the timeline, the selected block's clip, a prompt box.
+3. Cutting a whole clip into sections and stems (0010), and versions of a clip (0014).

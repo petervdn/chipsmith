@@ -42,6 +42,14 @@ export function openStore(root: string): Store {
   return store;
 }
 
+/** Reads every clip and song again, for files made outside the server (make/). */
+export function rescanStore(store: Store): void {
+  const fresh = openStore(store.root);
+  store.clips = fresh.clips;
+  store.songs = fresh.songs;
+  store.unreadable = fresh.unreadable;
+}
+
 /** The folder a clip's files are in. */
 export function getClipFolder(store: Store, clipId: string): string {
   return join(store.root, 'clips', clipId);
