@@ -47,14 +47,13 @@
 }
 
 /* a list of songs or clips: on a phone each row wraps, its facts under its title */
+/* rows on the page itself, a line between them */
 .item-list {
   list-style: none;
   margin: 0;
   padding: 0;
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  background: var(--card);
-  overflow: hidden;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
 }
 .item-list > li + li {
   border-top: 1px solid var(--line);
@@ -71,7 +70,7 @@
   padding: 10px 12px;
 }
 .item-row:hover {
-  background: var(--raised);
+  background: color-mix(in srgb, var(--raised) 60%, transparent);
 }
 .item-main {
   grid-area: main;
