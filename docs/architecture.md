@@ -61,14 +61,20 @@ desktop (rows on one line), in `src/style.css`.
   every folder, a comment at the head of every file, no file over 400 lines).
 - `npm run lint`: oxlint. `npm run format`: Prettier. `npm run check`: all of them and the types.
 
+## The .fur files
+
+`fur/` writes and reads Furnace modules as this project writes them (format version 223, old INFO
+layout, one subsong, NES / SCC / SCC+): `write.ts` lays a module out as Furnace does, `read.ts` reads
+one back, `instrument.ts` and `pattern.ts` build the blocks, `dump.ts` shows a module as text. It is
+the port of the Python tools (0002), and `fur/check-archive.ts` holds it to them: every .fur the
+Python writer made (1,534 in the archive) is read and written again, byte for byte.
+
 ## Still to build
 
-1. The .fur writer, reader and dump in TypeScript, checked byte for byte against the Python on
-   `archive` (0002).
-2. Rendering a clip to FLAC without starting the Furnace app. The app's binary with `-output` still
+1. Rendering a clip to FLAC without starting the Furnace app. The app's binary with `-output` still
    starts the whole app (its CoreMIDI client failing after many quick launches was a side effect).
    First look: a console-only build of Furnace from source, without its GUI (unverified).
-3. Making songs from a prompt: a Claude job writes a script, the script writes .fur files, each is
+2. Making songs from a prompt: a Claude job writes a script, the script writes .fur files, each is
    rendered, and clips and songs are written.
-4. Playback (Web Audio, blocks scheduled on the audio clock) and the song editor.
-5. Cutting a whole clip into sections and stems (0010), and versions of a clip (0014).
+3. Playback (Web Audio, blocks scheduled on the audio clock) and the song editor.
+4. Cutting a whole clip into sections and stems (0010), and versions of a clip (0014).
