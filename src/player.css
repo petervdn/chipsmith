@@ -112,3 +112,10 @@
   color: var(--reject);
   font-size: 13px;
 }
+
+@media (max-width: 759px) {
+  .item-row .play-button {
+    width: 36px;
+    height: 36px;
+  }
+}

@@ -197,15 +197,15 @@
   cursor: pointer;
 }
 
-/* ⌄ opens a row's details */
-.item-row.has-expand {
+/* ⌄ opens a row's details (after ▶'s layout in player.css, so more specific than it) */
+.item-row.has-play.has-expand {
   grid-template-columns: auto 1fr auto auto;
   grid-template-areas:
     'play main status expand'
     'play facts status expand';
 }
 @media (min-width: 760px) {
-  .item-row.has-expand {
+  .item-row.has-play.has-expand {
     grid-template-columns: auto 1fr auto auto auto;
     grid-template-areas: 'play main facts status expand';
   }
@@ -273,4 +273,24 @@
   margin: 0 0 6px;
   color: var(--keep);
   font-size: 13px;
+}
+
+/* a phone: tighter rows, so the title and the facts keep their room */
+@media (max-width: 759px) {
+  .item-row {
+    column-gap: 8px;
+    padding: 8px 10px;
+  }
+  .item-facts {
+    gap: 0 8px;
+  }
+  .status-buttons {
+    gap: 0;
+  }
+  .status-buttons button {
+    width: 34px;
+  }
+  .row-expand {
+    width: 28px;
+  }
 }
