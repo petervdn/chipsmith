@@ -1,6 +1,6 @@
 // What a song's row shows when it is opened: the prompt the song was made from, with a copy button,
-// a link that prompts it again and a warning when the song has changed since; the song's facts; and
-// the songs it was prompted from or prompted again as.
+// links to prompt it again or to use the song as the base of a new prompt, and a warning when the
+// song has changed since; the song's facts; and the songs it was prompted from or prompted again as.
 import { useState } from 'react';
 import type { SongListing } from '../shared/api.types.ts';
 import { copyText } from './copy-text.ts';
@@ -56,6 +56,13 @@ export function SongRowDetails({ listing, titlesById }: SongRowDetailsProps) {
             title="open New with this prompt, to send it again (the new songs note this one)"
           >
             Prompt again →
+          </a>
+          <a
+            className="row-action"
+            href={`/new?base=${encodeURIComponent(song.id)}`}
+            title="open New with this song as the base: Claude starts from its music and changes what you ask"
+          >
+            Use as base →
           </a>
         </div>
       </div>

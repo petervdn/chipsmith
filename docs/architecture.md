@@ -17,6 +17,8 @@ docs/code-guidelines.md.
 - A song keeps the prompt it was made from (`prompt`, never changed; 0016); its clips keep their own.
   "Prompt again" on a song's row sends only the song's prompt; the new songs note the song
   (`promptedFrom`). A song whose clips were made by other prompts shows as changed after its prompt.
+- "Use as base" on a song's row opens New with `Based on <title> [<id>]: `; the composing Claude reads
+  that song's files and starts from its music (notes/making-songs.md). Nothing else is stored.
 
 The types are in `shared/clip.types.ts` and `shared/song.types.ts`.
 

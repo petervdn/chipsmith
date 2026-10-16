@@ -1,6 +1,7 @@
 // The New page: a prompt for Claude, written in a box that takes the screen, and below it the cards
 // of the jobs on their way and those of the last hour. A card can be hidden once its job is over.
-// `/new?from=<song>` starts with that song's prompt, to send it again.
+// `/new?from=<song>` starts with that song's prompt, to send it again; `/new?base=<song>` starts with
+// "Based on <song> [<id>]: ", for a prompt that changes that song (notes/making-songs.md).
 import { useState } from 'react';
 import type { SongListing } from '../../shared/api.types.ts';
 import type { Job } from '../../shared/job.types.ts';
@@ -18,9 +19,16 @@ type NewPageProps = { jobs: Job[]; onPromptSent: () => void };
 export function NewPage({ jobs, onPromptSent }: NewPageProps) {
   const [hiddenJobs, setHiddenJobs] = useState<string[]>(readHiddenJobs);
   const [fromSongId] = useState(() => new URLSearchParams(window.location.search).get('from'));
+  const [baseSongId] = useState(() => new URLSearchParams(window.location.search).get('base'));
   const [isSourceCleared, setSourceCleared] = useState(false);
   const { data: listings } = useServerData<SongListing[]>('/api/songs');
   const from = fromSongId ? listings?.find(({ song }) => song.id === fromSongId) : undefined;
+  const base = baseSongId ? listings?.find(({ song }) => song.id === baseSongId) : undefined;
+  const initialText = from
+    ? from.song.prompt
+    : base
+      ? `Based on ${base.song.title} [${base.song.id}]: `
+      : '';
   const source: PromptSource | null =
     from && !isSourceCleared
       ? {
@@ -50,12 +58,12 @@ export function NewPage({ jobs, onPromptSent }: NewPageProps) {
 
   return (
     <section className="new-page">
-      {fromSongId && !listings ? (
+      {(fromSongId || baseSongId) && !listings ? (
         <p className="empty">Loading the prompt…</p>
       ) : (
         <PromptBox
-          key={fromSongId ?? 'new'}
-          initialText={from?.song.prompt ?? ''}
+          key={fromSongId ?? baseSongId ?? 'new'}
+          initialText={initialText}
           source={source}
           onClearSource={clearSource}
           onSent={onPromptSent}

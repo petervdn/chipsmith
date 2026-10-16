@@ -58,3 +58,20 @@ Use these words (a new one only when none fits):
 - style: `action`, `heroic`, `fugue`, `funk`, `boombap`, `nes-groove`, `tide`, `slow-chords`, `ambient`
 - what stands out: `dark`, `bright`, `harsh`, `soft`, `stutter`, `walking-bass`, `breakbeat`,
   `swing`, `odd-meter`, `arpeggio`, `chromatic`
+
+## A prompt based on a song
+
+A prompt may name songs by id in brackets: `Based on FH 08 [s0042]: more bass, fewer drums`. Start
+from that song's music and change what is asked; keep the rest as it is.
+
+- `songs/<id>/song.json`: its title, its own prompt (what it was asked to be), its tracks and the
+  clips its blocks play.
+- `clips/<clip>/`: each clip's `clip.json` (its prompt, tempo, key, slice), `source.fur` (its music)
+  and `script.ts` (the script that wrote it). A song from the archive has the import script there, not
+  a composition: work from its `source.fur`.
+- To start from a module, read it in your script: `readModule(readFileSync('clips/<clip>/source.fur'))`
+  (`fur/read.ts`; scripts run from the project folder), change its patterns, instruments or settings,
+  and return it as the plan's `module`. `node fur/dump.ts clips/<clip>/source.fur --ins --pat 2,0`
+  shows what is in it.
+- A song of several clips is its arrangement: which clip plays where (blocks: start in ticks, 96 to a
+  beat, trim, repeats). Work from the clips the change is about.

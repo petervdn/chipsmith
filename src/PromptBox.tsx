@@ -17,6 +17,7 @@ type PromptBoxProps = {
 /** The prompt box. */
 export function PromptBox({ initialText, source, onClearSource, onSent }: PromptBoxProps) {
   const [text, setText] = useState(initialText);
+  const isFocusAtEnd = initialText.endsWith(': ');
   const [isSending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -64,6 +65,10 @@ export function PromptBox({ initialText, source, onClearSource, onSent }: Prompt
         </p>
       )}
       <textarea
+        autoFocus={isFocusAtEnd}
+        onFocus={(event) => {
+          if (isFocusAtEnd) event.target.setSelectionRange(text.length, text.length);
+        }}
         className="prompt-text"
         placeholder="What should Claude make? (e.g. three dark NES funk grooves in odd meters)"
         value={text}
