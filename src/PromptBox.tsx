@@ -1,5 +1,4 @@
-// The box at the top of the songs list where a prompt is written and sent; the job it makes shows
-// below it at once.
+// The box on the New page where a prompt is written and sent; the job it makes shows below it at once.
 import { useState } from 'react';
 import { sendPrompt } from './jobs-data.ts';
 
@@ -38,7 +37,6 @@ export function PromptBox({ onSent }: PromptBoxProps) {
         className="prompt-text"
         placeholder="What should Claude make? (e.g. three dark NES funk grooves in odd meters)"
         value={text}
-        rows={2}
         onChange={(event) => setText(event.target.value)}
         onKeyDown={(event) => {
           if (event.key === 'Enter' && (event.metaKey || event.ctrlKey)) void send();

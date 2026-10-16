@@ -4,7 +4,8 @@ The page (React). It asks the server (server/) for clips and songs and shows the
 out without the page is in a module of its own beside it, with its test.
 
 - `App.tsx`: the top bar and the page the address is
-- `JobCard.tsx`: a job on its way, at the top of the songs list
+- `JobCard.tsx`: a job's card on the New page
+- `JobStrip.tsx`: one line for a running job, above the songs list
 - `FilterBar.tsx`: the filter bar above a list
 - `PromptBox.tsx`: the box where a prompt is written and sent
 - `PlayButton.tsx`: ▶ for one song, in a list or on its page

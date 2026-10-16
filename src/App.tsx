@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { useJobs } from './jobs-data.ts';
 import { ClipsPage } from './pages/ClipsPage.tsx';
+import { NewPage } from './pages/NewPage.tsx';
 import { SongPage } from './pages/SongPage.tsx';
 import { SongsPage } from './pages/SongsPage.tsx';
 import { useRoute } from './router.ts';
@@ -17,7 +18,8 @@ export function App() {
     <div className="app">
       <TopBar route={route} songTitle={route.page === 'song' ? songTitle : null} jobs={jobs} />
       <main className="page">
-        {route.page === 'songs' && <SongsPage jobs={jobs} onPromptSent={refresh} />}
+        {route.page === 'songs' && <SongsPage jobs={jobs} />}
+        {route.page === 'new' && <NewPage jobs={jobs} onPromptSent={refresh} />}
         {route.page === 'clips' && <ClipsPage />}
         {route.page === 'song' && (
           <SongPage key={route.songId} songId={route.songId} onTitle={setSongTitle} />

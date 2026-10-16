@@ -41,12 +41,13 @@ What they answer is typed in `shared/api.types.ts`.
 
 ## The pages
 
-`src/`, React (0013). One top bar on every page: Songs | Clips, and in a song the song's title.
+`src/`, React (0013). One top bar on every page: Songs | Clips | New, and in a song the song's title.
 
 - **Songs** (`/`): every song, with the filter bar (words, tags, rejected or not), its facts and ★ / ✕.
 - **Song** (`/songs/<id>`): the song opened. Now: its tracks and the clips they play. To come: the
   timeline, playback, the selected block's clip with its prompt and versions, a prompt box.
 - **Clips** (`/clips`): the pool, with the same filter bar.
+- **New** (`/new`): a prompt for Claude in a box that takes the screen, and the cards of its jobs.
 
 The page is laid out for a phone first (one column, rows that wrap, 40 px touch targets) and a
 desktop (rows on one line), in `src/style.css`.
@@ -89,9 +90,10 @@ and a mute switch for testing (localStorage `chiptune.mute`). Every song row and
 
 ## Prompts and jobs
 
-A prompt sent from the songs page becomes a job (`server/jobs.ts`, `jobs/<id>/job.json`, out of git)
-the moment it arrives, and its card shows at the top of the songs list until it is hidden; the top bar
-counts the running ones. The runner (`server/job-runner.ts`) takes one job at a time through its
+A prompt is written on the New page (`/new`) and becomes a job (`server/jobs.ts`,
+`jobs/<id>/job.json`, out of git) the moment it arrives. Its card shows on the New page (running ones,
+then those of the last hour, until hidden); a running job also has one line above the songs list,
+and the New tab in the top bar counts the running ones. The runner (`server/job-runner.ts`) takes one job at a time through its
 phases:
 1. **composing**: Claude Code runs headless (`server/claude-run.ts`: `claude -p`, detached, its
    stream written to `jobs/<id>/claude.log`). It follows `notes/making-songs.md` and writes

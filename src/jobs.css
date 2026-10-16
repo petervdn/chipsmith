@@ -1,22 +1,36 @@
-/* The prompt box and the cards of jobs on their way, at the top of the songs list, and the running
-   count in the top bar. Uses the tokens of style.css. */
+/* The New page (the prompt box and the job cards), the line of a running job above the songs list,
+   and the count on the New tab. Uses the tokens of style.css. */
+
+.new-page {
+  max-width: 720px;
+  margin: 0 auto;
+}
+.new-heading {
+  margin: 20px 0 8px;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--muted);
+}
 
 .prompt-box {
-  display: grid;
-  grid-template-columns: 1fr auto;
+  display: flex;
+  flex-direction: column;
   gap: 8px;
-  margin-bottom: 12px;
+  margin: 8px 0 12px;
 }
 .prompt-text {
-  min-height: var(--touch);
-  padding: 10px 12px;
+  min-height: 40vh;
+  padding: 12px;
+  font-size: 16px;
   border: 1px solid var(--line);
   border-radius: 8px;
   background: var(--card);
   resize: vertical;
 }
 .prompt-send {
-  min-width: 80px;
+  min-height: 48px;
   border: 0;
   border-radius: 8px;
   background: var(--accent);
@@ -29,7 +43,6 @@
   cursor: default;
 }
 .prompt-box .error {
-  grid-column: 1 / -1;
   padding: 0;
 }
 
@@ -142,14 +155,46 @@
     transform: rotate(360deg);
   }
 }
-.top-running {
+.top-badge {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  margin-left: auto;
-  color: var(--accent);
-  font-size: 14px;
-  font-weight: 600;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  margin-left: 6px;
+  padding: 0 5px;
+  border-radius: 9px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 11px;
+}
+
+/* a running job's line above the songs list */
+.job-strip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+  padding: 10px 12px;
+  border: 1px solid var(--accent);
+  border-radius: 10px;
+  background: var(--card);
   text-decoration: none;
+}
+.job-strip-phase {
+  font-weight: 600;
   white-space: nowrap;
+}
+.job-strip-now {
+  flex: 1;
+  min-width: 0;
+  color: var(--muted);
+  font-size: 13px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.job-strip-go {
+  color: var(--muted);
+  font-size: 18px;
 }

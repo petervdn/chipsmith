@@ -137,8 +137,16 @@
 .status-keep.is-on {
   color: var(--keep);
 }
-.status-reject.is-on {
+.status-buttons .status-reject {
+  font-size: 15px;
+  opacity: 0.45;
+}
+.status-buttons .status-reject:hover {
+  opacity: 1;
+}
+.status-buttons .status-reject.is-on {
   color: var(--reject);
+  opacity: 1;
 }
 
 /* on a desktop a row is one line: title, facts, status */

@@ -1,17 +1,19 @@
 /**
  * Which page the address is, and moving between them without reloading. Pages: `/` songs,
- * `/songs/<id>` one song, `/clips` the clip pool. Knows nothing of what a page shows.
+ * `/songs/<id>` one song, `/clips` the clip pool, `/new` a prompt and its jobs. Knows nothing of what a page shows.
  */
 import { useEffect, useState } from 'react';
 
 /** A page and what it is of. */
-export type Route = { page: 'songs' } | { page: 'song'; songId: string } | { page: 'clips' };
+export type Route =
+  { page: 'songs' } | { page: 'song'; songId: string } | { page: 'clips' } | { page: 'new' };
 
 /** The route of an address's path. */
 export function getRoute(path: string): Route {
   const song = /^\/songs\/([^/]+)\/?$/.exec(path);
   if (song?.[1]) return { page: 'song', songId: decodeURIComponent(song[1]) };
   if (/^\/clips\/?$/.test(path)) return { page: 'clips' };
+  if (/^\/new\/?$/.test(path)) return { page: 'new' };
   return { page: 'songs' };
 }
 

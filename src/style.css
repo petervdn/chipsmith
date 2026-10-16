@@ -46,7 +46,8 @@ a {
   color: inherit;
 }
 button,
-input {
+input,
+textarea {
   font: inherit;
   color: inherit;
 }

@@ -1,5 +1,5 @@
-// A job on its way, at the top of the songs list from the moment its prompt is sent: its phase, how
-// long it has been going, what it is doing now, the songs it makes as they come, and how it ended.
+// A job's card on the New page, from the moment its prompt is sent: its phase, how long it has been
+// going, what it is doing now, the songs it makes as they come, and how it ended.
 import { useEffect, useState } from 'react';
 import type { Job, JobPhase, JobSong } from '../shared/job.types.ts';
 import { formatSeconds } from './format.ts';
@@ -23,10 +23,9 @@ const SONG_MARKS = {
 
 type JobCardProps = { job: Job; onHide: () => void };
 
-/** The card of a job. */
-export function JobCard({ job, onHide }: JobCardProps) {
+/** Seconds a job has been going, or went, kept current every second while it runs. */
+export function useElapsed(job: Job): number {
   const [now, setNow] = useState(() => Date.now());
-  const [isShowingNotes, setShowingNotes] = useState(false);
   const isRunning = isJobRunning(job);
   useEffect(() => {
     if (!isRunning) return;
@@ -34,12 +33,22 @@ export function JobCard({ job, onHide }: JobCardProps) {
     return () => clearInterval(timer);
   }, [isRunning]);
   const end = job.finished ? Date.parse(job.finished) : now;
-  const elapsed = Math.max(0, (end - Date.parse(job.created)) / 1000);
-  const doneCount = job.songs.filter((song) => song.state === 'done').length;
-  const phaseName =
-    job.phase === 'rendering'
-      ? `Rendering ${doneCount + 1} of ${job.songs.length}`
-      : PHASE_NAMES[job.phase];
+  return Math.max(0, (end - Date.parse(job.created)) / 1000);
+}
+
+/** What a job is doing, in a few words: "Rendering 2 of 5". */
+export function getPhaseName({ phase, songs }: Job): string {
+  if (phase !== 'rendering') return PHASE_NAMES[phase];
+  const doneCount = songs.filter((song) => song.state === 'done').length;
+  return `Rendering ${Math.min(doneCount + 1, songs.length)} of ${songs.length}`;
+}
+
+/** The card of a job. */
+export function JobCard({ job, onHide }: JobCardProps) {
+  const [isShowingNotes, setShowingNotes] = useState(false);
+  const isRunning = isJobRunning(job);
+  const elapsed = useElapsed(job);
+  const phaseName = getPhaseName(job);
   const lastNote = job.notes.at(-1)?.text ?? '';
 
   return (
