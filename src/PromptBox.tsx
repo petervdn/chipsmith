@@ -4,8 +4,8 @@
 import { useState } from 'react';
 import { sendPrompt } from './jobs-data.ts';
 
-/** The song a prompt is sent again from: its id and title. */
-export type PromptSource = { songId: string; title: string };
+/** The song a prompt is sent again from: its id, its title, and whether it changed after its prompt. */
+export type PromptSource = { songId: string; title: string; isChangedAfterPrompt: boolean };
 
 type PromptBoxProps = {
   initialText: string;
@@ -56,6 +56,11 @@ export function PromptBox({ initialText, source, onClearSource, onSent }: Prompt
           >
             ✕
           </button>
+        </p>
+      )}
+      {source?.isChangedAfterPrompt && (
+        <p className="row-warning">
+          ⚠ That song changed after this prompt; sending it again makes it as it first was asked.
         </p>
       )}
       <textarea

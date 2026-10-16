@@ -5,7 +5,7 @@ docs/code-guidelines.md.
 
 ## The model
 
-- **A song** is an arrangement: tracks, each a row of blocks. A block places a clip at a time on the
+- **A song** is an arrangement (tracks, each a row of blocks) and the prompt it was made from. A block places a clip at a time on the
   song's grid (ticks, `TICKS_PER_BEAT` to a beat), with an optional trim and a number of repeats.
 - **A clip** is one piece of audio: a whole piece, or a slice of it by bars and chip channels. Every
   clip is the same kind of thing, however it was cut. It holds all of its own information (0004):
@@ -14,9 +14,9 @@ docs/code-guidelines.md.
   change: a change is a new clip whose parent is the old one (`variation`), and a cut is new clips
   whose parent is the whole one (`split`). Which songs use a clip is worked out, not stored.
 - Songs and clips have tags (descriptions) and a status: new, heard, keeper, rejected (0009).
-- A song's prompt can be sent again ("Prompt again" on its row): the new song's clips note the clip
-  whose prompt it was (`promptedFrom`, a clip id; not a parent, as none of its music is used). The
-  songs list shows the link both ways, worked out from the clips.
+- A song keeps the prompt it was made from (`prompt`, never changed; 0016); its clips keep their own.
+  "Prompt again" on a song's row sends only the song's prompt; the new songs note the song
+  (`promptedFrom`). A song whose clips were made by other prompts shows as changed after its prompt.
 
 The types are in `shared/clip.types.ts` and `shared/song.types.ts`.
 

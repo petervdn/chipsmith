@@ -8,14 +8,12 @@ export type SongListing = {
   song: Song;
   seconds: number;
   clipCount: number;
-  /** The prompts its clips were made with, each once, in the order the song first plays them. */
-  prompts: string[];
+  /** Whether a clip of the song was made by a later prompt than the song's own (docs/adr/0016). */
+  isChangedAfterPrompt: boolean;
   /** The key its clips name, the first one found. */
   key: string | null;
   chips: string[];
-  /** The song that uses the clip whose prompt was sent again to make this one's clips. */
-  promptedFrom: string | null;
-  /** The songs whose clips were made by sending a prompt of this one's clips again. */
+  /** The songs made by sending this one's prompt again. */
   promptedAgainAs: string[];
 };
 

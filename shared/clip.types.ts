@@ -32,11 +32,6 @@ export type Clip = {
   parent: ClipParent | null;
   /** The song the clip was made in; for information, nothing depends on it. */
   madeFor: string | null;
-  /**
-   * The clip whose prompt was sent again to make this one ("another take" of the same idea); not a
-   * parent: nothing of that clip's music was used.
-   */
-  promptedFrom: string | null;
   tags: Tag[];
   status: Status;
   bpm: number;

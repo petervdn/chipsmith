@@ -18,7 +18,6 @@ const CLIP: Clip = {
   channels: [2],
   parent: null,
   madeFor: 's0001',
-  promptedFrom: null,
   tags: [{ name: 'funk', by: 'claude' }],
   status: 'new',
   bpm: 112,
@@ -38,6 +37,8 @@ const SONG: Song = {
   beats: 4,
   tags: [],
   status: 'new',
+  prompt: '',
+  promptedFrom: null,
   tracks: [
     { id: 't1', name: 'Bass', blocks: [{ clip: 'c0001', start: 0, trim: null, repeats: 2 }] },
   ],

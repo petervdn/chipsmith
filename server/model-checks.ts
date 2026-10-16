@@ -49,7 +49,6 @@ export function checkClip(value: unknown, path: string): Clip {
       clip['channels'] === null ? null : getArray(clip['channels'], `${path}.channels`, getNumber),
     parent: clip['parent'] === null ? null : checkParent(clip['parent'], `${path}.parent`),
     madeFor: getStringOrNull(clip['madeFor'], `${path}.madeFor`),
-    promptedFrom: getStringOrNull(clip['promptedFrom'] ?? null, `${path}.promptedFrom`),
     tags: checkTags(clip['tags'], `${path}.tags`),
     status: checkStatus(clip['status'], `${path}.status`),
     bpm: getNumber(clip['bpm'], `${path}.bpm`),
@@ -73,6 +72,8 @@ export function checkSong(value: unknown, path: string): Song {
     beats: getNumber(song['beats'], `${path}.beats`),
     tags: checkTags(song['tags'], `${path}.tags`),
     status: checkStatus(song['status'], `${path}.status`),
+    prompt: getString(song['prompt'], `${path}.prompt`),
+    promptedFrom: getStringOrNull(song['promptedFrom'] ?? null, `${path}.promptedFrom`),
     tracks: getArray(song['tracks'], `${path}.tracks`, checkTrack),
   };
 }

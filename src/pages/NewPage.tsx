@@ -22,7 +22,13 @@ export function NewPage({ jobs, onPromptSent }: NewPageProps) {
   const { data: listings } = useServerData<SongListing[]>('/api/songs');
   const from = fromSongId ? listings?.find(({ song }) => song.id === fromSongId) : undefined;
   const source: PromptSource | null =
-    from && !isSourceCleared ? { songId: from.song.id, title: from.song.title } : null;
+    from && !isSourceCleared
+      ? {
+          songId: from.song.id,
+          title: from.song.title,
+          isChangedAfterPrompt: from.isChangedAfterPrompt,
+        }
+      : null;
 
   function clearSource(): void {
     setSourceCleared(true);
@@ -49,7 +55,7 @@ export function NewPage({ jobs, onPromptSent }: NewPageProps) {
       ) : (
         <PromptBox
           key={fromSongId ?? 'new'}
-          initialText={from?.prompts[0] ?? ''}
+          initialText={from?.song.prompt ?? ''}
           source={source}
           onClearSource={clearSource}
           onSent={onPromptSent}

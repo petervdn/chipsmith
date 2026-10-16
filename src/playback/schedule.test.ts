@@ -16,6 +16,8 @@ test('repeats follow each other and trims become offsets', () => {
     beats: 4,
     tags: [],
     status: 'new',
+    prompt: '',
+    promptedFrom: null,
     tracks: [
       {
         id: 't1',
@@ -56,7 +58,6 @@ const SOME_CLIP: Clip = {
   channels: null,
   parent: null,
   madeFor: null,
-  promptedFrom: null,
   tags: [],
   status: 'new',
   bpm: 120,

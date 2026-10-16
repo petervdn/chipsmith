@@ -33,5 +33,9 @@ export type Song = {
   beats: number;
   tags: Tag[];
   status: Status;
+  /** The prompt the song was made from, as written; never changed (docs/adr/0016). */
+  prompt: string;
+  /** The song whose prompt was sent again to make this one, or null. */
+  promptedFrom: string | null;
   tracks: Track[];
 };

@@ -29,7 +29,7 @@ export type NewSong = {
   tags: Tag[];
   status: Status;
   key: string | null;
-  /** The clip whose prompt was sent again, or null. */
+  /** The song whose prompt was sent again, or null. */
   promptedFrom: string | null;
 };
 
@@ -68,7 +68,6 @@ export async function makeSong({
     channels: null,
     parent: null,
     madeFor: songId,
-    promptedFrom,
     tags,
     status,
     bpm,
@@ -87,6 +86,8 @@ export async function makeSong({
     beats,
     tags,
     status,
+    prompt,
+    promptedFrom,
     tracks: [
       { id: 't1', name: 'Whole', blocks: [{ clip: clipId, start: 0, trim: null, repeats: 1 }] },
     ],

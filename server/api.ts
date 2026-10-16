@@ -81,8 +81,7 @@ async function route(
     const fromSong = getStringOrNull(body['fromSong'] ?? null, 'body.fromSong');
     const song = fromSong ? store.songs.get(fromSong) : null;
     if (fromSong && !song) return sendError(response, 400, `no song ${fromSong}`);
-    const promptedFrom = song ? (getSongClips(store, song)[0]?.id ?? null) : null;
-    return sendJson(response, createJob(jobs, prompt, promptedFrom));
+    return sendJson(response, createJob(jobs, prompt, song ? song.id : null));
   }
   if (kind === 'rescan' && method === 'POST') {
     rescanStore(store);
@@ -119,26 +118,17 @@ function listJobs(jobs: JobStore): Job[] {
 
 function listSongs(store: Store): SongListing[] {
   const songs = [...store.songs.values()];
-  const clipsOf = new Map(songs.map((song) => [song.id, getSongClips(store, song)]));
   return songs.map((song) => {
-    const clips = clipsOf.get(song.id) ?? [];
-    const clipIds = new Set(clips.map((clip) => clip.id));
-    const fromClip = clips.find((clip) => clip.promptedFrom)?.promptedFrom ?? null;
-    const promptedFrom = fromClip ? (getSongsUsingClip(store, fromClip)[0] ?? null) : null;
+    const clips = getSongClips(store, song);
     return {
       song,
       seconds: getSongSeconds(song, (clipId) => store.clips.get(clipId)?.seconds ?? 0),
       clipCount: clips.length,
-      prompts: [...new Set(clips.map((clip) => clip.prompt))],
+      isChangedAfterPrompt: clips.some((clip) => clip.prompt !== song.prompt),
       key: clips.find((clip) => clip.key)?.key ?? null,
       chips: [...new Set(clips.flatMap((clip) => clip.chips))],
-      promptedFrom,
       promptedAgainAs: songs
-        .filter((other) =>
-          (clipsOf.get(other.id) ?? []).some(
-            (clip) => clip.promptedFrom !== null && clipIds.has(clip.promptedFrom),
-          ),
-        )
+        .filter((other) => other.promptedFrom === song.id)
         .map((other) => other.id),
     };
   });

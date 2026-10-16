@@ -30,7 +30,7 @@ export type Job = {
   /** Claude's reply at the end of composing. */
   summary: string | null;
   error: string | null;
-  /** The clip whose prompt this is, sent again; the clips the job makes note it. */
+  /** The song whose prompt this is, sent again; the songs the job makes note it. */
   promptedFrom: string | null;
   /** The process id of Claude while it composes, to see after a restart whether it still runs. */
   claudePid: number | null;

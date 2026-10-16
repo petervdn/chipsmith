@@ -41,8 +41,8 @@ export function useJobs(): { jobs: Job[]; refresh: () => void } {
 }
 
 /**
- * Sends a prompt, with the song whose prompt it sends again if so (the server notes that song's clip);
- * the server makes its job at once.
+ * Sends a prompt, with the song whose prompt it sends again if so (its new songs note that song); the
+ * server makes its job at once.
  */
 export async function sendPrompt(prompt: string, fromSong: string | null): Promise<void> {
   const response = await fetch('/api/jobs', {
