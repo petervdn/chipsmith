@@ -14,6 +14,6 @@ export default defineConfig({
     host: true,
     port: PORT,
     strictPort: true,
-    watch: { ignored: ['**/clips/**', '**/songs/**', '**/references/**'] },
+    watch: { ignored: ['**/clips/**', '**/songs/**', '**/jobs/**', '**/references/**'] },
   },
 });

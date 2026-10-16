@@ -11,7 +11,11 @@ import type { CatalogueChange, ClipListing, SongDetail, SongListing } from '../s
 import type { Clip } from '../shared/clip.types.ts';
 import { getSongSeconds } from '../shared/song-length.ts';
 import { sendError, sendFile, sendJson, readJsonBody } from './http.ts';
-import { getObject } from './json-checks.ts';
+import type { Job } from '../shared/job.types.ts';
+import { getObject, getString } from './json-checks.ts';
+import { startJobRunner } from './job-runner.ts';
+import type { JobStore } from './jobs.ts';
+import { createJob, openJobs } from './jobs.ts';
 import { checkStatus, checkTags } from './model-checks.ts';
 import type { Store } from './store.ts';
 import {
@@ -23,6 +27,11 @@ import {
   saveSong,
 } from './store.ts';
 
+declare global {
+  /** Stops the job runner of the server before a restart, so only one runs. */
+  var chiptuneStopJobRunner: (() => void) | undefined;
+}
+
 /** The plugin, serving the clips and songs under `root`. */
 export function chiptuneServer(root: string): Plugin {
   return {
@@ -30,13 +39,17 @@ export function chiptuneServer(root: string): Plugin {
     configureServer(server) {
       const store = openStore(root);
       for (const { file, error } of store.unreadable) console.warn(`unreadable ${file}: ${error}`);
+      const jobs = openJobs(root);
+      // one runner: a restart of the server (Vite restarts it when a server file changes) replaces it
+      globalThis.chiptuneStopJobRunner?.();
+      globalThis.chiptuneStopJobRunner = startJobRunner(jobs, store);
       server.middlewares.use((request, response, next) => {
         const path = (request.url ?? '').split('?')[0] ?? '';
         if (!path.startsWith('/api/') && !path.startsWith('/media/')) {
           next();
           return;
         }
-        route(store, request, response, path).catch((error: unknown) => {
+        route(store, jobs, request, response, path).catch((error: unknown) => {
           sendError(response, 400, error instanceof Error ? error.message : String(error));
         });
       });
@@ -46,6 +59,7 @@ export function chiptuneServer(root: string): Plugin {
 
 async function route(
   store: Store,
+  jobs: JobStore,
   request: IncomingMessage,
   response: ServerResponse,
   path: string,
@@ -58,6 +72,13 @@ async function route(
     return;
   }
   if (area !== 'api') return sendError(response, 404, 'not found');
+  if (kind === 'jobs' && !id && method === 'GET') return sendJson(response, listJobs(jobs));
+  if (kind === 'jobs' && !id && method === 'POST') {
+    const body = getObject(await readJsonBody(request), 'body');
+    const prompt = getString(body['prompt'], 'body.prompt').trim();
+    if (!prompt) return sendError(response, 400, 'the prompt is empty');
+    return sendJson(response, createJob(jobs, prompt));
+  }
   if (kind === 'rescan' && method === 'POST') {
     rescanStore(store);
     return sendJson(response, { songs: store.songs.size, clips: store.clips.size });
@@ -81,6 +102,14 @@ async function route(
     return sendJson(response, { clip: store.clips.get(id), usedBy: getSongsUsingClip(store, id) });
   }
   sendError(response, 404, 'not found');
+}
+
+/** The jobs, newest first: those not finished, and the finished ones of the last hour. */
+function listJobs(jobs: JobStore): Job[] {
+  const hourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
+  return [...jobs.jobs.values()]
+    .filter((job) => !job.finished || job.finished > hourAgo)
+    .sort((first, second) => second.created.localeCompare(first.created));
 }
 
 function listSongs(store: Store): SongListing[] {

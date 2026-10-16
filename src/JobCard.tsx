@@ -1,0 +1,96 @@
+// A job on its way, at the top of the songs list from the moment its prompt is sent: its phase, how
+// long it has been going, what it is doing now, the songs it makes as they come, and how it ended.
+import { useEffect, useState } from 'react';
+import type { Job, JobPhase, JobSong } from '../shared/job.types.ts';
+import { formatSeconds } from './format.ts';
+import { isJobRunning } from './jobs-data.ts';
+
+const PHASE_NAMES = {
+  queued: 'Waiting for the job before it',
+  composing: 'Claude is composing',
+  building: 'Building the songs',
+  rendering: 'Rendering',
+  done: 'Done',
+  failed: 'Failed',
+} satisfies Record<JobPhase, string>;
+
+const SONG_MARKS = {
+  waiting: '·',
+  rendering: '⟳',
+  done: '✓',
+  failed: '✗',
+} satisfies Record<JobSong['state'], string>;
+
+type JobCardProps = { job: Job; onHide: () => void };
+
+/** The card of a job. */
+export function JobCard({ job, onHide }: JobCardProps) {
+  const [now, setNow] = useState(() => Date.now());
+  const [isShowingNotes, setShowingNotes] = useState(false);
+  const isRunning = isJobRunning(job);
+  useEffect(() => {
+    if (!isRunning) return;
+    const timer = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(timer);
+  }, [isRunning]);
+  const end = job.finished ? Date.parse(job.finished) : now;
+  const elapsed = Math.max(0, (end - Date.parse(job.created)) / 1000);
+  const doneCount = job.songs.filter((song) => song.state === 'done').length;
+  const phaseName =
+    job.phase === 'rendering'
+      ? `Rendering ${doneCount + 1} of ${job.songs.length}`
+      : PHASE_NAMES[job.phase];
+  const lastNote = job.notes.at(-1)?.text ?? '';
+
+  return (
+    <section className={`job-card is-${job.phase}`}>
+      <header className="job-head">
+        {isRunning && <span className="job-spinner" aria-hidden="true" />}
+        <span className="job-phase">{phaseName}</span>
+        <span className="job-time">{formatSeconds(elapsed)}</span>
+        {!isRunning && (
+          <button type="button" className="job-hide" onClick={onHide} title="hide this card">
+            ✕
+          </button>
+        )}
+      </header>
+      <p className="job-prompt">{job.prompt}</p>
+      {isRunning && <p className="job-now">{lastNote}</p>}
+      {job.songs.length > 0 && (
+        <ul className="job-songs">
+          {job.songs.map((song) => (
+            <li key={song.title} className={`job-song is-${song.state}`}>
+              <span className="job-song-mark">{SONG_MARKS[song.state]}</span>
+              {song.songId ? (
+                <a href={`/songs/${encodeURIComponent(song.songId)}`}>{song.title}</a>
+              ) : (
+                <span>{song.title}</span>
+              )}
+            </li>
+          ))}
+        </ul>
+      )}
+      {job.summary && !isRunning && <p className="job-summary">{job.summary}</p>}
+      {job.error && <p className="error">{job.error}</p>}
+      <button
+        type="button"
+        className="job-notes-toggle"
+        onClick={() => setShowingNotes(!isShowingNotes)}
+      >
+        {isShowingNotes ? 'Hide steps' : `All steps (${job.notes.length})`}
+      </button>
+      {isShowingNotes && (
+        <ol className="job-notes">
+          {job.notes.map((note, i) => (
+            <li key={`${note.at}-${i}`}>
+              <span className="job-note-time">
+                {formatSeconds((Date.parse(note.at) - Date.parse(job.created)) / 1000)}
+              </span>
+              {note.text}
+            </li>
+          ))}
+        </ol>
+      )}
+    </section>
+  );
+}

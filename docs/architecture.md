@@ -87,9 +87,24 @@ Python writer made (1,534 in the archive) is read and written again, byte for by
 bottom of every page: ▶ / ■ (the share loaded while loading), the title, a slider to move in the song,
 and a mute switch for testing (localStorage `chiptune.mute`). Every song row and song page has ▶.
 
+## Prompts and jobs
+
+A prompt sent from the songs page becomes a job (`server/jobs.ts`, `jobs/<id>/job.json`, out of git)
+the moment it arrives, and its card shows at the top of the songs list until it is hidden; the top bar
+counts the running ones. The runner (`server/job-runner.ts`) takes one job at a time through its
+phases:
+1. **composing**: Claude Code runs headless (`server/claude-run.ts`: `claude -p`, detached, its
+   stream written to `jobs/<id>/claude.log`). It follows `notes/making-songs.md` and writes
+   `jobs/<id>/script.ts`, whose default export gives a plan per song (`make/song-plan.ts`), modules
+   made with `make/module-builder.ts`; it checks them with `make/check-script.ts`. Its lines and what
+   its tools do are read from the log every second and become the job's notes.
+2. **building**: `make/build-script.ts` runs the script in a process of its own and writes a .fur per
+   song; the card lists the songs.
+3. **rendering**: each song is made and rendered in turn (`make/make-song.ts`) and shows in the list as
+   soon as it is done.
+4. **done** with Claude's reply, or **failed** with the reason.
+
 ## Still to build
 
-1. Making songs from a prompt: a Claude job writes a script, the script writes .fur files, each is
-   rendered, and clips and songs are written.
-2. The song editor: the timeline, the selected block's clip, a prompt box.
-3. Cutting a whole clip into sections and stems (0010), and versions of a clip (0014).
+1. The song editor: the timeline, the selected block's clip, a prompt box.
+2. Cutting a whole clip into sections and stems (0010), and versions of a clip (0014).

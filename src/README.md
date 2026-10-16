@@ -4,13 +4,17 @@ The page (React). It asks the server (server/) for clips and songs and shows the
 out without the page is in a module of its own beside it, with its test.
 
 - `App.tsx`: the top bar and the page the address is
+- `JobCard.tsx`: a job on its way, at the top of the songs list
 - `FilterBar.tsx`: the filter bar above a list
+- `PromptBox.tsx`: the box where a prompt is written and sent
 - `PlayButton.tsx`: ▶ for one song, in a list or on its page
 - `PlayerBar.tsx`: the player bar at the bottom of every page
 - `StatusButtons.tsx`: ★ and ✕ for a song's or a clip's status
 - `TopBar.tsx`: the bar at the top of every page
 - `UndoBar.tsx`: the offer to undo a change that hid something
 - `format.ts`: how lengths and meters are shown
+- `jobs.css`: the look of the prompt box, the job cards and the running count
+- `jobs-data.ts`: the jobs, read from the server, and sending a prompt
 - `list-filter.ts`: the filter both lists share
 - `lists.css`: the look of the lists: filter bar, rows, status buttons
 - `main.tsx`: the page's entry

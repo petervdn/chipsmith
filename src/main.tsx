@@ -5,6 +5,7 @@ import { App } from './App.tsx';
 import './style.css';
 import './lists.css';
 import './player.css';
+import './jobs.css';
 
 const rootElement = document.getElementById('root');
 if (!rootElement) throw new Error('no #root in index.html');
