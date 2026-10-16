@@ -9,6 +9,7 @@ out without the page is in a module of its own beside it, with its test.
 - `PlayerBar.tsx`: the player bar at the bottom of every page
 - `StatusButtons.tsx`: ★ and ✕ for a song's or a clip's status
 - `TopBar.tsx`: the bar at the top of every page
+- `UndoBar.tsx`: the offer to undo a change that hid something
 - `format.ts`: how lengths and meters are shown
 - `list-filter.ts`: the filter both lists share
 - `lists.css`: the look of the lists: filter bar, rows, status buttons

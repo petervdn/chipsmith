@@ -10,6 +10,7 @@ import type { ListFilter } from '../list-filter.ts';
 import { EMPTY_FILTER, getTagCounts, isShown } from '../list-filter.ts';
 import { sendChange, useServerData } from '../server-api.ts';
 import { StatusButtons } from '../StatusButtons.tsx';
+import { UndoBar, useUndo } from '../UndoBar.tsx';
 
 /** A clip's name as the list shows it: its section and stem, or "whole" for an unsplit clip. */
 export function getClipLabel({ name }: Clip): string {
@@ -21,6 +22,7 @@ export function getClipLabel({ name }: Clip): string {
 export function ClipsPage() {
   const { data: listings, error, reload } = useServerData<ClipListing[]>('/api/clips');
   const [filter, setFilter] = useState<ListFilter>(EMPTY_FILTER);
+  const [undoOffer, setUndoOffer] = useUndo();
   const items = (listings ?? []).map((listing) => ({
     listing,
     text: `${getClipLabel(listing.clip)} ${listing.clip.prompt} ${listing.clip.id}`,
@@ -31,9 +33,15 @@ export function ClipsPage() {
     .filter((item) => isShown(item, filter))
     .sort((first, second) => second.listing.clip.created.localeCompare(first.listing.clip.created));
 
-  async function setStatus(clipId: string, status: Status): Promise<void> {
-    await sendChange(`/api/clips/${encodeURIComponent(clipId)}`, { status });
+  async function setStatus(clip: Clip, status: Status): Promise<void> {
+    await sendChange(`/api/clips/${encodeURIComponent(clip.id)}`, { status });
     reload();
+    if (status === 'rejected' && !filter.isShowingRejected) {
+      setUndoOffer({
+        text: `Rejected clip ${clip.id}; it is hidden now.`,
+        undo: () => void setStatus(clip, clip.status),
+      });
+    }
   }
 
   return (
@@ -65,12 +73,13 @@ export function ClipsPage() {
               </span>
               <StatusButtons
                 status={clip.status}
-                onChange={(status) => void setStatus(clip.id, status)}
+                onChange={(status) => void setStatus(clip, status)}
               />
             </div>
           </li>
         ))}
       </ul>
+      <UndoBar offer={undoOffer} onClose={() => setUndoOffer(null)} />
     </section>
   );
 }

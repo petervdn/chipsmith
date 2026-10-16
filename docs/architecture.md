@@ -71,8 +71,8 @@ Python writer made (1,534 in the archive) is read and written again, byte for by
 
 ## Rendering and making songs
 
-- `render/`: a clip's source.fur rendered by the Furnace app's command line to a WAV, one at a time
-  with a pause between (0015), encoded as audio.flac with ffmpeg.
+- `render/`: a clip's source.fur rendered by the Furnace app's command line to a WAV, one at a time,
+  retried after a pause if it fails (0015), encoded as audio.flac with ffmpeg.
 - `make/`: new songs on disk. `make-song.ts` makes a song of one whole clip from a module: claims the
   ids (`ids.ts`, by making the folders), writes the clip's source.fur and script, renders its audio,
   writes clip.json and song.json, and the server is told to look again (`POST /api/rescan`).

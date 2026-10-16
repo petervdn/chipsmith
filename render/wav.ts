@@ -7,6 +7,19 @@ import { ByteReader } from '../fur/bytes.ts';
 /** A WAV's format and length. */
 export type WavFacts = { sampleRate: number; channels: number; bits: number; seconds: number };
 
+/** The highest sample of a 16-bit WAV, from 0 to 1 of full scale. */
+export function getWavPeak(bytes: Uint8Array): number {
+  const { bits } = getWavFacts(bytes);
+  if (bits !== 16) throw new Error(`peak of a ${bits}-bit WAV is not read`);
+  const start = findDataStart(bytes);
+  const view = new DataView(bytes.buffer, bytes.byteOffset + start, bytes.byteLength - start);
+  let peak = 0;
+  for (let offset = 0; offset + 1 < view.byteLength; offset += 2) {
+    peak = Math.max(peak, Math.abs(view.getInt16(offset, true)));
+  }
+  return peak / 32768;
+}
+
 /** The facts of a WAV from its bytes (at least up to its data chunk's header). */
 export function getWavFacts(bytes: Uint8Array): WavFacts {
   const reader = new ByteReader(bytes);
@@ -34,6 +47,18 @@ export function getWavFacts(bytes: Uint8Array): WavFacts {
     } else {
       reader.position += size + (size % 2);
     }
+  }
+  throw new Error('not a WAV: no data chunk');
+}
+
+/** Where a WAV's sample data starts: after the header of its data chunk. */
+function findDataStart(bytes: Uint8Array): number {
+  const reader = new ByteReader(bytes, 12);
+  while (reader.position + 8 <= bytes.length) {
+    const id = reader.ascii(4);
+    const size = reader.u32();
+    if (id === 'data') return reader.position;
+    reader.position += size + (size % 2);
   }
   throw new Error('not a WAV: no data chunk');
 }

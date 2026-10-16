@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import type { Status } from '../../shared/catalogue.types.ts';
 import type { SongListing } from '../../shared/api.types.ts';
+import type { Song } from '../../shared/song.types.ts';
 import { FilterBar } from '../FilterBar.tsx';
 import { PlayButton } from '../PlayButton.tsx';
 import { formatMeter, formatSeconds } from '../format.ts';
@@ -10,11 +11,13 @@ import type { ListFilter } from '../list-filter.ts';
 import { EMPTY_FILTER, getTagCounts, isShown } from '../list-filter.ts';
 import { sendChange, useServerData } from '../server-api.ts';
 import { StatusButtons } from '../StatusButtons.tsx';
+import { UndoBar, useUndo } from '../UndoBar.tsx';
 
 /** The songs list. */
 export function SongsPage() {
   const { data: listings, error, reload } = useServerData<SongListing[]>('/api/songs');
   const [filter, setFilter] = useState<ListFilter>(EMPTY_FILTER);
+  const [undoOffer, setUndoOffer] = useUndo();
   const items = (listings ?? []).map((listing) => ({
     listing,
     text: listing.song.title,
@@ -25,9 +28,15 @@ export function SongsPage() {
     .filter((item) => isShown(item, filter))
     .sort((first, second) => second.listing.song.updated.localeCompare(first.listing.song.updated));
 
-  async function setStatus(songId: string, status: Status): Promise<void> {
-    await sendChange(`/api/songs/${encodeURIComponent(songId)}`, { status });
+  async function setStatus(song: Song, status: Status): Promise<void> {
+    await sendChange(`/api/songs/${encodeURIComponent(song.id)}`, { status });
     reload();
+    if (status === 'rejected' && !filter.isShowingRejected) {
+      setUndoOffer({
+        text: `Rejected "${song.title}"; it is hidden now.`,
+        undo: () => void setStatus(song, song.status),
+      });
+    }
   }
 
   return (
@@ -63,12 +72,13 @@ export function SongsPage() {
               </span>
               <StatusButtons
                 status={song.status}
-                onChange={(status) => void setStatus(song.id, status)}
+                onChange={(status) => void setStatus(song, status)}
               />
             </div>
           </li>
         ))}
       </ul>
+      <UndoBar offer={undoOffer} onClose={() => setUndoOffer(null)} />
     </section>
   );
 }

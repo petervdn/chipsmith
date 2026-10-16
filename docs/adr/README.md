@@ -28,4 +28,4 @@ Consequences.
 | [0012](0012-standards-of-unknown-game.md) | The setup and coding standards follow unknown-game | accepted |
 | [0013](0013-react-for-the-page.md) | The page is React | accepted |
 | [0014](0014-a-variation-changes-only-its-block.md) | A new version of a clip changes only the block it was asked for | accepted |
-| [0015](0015-render-with-the-furnace-app.md) | A clip is rendered with the Furnace app's command line, one at a time with a pause | accepted |
+| [0015](0015-render-with-the-furnace-app.md) | A clip is rendered with the Furnace app's command line, one at a time | accepted |

@@ -1,7 +1,8 @@
 /**
  * Rendering a .fur to a WAV with the Furnace app's command line. Furnace opens a CoreMIDI client every
- * time it starts, which macOS refuses after many quick launches: renders run one at a time, with a
- * pause between one exit and the next start, and a failed render is tried again (docs/later.md).
+ * time it starts, which macOS has refused after many quick launches: renders run one at a time, and a
+ * failed render is tried again after a pause that grows (docs/adr/0015, docs/later.md). 75 renders
+ * back to back without a pause all worked (2026-10-17).
  */
 import { spawn } from 'node:child_process';
 
@@ -10,12 +11,11 @@ export const FURNACE =
   process.env['CHIPTUNE_FURNACE'] ?? '/Applications/Furnace.app/Contents/MacOS/Furnace';
 /** The Furnace version renders are made with, as clip.json records it. */
 export const FURNACE_VERSION = '0.6.8.3';
-/** Milliseconds from one Furnace exit to the next start. */
-const PAUSE = 1000;
+/** Milliseconds before a failed render is tried again, times the number of the try. */
+const RETRY_PAUSE = 1000;
 /** Tries before a render is given up. */
 const TRIES = 3;
 
-let lastExit = 0;
 let queue: Promise<unknown> = Promise.resolve();
 
 /** Renders a .fur once through (no loop) to a WAV file; renders wait for each other. */
@@ -28,7 +28,7 @@ export function renderToWav(furFile: string, wavFile: string): Promise<void> {
 async function renderWithRetries(furFile: string, wavFile: string): Promise<void> {
   let lastError: unknown = null;
   for (let attempt = 1; attempt <= TRIES; attempt++) {
-    await wait(Math.max(0, lastExit + PAUSE * attempt - Date.now()));
+    if (attempt > 1) await wait(RETRY_PAUSE * (attempt - 1));
     try {
       await runFurnace([
         '-loglevel',
@@ -43,8 +43,6 @@ async function renderWithRetries(furFile: string, wavFile: string): Promise<void
       return;
     } catch (error) {
       lastError = error;
-    } finally {
-      lastExit = Date.now();
     }
   }
   throw new Error(`Furnace failed ${TRIES} times on ${furFile}: ${String(lastError)}`);

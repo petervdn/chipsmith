@@ -1,4 +1,4 @@
-# 0015. A clip is rendered with the Furnace app's command line, one at a time with a pause
+# 0015. A clip is rendered with the Furnace app's command line, one at a time
 
 - Status: accepted
 - Date: 2026-10-17
@@ -11,12 +11,13 @@ it builds, and renders equal the app's except the NES noise channel's samples, w
 listened to.
 
 ## Decision
-Render with the app's binary (`render/furnace.ts`): one render at a time, a pause of a second
-between one exit and the next start, three tries. Furnace's version is written in clip.json.
+Render with the app's binary (`render/furnace.ts`): one render at a time, three tries, a failed one
+tried again after a pause of 1 s, then 2 s. (A pause of a second before every render was dropped on
+2026-10-17: 75 renders back to back without one all worked.) Furnace's version is written in clip.json.
 
 ## Alternatives
 - **The headless build.** No app start and no pause, renders could run side by side; set aside until
   its noise channel is listened to (docs/later.md).
 
 ## Consequences
-A render takes about 1.4 s for a 50 s song, 1 s of it the pause; a song cut into 16 clips about 20 s.
+A render takes about 0.5 s for a 50 s song; a song cut into 16 clips a few seconds.
