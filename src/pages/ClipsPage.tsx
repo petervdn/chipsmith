@@ -1,14 +1,13 @@
 // The clip pool: every clip with its name, its prompt, its length and the songs that use it, the
 // filter bar above it, and ★ / ✕ on each row.
-import { useState } from 'react';
 import type { ClipListing } from '../../shared/api.types.ts';
 import type { Status } from '../../shared/catalogue.types.ts';
 import type { Clip } from '../../shared/clip.types.ts';
 import { FilterBar } from '../FilterBar.tsx';
 import { formatSeconds } from '../format.ts';
-import type { ListFilter } from '../list-filter.ts';
-import { EMPTY_FILTER, getTagCounts, isShown } from '../list-filter.ts';
+import { getTagCounts, isShown } from '../list-filter.ts';
 import { sendChange, useServerData } from '../server-api.ts';
+import { useListFilter } from '../use-list-filter.ts';
 import { StatusButtons } from '../StatusButtons.tsx';
 import { UndoBar, useUndo } from '../UndoBar.tsx';
 
@@ -21,7 +20,7 @@ export function getClipLabel({ name }: Clip): string {
 /** The clips list. */
 export function ClipsPage() {
   const { data: listings, error, reload } = useServerData<ClipListing[]>('/api/clips');
-  const [filter, setFilter] = useState<ListFilter>(EMPTY_FILTER);
+  const [filter, setFilter] = useListFilter();
   const [undoOffer, setUndoOffer] = useUndo();
   const items = (listings ?? []).map((listing) => ({
     listing,
@@ -54,6 +53,9 @@ export function ClipsPage() {
       />
       {error && <p className="error">{error}</p>}
       {listings && items.length === 0 && <p className="empty">No clips yet.</p>}
+      {items.length > 0 && shown.length === 0 && (
+        <p className="empty">No clips match this filter (a clip needs every chosen tag).</p>
+      )}
       <ul className="item-list">
         {shown.map(({ listing: { clip, usedBy } }) => (
           <li key={clip.id}>

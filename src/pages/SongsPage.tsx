@@ -11,9 +11,9 @@ import type { Song } from '../../shared/song.types.ts';
 import { FilterBar } from '../FilterBar.tsx';
 import { PlayButton } from '../PlayButton.tsx';
 import { formatMeter, formatSeconds } from '../format.ts';
-import type { ListFilter } from '../list-filter.ts';
-import { EMPTY_FILTER, getTagCounts, isShown } from '../list-filter.ts';
+import { getTagCounts, isShown } from '../list-filter.ts';
 import { sendChange, useServerData } from '../server-api.ts';
+import { useListFilter } from '../use-list-filter.ts';
 import { SongRowDetails } from '../SongRowDetails.tsx';
 import { StatusButtons } from '../StatusButtons.tsx';
 import { UndoBar, useUndo } from '../UndoBar.tsx';
@@ -25,7 +25,7 @@ export function SongsPage({ jobs }: SongsPageProps) {
   const { data: listings, error, reload } = useServerData<SongListing[]>('/api/songs');
   const madeCount = jobs.flatMap((job) => job.songs).filter((song) => song.songId).length;
   useEffect(() => reload(), [madeCount, reload]);
-  const [filter, setFilter] = useState<ListFilter>(EMPTY_FILTER);
+  const [filter, setFilter] = useListFilter();
   const [undoOffer, setUndoOffer] = useUndo();
   const [openSongs, setOpenSongs] = useState<string[]>([]);
   const titlesById = new Map((listings ?? []).map(({ song }) => [song.id, song.title]));
@@ -70,6 +70,9 @@ export function SongsPage({ jobs }: SongsPageProps) {
       {error && <p className="error">{error}</p>}
       {listings && items.length === 0 && (
         <p className="empty">No songs yet. A song appears here as soon as Claude makes one.</p>
+      )}
+      {items.length > 0 && shown.length === 0 && (
+        <p className="empty">No songs match this filter (a song needs every chosen tag).</p>
       )}
       <ul className="item-list">
         {shown.map(({ listing }) => {

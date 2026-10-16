@@ -3,6 +3,7 @@
 import type { Job } from '../shared/job.types.ts';
 import { isJobRunning } from './jobs-data.ts';
 import type { Route } from './router.ts';
+import { getListAddress } from './use-list-filter.ts';
 
 type TopBarProps = { route: Route; songTitle: string | null; jobs: Job[] };
 
@@ -13,10 +14,13 @@ export function TopBar({ route, songTitle, jobs }: TopBarProps) {
   return (
     <header className="top-bar">
       <nav className="top-nav">
-        <a href="/" className={`top-link${isSongs ? ' is-on' : ''}`}>
+        <a href={getListAddress('/')} className={`top-link${isSongs ? ' is-on' : ''}`}>
           Songs
         </a>
-        <a href="/clips" className={`top-link${route.page === 'clips' ? ' is-on' : ''}`}>
+        <a
+          href={getListAddress('/clips')}
+          className={`top-link${route.page === 'clips' ? ' is-on' : ''}`}
+        >
           Clips
         </a>
         <a

@@ -36,3 +36,23 @@ export function getTagCounts(items: FilterableItem[]): { name: string; count: nu
     .map(([name, count]) => ({ name, count }))
     .sort((first, second) => second.count - first.count || first.name.localeCompare(second.name));
 }
+
+/** A filter as the address's query: `q` (words), `tags` (comma-separated), `rejected=1`. */
+export function getFilterQuery({ words, tags, isShowingRejected }: ListFilter): string {
+  const query = new URLSearchParams();
+  if (words.trim()) query.set('q', words);
+  if (tags.length > 0) query.set('tags', tags.join(','));
+  if (isShowingRejected) query.set('rejected', '1');
+  const text = query.toString().replaceAll('%2C', ',');
+  return text ? `?${text}` : '';
+}
+
+/** The filter an address's query holds; what it does not say is as in EMPTY_FILTER. */
+export function getFilterFromQuery(search: string): ListFilter {
+  const query = new URLSearchParams(search);
+  return {
+    words: query.get('q') ?? '',
+    tags: (query.get('tags') ?? '').split(',').filter(Boolean),
+    isShowingRejected: query.get('rejected') === '1',
+  };
+}

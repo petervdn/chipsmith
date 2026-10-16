@@ -2,7 +2,13 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import type { FilterableItem } from './list-filter.ts';
-import { EMPTY_FILTER, getTagCounts, isShown } from './list-filter.ts';
+import {
+  EMPTY_FILTER,
+  getFilterFromQuery,
+  getFilterQuery,
+  getTagCounts,
+  isShown,
+} from './list-filter.ts';
 
 const FUNK_BASS: FilterableItem = {
   text: 'Funk groove 2',
@@ -37,4 +43,13 @@ test('tags are counted, most used first', () => {
       { name: 'bass', count: 1 },
     ],
   );
+});
+
+test('a filter goes into the address and comes back the same', () => {
+  const filter = { words: 'dark groove', tags: ['funk', 'bass'], isShowingRejected: true };
+  const query = getFilterQuery(filter);
+  assert.equal(query, '?q=dark+groove&tags=funk,bass&rejected=1');
+  assert.deepEqual(getFilterFromQuery(query), filter);
+  assert.equal(getFilterQuery(EMPTY_FILTER), '');
+  assert.deepEqual(getFilterFromQuery(''), EMPTY_FILTER);
 });
