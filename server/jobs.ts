@@ -38,7 +38,7 @@ export function getJobFolder(store: JobStore, jobId: string): string {
 }
 
 /** Makes a new job for a prompt, queued. */
-export function createJob(store: JobStore, prompt: string): Job {
+export function createJob(store: JobStore, prompt: string, promptedFrom: string | null): Job {
   const id = claimId(store.root, JOB_IDS);
   const now = new Date().toISOString();
   const job: Job = {
@@ -53,6 +53,7 @@ export function createJob(store: JobStore, prompt: string): Job {
     summary: null,
     error: null,
     claudePid: null,
+    promptedFrom,
   };
   saveJob(store, job);
   return job;

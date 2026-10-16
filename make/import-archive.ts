@@ -72,6 +72,7 @@ async function importFiles(furFiles: string[], isFavorite: boolean): Promise<voi
       tags: getArchiveTags(batchFolder),
       status: isFavorite ? 'keeper' : 'new',
       key: null,
+      promptedFrom: null,
     });
     console.log(`${made.songId} ${made.clipId}  ${path}`);
   }

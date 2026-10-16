@@ -29,6 +29,8 @@ export type NewSong = {
   tags: Tag[];
   status: Status;
   key: string | null;
+  /** The clip whose prompt was sent again, or null. */
+  promptedFrom: string | null;
 };
 
 /** The ids of what was made. */
@@ -45,6 +47,7 @@ export async function makeSong({
   tags,
   status,
   key,
+  promptedFrom,
 }: NewSong): Promise<MadeSong> {
   const clipId = claimId(root, CLIP_IDS);
   const songId = claimId(root, SONG_IDS);
@@ -65,6 +68,7 @@ export async function makeSong({
     channels: null,
     parent: null,
     madeFor: songId,
+    promptedFrom,
     tags,
     status,
     bpm,

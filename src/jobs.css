@@ -198,3 +198,17 @@
   color: var(--muted);
   font-size: 18px;
 }
+.prompt-source {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+.prompt-source-clear {
+  border: 0;
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+}

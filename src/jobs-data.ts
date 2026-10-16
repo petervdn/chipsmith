@@ -40,12 +40,15 @@ export function useJobs(): { jobs: Job[]; refresh: () => void } {
   return { jobs, refresh: () => setCount((previous) => previous + 1) };
 }
 
-/** Sends a prompt; the server makes its job at once. */
-export async function sendPrompt(prompt: string): Promise<void> {
+/**
+ * Sends a prompt, with the song whose prompt it sends again if so (the server notes that song's clip);
+ * the server makes its job at once.
+ */
+export async function sendPrompt(prompt: string, fromSong: string | null): Promise<void> {
   const response = await fetch('/api/jobs', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ prompt }),
+    body: JSON.stringify({ prompt, fromSong }),
   });
   const answer: unknown = await response.json();
   if (!response.ok) {

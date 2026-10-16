@@ -14,6 +14,9 @@ docs/code-guidelines.md.
   change: a change is a new clip whose parent is the old one (`variation`), and a cut is new clips
   whose parent is the whole one (`split`). Which songs use a clip is worked out, not stored.
 - Songs and clips have tags (descriptions) and a status: new, heard, keeper, rejected (0009).
+- A song's prompt can be sent again ("Prompt again" on its row): the new song's clips note the clip
+  whose prompt it was (`promptedFrom`, a clip id; not a parent, as none of its music is used). The
+  songs list shows the link both ways, worked out from the clips.
 
 The types are in `shared/clip.types.ts` and `shared/song.types.ts`.
 
@@ -43,7 +46,8 @@ What they answer is typed in `shared/api.types.ts`.
 
 `src/`, React (0013). One top bar on every page: Songs | Clips | New, and in a song the song's title.
 
-- **Songs** (`/`): every song, with the filter bar (words, tags, rejected or not), its facts and ★ / ✕.
+- **Songs** (`/`): every song, with the filter bar (words, tags, rejected or not), its facts, ▶,
+  ★ / ✕, and ⌄ to open the row: its prompt (copy, prompt again), its facts and its prompt links.
 - **Song** (`/songs/<id>`): the song opened. Now: its tracks and the clips they play. To come: the
   timeline, playback, the selected block's clip with its prompt and versions, a prompt box.
 - **Clips** (`/clips`): the pool, with the same filter bar.

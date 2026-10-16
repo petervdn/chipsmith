@@ -155,6 +155,7 @@ async function buildAndRender(jobs: JobStore, store: Store, jobId: string): Prom
         tags: plan.tags.map((name) => ({ name, by: 'claude' })),
         status: 'new',
         key: plan.key,
+        promptedFrom: job?.promptedFrom ?? null,
       });
       songs = songs.map((song, index) =>
         index === i ? { ...song, state: 'done', songId: made.songId } : song,

@@ -4,7 +4,20 @@ import type { Clip } from './clip.types.ts';
 import type { Song } from './song.types.ts';
 
 /** A song in the songs list, with what the list shows of it. */
-export type SongListing = { song: Song; seconds: number; clipCount: number };
+export type SongListing = {
+  song: Song;
+  seconds: number;
+  clipCount: number;
+  /** The prompts its clips were made with, each once, in the order the song first plays them. */
+  prompts: string[];
+  /** The key its clips name, the first one found. */
+  key: string | null;
+  chips: string[];
+  /** The song that uses the clip whose prompt was sent again to make this one's clips. */
+  promptedFrom: string | null;
+  /** The songs whose clips were made by sending a prompt of this one's clips again. */
+  promptedAgainAs: string[];
+};
 
 /** A song opened, with the clips its blocks play. */
 export type SongDetail = { song: Song; clips: Clip[] };

@@ -10,9 +10,11 @@ out without the page is in a module of its own beside it, with its test.
 - `PromptBox.tsx`: the box where a prompt is written and sent
 - `PlayButton.tsx`: ▶ for one song, in a list or on its page
 - `PlayerBar.tsx`: the player bar at the bottom of every page
+- `SongRowDetails.tsx`: a song's row opened: its prompt (copy, prompt again) and details
 - `StatusButtons.tsx`: ★ and ✕ for a song's or a clip's status
 - `TopBar.tsx`: the bar at the top of every page
 - `UndoBar.tsx`: the offer to undo a change that hid something
+- `copy-text.ts`: copying text, also where the clipboard API is missing (plain http)
 - `format.ts`: how lengths and meters are shown
 - `jobs.css`: the look of the prompt box, the job cards and the running count
 - `jobs-data.ts`: the jobs, read from the server, and sending a prompt

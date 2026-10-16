@@ -8,8 +8,9 @@ import { useEffect, useState } from 'react';
 export type Route =
   { page: 'songs' } | { page: 'song'; songId: string } | { page: 'clips' } | { page: 'new' };
 
-/** The route of an address's path. */
-export function getRoute(path: string): Route {
+/** The route of an address's path (a query after it is not the route's). */
+export function getRoute(address: string): Route {
+  const path = address.split('?')[0] ?? '';
   const song = /^\/songs\/([^/]+)\/?$/.exec(path);
   if (song?.[1]) return { page: 'song', songId: decodeURIComponent(song[1]) };
   if (/^\/clips\/?$/.test(path)) return { page: 'clips' };
@@ -19,17 +20,17 @@ export function getRoute(path: string): Route {
 
 /** Goes to a path of the app, keeping it in the browser's history. */
 export function navigate(path: string): void {
-  if (path === window.location.pathname) return;
+  if (path === window.location.pathname + window.location.search) return;
   window.history.pushState(null, '', path);
   window.dispatchEvent(new PopStateEvent('popstate'));
 }
 
 /** The current route, following back, forward and links within the app. */
 export function useRoute(): Route {
-  const [path, setPath] = useState(window.location.pathname);
+  const [path, setPath] = useState(window.location.pathname + window.location.search);
   useEffect(() => {
     function followHistory(): void {
-      setPath(window.location.pathname);
+      setPath(window.location.pathname + window.location.search);
     }
     function followLink(event: MouseEvent): void {
       if (event.defaultPrevented || event.button !== 0) return;

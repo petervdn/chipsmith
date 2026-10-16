@@ -56,6 +56,7 @@ const SOME_CLIP: Clip = {
   channels: null,
   parent: null,
   madeFor: null,
+  promptedFrom: null,
   tags: [],
   status: 'new',
   bpm: 120,

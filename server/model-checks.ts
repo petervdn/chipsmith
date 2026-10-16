@@ -49,6 +49,7 @@ export function checkClip(value: unknown, path: string): Clip {
       clip['channels'] === null ? null : getArray(clip['channels'], `${path}.channels`, getNumber),
     parent: clip['parent'] === null ? null : checkParent(clip['parent'], `${path}.parent`),
     madeFor: getStringOrNull(clip['madeFor'], `${path}.madeFor`),
+    promptedFrom: getStringOrNull(clip['promptedFrom'] ?? null, `${path}.promptedFrom`),
     tags: checkTags(clip['tags'], `${path}.tags`),
     status: checkStatus(clip['status'], `${path}.status`),
     bpm: getNumber(clip['bpm'], `${path}.bpm`),

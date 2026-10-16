@@ -18,6 +18,7 @@ const CLIP: Clip = {
   channels: [2],
   parent: null,
   madeFor: 's0001',
+  promptedFrom: null,
   tags: [{ name: 'funk', by: 'claude' }],
   status: 'new',
   bpm: 112,

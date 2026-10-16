@@ -9,10 +9,11 @@ import { join } from 'node:path';
 import type { Plugin } from 'vite';
 import type { CatalogueChange, ClipListing, SongDetail, SongListing } from '../shared/api.types.ts';
 import type { Clip } from '../shared/clip.types.ts';
+import type { Song } from '../shared/song.types.ts';
 import { getSongSeconds } from '../shared/song-length.ts';
 import { sendError, sendFile, sendJson, readJsonBody } from './http.ts';
 import type { Job } from '../shared/job.types.ts';
-import { getObject, getString } from './json-checks.ts';
+import { getObject, getString, getStringOrNull } from './json-checks.ts';
 import { startJobRunner } from './job-runner.ts';
 import type { JobStore } from './jobs.ts';
 import { createJob, openJobs } from './jobs.ts';
@@ -77,7 +78,11 @@ async function route(
     const body = getObject(await readJsonBody(request), 'body');
     const prompt = getString(body['prompt'], 'body.prompt').trim();
     if (!prompt) return sendError(response, 400, 'the prompt is empty');
-    return sendJson(response, createJob(jobs, prompt));
+    const fromSong = getStringOrNull(body['fromSong'] ?? null, 'body.fromSong');
+    const song = fromSong ? store.songs.get(fromSong) : null;
+    if (fromSong && !song) return sendError(response, 400, `no song ${fromSong}`);
+    const promptedFrom = song ? (getSongClips(store, song)[0]?.id ?? null) : null;
+    return sendJson(response, createJob(jobs, prompt, promptedFrom));
   }
   if (kind === 'rescan' && method === 'POST') {
     rescanStore(store);
@@ -113,12 +118,44 @@ function listJobs(jobs: JobStore): Job[] {
 }
 
 function listSongs(store: Store): SongListing[] {
-  return [...store.songs.values()].map((song) => ({
-    song,
-    seconds: getSongSeconds(song, (clipId) => store.clips.get(clipId)?.seconds ?? 0),
-    clipCount: new Set(song.tracks.flatMap((track) => track.blocks.map((block) => block.clip)))
-      .size,
-  }));
+  const songs = [...store.songs.values()];
+  const clipsOf = new Map(songs.map((song) => [song.id, getSongClips(store, song)]));
+  return songs.map((song) => {
+    const clips = clipsOf.get(song.id) ?? [];
+    const clipIds = new Set(clips.map((clip) => clip.id));
+    const fromClip = clips.find((clip) => clip.promptedFrom)?.promptedFrom ?? null;
+    const promptedFrom = fromClip ? (getSongsUsingClip(store, fromClip)[0] ?? null) : null;
+    return {
+      song,
+      seconds: getSongSeconds(song, (clipId) => store.clips.get(clipId)?.seconds ?? 0),
+      clipCount: clips.length,
+      prompts: [...new Set(clips.map((clip) => clip.prompt))],
+      key: clips.find((clip) => clip.key)?.key ?? null,
+      chips: [...new Set(clips.flatMap((clip) => clip.chips))],
+      promptedFrom,
+      promptedAgainAs: songs
+        .filter((other) =>
+          (clipsOf.get(other.id) ?? []).some(
+            (clip) => clip.promptedFrom !== null && clipIds.has(clip.promptedFrom),
+          ),
+        )
+        .map((other) => other.id),
+    };
+  });
+}
+
+/** The clips a song's blocks play, each once, in the order the song first plays them. */
+function getSongClips(store: Store, song: Song): Clip[] {
+  const clipIds = new Set(
+    song.tracks
+      .flatMap((track) => track.blocks)
+      .sort((first, second) => first.start - second.start)
+      .map((block) => block.clip),
+  );
+  return [...clipIds].flatMap((clipId) => {
+    const clip = store.clips.get(clipId);
+    return clip ? [clip] : [];
+  });
 }
 
 function listClips(store: Store): ClipListing[] {
