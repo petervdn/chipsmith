@@ -82,7 +82,8 @@ Python writer made (1,534 in the archive) is read and written again, byte for by
   ids (`ids.ts`, by making the folders), writes the clip's source.fur and script, renders its audio,
   writes clip.json and song.json, and the server is told to look again (`POST /api/rescan`).
   `import-archive.ts` brought the user's 74 favourites of the old batches in this way, tagged with their
-  thread and `archive`, as keepers.
+  thread and `archive`, as keepers. Their prompt (song and clip) is their batch's brief, the user's request
+  as the batch README quotes it, with the song's own row of that README's table.
 
 ## Playback
 
