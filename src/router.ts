@@ -1,0 +1,49 @@
+/**
+ * Which page the address is, and moving between them without reloading. Pages: `/` songs,
+ * `/songs/<id>` one song, `/clips` the clip pool. Knows nothing of what a page shows.
+ */
+import { useEffect, useState } from 'react';
+
+/** A page and what it is of. */
+export type Route = { page: 'songs' } | { page: 'song'; songId: string } | { page: 'clips' };
+
+/** The route of an address's path. */
+export function getRoute(path: string): Route {
+  const song = /^\/songs\/([^/]+)\/?$/.exec(path);
+  if (song?.[1]) return { page: 'song', songId: decodeURIComponent(song[1]) };
+  if (/^\/clips\/?$/.test(path)) return { page: 'clips' };
+  return { page: 'songs' };
+}
+
+/** Goes to a path of the app, keeping it in the browser's history. */
+export function navigate(path: string): void {
+  if (path === window.location.pathname) return;
+  window.history.pushState(null, '', path);
+  window.dispatchEvent(new PopStateEvent('popstate'));
+}
+
+/** The current route, following back, forward and links within the app. */
+export function useRoute(): Route {
+  const [path, setPath] = useState(window.location.pathname);
+  useEffect(() => {
+    function followHistory(): void {
+      setPath(window.location.pathname);
+    }
+    function followLink(event: MouseEvent): void {
+      if (event.defaultPrevented || event.button !== 0) return;
+      if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      const link = event.target instanceof Element ? event.target.closest('a') : null;
+      const href = link?.getAttribute('href');
+      if (!href?.startsWith('/') || link?.target) return;
+      event.preventDefault();
+      navigate(href);
+    }
+    window.addEventListener('popstate', followHistory);
+    document.addEventListener('click', followLink);
+    return () => {
+      window.removeEventListener('popstate', followHistory);
+      document.removeEventListener('click', followLink);
+    };
+  }, []);
+  return getRoute(path);
+}

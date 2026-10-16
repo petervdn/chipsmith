@@ -1,0 +1,19 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["typescript", "unicorn", "react"],
+  "categories": {
+    "correctness": "error"
+  },
+  "rules": {
+    "curly": ["error", "multi-line"],
+    "prefer-const": "error",
+    "func-style": ["error", "declaration"],
+    "typescript/consistent-type-definitions": ["error", "type"],
+    "typescript/consistent-type-assertions": ["error", { "assertionStyle": "never" }],
+    "typescript/no-non-null-assertion": "error",
+    "unicorn/prefer-at": "error",
+    "react/rules-of-hooks": "error",
+    "id-length": ["error", { "min": 2, "exceptions": ["x", "y", "i", "j"] }],
+    "no-unused-vars": ["error", { "ignoreRestSiblings": true }]
+  }
+}

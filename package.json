@@ -1,0 +1,29 @@
+{
+  "name": "chiptune",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "typecheck": "tsc --noEmit",
+    "lint": "oxlint src server shared test vite.config.ts",
+    "test": "node --test \"src/**/*.test.ts\" \"server/**/*.test.ts\" \"shared/**/*.test.ts\" \"test/**/*.test.ts\"",
+    "check": "npm run typecheck && npm run lint && npm test && npm run format:check",
+    "format": "prettier --log-level warn --write \"src/**/*.{ts,tsx,css}\" \"server/**/*.ts\" \"shared/**/*.ts\" \"test/**/*.ts\" vite.config.ts",
+    "format:check": "prettier --check --log-level warn \"src/**/*.{ts,tsx,css}\" \"server/**/*.ts\" \"shared/**/*.ts\" \"test/**/*.ts\" vite.config.ts"
+  },
+  "dependencies": {
+    "react": "19.2.8",
+    "react-dom": "19.2.8"
+  },
+  "devDependencies": {
+    "@types/node": "26.6.4",
+    "@types/react": "19.2.18",
+    "@types/react-dom": "19.2.7",
+    "@vitejs/plugin-react": "6.1.1",
+    "oxlint": "1.88.0",
+    "prettier": "3.9.10",
+    "typescript": "7.0.2",
+    "vite": "8.3.2"
+  }
+}

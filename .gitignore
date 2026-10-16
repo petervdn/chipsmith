@@ -1,0 +1,7 @@
+# A clip's audio is rendered from its source.fur, so it stays out of git (docs/adr/0011). A clip
+# with no source.fur has a .gitignore of its own with `!audio.flac`, which takes its audio back in.
+clips/*/audio.flac
+
+node_modules/
+dist/
+.DS_Store
