@@ -1,6 +1,6 @@
 /**
  * A job: one prompt on its way to songs, visible from the moment it is sent. Its phases: Claude
- * composes a script, the script builds a module per song, each song is rendered; then done or failed.
+ * composes a script, the script builds a .fur file per song, each song is rendered; then done or failed.
  */
 import type { SentGuide } from './guide.types.ts';
 

@@ -1,11 +1,11 @@
 /**
- * Reading a .fur written by this project back into a FurModule, so that writing it again gives the
+ * Reading a .fur written by this project back into a FurFile, so that writing it again gives the
  * same bytes. Instruments and wavetables are kept as their blocks. Only the old INFO layout with one
  * subsong and the NES, SCC and SCC+ chips is read: what fur/write.ts writes.
  */
 import { inflateSync } from 'node:zlib';
 import { ByteReader } from './bytes.ts';
-import type { FurModule, FurSong, Pattern } from './fur.types.ts';
+import type { FurFile, FurSong, Pattern } from './fur.types.ts';
 import { unpackRows } from './pattern.ts';
 
 /** Channels of each chip this project uses, by Furnace's chip id. */
@@ -22,8 +22,8 @@ export function getUncompressed(file: Uint8Array): Uint8Array {
   return start === MAGIC ? file : new Uint8Array(inflateSync(file));
 }
 
-/** A module read from a .fur file's bytes. */
-export function readModule(file: Uint8Array): FurModule {
+/** A .fur file read from its bytes. */
+export function readFurFile(file: Uint8Array): FurFile {
   const bytes = getUncompressed(file);
   const reader = new ByteReader(bytes, MAGIC.length);
   reader.u16();

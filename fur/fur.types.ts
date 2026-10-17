@@ -1,5 +1,5 @@
 /**
- * What a .fur module is made of, as this project writes them (format version 223, Furnace 0.6.8's,
+ * What a .fur file is made of, as this project writes them (format version 223, Furnace 0.6.8's,
  * old INFO layout, one subsong): the song's settings, its instruments and wavetables as finished
  * blocks, and its patterns as rows.
  */
@@ -42,8 +42,8 @@ export type FurSong = {
   effectColumns: number[];
 };
 
-/** A whole module: the song, its instrument and wavetable blocks, and its patterns. */
-export type FurModule = {
+/** A whole .fur file: the song, its instrument and wavetable blocks, and its patterns. */
+export type FurFile = {
   song: FurSong;
   instruments: Uint8Array[];
   wavetables: Uint8Array[];

@@ -6,7 +6,7 @@
 import type { Row } from '../fur/fur.types.ts';
 import { ARP_FIXED, makeInstrument, NES_INSTRUMENT } from '../fur/instrument.ts';
 import { getNoteValue } from '../fur/notes.ts';
-import { buildModule } from './module-builder.ts';
+import { buildFurFile } from './fur-file-builder.ts';
 import type { SongPlan } from './song-plan.ts';
 
 const ROWS_PER_BAR = 16;
@@ -119,7 +119,7 @@ export default function makeSongs(): SongPlan[] {
       title: 'Example - D minor bounce',
       key: 'D minor',
       tags: ['action', 'example'],
-      module: buildModule({
+      furFile: buildFurFile({
         title: 'Example - D minor bounce',
         chips: 'nes',
         bpm: 140,

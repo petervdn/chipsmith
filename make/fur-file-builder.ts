@@ -1,15 +1,15 @@
 /**
- * A module from what a song script writes: rows per chip channel for the whole song, instruments,
+ * A .fur file from what a song script writes: rows per chip channel for the whole song, instruments,
  * tempo and meter. Cuts the rows into patterns, reuses a pattern a channel repeats, and sets the
  * song's settings as the archive's songs had them (60 Hz, speed 6, a virtual tempo for the bpm).
  */
-import type { FurModule, FurSong, Row } from '../fur/fur.types.ts';
+import type { FurFile, FurSong, Row } from '../fur/fur.types.ts';
 
 /** The chips a song plays on. */
 export type ChipSet = 'nes' | 'nes+scc';
 
-/** What a script gives to make a module. */
-export type ModuleDraft = {
+/** What a script gives to make a .fur file. */
+export type FurFileDraft = {
   title: string;
   comment?: string;
   chips: ChipSet;
@@ -39,8 +39,8 @@ const SCC_PLUS = 0xb4;
 const CHANNELS_OF_CHIP = 5;
 const NES_FLAGS = 'clockSel=0\ncustomClock=0\ndpcmMode=false\n';
 
-/** The module of a draft. */
-export function buildModule({
+/** The .fur file of a draft. */
+export function buildFurFile({
   title,
   comment = '',
   chips,
@@ -52,7 +52,7 @@ export function buildModule({
   instruments,
   wavetables = [],
   chipVolumes,
-}: ModuleDraft): FurModule {
+}: FurFileDraft): FurFile {
   const chipIds = chips === 'nes' ? [NES] : [NES, SCC_PLUS];
   const channelCount = chipIds.length * CHANNELS_OF_CHIP;
   if (channels.length !== channelCount) {
@@ -60,7 +60,7 @@ export function buildModule({
   }
   const length = Math.max(...channels.map((rows) => rows.length));
   const orderCount = Math.ceil(length / patternLength);
-  const patterns: FurModule['patterns'] = [];
+  const patterns: FurFile['patterns'] = [];
   const orders = channels.map((rows, channel) => {
     const indexByContent = new Map<string, number>();
     return Array.from({ length: orderCount }, (_slot, order) => {

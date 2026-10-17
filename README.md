@@ -1,7 +1,7 @@
 # chipsmith
 
 Chiptune songs made from prompts, and remade a piece at a time. You write what you want; Claude
-composes it as [Furnace](https://github.com/tildearrow/furnace) modules; Furnace renders them; the
+composes it as [Furnace](https://github.com/tildearrow/furnace) files (.fur); Furnace renders them; the
 songs show up in a web app you can listen to from your phone, keep, reject, prompt again or build on.
 
 **The main idea: a song breaks down into parts as fine as you want.** Each part is a clip: a stretch
@@ -16,8 +16,8 @@ An unofficial tool: it uses Furnace's command line, and is not part of the Furna
 ```
 prompt (New page)
   → a job: Claude Code, run headless, writes jobs/<id>/script.ts       (notes/making-songs.md)
-  → the script builds one Furnace module per song                      (fur/, make/module-builder.ts)
-  → Furnace renders each module, ffmpeg encodes it as FLAC             (render/)
+  → the script writes one Furnace file (.fur) per song                 (fur/, make/fur-file-builder.ts)
+  → Furnace renders each .fur file, ffmpeg encodes it as FLAC          (render/)
   → each song is a clip in clips/<id>/ and a song in songs/<id>/       (make/make-song.ts)
   → the songs list plays them                                          (src/)
 ```
@@ -47,7 +47,7 @@ macOS (Furnace is called as the installed app), and:
 | Program | Used for | Found at, unless set (below) |
 |---|---|---|
 | Node 24 or later | the app, the tools, job scripts (runs TypeScript as it is) | the Node running the server |
-| [Furnace](https://github.com/tildearrow/furnace) 0.6.8.3 | rendering a module to audio | `/Applications/Furnace.app/Contents/MacOS/Furnace` |
+| [Furnace](https://github.com/tildearrow/furnace) 0.6.8.3 | rendering a .fur file to audio | `/Applications/Furnace.app/Contents/MacOS/Furnace` |
 | ffmpeg | encoding the renders as FLAC | `ffmpeg` on the PATH (`brew install ffmpeg`) |
 | [Claude Code](https://claude.com/claude-code) | composing songs from prompts | `~/.local/bin/claude`, else `claude` on the PATH |
 
@@ -99,6 +99,6 @@ A song shows … instead of ▶ until its audio is there (docs/adr/0018).
 | Command | What it does |
 |---|---|
 | `npm run check` | types, lint, tests and formatting; passes before every commit |
-| `node fur/dump.ts <file.fur> [--ins] [--pat CHANNEL,ORDER]` | a module as text |
+| `node fur/dump.ts <file.fur> [--ins] [--pat CHANNEL,ORDER]` | a .fur file as text |
 | `node make/check-script.ts <script.ts>` | builds and renders a song script: length, peak, gain per song |
 

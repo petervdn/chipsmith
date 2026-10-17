@@ -27,7 +27,7 @@ The types are in `shared/clip.types.ts` and `shared/song.types.ts`.
 ```
 clips/<id>/clip.json      a clip's information (shared/clip.types.ts)
 clips/<id>/audio.flac     its audio (rendered from source.fur when the server starts, if missing)
-clips/<id>/source.fur     its own Furnace module
+clips/<id>/source.fur     its own Furnace file
 clips/<id>/script.ts      its own copy of the script that wrote it
 songs/<id>/song.json      a song's arrangement (shared/song.types.ts)
 guides/<id>/guide.json    a style guide (shared/guide.types.ts), sent with a prompt when chosen
@@ -88,18 +88,18 @@ top bar's links open a list unfiltered, and the back button returns to a filtere
 
 ## The .fur files
 
-`fur/` writes and reads Furnace modules as this project writes them (format version 223, old INFO
-layout, one subsong, NES / SCC / SCC+): `write.ts` lays a module out as Furnace does, `read.ts` reads
-one back, `instrument.ts` and `pattern.ts` build the blocks, `dump.ts` shows a module as text. It is
-the port of the Python tools (0002), held to them by `fur/round-trip.test.ts`: the examples' modules,
+`fur/` writes and reads Furnace files (.fur) as this project writes them (format version 223, old INFO
+layout, one subsong, NES / SCC / SCC+): `write.ts` lays a file out as Furnace does, `read.ts` reads
+one back, `instrument.ts` and `pattern.ts` build the blocks, `dump.ts` shows a .fur file as text. It is
+the port of the Python tools (0002), held to them by `fur/round-trip.test.ts`: the examples' .fur files,
 whose patterns and instruments the Python writer made, are read and written again byte for byte. (Before the old project left
-git, all 1,534 of its modules were checked so.)
+git, all 1,534 of its .fur files were checked so.)
 
 ## Rendering and making songs
 
 - `render/`: a clip's source.fur rendered by the Furnace app's command line to a WAV, one at a time,
   retried after a pause if it fails (0015), encoded as audio.flac with ffmpeg.
-- `make/`: new songs on disk. `make-song.ts` makes a song of one whole clip from a module: claims the
+- `make/`: new songs on disk. `make-song.ts` makes a song of one whole clip from a .fur file: claims the
   ids (`ids.ts`, by making the folders), writes the clip's source.fur and script, renders its audio,
   writes clip.json and song.json, and the server is told to look again (`POST /api/rescan`).
 
@@ -125,8 +125,8 @@ and the New tab in the top bar counts the running ones. The runner (`server/job-
 phases:
 1. **composing**: Claude Code runs headless (`server/claude-run.ts`: `claude -p`, detached, its
    stream written to `jobs/<id>/claude.log`). It follows `notes/making-songs.md` and writes
-   `jobs/<id>/script.ts`, whose default export gives a plan per song (`make/song-plan.ts`), modules
-   made with `make/module-builder.ts`; it checks them with `make/check-script.ts`. Its lines and what
+   `jobs/<id>/script.ts`, whose default export gives a plan per song (`make/song-plan.ts`), its music
+   made with `make/fur-file-builder.ts`; it checks them with `make/check-script.ts`. Its lines and what
    its tools do are read from the log every second and become the job's notes.
 2. **building**: `make/build-script.ts` runs the script in a process of its own and writes a .fur per
    song; the card lists the songs.

@@ -11,7 +11,7 @@ app was JavaScript, so the editor's Python helpers reached the app's server over
 
 ## Decision
 The project is TypeScript on Node only. The .fur writer, reader and dump are ported, and the port is
-checked by writing the same module with both and comparing the files byte for byte (the Python is on
+checked by writing the same .fur file with both and comparing the files byte for byte (the Python is on
 the `archive` branch). Scripts that compose music are TypeScript too.
 
 ## Alternatives

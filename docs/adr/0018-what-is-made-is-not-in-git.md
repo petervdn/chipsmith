@@ -24,7 +24,7 @@ user's library and no audio for it, as nothing rendered a missing audio.flac, al
   commit (the earlier project) and every `clips/` and `songs/` were removed, the branch `archive`
   deleted, and the history pushed again. So were the user's notes (taste, feedback per style, chat
   logs) and their name: those are in the data folder's `guidance/`, which the composing Claude is
-  told to read. The round trip of the .fur writer is tested on the examples' modules
+  told to read. The round trip of the .fur writer is tested on the examples' .fur files
   instead of the old project's 1,534.
 
 ## Alternatives

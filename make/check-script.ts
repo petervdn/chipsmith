@@ -17,9 +17,9 @@ async function checkScript(scriptFile: string): Promise<void> {
   const folder = mkdtempSync(join(tmpdir(), 'chiptune-check-'));
   try {
     const plans = await buildScript(scriptFile, folder);
-    for (const { title, furFile } of plans) {
-      const wavFile = join(folder, furFile.replace(/\.fur$/, '.wav'));
-      await renderToWav(join(folder, furFile), wavFile);
+    for (const { title, furFileName } of plans) {
+      const wavFile = join(folder, furFileName.replace(/\.fur$/, '.wav'));
+      await renderToWav(join(folder, furFileName), wavFile);
       const wav = readFileSync(wavFile);
       const { seconds } = getWavFacts(wav);
       const peak = getWavPeak(wav);

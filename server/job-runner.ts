@@ -1,6 +1,6 @@
 /**
  * A job's way from prompt to songs, one job at a time: Claude composes a script (its notes read from
- * its log every second), the script is built into a module per song, each song is rendered and made,
+ * its log every second), the script is built into a .fur file per song, each song is rendered and made,
  * and the store is told to look again after each, so finished songs show while the rest render.
  */
 import { spawn } from 'node:child_process';
@@ -11,7 +11,7 @@ import type { SentGuide } from '../shared/guide.types.ts';
 import type { Job, JobSong } from '../shared/job.types.ts';
 import type { BuiltPlan } from '../make/build-script.ts';
 import { makeSong } from '../make/make-song.ts';
-import { readModule } from '../fur/read.ts';
+import { readFurFile } from '../fur/read.ts';
 import { isRunning, readLogNews, startClaude } from './claude-run.ts';
 import type { JobStore } from './jobs.ts';
 import { addNotes, getJobFolder, setPhase, updateJob } from './jobs.ts';
@@ -106,7 +106,7 @@ function startComposing(jobs: JobStore, job: Job): ClaudeWatch {
     prompt: [
       `Job ${job.id}. Write the script to ${getProjectPath(join(folder, 'script.ts'))}.`,
       `The data folder (songs/, clips/) is ${getProjectPath(jobs.root)}.`,
-      `The script imports the project's modules from ${relative(folder, PROJECT_FOLDER)}/ (e.g. ${relative(folder, PROJECT_FOLDER)}/make/module-builder.ts).`,
+      `The script imports the project's modules from ${relative(folder, PROJECT_FOLDER)}/ (e.g. ${relative(folder, PROJECT_FOLDER)}/make/fur-file-builder.ts).`,
       '',
       "The user's prompt:",
       job.prompt,
@@ -176,7 +176,7 @@ async function buildAndRender(jobs: JobStore, store: Store, jobId: string): Prom
       const made = await makeSong({
         root: store.root,
         title: plan.title,
-        module: readModule(readFileSync(join(buildFolder, plan.furFile))),
+        furFile: readFurFile(readFileSync(join(buildFolder, plan.furFileName))),
         prompt: job?.prompt ?? '',
         guides: job?.guides ?? [],
         promptId: jobId,

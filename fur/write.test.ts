@@ -1,13 +1,13 @@
-// A module written and read back is the same module, and its file starts as a .fur does.
+// A .fur file written and read back is the same, and its bytes start as a .fur does.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import type { FurModule } from './fur.types.ts';
+import type { FurFile } from './fur.types.ts';
 import { makeInstrument, makeWavetable, NES_INSTRUMENT } from './instrument.ts';
 import { getNoteValue } from './notes.ts';
-import { getUncompressed, readModule } from './read.ts';
-import { getFurFile, getModuleBytes } from './write.ts';
+import { getUncompressed, readFurFile } from './read.ts';
+import { getFurFileBytes, getUncompressedFurBytes } from './write.ts';
 
-const NES_AND_SCC: FurModule = {
+const NES_AND_SCC: FurFile = {
   song: {
     name: 'test',
     author: 'Claude',
@@ -46,16 +46,16 @@ const NES_AND_SCC: FurModule = {
   ],
 };
 
-test('a module written and read back is the same module', () => {
-  const file = getFurFile(NES_AND_SCC);
-  const module = readModule(file);
-  assert.deepEqual(module.song, NES_AND_SCC.song);
-  assert.deepEqual(module.patterns, NES_AND_SCC.patterns);
-  assert.deepEqual(getModuleBytes(module), getUncompressed(file));
+test('a .fur file written and read back is the same', () => {
+  const file = getFurFileBytes(NES_AND_SCC);
+  const furFile = readFurFile(file);
+  assert.deepEqual(furFile.song, NES_AND_SCC.song);
+  assert.deepEqual(furFile.patterns, NES_AND_SCC.patterns);
+  assert.deepEqual(getUncompressedFurBytes(furFile), getUncompressed(file));
 });
 
 test('the file is compressed, and starts as a .fur does once uncompressed', () => {
-  const file = getFurFile(NES_AND_SCC);
+  const file = getFurFileBytes(NES_AND_SCC);
   const magic = '-Furnace module-';
   assert.notEqual(String.fromCharCode(...file.subarray(0, magic.length)), magic);
   assert.equal(String.fromCharCode(...getUncompressed(file).subarray(0, magic.length)), magic);

@@ -1,14 +1,14 @@
 /**
- * A module as text, to see what is in it: the song's settings, the instruments' macros, and a
+ * A .fur file as text, to see what is in it: the song's settings, the instruments' macros, and a
  * channel's pattern at an order as the tracker shows it.
  * Run: `node fur/dump.ts file.fur [--ins] [--pat CHANNEL[,ORDER]]`.
  */
 import { readFileSync } from 'node:fs';
 import { ByteReader } from './bytes.ts';
 import { ARP_FIXED } from './instrument.ts';
-import type { FurModule, Row } from './fur.types.ts';
+import type { FurFile, Row } from './fur.types.ts';
 import { getNoteName } from './notes.ts';
-import { readModule } from './read.ts';
+import { readFurFile } from './read.ts';
 
 const MACRO_NAMES = new Map([
   [0, 'vol'],
@@ -61,8 +61,8 @@ export function describeInstrument(block: Uint8Array): string {
   return parts.join('  ');
 }
 
-/** The song's settings and the module's counts, as text. */
-export function describeSong({ song, instruments, wavetables, patterns }: FurModule): string {
+/** The song's settings and the .fur file's counts, as text. */
+export function describeSong({ song, instruments, wavetables, patterns }: FurFile): string {
   const chips = song.chips.map((chip) => `0x${chip.toString(16)}`).join(', ');
   return [
     `"${song.name}" by ${song.author || '?'} on ${song.systemName} (chips ${chips})`,
@@ -111,18 +111,18 @@ function describeMacros(reader: ByteReader, end: number): string[] {
 function printDump(args: string[]): void {
   const [file, ...options] = args;
   if (!file) throw new Error('usage: node fur/dump.ts file.fur [--ins] [--pat CHANNEL[,ORDER]]');
-  const module = readModule(readFileSync(file));
-  console.log(describeSong(module));
+  const furFile = readFurFile(readFileSync(file));
+  console.log(describeSong(furFile));
   if (options.includes('--ins')) {
-    module.instruments.forEach((block, i) =>
+    furFile.instruments.forEach((block, i) =>
       console.log(`${i.toString(16).padStart(2, '0')} ${describeInstrument(block)}`),
     );
   }
   const patternOption = options[options.indexOf('--pat') + 1];
   if (options.includes('--pat') && patternOption) {
     const [channel = 0, order = 0] = patternOption.split(',').map(Number);
-    const index = module.song.orders[channel]?.[order];
-    const pattern = module.patterns.find(
+    const index = furFile.song.orders[channel]?.[order];
+    const pattern = furFile.patterns.find(
       (each) => each.channel === channel && each.index === index,
     );
     console.log(`channel ${channel}, order ${order}: pattern ${index}`);

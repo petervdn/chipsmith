@@ -34,7 +34,7 @@ export function openJobs(root: string): JobStore {
   return store;
 }
 
-/** The folder of a job's files: its script, Claude's log, the built modules. */
+/** The folder of a job's files: its script, Claude's log, the built .fur files. */
 export function getJobFolder(store: JobStore, jobId: string): string {
   return join(store.root, 'jobs', jobId);
 }

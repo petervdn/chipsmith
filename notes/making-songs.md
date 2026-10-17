@@ -16,7 +16,7 @@ do not write clips or songs. You run in the project folder; so do the commands b
 4. Check it: `node make/check-script.ts <data>/jobs/<id>/script.ts`. It builds and renders every song once
    and prints its length, peak and the gain that brings the peak to 0.75. Set the chips' volumes
    (`chipVolumes`) from it and check again. That is the whole check, unless something new needs more
-   (`node fur/dump.ts <file.fur> --ins --pat CHANNEL,ORDER` shows a module).
+   (`node fur/dump.ts <file.fur> --ins --pat CHANNEL,ORDER` shows a .fur file).
 5. End with a short reply: what you made and anything the user should know.
 
 Work quickly: a set is minutes, not half an hour of measuring.
@@ -28,17 +28,17 @@ e.g. `../../..`):
 
 ```ts
 import type { SongPlan } from '<to project>/make/song-plan.ts';
-import { buildModule } from '<to project>/make/module-builder.ts';
+import { buildFurFile } from '<to project>/make/fur-file-builder.ts';
 
 export default function makeSongs(): SongPlan[] {
-  return [{ title, key, tags, module: buildModule({ … }) }, …];
+  return [{ title, key, tags, furFile: buildFurFile({ … }) }, …];
 }
 ```
 
 - **`title`**: short and telling, as the songs list shows it.
 - **`key`**: e.g. `"D minor"`, or null.
 - **`tags`**: from the list below, a style and what stands out (two to four).
-- **`module`**: from `buildModule` (`make/module-builder.ts`): `chips` (`'nes'` or `'nes+scc'`),
+- **`furFile`**: from `buildFurFile` (`make/fur-file-builder.ts`): `chips` (`'nes'` or `'nes+scc'`),
   `bpm`, `beatsPerBar`, `rowsPerBeat` (4: a row is a 16th), and `channels`: one list of rows per chip
   channel for the whole song (NES: pulse 1, pulse 2, triangle, noise, DPCM; then SCC+ 1-5).
   Repeated stretches are reused as patterns by the builder.
@@ -73,10 +73,12 @@ from that song's music and change what is asked; keep the rest as it is.
   clips its blocks play.
 - `<data>/clips/<clip>/`: each clip's `clip.json` (its prompt, tempo, key, slice), `source.fur` (its
   music) and `script.ts` (the script that wrote it). A song imported from the old project has its
-  import script there, not a composition: work from its `source.fur`.
-- To start from a module, read it in your script: `readModule(readFileSync('<data>/clips/<clip>/source.fur'))`
+  import script there, not a composition: work from its `source.fur`. An older script uses the old
+  names: `buildModule` (`make/module-builder.ts`), `readModule` and the plan's `module` are now
+  `buildFurFile` (`make/fur-file-builder.ts`), `readFurFile` and `furFile`.
+- To start from an existing .fur file, read it in your script: `readFurFile(readFileSync('<data>/clips/<clip>/source.fur'))`
   (`fur/read.ts`; scripts run from the project folder), change its patterns, instruments or settings,
-  and return it as the plan's `module`. `node fur/dump.ts <data>/clips/<clip>/source.fur --ins --pat 2,0`
+  and return it as the plan's `furFile`. `node fur/dump.ts <data>/clips/<clip>/source.fur --ins --pat 2,0`
   shows what is in it.
 - A song of several clips is its arrangement: which clip plays where (blocks: start in ticks, 96 to a
   beat, trim, repeats). Work from the clips the change is about.

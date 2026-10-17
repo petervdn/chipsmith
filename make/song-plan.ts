@@ -1,12 +1,12 @@
 /**
- * What a job's script gives: a plan per song (title, module, tags, key). A script's default export is
+ * What a job's script gives: a plan per song (title, furFile, tags, key). A script's default export is
  * a function that returns them (notes/making-songs.md). Checked here, as the script is code from a
  * prompt.
  */
-import type { FurModule } from '../fur/fur.types.ts';
+import type { FurFile } from '../fur/fur.types.ts';
 
 /** One song a script makes. */
-export type SongPlan = { title: string; module: FurModule; tags: string[]; key: string | null };
+export type SongPlan = { title: string; furFile: FurFile; tags: string[]; key: string | null };
 
 /** What a job's script exports as its default. */
 export type SongScript = () => SongPlan[];
@@ -26,21 +26,21 @@ export function getSongPlans(scriptExports: unknown): SongPlan[] {
 function checkPlan(plan: unknown, path: string): SongPlan {
   if (typeof plan !== 'object' || plan === null) throw new Error(`${path}: not an object`);
   const title = 'title' in plan ? plan.title : null;
-  const module = 'module' in plan ? plan.module : null;
+  const furFile = 'furFile' in plan ? plan.furFile : null;
   const tags = 'tags' in plan ? plan.tags : [];
   const key = 'key' in plan ? plan.key : null;
   if (typeof title !== 'string' || !title) throw new Error(`${path}: no title`);
-  if (!isModule(module)) throw new Error(`${path} (${title}): no module`);
+  if (!isFurFile(furFile)) throw new Error(`${path} (${title}): no furFile`);
   if (!Array.isArray(tags) || !tags.every((tag) => typeof tag === 'string')) {
     throw new Error(`${path} (${title}): tags are not a list of words`);
   }
   if (key !== null && typeof key !== 'string') {
     throw new Error(`${path} (${title}): key not a string`);
   }
-  return { title, module, tags, key };
+  return { title, furFile, tags, key };
 }
 
-function isModule(value: unknown): value is FurModule {
+function isFurFile(value: unknown): value is FurFile {
   return (
     typeof value === 'object' &&
     value !== null &&

@@ -1,8 +1,8 @@
-// A module's tempo and meter read as Furnace shows them.
+// A .fur file's tempo and meter read as Furnace shows them.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import type { FurSong } from '../fur/fur.types.ts';
-import { getBeatsPerBar, getBpm, getChipNames } from './module-facts.ts';
+import { getBeatsPerBar, getBpm, getChipNames } from './fur-file-facts.ts';
 
 const SONG: FurSong = {
   name: '',

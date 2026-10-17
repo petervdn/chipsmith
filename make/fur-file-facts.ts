@@ -1,5 +1,5 @@
 /**
- * What a module's settings say of its music: its tempo, beats to a bar and chips, as a clip records
+ * What a .fur file's settings say of its music: its tempo, beats to a bar and chips, as a clip records
  * them. Given a FurSong, gives values.
  */
 import type { FurSong } from '../fur/fur.types.ts';

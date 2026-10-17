@@ -1,12 +1,12 @@
 /**
- * Writing a module: the header, the INFO block, a FLAG block per chip, three ADIR blocks, the
+ * Writing a .fur file: the header, the INFO block, a FLAG block per chip, three ADIR blocks, the
  * instruments, wavetables and patterns, laid out as Furnace itself writes them (checked against
  * references/furnace/demos/nes). The pointers in INFO are found by laying the file out twice.
  */
 import { deflateSync } from 'node:zlib';
 import { FORMAT_VERSION, makeBlock } from './block.ts';
 import { ByteWriter } from './bytes.ts';
-import type { FurModule, FurSong } from './fur.types.ts';
+import type { FurFile, FurSong } from './fur.types.ts';
 import { makePattern } from './pattern.ts';
 
 /** The compatibility flags of a new 0.6.8 song, taken from a version 223 demo. */
@@ -35,8 +35,13 @@ type Pointers = {
   directories: number[];
 };
 
-/** A module as the bytes of its .fur file, not yet compressed. */
-export function getModuleBytes({ song, instruments, wavetables, patterns }: FurModule): Uint8Array {
+/** A .fur file's bytes, not yet compressed. */
+export function getUncompressedFurBytes({
+  song,
+  instruments,
+  wavetables,
+  patterns,
+}: FurFile): Uint8Array {
   const flagBlocks = song.chipFlags.map((flags) =>
     flags === null
       ? new Uint8Array()
@@ -83,13 +88,13 @@ export function getModuleBytes({ song, instruments, wavetables, patterns }: FurM
     .add(info);
   for (const block of groups.flat()) file.add(block);
   const bytes = file.getBytes();
-  if (bytes.length !== position) throw new Error('the layout of the module does not add up');
+  if (bytes.length !== position) throw new Error('the layout of the .fur file does not add up');
   return bytes;
 }
 
-/** A module as a .fur file's bytes, compressed as Furnace writes them. */
-export function getFurFile(module: FurModule): Uint8Array {
-  return deflateSync(getModuleBytes(module));
+/** A .fur file's bytes, compressed as Furnace writes them. */
+export function getFurFileBytes(furFile: FurFile): Uint8Array {
+  return deflateSync(getUncompressedFurBytes(furFile));
 }
 
 function makeDirectory(count: number): Uint8Array {
