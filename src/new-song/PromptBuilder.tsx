@@ -1,7 +1,7 @@
 // The prompt builder under the prompt box: a row per part of a prompt (its value to pick, a lock),
-// the sentence they make, 🎲 Roll for the unlocked parts, and "Use as prompt", which puts the
-// sentence in the box. The box is written to only by that button: what is typed there afterwards is
-// the box's own.
+// 🎲 Roll for the unlocked parts and "Use as prompt" (above the sentence, so they stay put as it
+// changes length), and the sentence they make. "Use as prompt" puts the sentence in the box; the box
+// is written to only by that button, so what is typed there afterwards is the box's own.
 import { PROMPT_PARTS } from './random-prompt.ts';
 import { usePromptBuilder } from './use-prompt-builder.ts';
 import './PromptBuilder.css';
@@ -50,7 +50,6 @@ export function PromptBuilder({ onUse }: PromptBuilderProps) {
           );
         })}
       </div>
-      <p className="prompt-builder-text">{text}</p>
       <div className="prompt-builder-actions">
         <button type="button" onClick={roll} title="pick the unlocked parts again">
           🎲 Roll
@@ -59,6 +58,7 @@ export function PromptBuilder({ onUse }: PromptBuilderProps) {
           Use as prompt ↑
         </button>
       </div>
+      <p className="prompt-builder-text">{text}</p>
     </section>
   );
 }

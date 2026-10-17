@@ -50,11 +50,12 @@
 }
 
 .prompt-builder-text {
-  margin: 12px 0;
+  margin: 12px 0 0;
   font-style: italic;
 }
 
 .prompt-builder-actions {
+  margin-top: 12px;
   display: flex;
   justify-content: space-between;
   gap: 8px;
