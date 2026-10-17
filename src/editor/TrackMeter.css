@@ -6,11 +6,10 @@
   --peak: 0;
   position: absolute;
   top: 6px;
-  right: 5px;
+  right: 10px;
   bottom: 6px;
-  width: 4px;
+  width: 6px;
   overflow: hidden;
-  border-radius: 2px;
   background: var(--raised);
 }
 
