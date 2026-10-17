@@ -1,64 +1,11 @@
-/* The look of StructurePanel.tsx: a card like the prompt builder's, the chosen structure at its top
-   with ▸ at the right, and what changes it under them while open; tiles as wide as their bars
-   (flex-grow), coloured by part, a variation striped, a repeat faint. */
+/* The look of StructurePanel.tsx, in its panel (FoldPanel.css): tiles as wide as their bars
+   (flex-grow), coloured by part, a variation striped, a repeat faint; what changes them under them
+   while open. */
 
-.structure-panel {
-  margin: 12px 0;
-  border: var(--border-width) solid var(--line);
-  border-radius: var(--radius);
-  background: var(--card);
-}
-
-.structure-panel-top {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  padding: 12px 12px 12px 16px;
-}
-
-.structure-panel-summary {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  gap: 6px;
-  min-width: 0;
-}
-
-.structure-panel-heading,
 .structure-panel-none {
   margin: 0;
   color: var(--muted);
-  font-size: 0.75rem;
-}
-
-.structure-panel-none {
   font-size: 0.875rem;
-}
-
-.structure-panel-toggle {
-  flex: none;
-  width: var(--touch);
-  height: var(--touch);
-  padding: 0;
-  border: 0;
-  border-radius: var(--radius);
-  background: none;
-  color: var(--muted);
-  font-size: 1.125rem;
-  cursor: pointer;
-  transition: rotate 0.15s;
-}
-
-.structure-panel.is-open .structure-panel-toggle {
-  rotate: 90deg;
-}
-
-.structure-panel-body {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding: 12px 16px 16px;
-  border-top: var(--border-width) solid var(--line);
 }
 
 .structure-panel-help,

@@ -1,21 +1,10 @@
-/* The look of GuideChips.tsx. */
+/* The look of GuideChips.tsx, in its panel (FoldPanel.css). */
 
-/* the chips under the prompt box, in a panel of their own; a chosen one in inverted colours */
-.guide-chips {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 12px;
-  margin: 12px 0;
-  padding: 16px;
-  border: var(--border-width) solid var(--line);
-  border-radius: var(--radius);
-  background: var(--card);
-}
-
-.guide-chips-label {
-  padding: 0 6px;
-  font-weight: 600;
+/* the chips in the summary of their panel (FoldPanel.css); a chosen one in inverted colours */
+.guide-chips-none {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.875rem;
 }
 
 .guide-chips-help {
@@ -42,11 +31,6 @@
 }
 
 /* the guides' texts, to read without leaving the prompt */
-.guide-chips-texts {
-  width: 100%;
-}
-
-.guide-chips-texts > summary,
 .guide-chips-read > summary {
   display: flex;
   align-items: center;
@@ -54,35 +38,25 @@
   cursor: pointer;
 }
 
-.guide-chips-texts > summary {
-  color: var(--muted);
-  font-size: 0.875rem;
-}
-
-.guide-chips-texts > summary::before,
 .guide-chips-read > summary::before {
   content: '▸';
   width: 1.2em;
   color: var(--muted);
 }
 
-.guide-chips-texts[open] > summary::before,
 .guide-chips-read[open] > summary::before {
   content: '▾';
 }
 
-.guide-chips-texts > summary::-webkit-details-marker,
 .guide-chips-read > summary::-webkit-details-marker {
   display: none;
 }
 
-.guide-chips-texts > summary,
 .guide-chips-read > summary {
   list-style: none;
 }
 
 .guide-chips-read {
-  margin-left: 1.2em;
   border-top: var(--border-width) solid var(--line);
 }
 
@@ -103,7 +77,7 @@
 .guide-chips-read-text {
   max-height: 40vh;
   overflow-y: auto;
-  margin: 0 0 12px 1.2em;
+  margin: 0 0 12px;
   color: var(--muted);
   font-size: 0.875rem;
   white-space: pre-wrap;

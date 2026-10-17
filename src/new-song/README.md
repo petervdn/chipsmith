@@ -4,6 +4,8 @@ The New page: a prompt written, or made up at random, and sent.
 
 - `CreatePanel.css`: the look of CreatePanel.tsx
 - `CreatePanel.tsx`: Create and the number of songs, at the right of the prompt, kept in view
+- `FoldPanel.css`: the look of FoldPanel.tsx
+- `FoldPanel.tsx`: a panel of New: its heading and what is chosen, ▸ opening what changes it
 - `NewPage.css`: the look of NewPage.tsx
 - `NewPage.tsx`: a prompt for Claude; sending it leads to Jobs
 - `PromptBox.css`: the look of PromptBox.tsx
