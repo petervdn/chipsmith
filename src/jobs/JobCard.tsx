@@ -11,6 +11,7 @@ import { JobSteps } from './JobSteps.tsx';
 import './jobs.css';
 import './JobCard.css';
 import { askToConfirm } from '../stores/confirm-store.ts';
+import { getStepSentence } from './job-steps.ts';
 
 const PHASE_NAMES = {
   queued: 'Waiting for the job before it',
@@ -75,10 +76,10 @@ export function getPhaseName({ phase, songs }: Job): string {
  * @param job - The job.
  * @param job.now - What Claude is in the middle of, if anything.
  * @param job.notes - The job's notes, of which the last is used otherwise.
- * @returns What Claude is in the middle of, else the last note, else an empty string.
+ * @returns What Claude is in the middle of, else the last note, as a sentence; else an empty string.
  */
 export function getNowText({ now, notes }: Job): string {
-  return now ?? notes.at(-1)?.text ?? '';
+  return getStepSentence(now ?? notes.at(-1)?.text ?? '');
 }
 
 /**

@@ -1,6 +1,8 @@
 /**
- * How long each step of a job took, and its share of the job: a step lasts from its note to the
- * next one, the last until the job finished (or now, while it runs). Knows nothing of the page.
+ * A job's steps as the page shows them: each as a sentence (a capital first, a full stop last,
+ * whatever the server wrote), and how long each took, with its share of the job: a step lasts from
+ * its note to the next one, the last until the job finished (or now, while it runs). Knows nothing
+ * of the page.
  */
 import type { JobNote } from '../../shared/job.types.ts';
 
@@ -29,4 +31,21 @@ export function getStepLengths(
     const length = Math.max(0, to - from);
     return { seconds: length / 1000, share: Math.min(1, length / total) };
   });
+}
+
+/** What a sentence may already end with, so no full stop is added. */
+const SENTENCE_END = /[.!?…:]$/;
+
+/**
+ * Returns a step's words as a sentence: a capital first, and a full stop last unless it ends in one
+ * already (or in ! ? … :).
+ *
+ * @param text - The step's words, as the server wrote them.
+ * @returns The sentence; an empty string for no words.
+ */
+export function getStepSentence(text: string): string {
+  const words = text.trim();
+  if (!words) return '';
+  const capitalized = words.charAt(0).toUpperCase() + words.slice(1);
+  return SENTENCE_END.test(capitalized) ? capitalized : `${capitalized}.`;
 }

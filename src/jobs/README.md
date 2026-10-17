@@ -2,7 +2,7 @@
 
 The jobs: their page, a job's card, and the line of a running one.
 
-- `job-steps.ts`: how long each step of a job took, and its share of the job
+- `job-steps.ts`: a job's steps as sentences, and how long each took, with its share of the job
 - `JobCard.css`: the look of JobCard.tsx
 - `JobCard.tsx`: a job's card on the Jobs page
 - `job-totals.ts`: what jobs that are over came to: songs, time, tokens
