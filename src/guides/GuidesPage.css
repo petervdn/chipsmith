@@ -28,6 +28,7 @@
 }
 
 .guides-page-default {
+  margin-left: auto;
   padding: 1px 6px;
   border-radius: var(--radius);
   background: var(--accent);
