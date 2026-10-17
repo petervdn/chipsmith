@@ -1,5 +1,5 @@
-/* The look of ChordAudition.tsx: a row per part (its letter in its colour, what it will use, its
-   buttons at the right), one with a progression picked outlined in the accent; under the part being
+/* The look of ChordAudition.tsx: the switch for how chords are heard; a row per part (its letter in
+   its colour, what it will use, bar by bar and how many bars, its buttons at the right), one with a progression picked outlined in the accent; under the part being
    picked for, its presets to hear in an inset box. */
 
 .chord-audition {
@@ -56,13 +56,38 @@
 }
 
 .chord-audition-chords {
-  flex: 1 1 8em;
+  display: flex;
+  flex: 1 1 10em;
+  align-items: baseline;
+  gap: 8px;
   min-width: 0;
-  overflow: hidden;
   color: var(--muted);
   font-size: 0.875rem;
+}
+
+.chord-audition-bars {
+  overflow: hidden;
+  color: var(--fg);
+  font-family: ui-monospace, monospace;
   white-space: nowrap;
   text-overflow: ellipsis;
+}
+
+.chord-audition-length {
+  flex: none;
+  font-size: 0.75rem;
+}
+
+.chord-audition-style {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.chord-audition-label {
+  color: var(--muted);
+  font-size: 0.75rem;
 }
 
 .chord-audition-actions {

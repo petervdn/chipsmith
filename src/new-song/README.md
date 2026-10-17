@@ -2,6 +2,7 @@
 
 The New page: a prompt written, or made up at random, and sent.
 
+- `chord-bars.ts`: a progression's chords bar by bar, as a lead sheet reads them
 - `ChordAudition.css`: the look of ChordAudition.tsx
 - `ChordAudition.tsx`: what chords each part will use: one picked by ear from presets, or Claude's choice
 - `CreatePanel.css`: the look of CreatePanel.tsx

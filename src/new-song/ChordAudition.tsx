@@ -2,11 +2,13 @@
 // one for the whole song), either the progression picked for it (▶ to hear it again, change, ✕) or
 // Claude's choice (pick…). Picking opens, under that part's row, three presets that fit the scale
 // and feel, each with ▶ to hear it on chip-like sounds and "use for A"; "three others" picks again.
+// Chords show bar by bar (chord-bars.ts) with how many bars go round.
 import { Dices, Play, Square, X } from 'lucide-react';
 import type { CSSProperties } from 'react';
-import { getChordNames } from '../../shared/harmony-prompt.ts';
 import type { Chord, Progression } from '../../shared/harmony.types.ts';
 import type { ProgressionPreset } from '../../shared/progression-presets.ts';
+import { getProgressionBars, writeBars } from '../../shared/progression-notation.ts';
+import { writeChordBars } from './chord-bars.ts';
 import { getTrackColor } from '../editor/timeline.ts';
 import type { HarmonyPart } from './random-harmony.ts';
 import '../lists/lists.css';
@@ -76,6 +78,20 @@ export function ChordAudition({
       </button>
     );
   }
+  function renderChords(chords: Chord[]) {
+    const bars = getProgressionBars(chords);
+    return (
+      <span
+        className="chord-audition-chords"
+        data-tooltip={chords.map((chord) => chord.numeral).join(' ')}
+      >
+        <span className="chord-audition-bars">{writeChordBars(chords, hearingNote)}</span>
+        <span className="chord-audition-length">
+          {writeBars(bars)} {bars === 1 ? 'bar' : 'bars'}
+        </span>
+      </span>
+    );
+  }
   function renderChooser(part: HarmonyPart) {
     const name = part.letter ?? 'the song';
     return (
@@ -87,12 +103,7 @@ export function ChordAudition({
           <div key={preset.id} className="chord-audition-row">
             {renderPlay(preset.id, preset.chords)}
             <span className="chord-audition-name">{preset.name}</span>
-            <span
-              className="chord-audition-chords"
-              data-tooltip={preset.chords.map((chord) => chord.numeral).join(' ')}
-            >
-              {getChordNames(preset.chords, hearingNote).join(' · ')}
-            </span>
+            {renderChords(preset.chords)}
             <button
               type="button"
               className="chord-audition-button is-primary"
@@ -139,9 +150,7 @@ export function ChordAudition({
               {progression ? (
                 <>
                   <span className="chord-audition-name">{progression.name}</span>
-                  <span className="chord-audition-chords">
-                    {getChordNames(progression.chords, hearingNote).join(' · ')}
-                  </span>
+                  {renderChords(progression.chords)}
                   <span className="chord-audition-actions">
                     {renderPlay(`picked-${part.key}`, progression.chords)}
                     <button
