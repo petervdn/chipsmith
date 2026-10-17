@@ -1,5 +1,6 @@
-// The editor's ■ and ▶ / ❚❚: stop (back to the cursor), only while playing or paused; and play or
-// pause on one button. It knows nothing of how the song is played.
+// The editor's ■ and ▶ / ❚❚: stop (back to the cursor), only while playing or paused; play or
+// pause on one button; and follow, switching whether the timeline scrolls with the playhead. It
+// knows nothing of how the song is played.
 import { ControlGroup } from './ControlGroup.tsx';
 import type { PlayerMode } from '../stores/player-store.ts';
 import './TransportButtons.css';
@@ -10,6 +11,8 @@ type TransportButtonsProps = {
   isWaitingForAudio: boolean;
   onStop: () => void;
   onTogglePlaying: () => void;
+  isFollowing: boolean;
+  onToggleFollowing: () => void;
 };
 
 /**
@@ -21,6 +24,8 @@ type TransportButtonsProps = {
  * @param props.isWaitingForAudio - Whether its audio is still being rendered, so it cannot play.
  * @param props.onStop - Called to stop and go back to the cursor.
  * @param props.onTogglePlaying - Called to play, or to pause while playing.
+ * @param props.isFollowing - Whether the timeline follows the playhead.
+ * @param props.onToggleFollowing - Called to switch following on or off.
  * @returns The buttons' element.
  */
 export function TransportButtons({
@@ -29,6 +34,8 @@ export function TransportButtons({
   isWaitingForAudio,
   onStop,
   onTogglePlaying,
+  isFollowing,
+  onToggleFollowing,
 }: TransportButtonsProps) {
   return (
     <ControlGroup label="play">
@@ -49,6 +56,19 @@ export function TransportButtons({
         data-tooltip={getPlayTooltip({ mode, isPaused })}
       >
         {getPlaySymbol(mode)}
+      </button>
+      <button
+        type="button"
+        className={`transport-buttons-follow${isFollowing ? ' is-on' : ''}`}
+        onClick={onToggleFollowing}
+        aria-pressed={isFollowing}
+        data-tooltip={
+          isFollowing
+            ? 'following the playhead: the timeline scrolls with it'
+            : 'follow the playhead: scroll the timeline with it'
+        }
+      >
+        follow
       </button>
     </ControlGroup>
   );

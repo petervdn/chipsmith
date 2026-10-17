@@ -6,4 +6,4 @@ storage.
 
 - `confirm-store.ts`: the question the page asks before a change, and its answer (not persisted)
 - `player-store.ts`: the one player: which song, loading or playing, where (not persisted)
-- `preferences-store.ts`: the mute switch and the look (localStorage)
+- `preferences-store.ts`: the mute switch, the look, the volume, following the playhead (localStorage)

@@ -7,6 +7,7 @@ import { ControlGroup } from './ControlGroup.tsx';
 import type { GridStep } from './grid.ts';
 import { BAR_STEP, GRID_STEPS } from './grid.ts';
 import { TransportButtons } from './TransportButtons.tsx';
+import { usePreferencesStore } from '../stores/preferences-store.ts';
 import './EditorBar.css';
 
 type EditorBarProps = {
@@ -47,6 +48,8 @@ export function EditorBar({
   onSplit,
   zoom,
 }: EditorBarProps) {
+  const isFollowing = usePreferencesStore((state) => state.isFollowingPlayhead);
+  const setFollowing = usePreferencesStore((state) => state.setFollowingPlayhead);
   return (
     <div className="editor-bar">
       <TransportButtons
@@ -55,6 +58,8 @@ export function EditorBar({
         isWaitingForAudio={isWaitingForAudio}
         onStop={transport.stop}
         onTogglePlaying={transport.togglePlaying}
+        isFollowing={isFollowing}
+        onToggleFollowing={() => setFollowing(!isFollowing)}
       />
       <ControlGroup label="edit">
         <button

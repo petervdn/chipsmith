@@ -26,6 +26,7 @@ import { TrackDetails } from './TrackDetails.tsx';
 import { useBlockDrag } from './use-block-drag.ts';
 import { useClipDrag } from './use-clip-drag.ts';
 import { useEdgeScroll } from './use-edge-scroll.ts';
+import { useFollowPlayhead } from './use-follow-playhead.ts';
 import { useEditorKeys } from './use-editor-keys.ts';
 import { useElementWidth } from './use-element-width.ts';
 import { useSongDraft } from './use-song-draft.ts';
@@ -39,6 +40,8 @@ import { getVersions } from './versions.ts';
 import '../jobs/jobs.css';
 import './SongEditor.css';
 import { askToConfirm } from '../stores/confirm-store.ts';
+import { usePreferencesStore } from '../stores/preferences-store.ts';
+import { getTicksPerSecond } from '../../shared/song-length.ts';
 
 type SongEditorProps = { detail: SongDetail };
 
@@ -84,6 +87,13 @@ export function SongEditor({ detail }: SongEditorProps) {
     onEdit: (edited) => draft.edit(() => edited),
   });
   const pan = useTimelinePan(scrollRef);
+  const isFollowingPlayhead = usePreferencesStore((state) => state.isFollowingPlayhead);
+  useFollowPlayhead(scrollRef, {
+    songId: song.id,
+    isOn: isFollowingPlayhead,
+    pixelsPerSecond: (pixelsPerBar / ticksPerBar) * getTicksPerSecond(song.bpm),
+    leftInset: TRACK_NAME_WIDTH,
+  });
   useEdgeScroll(scrollRef, {
     isDragging: drag.preview !== null || clipDrag.drag !== null,
     leftInset: TRACK_NAME_WIDTH,

@@ -1,5 +1,5 @@
 /* The look of TransportButtons.tsx: the editor bar's buttons, the symbols a little larger, play lit
-   while it plays. */
+   while it plays; follow outlined while it is on. */
 
 .transport-buttons-button {
   font-size: 1rem;
@@ -9,4 +9,14 @@
   border-color: var(--accent);
   background: var(--accent);
   color: var(--on-accent);
+}
+
+.transport-buttons-follow {
+  padding: 0 10px;
+  font-size: 0.8125rem;
+}
+
+.editor-bar .transport-buttons-follow.is-on {
+  border-color: var(--fg);
+  box-shadow: inset 0 0 0 1px var(--fg);
 }

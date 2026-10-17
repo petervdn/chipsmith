@@ -31,12 +31,13 @@ saved, playing from a cursor, the zoom, and the selected block's clip or track.
 - `TrackDetails.css`: the look of TrackDetails.tsx
 - `TrackDetails.tsx`: the selected track: its name, remove
 - `TransportButtons.css`: the look of TransportButtons.tsx
-- `TransportButtons.tsx`: ■ stop, and ▶ / ❚❚ play or pause on one button
+- `TransportButtons.tsx`: ■ stop, ▶ / ❚❚ play or pause on one button, and follow
 - `use-block-drag.ts`: dragging blocks: moving and trimming them
 - `use-clip-drag.ts`: dragging a clip onto a track's lane, as a new block
 - `use-edge-scroll.ts`: the timeline scrolled while a drag is near its left or right edge
 - `use-editor-keys.ts`: the editor's keys: Space, Delete, ⌘Z, ⇧⌘Z, ⌘S, Escape
 - `use-element-width.ts`: an element's width, kept current
+- `use-follow-playhead.ts`: the timeline turning the page with the playhead while the song plays
 - `use-heard-tracks.ts`: the player hearing only the tracks mute and solo leave, also while playing
 - `use-playhead-line.ts`: the playhead moved every frame while the song plays
 - `use-press-drag.ts`: a press that becomes a drag: a mouse at once, a finger after holding still
