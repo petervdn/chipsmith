@@ -1,13 +1,17 @@
 /**
  * Which tooltip shows: the `data-tooltip` of what the mouse rests on or the keyboard has moved to,
- * after a moment. A press, a scroll, Escape or moving away puts it away; it comes back only when
- * the pointer enters again. While it shows, what it is for is described by it (`aria-describedby`).
+ * after a short moment, or at once when one showed just before (moving along a row of controls). A
+ * press, a scroll, Escape or moving away puts it away; it comes back only when the pointer enters
+ * again. While it shows, what it is for is described by it (`aria-describedby`).
  */
 import { useEffect, useState } from 'react';
 import type { ScreenBox } from './tooltip-place.ts';
 
 /** How long the pointer rests before a tooltip shows, in milliseconds. */
-const SHOW_DELAY = 500;
+const SHOW_DELAY = 150;
+
+/** How long after a tooltip went away the next one shows at once, in milliseconds. */
+const WARM_TIME = 500;
 
 /** The id of the tooltip's element, for `aria-describedby`. */
 export const TOOLTIP_ID = 'tooltip';
@@ -36,9 +40,13 @@ export function useTooltip(): ShownTooltip | null {
   useEffect(() => {
     let timer: ReturnType<typeof setTimeout> | undefined;
     let current: Element | null = null;
+    let isShowing = false;
+    let hiddenAt = -Infinity;
     function hide(): void {
       clearTimeout(timer);
       current?.removeAttribute('aria-describedby');
+      if (isShowing) hiddenAt = performance.now();
+      isShowing = false;
       setShown(null);
     }
     function showLater(element: Element | null): void {
@@ -46,12 +54,17 @@ export function useTooltip(): ShownTooltip | null {
       hide();
       current = element;
       if (!element) return;
-      timer = setTimeout(() => {
-        const text = element.getAttribute('data-tooltip');
-        if (!text || !element.isConnected) return;
-        element.setAttribute('aria-describedby', TOOLTIP_ID);
-        setShown({ text, target: element.getBoundingClientRect() });
-      }, SHOW_DELAY);
+      const isWarm = performance.now() - hiddenAt < WARM_TIME;
+      timer = setTimeout(
+        () => {
+          const text = element.getAttribute('data-tooltip');
+          if (!text || !element.isConnected) return;
+          element.setAttribute('aria-describedby', TOOLTIP_ID);
+          isShowing = true;
+          setShown({ text, target: element.getBoundingClientRect() });
+        },
+        isWarm ? 0 : SHOW_DELAY,
+      );
     }
     function onPointerOver(event: PointerEvent): void {
       if (event.pointerType === 'mouse') showLater(getTooltipElement(event.target));
