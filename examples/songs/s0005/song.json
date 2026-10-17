@@ -1,0 +1,35 @@
+{
+  "id": "s0005",
+  "title": "Funk, down two",
+  "created": "2026-10-16T22:09:55.229Z",
+  "updated": "2026-10-16T22:09:55.229Z",
+  "bpm": 112,
+  "beats": 4,
+  "tags": [
+    {
+      "name": "funk",
+      "by": "claude"
+    },
+    {
+      "name": "example",
+      "by": "claude"
+    }
+  ],
+  "status": "new",
+  "prompt": "An NES funk groove at 112 bpm in the form A A B A A. B is A brought two semitones down, then back up. Within each four-bar repeat a variation alternates with the base bar (base, v1, base, v1), and the last bar before a change has a fill: a roll and toms.",
+  "promptedFrom": null,
+  "tracks": [
+    {
+      "id": "t1",
+      "name": "Whole",
+      "blocks": [
+        {
+          "clip": "c0005",
+          "start": 0,
+          "trim": null,
+          "repeats": 1
+        }
+      ]
+    }
+  ]
+}

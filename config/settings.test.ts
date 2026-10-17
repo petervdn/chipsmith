@@ -5,9 +5,8 @@ import { readSettings } from './settings.ts';
 
 test('what is not set has its default', () => {
   const settings = readSettings({}, '/projects/chipsmith', '/nowhere');
-  assert.equal(settings.dataFolder, '/projects/chipsmith');
+  assert.equal(settings.dataFolder, '/projects/chipsmith/data');
   assert.equal(settings.port, 6502);
-  assert.equal(settings.archiveFolder, '/projects/chiptune-archive');
   assert.equal(settings.ffmpeg, 'ffmpeg');
   assert.equal(settings.claude, 'claude');
 });

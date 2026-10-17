@@ -4,9 +4,9 @@
  * and the store is told to look again after each, so finished songs show while the rest render.
  */
 import { spawn } from 'node:child_process';
-import { getSettings } from '../config/settings.ts';
+import { PROJECT_FOLDER, getSettings } from '../config/settings.ts';
 import { existsSync, readFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { isAbsolute, join, relative } from 'node:path';
 import type { Job, JobSong } from '../shared/job.types.ts';
 import type { BuiltPlan } from '../make/build-script.ts';
 import { makeSong } from '../make/make-song.ts';
@@ -20,14 +20,15 @@ import { rescanStore } from './store.ts';
 /** Milliseconds between looks at running jobs. */
 const TICK = 1000;
 /** The tools a job's Claude may use without asking: nobody is at its terminal. */
-function getAllowedTools(jobId: string): string[] {
+function getAllowedTools(jobFolder: string): string[] {
+  const writable = getPermissionPath(jobFolder);
   return [
     'Read',
     'Glob',
     'Grep',
     'TodoWrite',
-    `Write(jobs/${jobId}/**)`,
-    `Edit(jobs/${jobId}/**)`,
+    `Write(${writable}/**)`,
+    `Edit(${writable}/**)`,
     'Bash(node make/check-script.ts *)',
     'Bash(node fur/dump.ts *)',
   ];
@@ -38,6 +39,18 @@ const SYSTEM_PROMPT = [
   'Before each step, say in one short line what you are about to do; the user sees these lines live.',
   'Finish with a short plain reply (1-3 sentences): what you made and anything the user should know.',
 ].join(' ');
+
+/** A folder as Claude Code reads it: from the project folder it runs in, else `//` and its absolute path. */
+function getPermissionPath(folder: string): string {
+  const path = getProjectPath(folder);
+  return isAbsolute(path) ? `/${path}` : path;
+}
+
+/** A path as seen from the project folder: relative inside it, absolute outside it. */
+function getProjectPath(path: string): string {
+  const fromProject = relative(PROJECT_FOLDER, path);
+  return fromProject.startsWith('..') || isAbsolute(fromProject) ? path : fromProject;
+}
 
 /** What the runner keeps of the Claude run of the job in its composing phase. */
 type ClaudeWatch = { jobId: string; pid: number | undefined; position: number };
@@ -78,15 +91,17 @@ function startComposing(jobs: JobStore, job: Job): ClaudeWatch {
   setPhase(jobs, job.id, 'composing', 'Claude starts composing');
   const folder = getJobFolder(jobs, job.id);
   const pid = startClaude({
-    projectFolder: jobs.root,
+    projectFolder: PROJECT_FOLDER,
     prompt: [
-      `Job ${job.id}. Write the script to jobs/${job.id}/script.ts.`,
+      `Job ${job.id}. Write the script to ${getProjectPath(join(folder, 'script.ts'))}.`,
+      `The data folder (songs/, clips/) is ${getProjectPath(jobs.root)}.`,
+      `The script imports the project's modules from ${relative(folder, PROJECT_FOLDER)}/ (e.g. ${relative(folder, PROJECT_FOLDER)}/make/module-builder.ts).`,
       '',
       "the user's prompt:",
       job.prompt,
     ].join('\n'),
     systemPrompt: SYSTEM_PROMPT,
-    allowedTools: getAllowedTools(job.id),
+    allowedTools: getAllowedTools(folder),
     logFile: join(folder, 'claude.log'),
   });
   updateJob(jobs, job.id, { claudePid: pid ?? null });
@@ -99,7 +114,7 @@ function startComposing(jobs: JobStore, job: Job): ClaudeWatch {
  */
 function resumeWatching(jobs: JobStore, job: Job): ClaudeWatch {
   const logFile = join(getJobFolder(jobs, job.id), 'claude.log');
-  const news = readLogNews(logFile, 0, jobs.root);
+  const news = readLogNews(logFile, 0, PROJECT_FOLDER);
   const pid = job.claudePid ?? undefined;
   return { jobId: job.id, pid, position: news.result ? 0 : news.position };
 }
@@ -111,7 +126,7 @@ async function followClaude(
   watch: ClaudeWatch,
 ): Promise<ClaudeWatch | null> {
   const folder = getJobFolder(jobs, watch.jobId);
-  const news = readLogNews(join(folder, 'claude.log'), watch.position, jobs.root);
+  const news = readLogNews(join(folder, 'claude.log'), watch.position, PROJECT_FOLDER);
   if (news.notes.length > 0) addNotes(jobs, watch.jobId, news.notes);
   if (news.result) {
     updateJob(jobs, watch.jobId, { summary: news.result.text });
@@ -131,7 +146,7 @@ async function buildAndRender(jobs: JobStore, store: Store, jobId: string): Prom
   if (!existsSync(scriptFile)) throw new Error('Claude wrote no script.ts');
   setPhase(jobs, jobId, 'building', 'running the script');
   const buildFolder = join(folder, 'build');
-  await runBuild(jobs.root, scriptFile, buildFolder);
+  await runBuild(scriptFile, buildFolder);
   const plans: BuiltPlan[] = JSON.parse(readFileSync(join(buildFolder, 'plan.json'), 'utf8'));
   let songs: JobSong[] = plans.map(({ title }) => ({ title, state: 'waiting', songId: null }));
   updateJob(jobs, jobId, { songs });
@@ -177,10 +192,10 @@ async function buildAndRender(jobs: JobStore, store: Store, jobId: string): Prom
   );
 }
 
-function runBuild(projectFolder: string, scriptFile: string, buildFolder: string): Promise<void> {
+function runBuild(scriptFile: string, buildFolder: string): Promise<void> {
   return new Promise((resolve, reject) => {
     const build = spawn(getSettings().node, ['make/build-script.ts', scriptFile, buildFolder], {
-      cwd: projectFolder,
+      cwd: PROJECT_FOLDER,
       stdio: ['ignore', 'ignore', 'pipe'],
     });
     let errors = '';

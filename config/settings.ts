@@ -12,12 +12,10 @@ import { parseEnv } from 'node:util';
 
 /** What the app is set to. */
 export type Settings = {
-  /** The folder holding clips/, songs/ and jobs/. */
+  /** The folder holding clips/, songs/ and jobs/: what is made here, never in git. */
   dataFolder: string;
   /** The port the app is served on. */
   port: number;
-  /** The old project's checkout (branch `archive`), for the import and the .fur writer's check. */
-  archiveFolder: string;
   /** The Furnace binary that renders. */
   furnace: string;
   /** The ffmpeg binary that encodes FLAC. */
@@ -28,8 +26,10 @@ export type Settings = {
   node: string;
 };
 
-/** The project folder: where `.env` is, and the data folder unless set. */
+/** The project folder: where `.env` is, and the code Claude Code and a job's script run in. */
 export const PROJECT_FOLDER = join(import.meta.dirname, '..');
+/** The data folder unless set, under the project folder (out of git). */
+const DEFAULT_DATA_FOLDER = 'data';
 /** The default port: 6502, after the processor of the NES, the Commodore 64 and the Apple II. */
 const DEFAULT_PORT = 6502;
 const DEFAULT_FURNACE = '/Applications/Furnace.app/Contents/MacOS/Furnace';
@@ -50,9 +50,8 @@ export function readSettings(
     throw new Error(`CHIPSMITH_PORT is not a port: ${get('PORT')}`);
   }
   return {
-    dataFolder: get('DATA') ?? projectFolder,
+    dataFolder: get('DATA') ?? join(projectFolder, DEFAULT_DATA_FOLDER),
     port,
-    archiveFolder: get('ARCHIVE') ?? join(projectFolder, '..', 'chiptune-archive'),
     furnace: get('FURNACE') ?? DEFAULT_FURNACE,
     ffmpeg: get('FFMPEG') ?? 'ffmpeg',
     claude: get('CLAUDE') ?? (existsSync(localClaude) ? localClaude : 'claude'),

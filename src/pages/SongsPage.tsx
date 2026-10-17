@@ -78,7 +78,7 @@ export function SongsPage({ jobs }: SongsPageProps) {
           return (
             <li key={song.id}>
               <div className="item-row has-play has-expand">
-                <PlayButton songId={song.id} />
+                <PlayButton songId={song.id} isWaitingForAudio={listing.isWaitingForAudio} />
                 <span className="item-main">
                   <a
                     className="item-title item-link"

@@ -1,8 +1,9 @@
 /**
  * A clip's audio: its source.fur rendered by Furnace and written as audio.flac beside it. A clip's
- * audio is never replaced (docs/adr/0005): a clip that has its audio is refused.
+ * audio is never replaced (docs/adr/0005): a clip that has its audio is refused. The FLAC is written
+ * beside it under another name and renamed when whole, so a half-written file is never served.
  */
-import { existsSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
+import { existsSync, mkdtempSync, readFileSync, renameSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { encodeFlac } from './flac.ts';
@@ -26,7 +27,10 @@ export async function renderClipAudio(clipFolder: string): Promise<RenderedAudio
     const wavFile = join(workFolder, 'audio.wav');
     await renderToWav(furFile, wavFile);
     const { seconds } = getWavFacts(readFileSync(wavFile));
-    await encodeFlac(wavFile, flacFile);
+    const writingFile = `${flacFile}.writing`;
+    rmSync(writingFile, { force: true });
+    await encodeFlac(wavFile, writingFile);
+    renameSync(writingFile, flacFile);
     return { seconds, furnace: await getFurnaceVersion() };
   } finally {
     rmSync(workFolder, { recursive: true, force: true });

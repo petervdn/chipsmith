@@ -1,0 +1,35 @@
+{
+  "id": "s0004",
+  "title": "Bell grains",
+  "created": "2026-10-16T22:08:59.150Z",
+  "updated": "2026-10-16T22:08:59.150Z",
+  "bpm": 60,
+  "beats": 8,
+  "tags": [
+    {
+      "name": "slow-chords",
+      "by": "claude"
+    },
+    {
+      "name": "example",
+      "by": "claude"
+    }
+  ],
+  "status": "new",
+  "prompt": "A slow, open, free-flowing chord piece for NES + SCC+, 88 s, without a steady pulse and without expected harmony: every chord a rotation of one five-note set (D E F A B) in a new register, played as struck, rolled soft bells. While each chord rings, a cloud of tiny repeated grains cycles through it an octave or two up.",
+  "promptedFrom": null,
+  "tracks": [
+    {
+      "id": "t1",
+      "name": "Whole",
+      "blocks": [
+        {
+          "clip": "c0004",
+          "start": 0,
+          "trim": null,
+          "repeats": 1
+        }
+      ]
+    }
+  ]
+}

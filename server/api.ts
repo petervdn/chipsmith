@@ -15,7 +15,7 @@ import type {
   SongListing,
 } from '../shared/api.types.ts';
 import { checkPrograms } from '../config/programs.ts';
-import { getSettings } from '../config/settings.ts';
+import { PROJECT_FOLDER, getSettings } from '../config/settings.ts';
 import type { Clip } from '../shared/clip.types.ts';
 import type { Song } from '../shared/song.types.ts';
 import { getSongSeconds } from '../shared/song-length.ts';
@@ -25,6 +25,8 @@ import { getObject, getString, getStringOrNull } from './json-checks.ts';
 import { startJobRunner } from './job-runner.ts';
 import type { JobStore } from './jobs.ts';
 import { createJob, openJobs } from './jobs.ts';
+import { copyExamplesIfEmpty } from './examples.ts';
+import { isAudioMissing, renderMissingAudio } from './missing-audio.ts';
 import { checkStatus, checkTags } from './model-checks.ts';
 import type { Store } from './store.ts';
 import {
@@ -47,9 +49,22 @@ function checkProgramsAndWarn(): Promise<ProgramCheck[]> {
   return checks;
 }
 
+/** The example songs, copied into an empty data folder. */
+const EXAMPLES_FOLDER = join(PROJECT_FOLDER, 'examples');
+
 declare global {
   /** Stops the job runner of the server before a restart, so only one runs. */
   var chiptuneStopJobRunner: (() => void) | undefined;
+  /** The rendering of missing audio, while it runs: a restart of the server does not start another. */
+  var chiptuneRenderingMissingAudio: Promise<void> | undefined;
+}
+
+/** Renders the missing audio in the background, unless that is running already. */
+function startRenderingMissingAudio(store: Store): void {
+  if (globalThis.chiptuneRenderingMissingAudio) return;
+  globalThis.chiptuneRenderingMissingAudio = renderMissingAudio(store).finally(() => {
+    globalThis.chiptuneRenderingMissingAudio = undefined;
+  });
 }
 
 /** The plugin, serving the clips and songs under `root`. */
@@ -57,8 +72,12 @@ export function chiptuneServer(root: string): Plugin {
   return {
     name: 'chiptune-server',
     configureServer(server) {
+      if (copyExamplesIfEmpty(root, EXAMPLES_FOLDER)) {
+        console.log(`the examples copied into ${root}`);
+      }
       const store = openStore(root);
       for (const { file, error } of store.unreadable) console.warn(`unreadable ${file}: ${error}`);
+      startRenderingMissingAudio(store);
       const jobs = openJobs(root);
       let programChecks = checkProgramsAndWarn();
       // one runner: a restart of the server (Vite restarts it when a server file changes) replaces it
@@ -152,6 +171,7 @@ function listSongs(store: Store): SongListing[] {
       song,
       seconds: getSongSeconds(song, (clipId) => store.clips.get(clipId)?.seconds ?? 0),
       clipCount: clips.length,
+      isWaitingForAudio: clips.some((clip) => isAudioMissing(store, clip.id)),
       isChangedAfterPrompt: clips.some((clip) => clip.prompt !== song.prompt),
       key: clips.find((clip) => clip.key)?.key ?? null,
       chips: [...new Set(clips.flatMap((clip) => clip.chips))],
@@ -191,7 +211,7 @@ function getSongDetail(store: Store, songId: string): SongDetail {
     const clip = store.clips.get(clipId);
     return clip ? [clip] : [];
   });
-  return { song, clips };
+  return { song, clips, isWaitingForAudio: clips.some((clip) => isAudioMissing(store, clip.id)) };
 }
 
 function checkCatalogueChange(body: unknown): CatalogueChange {

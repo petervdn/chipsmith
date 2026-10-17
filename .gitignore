@@ -1,13 +1,10 @@
-# A clip's audio is rendered from its source.fur, so it stays out of git (docs/adr/0011). A clip
-# with no source.fur has a .gitignore of its own with `!audio.flac`, which takes its audio back in.
-clips/*/audio.flac
+# What is made with the app (clips, songs, jobs) is never in git (docs/adr/0018); the examples are
+# in examples/ and are copied into an empty data folder.
+data/
 
 node_modules/
 dist/
 .DS_Store
-
-# a job's working files (Claude's log, the script, the built modules); what it made is in clips/
-jobs/
 
 # local settings (see .env.example)
 .env

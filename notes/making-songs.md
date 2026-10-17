@@ -1,8 +1,10 @@
 # Making songs from a prompt
 
 For Claude running a job (started from the app; the user is not at the terminal). The job's prompt names
-its id, `jNNNN`. Your work is one file: **`jobs/<id>/script.ts`**, a script that makes the songs. The
-app builds it, renders every song and puts them in the songs list; you do not write clips or songs.
+its id, `jNNNN`, the script's file (`<data>/jobs/<id>/script.ts`), the data folder (`<data>`, holding
+`songs/` and `clips/`) and how the script imports the project's modules. Your work is that one file, a
+script that makes the songs. The app builds it, renders every song and puts them in the songs list; you
+do not write clips or songs. You run in the project folder; so do the commands below.
 
 ## What to do
 
@@ -10,8 +12,8 @@ app builds it, renders every song and puts them in the songs list; you do not wr
    `notes/feedback-by-style.md` for the style asked. Facts about Furnace, sound recipes and
    composition lessons: `notes/furnace-howto.md` (written for the old Python tools; the facts hold).
 2. Before each step, say in one short line what you are about to do. The user sees these lines live.
-3. Write `jobs/<id>/script.ts`, starting from `make/example-script.ts`.
-4. Check it: `node make/check-script.ts jobs/<id>/script.ts`. It builds and renders every song once
+3. Write the script, starting from `make/example-script.ts`.
+4. Check it: `node make/check-script.ts <data>/jobs/<id>/script.ts`. It builds and renders every song once
    and prints its length, peak and the gain that brings the peak to 0.75. Set the chips' volumes
    (`chipVolumes`) from it and check again. That is the whole check, unless something new needs more
    (`node fur/dump.ts <file.fur> --ins --pat CHANNEL,ORDER` shows a module).
@@ -21,9 +23,12 @@ Work quickly: a set is minutes, not half an hour of measuring.
 
 ## The script
 
+The imports go from the script's folder to the project folder (`<to project>`: the prompt says it,
+e.g. `../../..`):
+
 ```ts
-import type { SongPlan } from '../../make/song-plan.ts';
-import { buildModule } from '../../make/module-builder.ts';
+import type { SongPlan } from '<to project>/make/song-plan.ts';
+import { buildModule } from '<to project>/make/module-builder.ts';
 
 export default function makeSongs(): SongPlan[] {
   return [{ title, key, tags, module: buildModule({ … }) }, …];
@@ -42,7 +47,7 @@ export default function makeSongs(): SongPlan[] {
 - Instruments: `makeInstrument(name, NES_INSTRUMENT, macros)` (`fur/instrument.ts`): `vol`, `arp`,
   `duty`, `wave`, `pitch` macros; `ARP_FIXED + n` makes a fixed note (drums on the noise channel).
   SCC waves: `makeWavetable(samples)`, 32 samples 0-255.
-- Imports are relative to `jobs/<id>/` and name their file with its extension.
+- Imports are relative to the script's folder and name their file with its extension.
 
 ## Defaults
 
@@ -64,14 +69,14 @@ Use these words (a new one only when none fits):
 A prompt may name songs by id in brackets: `Based on FH 08 [s0042]: more bass, fewer drums`. Start
 from that song's music and change what is asked; keep the rest as it is.
 
-- `songs/<id>/song.json`: its title, its own prompt (what it was asked to be), its tracks and the
+- `<data>/songs/<id>/song.json`: its title, its own prompt (what it was asked to be), its tracks and the
   clips its blocks play.
-- `clips/<clip>/`: each clip's `clip.json` (its prompt, tempo, key, slice), `source.fur` (its music)
-  and `script.ts` (the script that wrote it). A song from the archive has the import script there, not
-  a composition: work from its `source.fur`.
-- To start from a module, read it in your script: `readModule(readFileSync('clips/<clip>/source.fur'))`
+- `<data>/clips/<clip>/`: each clip's `clip.json` (its prompt, tempo, key, slice), `source.fur` (its
+  music) and `script.ts` (the script that wrote it). A song imported from the old project has its
+  import script there, not a composition: work from its `source.fur`.
+- To start from a module, read it in your script: `readModule(readFileSync('<data>/clips/<clip>/source.fur'))`
   (`fur/read.ts`; scripts run from the project folder), change its patterns, instruments or settings,
-  and return it as the plan's `module`. `node fur/dump.ts clips/<clip>/source.fur --ins --pat 2,0`
+  and return it as the plan's `module`. `node fur/dump.ts <data>/clips/<clip>/source.fur --ins --pat 2,0`
   shows what is in it.
 - A song of several clips is its arrangement: which clip plays where (blocks: start in ticks, 96 to a
   beat, trim, repeats). Work from the clips the change is about.

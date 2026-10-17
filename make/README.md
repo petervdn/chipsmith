@@ -7,7 +7,6 @@ song that plays it. The server reads what was made when it is asked to look agai
 - `check-script.ts`: the quick check of a job's script: length, peak and gain of every song
 - `example-script.ts`: an example of a job's script, one short NES song
 - `ids.ts`: new ids for clips and songs, each claimed by making its folder
-- `import-archive.ts`: songs of the old batches brought in from the archive
 - `make-song.ts`: a new song of one whole clip, made from a module
 - `module-builder.ts`: a module from rows per channel, instruments, tempo and meter
 - `module-facts.ts`: a module's tempo, meter and chips

@@ -24,10 +24,11 @@ Consequences.
 | [0008](0008-tracks-not-channels.md) | A row of the arrangement is a track; a channel is the chip's | accepted |
 | [0009](0009-tags-describe-fields-measure.md) | Tags describe, fields measure; a status per song and clip | accepted |
 | [0010](0010-a-new-song-is-one-clip.md) | A new song is one whole clip; it is split when it is worked on | accepted |
-| [0011](0011-git-without-the-audio.md) | Git holds everything but the audio rendered from a source | accepted |
+| [0011](0011-git-without-the-audio.md) | Git holds everything but the audio rendered from a source | superseded by 0018 |
 | [0012](0012-standards-of-unknown-game.md) | The setup and coding standards follow unknown-game | accepted |
 | [0013](0013-react-for-the-page.md) | The page is React | accepted |
 | [0014](0014-a-variation-changes-only-its-block.md) | A new version of a clip changes only the block it was asked for | accepted |
 | [0015](0015-render-with-the-furnace-app.md) | A clip is rendered with the Furnace app's command line, one at a time | accepted |
 | [0016](0016-a-song-keeps-the-prompt-it-was-made-from.md) | A song keeps the prompt it was made from; prompting it again sends only that | accepted |
 | [0017](0017-where-state-lives.md) | Where state lives: local first, then lifted, then a store; the server's in TanStack Query | accepted |
+| [0018](0018-what-is-made-is-not-in-git.md) | What is made is never in git; five examples are, and missing audio is rendered on start | accepted |

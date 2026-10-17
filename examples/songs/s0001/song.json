@@ -1,0 +1,35 @@
+{
+  "id": "s0001",
+  "title": "Waltz-punk fugue in 3/4 (A minor)",
+  "created": "2026-10-16T22:09:15.390Z",
+  "updated": "2026-10-16T22:09:15.390Z",
+  "bpm": 160,
+  "beats": 3,
+  "tags": [
+    {
+      "name": "fugue",
+      "by": "claude"
+    },
+    {
+      "name": "example",
+      "by": "claude"
+    }
+  ],
+  "status": "new",
+  "prompt": "A four-voice fugue with drums in 3/4 at 160 bpm, in A minor, NES + SCC+. Every layer and the drums play from the start. Subject: quarters, then falling eighths; free voices in flowing eighths; an octave-pulse bass in eighths. Voices enter alto, soprano, tenor, bass. Drums: a fast oom-pah-pah, with rolls and toms as fills.",
+  "promptedFrom": null,
+  "tracks": [
+    {
+      "id": "t1",
+      "name": "Whole",
+      "blocks": [
+        {
+          "clip": "c0001",
+          "start": 0,
+          "trim": null,
+          "repeats": 1
+        }
+      ]
+    }
+  ]
+}

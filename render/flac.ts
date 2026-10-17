@@ -14,6 +14,9 @@ export function encodeFlac(wavFile: string, flacFile: string): Promise<void> {
     'flac',
     '-compression_level',
     '8',
+    // named, as the file it writes may not end in .flac
+    '-f',
+    'flac',
     flacFile,
   ];
   return new Promise((resolve, reject) => {

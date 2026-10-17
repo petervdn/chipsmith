@@ -1,0 +1,35 @@
+{
+  "id": "s0002",
+  "title": "NES fugue in D minor",
+  "created": "2026-10-16T22:09:37.230Z",
+  "updated": "2026-10-16T22:09:37.230Z",
+  "bpm": 164,
+  "beats": 4,
+  "tags": [
+    {
+      "name": "fugue",
+      "by": "claude"
+    },
+    {
+      "name": "example",
+      "by": "claude"
+    }
+  ],
+  "status": "new",
+  "prompt": "A fast hook-based fugue for the NES alone, in D minor at 164 bpm. A larger form instead of one motif answered all the way through: A B A C B A, with B in F. Drums change per section: jungle in A, half-time in B, breakbeat in C. Free voices in driving 16ths, an octave-pulse bass.",
+  "promptedFrom": null,
+  "tracks": [
+    {
+      "id": "t1",
+      "name": "Whole",
+      "blocks": [
+        {
+          "clip": "c0002",
+          "start": 0,
+          "trim": null,
+          "repeats": 1
+        }
+      ]
+    }
+  ]
+}

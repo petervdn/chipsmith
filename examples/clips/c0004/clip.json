@@ -1,0 +1,34 @@
+{
+  "id": "c0004",
+  "created": "2026-10-16T22:08:59.150Z",
+  "prompt": "A slow, open, free-flowing chord piece for NES + SCC+, 88 s, without a steady pulse and without expected harmony: every chord a rotation of one five-note set (D E F A B) in a new register, played as struck, rolled soft bells. While each chord rings, a cloud of tiny repeated grains cycles through it an octave or two up.",
+  "promptId": "example",
+  "name": {
+    "section": null,
+    "stem": null
+  },
+  "bars": null,
+  "channels": null,
+  "parent": null,
+  "madeFor": "s0004",
+  "tags": [
+    {
+      "name": "slow-chords",
+      "by": "claude"
+    },
+    {
+      "name": "example",
+      "by": "claude"
+    }
+  ],
+  "status": "new",
+  "bpm": 60,
+  "beats": 8,
+  "key": null,
+  "chips": [
+    "NES",
+    "SCC+"
+  ],
+  "seconds": 88.0167120181406,
+  "furnace": "0.6.8.3"
+}

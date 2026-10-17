@@ -1,6 +1,6 @@
 # 0011. Git holds everything but the audio rendered from a source
 
-- Status: accepted
+- Status: superseded by 0018
 - Date: 2026-10-16
 
 ## Context

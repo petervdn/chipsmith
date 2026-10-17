@@ -8,6 +8,8 @@ export type SongListing = {
   song: Song;
   seconds: number;
   clipCount: number;
+  /** Whether a clip of the song has no audio yet: it is rendered when the server starts. */
+  isWaitingForAudio: boolean;
   /** Whether a clip of the song was made by a later prompt than the song's own (docs/adr/0016). */
   isChangedAfterPrompt: boolean;
   /** The key its clips name, the first one found. */
@@ -17,8 +19,8 @@ export type SongListing = {
   promptedAgainAs: string[];
 };
 
-/** A song opened, with the clips its blocks play. */
-export type SongDetail = { song: Song; clips: Clip[] };
+/** A song opened, with the clips its blocks play, and whether one of them has no audio yet. */
+export type SongDetail = { song: Song; clips: Clip[]; isWaitingForAudio: boolean };
 
 /** A clip in the clips list, with the songs that use it. */
 export type ClipListing = { clip: Clip; usedBy: string[] };

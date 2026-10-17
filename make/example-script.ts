@@ -1,6 +1,6 @@
 /**
  * An example of a job's script (notes/making-songs.md): one short NES song in D minor, eight bars of
- * a bouncing bass, a held pulse motif and a drum pattern, with instruments after the archive's fm_01.
+ * a bouncing bass, a held pulse motif and a drum pattern, with instruments after the old project's fm_01.
  * Check: `node make/check-script.ts make/example-script.ts`.
  */
 import type { Row } from '../fur/fur.types.ts';

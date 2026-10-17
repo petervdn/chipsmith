@@ -12,12 +12,12 @@ export function SongPage({ songId }: SongPageProps) {
   const { data: detail, error } = useSong(songId);
   if (error) return <p className="error">{error.message}</p>;
   if (!detail) return <p className="empty">Loading…</p>;
-  const { song, clips } = detail;
+  const { song, clips, isWaitingForAudio } = detail;
   const clipsById = new Map(clips.map((clip) => [clip.id, clip]));
   return (
     <section className="song-page">
       <div className="song-head">
-        <PlayButton songId={song.id} />
+        <PlayButton songId={song.id} isWaitingForAudio={isWaitingForAudio} />
         <h1 className="song-title">{song.title}</h1>
       </div>
       <p className="song-facts">

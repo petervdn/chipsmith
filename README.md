@@ -29,8 +29,8 @@ prompt (New page)
   clip whose parent is the old one, so every part keeps its history of prompts.
 - **A new song starts as one whole clip** and is split into sections and tracks when you work on it,
   as far as you want (docs/adr/0010).
-- **The files are the data**: `clips/` and `songs/` hold JSON the server reads into memory when it
-  starts. There is no database.
+- **The files are the data**: the data folder's `clips/` and `songs/` hold JSON the server reads
+  into memory when it starts. There is no database.
 
 **Where it stands:** making songs from prompts, listening, keeping, rejecting, prompting again and
 building on a song work. Splitting a song into parts and prompting a part again come with the song
@@ -72,9 +72,8 @@ is not in git). A variable set in the shell wins over the file; what is not set 
 
 | Variable | What it changes | Default |
 |---|---|---|
-| `CHIPSMITH_DATA` | the folder holding `clips/`, `songs/` and `jobs/` | the project folder |
+| `CHIPSMITH_DATA` | the folder holding `clips/`, `songs/` and `jobs/` | `data/` in the project folder |
 | `CHIPSMITH_PORT` | the port the app is served on | `6502` |
-| `CHIPSMITH_ARCHIVE` | the old project's checkout | `../chiptune-archive` |
 | `CHIPSMITH_FURNACE` | the Furnace binary | the app in `/Applications` |
 | `CHIPSMITH_FFMPEG` | the ffmpeg binary | `ffmpeg` |
 | `CHIPSMITH_CLAUDE` | the Claude Code binary | `~/.local/bin/claude`, else `claude` |
@@ -84,10 +83,16 @@ When the server starts it checks each program: it runs it, reads its version (th
 what each clip records as rendered by), and logs what cannot be used. The page then shows a bar naming
 what is missing, what it is needed for and which setting to change, with "Check again".
 
-## Audio and git
+## Your songs, the examples and git
 
-`clips/*/audio.flac` is not in git: it is rendered from the clip's `source.fur`. A fresh checkout has
-the songs but no audio; rendering missing audio again is not built yet (docs/adr/0011).
+What you make is yours and never in git: the data folder (`data/` unless `CHIPSMITH_DATA` says
+otherwise) is ignored. Back it up, or make it a git repository of its own. A fresh checkout has five
+example songs in `examples/`; when the data folder has no clips and no songs, the server copies them
+into it.
+
+Audio is not kept with the examples: when the server starts, it renders every clip that has a
+`source.fur` and no `audio.flac`, one at a time in the background (Furnace and ffmpeg are needed).
+A song shows … instead of ▶ until its audio is there (docs/adr/0018).
 
 ## Tools
 
@@ -96,10 +101,4 @@ the songs but no audio; rendering missing audio again is not built yet (docs/adr
 | `npm run check` | types, lint, tests and formatting; passes before every commit |
 | `node fur/dump.ts <file.fur> [--ins] [--pat CHANNEL,ORDER]` | a module as text |
 | `node make/check-script.ts <script.ts>` | builds and renders a song script: length, peak, gain per song |
-| `node make/import-archive.ts --favorites` | imports the old project's favourites (needs `../chiptune-archive`) |
-| `node fur/check-archive.ts` | checks the .fur writer against every module of the old project |
 
-## The old project
-
-The branch `archive` is this project before its restart on 2026-10-16: Python tools writing batches
-of Furnace files, a separate player and a song editor. Its audio is not in git.

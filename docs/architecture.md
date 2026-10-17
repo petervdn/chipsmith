@@ -26,19 +26,23 @@ The types are in `shared/clip.types.ts` and `shared/song.types.ts`.
 
 ```
 clips/<id>/clip.json      a clip's information (shared/clip.types.ts)
-clips/<id>/audio.flac     its audio (not in git, rendered again from source.fur: 0011)
+clips/<id>/audio.flac     its audio (rendered from source.fur when the server starts, if missing)
 clips/<id>/source.fur     its own Furnace module
 clips/<id>/script.ts      its own copy of the script that wrote it
 songs/<id>/song.json      a song's arrangement (shared/song.types.ts)
 ```
 
 The files are the data (0006). Ids are a letter and a number: `c0001` for clips, `s0001` for songs.
+They are in the data folder (`data/` unless set), which is never in git (0018), with `jobs/`.
+`examples/` (in git) holds five songs and their clips, copied into a data folder that has none.
 
 ## The server
 
-`server/`, run inside Vite's dev server as a plugin (`server/api.ts`). When it starts it reads every
-clip.json and song.json into memory (`server/store.ts`); a file that does not fit is reported and
-left alone. A change is written to its file, then to the copy in memory.
+`server/`, run inside Vite's dev server as a plugin (`server/api.ts`). When it starts it copies the
+examples into an empty data folder (`server/examples.ts`), reads every clip.json and song.json into
+memory (`server/store.ts`; a file that does not fit is reported and left alone), and renders, one at a
+time in the background, every clip that has a source.fur and no audio.flac (`server/missing-audio.ts`);
+a song waiting for its audio shows … for ▶ and its list is read again until it has it. A change is written to its file, then to the copy in memory.
 
 Routes: `GET /api/songs`, `GET /api/songs/<id>`, `PATCH /api/songs/<id>` (status, tags),
 `GET /api/clips`, `PATCH /api/clips/<id>`, and `GET /media/clips/<id>/audio.flac` with byte ranges.
@@ -69,14 +73,12 @@ top bar's links open a list unfiltered, and the back button returns to a filtere
 
 ## Tooling
 
-- Settings (data folder, port, the archive, the programs called: Furnace, ffmpeg, Claude Code,
-  Node) are read in one place, `config/settings.ts`: `CHIPSMITH_…` variables over a `.env` file over
+- Settings (data folder, port, the programs called: Furnace, ffmpeg, Claude Code, Node) are read in one place, `config/settings.ts`: `CHIPSMITH_…` variables over a `.env` file over
   the defaults (README.md, "Settings"). `config/programs.ts` checks the programs when the server
   starts (each run once for its version; `GET`/`POST /api/programs`); a missing one shows as a bar on
   every page (`src/ProgramWarning.tsx`). Clips record the Furnace version read from Furnace itself.
 - Vite + TypeScript, strict (0012). `npm run dev` serves on port 6502, on the local network too. The
-  old player (branch `archive`, run from `../chiptune-archive/player`) keeps port 8765 until the new
-  app replaces it.
+  old player (in the user's copy of the old project, `../chiptune-archive/player`) keeps port 8765.
 - `npm test`: Node's own runner reads the TypeScript as it is. Imports name their file with its
   extension (`./store.ts`), so Vite, Node and the tests resolve them alike. `test/layout.test.ts` holds the source's map (a README in
   every folder, a comment at the head of every file, no file over 400 lines).
@@ -87,8 +89,9 @@ top bar's links open a list unfiltered, and the back button returns to a filtere
 `fur/` writes and reads Furnace modules as this project writes them (format version 223, old INFO
 layout, one subsong, NES / SCC / SCC+): `write.ts` lays a module out as Furnace does, `read.ts` reads
 one back, `instrument.ts` and `pattern.ts` build the blocks, `dump.ts` shows a module as text. It is
-the port of the Python tools (0002), and `fur/check-archive.ts` holds it to them: every .fur the
-Python writer made (1,534 in the archive) is read and written again, byte for byte.
+the port of the Python tools (0002), held to them by `fur/round-trip.test.ts`: the examples' modules,
+written by the Python writer, are read and written again byte for byte. (Before the old project left
+git, all 1,534 of its modules were checked so.)
 
 ## Rendering and making songs
 
@@ -97,9 +100,6 @@ Python writer made (1,534 in the archive) is read and written again, byte for by
 - `make/`: new songs on disk. `make-song.ts` makes a song of one whole clip from a module: claims the
   ids (`ids.ts`, by making the folders), writes the clip's source.fur and script, renders its audio,
   writes clip.json and song.json, and the server is told to look again (`POST /api/rescan`).
-  `import-archive.ts` brought the user's 74 favourites of the old batches in this way, tagged with their
-  thread and `archive`, as keepers. Their prompt (song and clip) is their batch's brief, the user's request
-  as the batch README quotes it, with the song's own row of that README's table.
 
 ## Playback
 

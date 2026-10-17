@@ -1,0 +1,35 @@
+{
+  "id": "s0003",
+  "title": "Lydian drift",
+  "created": "2026-10-16T22:08:23.819Z",
+  "updated": "2026-10-16T22:08:23.819Z",
+  "bpm": 64,
+  "beats": 4,
+  "tags": [
+    {
+      "name": "slow-chords",
+      "by": "claude"
+    },
+    {
+      "name": "example",
+      "by": "claude"
+    }
+  ],
+  "status": "new",
+  "prompt": "A short, slow, mysterious chord piece for the NES at 64 bpm, minimal and a bit off-putting, not a standard progression: Dmaj7#11, Bbmaj7#11, F#m(maj7), Ebmaj7#5, Csus2(b6), back to Dmaj7#11. The two pulses alternate, staggered.",
+  "promptedFrom": null,
+  "tracks": [
+    {
+      "id": "t1",
+      "name": "Whole",
+      "blocks": [
+        {
+          "clip": "c0003",
+          "start": 0,
+          "trim": null,
+          "repeats": 1
+        }
+      ]
+    }
+  ]
+}
