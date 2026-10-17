@@ -1,6 +1,7 @@
-// The app: the top bar, a warning when a program it calls is missing, the page the address is, and
-// the player bar.
+// The app: the top bar, a warning when a program it calls is missing, the page the address is, the
+// player bar, and the page's confirm dialog.
 import { ClipsPage } from './clips/ClipsPage.tsx';
+import { ConfirmDialog } from './dialog/ConfirmDialog.tsx';
 import { GuidesPage } from './guides/GuidesPage.tsx';
 import { HomePage } from './home/HomePage.tsx';
 import { JobsPage } from './jobs/JobsPage.tsx';
@@ -14,8 +15,8 @@ import { useRoute } from './router.ts';
 import { TopBar } from './top-bar/TopBar.tsx';
 
 /**
- * Shows the whole page: the top bar, the program warning, the page the address is, and the player
- * bar.
+ * Shows the whole page: the top bar, the program warning, the page the address is, the player bar
+ * and the confirm dialog.
  *
  * @returns The app's element.
  */
@@ -36,6 +37,7 @@ export function App() {
         {route.page === 'song' && <SongPage key={route.songId} songId={route.songId} />}
       </main>
       <PlayerBar />
+      <ConfirmDialog />
     </div>
   );
 }

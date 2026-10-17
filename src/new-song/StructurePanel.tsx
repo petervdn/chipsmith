@@ -21,6 +21,7 @@ import {
 } from './structure-edits.ts';
 import type { useStructureChoice } from './use-structure-choice.ts';
 import './StructurePanel.css';
+import { askToConfirm } from '../stores/confirm-store.ts';
 
 type StructurePanelProps = { choice: ReturnType<typeof useStructureChoice> };
 
@@ -192,8 +193,11 @@ export function StructurePanel({ choice }: StructurePanelProps) {
               <button
                 type="button"
                 className="structure-panel-delete"
-                onClick={() => {
-                  if (window.confirm(`Delete the structure "${choice.name}"?`)) choice.remove();
+                onClick={async () => {
+                  const question = `Delete the structure "${choice.name}"?`;
+                  if (await askToConfirm({ question, answer: 'Delete', isDanger: true })) {
+                    choice.remove();
+                  }
                 }}
               >
                 Delete

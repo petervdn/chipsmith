@@ -10,6 +10,7 @@ import { isJobRunning, useRemoveJob, useRemoveJobs } from '../queries/jobs.ts';
 import { usePageTitle } from '../use-page-title.ts';
 import { Breadcrumbs } from '../Breadcrumbs.tsx';
 import './JobsPage.css';
+import { askToConfirm } from '../stores/confirm-store.ts';
 
 type JobsPageProps = { jobs: Job[] };
 
@@ -54,8 +55,9 @@ export function JobsPage({ jobs }: JobsPageProps) {
           <button
             type="button"
             className="jobs-page-clear"
-            onClick={() => {
-              if (window.confirm(getClearQuestion(finished.length))) {
+            onClick={async () => {
+              const question = getClearQuestion(finished.length);
+              if (await askToConfirm({ question, answer: 'Clear', isDanger: true })) {
                 removeJobs(finished.map((job) => job.id));
               }
             }}

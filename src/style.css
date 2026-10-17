@@ -16,6 +16,7 @@
   --logo-outline: #1a1d17;
   --keep: #c08400;
   --reject: #dc2f4b;
+  --on-reject: #ffffff;
   color-scheme: light;
   --touch: 40px;
   /* the widest the page's content gets, centred beyond that; the top bar's content keeps to it */

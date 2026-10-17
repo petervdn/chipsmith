@@ -9,6 +9,7 @@ At the top: the app's shell and what every area uses.
 - `Breadcrumbs.tsx`: the trail at the head of a page, its last crumb the page's heading
 - `clips/`: the clip pool
 - `copy-text.ts`: copying text, also where the clipboard API is missing (plain http)
+- `dialog/`: the page's own dialogs, in place of the browser's
 - `editor/`: the song editor: the timeline, playing from a cursor, the selected block
 - `format.ts`: how lengths, meters and tokens are shown
 - `guides/`: the style guides, their page and their chips
@@ -24,7 +25,7 @@ At the top: the app's shell and what every area uses.
 - `queries/`: everything read from or sent to the server (TanStack Query)
 - `router.ts`: which page the address is, and moving between them
 - `songs/`: the songs list and a song opened
-- `stores/`: Zustand stores: the player and the preferences
+- `stores/`: Zustand stores: the player, the preferences and the confirm question
 - `style.css`: the base: the colour tokens, the page, links, form controls and the shell
 - `top-bar/`: the bar at the top of every page
 - `use-page-title.ts`: the browser tab's title, the page's name and then chipsmith

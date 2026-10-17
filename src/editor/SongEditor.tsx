@@ -32,6 +32,7 @@ import { useWheelZoom } from './use-wheel-zoom.ts';
 import { getVersions } from './versions.ts';
 import '../jobs/jobs.css';
 import './SongEditor.css';
+import { askToConfirm } from '../stores/confirm-store.ts';
 
 type SongEditorProps = { detail: SongDetail };
 
@@ -139,8 +140,9 @@ export function SongEditor({ detail }: SongEditorProps) {
           <button
             type="button"
             className="song-editor-button"
-            onClick={() => {
-              if (!window.confirm(getSplitQuestion(splitCount))) return;
+            onClick={async () => {
+              const question = getSplitQuestion(splitCount);
+              if (!(await askToConfirm({ question, answer: 'Split' }))) return;
               transport.stop();
               splitSong(song.id);
             }}

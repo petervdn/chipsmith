@@ -13,6 +13,7 @@ import { navigate } from '../router.ts';
 import { useGuideChoice } from '../guides/use-guide-choice.ts';
 import '../lists/lists.css';
 import './PromptBox.css';
+import { askToConfirm } from '../stores/confirm-store.ts';
 
 /** The song a prompt is sent again from: its id, its title, and whether it changed after its prompt. */
 export type PromptSource = { songId: string; title: string; isChangedAfterPrompt: boolean };
@@ -115,11 +116,10 @@ export function PromptBox({ initialText, source, onClearSource }: PromptBoxProps
           <PromptBuilder
             isOpen={isBuilding}
             onToggle={() => setBuilding(!isBuilding)}
-            onUse={(built) => {
+            onUse={async (built) => {
               const isOwnText = text.trim() !== '' && text !== usedText;
-              if (isOwnText && !window.confirm('Replace what is in the box with this prompt?')) {
-                return;
-              }
+              const question = 'Replace what is in the box with this prompt?';
+              if (isOwnText && !(await askToConfirm({ question, answer: 'Replace' }))) return;
               setText(built);
               setUsedText(built);
             }}

@@ -10,6 +10,7 @@ import { isJobRunning, useCancelJob } from '../queries/jobs.ts';
 import { JobSteps } from './JobSteps.tsx';
 import './jobs.css';
 import './JobCard.css';
+import { askToConfirm } from '../stores/confirm-store.ts';
 
 const PHASE_NAMES = {
   queued: 'Waiting for the job before it',
@@ -169,8 +170,11 @@ export function JobCard({ job, onRemove }: JobCardProps) {
           <button
             type="button"
             className="job-card-cancel"
-            onClick={() => {
-              if (window.confirm(CANCEL_QUESTION)) cancelJob(job.id);
+            onClick={async () => {
+              const question = CANCEL_QUESTION;
+              if (await askToConfirm({ question, answer: 'Stop the job', isDanger: true })) {
+                cancelJob(job.id);
+              }
             }}
             title="stop this job"
           >

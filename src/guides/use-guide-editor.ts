@@ -5,6 +5,7 @@
 import { useState } from 'react';
 import type { Guide, GuideDraft } from '../../shared/guide.types.ts';
 import { useDeleteGuide, useSaveGuide } from '../queries/guides.ts';
+import { askToConfirm } from '../stores/confirm-store.ts';
 
 const EMPTY_DRAFT: GuideDraft = { name: '', text: '', isDefault: false };
 
@@ -36,8 +37,10 @@ export function useGuideEditor(guide: Guide | null, onDone: () => void) {
   function save(): void {
     saving.mutate({ guideId: guide?.id ?? null, draft }, { onSuccess: onDone });
   }
-  function remove(): void {
-    if (!guide || !window.confirm(`Delete the style guide "${guide.name}"?`)) return;
+  async function remove(): Promise<void> {
+    if (!guide) return;
+    const question = `Delete the style guide "${guide.name}"?`;
+    if (!(await askToConfirm({ question, answer: 'Delete', isDanger: true }))) return;
     deleting.mutate(guide.id, { onSuccess: onDone });
   }
   return {

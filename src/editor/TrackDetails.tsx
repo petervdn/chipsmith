@@ -2,6 +2,7 @@
 // are on the track's row).
 import type { Track } from '../../shared/song.types.ts';
 import './TrackDetails.css';
+import { askToConfirm } from '../stores/confirm-store.ts';
 
 type TrackDetailsProps = {
   track: Track;
@@ -38,8 +39,9 @@ export function TrackDetails({ track, onRename, onRemove }: TrackDetailsProps) {
         <button
           type="button"
           className="track-details-remove"
-          onClick={() => {
-            if (window.confirm(`Remove "${track.name}" and its blocks?`)) onRemove();
+          onClick={async () => {
+            const question = `Remove "${track.name}" and its blocks?`;
+            if (await askToConfirm({ question, answer: 'Remove', isDanger: true })) onRemove();
           }}
         >
           Remove track
