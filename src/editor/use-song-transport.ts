@@ -1,7 +1,8 @@
 // Playing an opened song from its cursor: ▶ plays from there, ❚❚ pauses where it is and ▶ plays on
 // from there, ■ stops and goes back to the cursor. A new place plays on from there while playing, or
-// moves the cursor (and forgets a pause) while not.
-import { useState } from 'react';
+// moves the cursor (and forgets a pause) while not. An edit made while it plays is heard at once: it
+// plays on, as edited, from where it is.
+import { useEffect, useRef, useState } from 'react';
 import type { SongDetail } from '../../shared/api.types.ts';
 import { getSongPosition } from '../playback/audio-engine.ts';
 import { usePlayerStore } from '../stores/player-store.ts';
@@ -25,6 +26,14 @@ export function useSongTransport(detail: SongDetail) {
   const playSong = usePlayerStore((state) => state.playSong);
   const stopSong = usePlayerStore((state) => state.stopSong);
   const isPaused = mode === 'stopped' && pausedAt !== null;
+  const tracksKey = JSON.stringify(detail.song.tracks);
+  const playedKeyRef = useRef(tracksKey);
+  useEffect(() => {
+    if (tracksKey === playedKeyRef.current) return;
+    playedKeyRef.current = tracksKey;
+    const position = getSongPosition();
+    if (mode === 'playing' && position !== null) void playSong(detail, position);
+  });
   function pause(): void {
     const position = getSongPosition() ?? cursor;
     stopSong(position);
