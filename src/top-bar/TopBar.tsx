@@ -1,5 +1,5 @@
-// The bar at the top of every page: the logo (home), Songs, Guides and Jobs with how many each
-// holds (Jobs: how many are on their way; the one open marked, Jobs turning while one runs), a
+// The bar at the top of every page: the logo (home), Songs, Guides and Jobs (with how many are on
+// their way, turning while one runs; the one open marked), a
 // button for a new song at the right, and the switch between light and dark.
 import { Plus } from 'lucide-react';
 import { useRef } from 'react';
@@ -7,7 +7,6 @@ import type { Job } from '../../shared/job.types.ts';
 import { Logo } from './Logo.tsx';
 import { LookSwitcher } from './LookSwitcher.tsx';
 import { isJobRunning } from '../queries/jobs.ts';
-import { useTabCounts } from './use-tab-counts.ts';
 import { useTopBarHeight } from './use-top-bar-height.ts';
 import type { Route } from '../router.ts';
 import '../jobs/jobs.css';
@@ -27,8 +26,7 @@ type TopBarProps = { route: Route; jobs: Job[] };
  */
 export function TopBar({ route, jobs }: TopBarProps) {
   const isSongs = route.page === 'songs' || route.page === 'song';
-  const isAnyRunning = jobs.some(isJobRunning);
-  const { songCount, guideCount, jobCount } = useTabCounts(jobs);
+  const runningCount = jobs.filter(isJobRunning).length;
   const barRef = useRef<HTMLElement>(null);
   useTopBarHeight(barRef);
   return (
@@ -39,14 +37,14 @@ export function TopBar({ route, jobs }: TopBarProps) {
       </a>
       <nav className="top-bar-nav">
         <a href="/songs" className={`top-bar-link${isSongs ? ' is-on' : ''}`}>
-          Songs <span className="top-bar-count">{getCountText(songCount)}</span>
+          Songs
         </a>
         <a href="/guides" className={`top-bar-link${route.page === 'guides' ? ' is-on' : ''}`}>
-          Guides <span className="top-bar-count">{getCountText(guideCount)}</span>
+          Guides
         </a>
         <a href="/jobs" className={`top-bar-link${route.page === 'jobs' ? ' is-on' : ''}`}>
-          {isAnyRunning && <span className="jobs-spinner" aria-hidden="true" />}
-          Jobs <span className="top-bar-count">{getCountText(jobCount)}</span>
+          {runningCount > 0 && <span className="jobs-spinner" aria-hidden="true" />}
+          Jobs {runningCount > 0 && <span className="top-bar-count">({runningCount})</span>}
         </a>
       </nav>
       <a href="/new" className="top-bar-new">
@@ -55,14 +53,4 @@ export function TopBar({ route, jobs }: TopBarProps) {
       <LookSwitcher />
     </header>
   );
-}
-
-/**
- * Returns the count shown after a tab's name, such as "(12)".
- *
- * @param count - The tab's count, or null while it is not known.
- * @returns The count in brackets, or an empty string while it is not known.
- */
-function getCountText(count: number | null): string {
-  return count === null ? '' : `(${count})`;
 }

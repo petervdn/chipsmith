@@ -57,8 +57,8 @@ What they answer is typed in `shared/api.types.ts`.
 
 ## The pages
 
-`src/`, React (0013), a folder per area (a page, the top bar, the player, the lists; 0020). One top bar on every page: the logo (home), Songs | Guides | Jobs, each with how many it
-holds (Jobs turning while one runs), and at the right + New song (an action, not a section). Every
+`src/`, React (0013), a folder per area (a page, the top bar, the player, the lists; 0020). One top bar on every page: the logo (home), Songs | Guides | Jobs (Jobs with how many
+are on their way, turning while one runs), and at the right + New song (an action, not a section). Every
 page but Home starts with breadcrumbs, the last its heading (Songs › Seven Teeth).
 
 - **Home** (`/`): the logo and what the app is, a + New song button, the running jobs, how many songs
