@@ -10,6 +10,7 @@ import { useListFilter } from '../lists/use-list-filter.ts';
 import { StatusButtons } from '../lists/StatusButtons.tsx';
 import { UndoBar, useUndo } from '../lists/UndoBar.tsx';
 import { usePageTitle } from '../use-page-title.ts';
+import '../lists/lists.css';
 
 /** A clip's name as the list shows it: its section and stem, or "whole" for an unsplit clip. */
 export function getClipLabel({ name }: Clip): string {

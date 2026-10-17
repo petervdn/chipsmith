@@ -1,0 +1,54 @@
+/* The look of StatusButtons.tsx. */
+
+.status-buttons {
+  grid-area: status;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  gap: 4px;
+}
+
+.status-buttons button {
+  width: var(--touch);
+  height: var(--touch);
+  border: 0;
+  border-radius: var(--radius);
+  background: none;
+  font-size: 1.25rem;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.status-keep.is-on {
+  color: var(--keep);
+}
+
+.status-buttons .status-reject {
+  font-size: 0.9375rem;
+  opacity: 0.45;
+}
+
+.status-buttons .status-reject.is-on {
+  color: var(--reject);
+  opacity: 1;
+}
+
+/* a phone: tighter rows, so the title and the facts keep their room */
+@media (max-width: 759px) {
+  .status-buttons {
+    gap: 0;
+  }
+  .status-buttons button {
+    width: 34px;
+  }
+}
+
+/* hover looks only where there is a mouse: a phone keeps a tapped element "hovered" */
+@media (hover: hover) {
+  .status-buttons button:hover {
+    background: var(--raised);
+  }
+  .status-buttons .status-reject:hover {
+    opacity: 1;
+  }
+}

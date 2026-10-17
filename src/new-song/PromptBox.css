@@ -1,0 +1,68 @@
+/* The look of PromptBox.tsx. */
+
+.prompt-box {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 8px 0 12px;
+}
+
+.prompt-text {
+  min-height: 20vh;
+  padding: 12px;
+  font-size: 1rem;
+  border: var(--border-width) solid var(--line);
+  border-radius: var(--radius);
+  background: var(--card);
+  resize: vertical;
+}
+
+.prompt-tools {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.prompt-random {
+  min-height: var(--touch);
+  padding: 0 14px;
+  border: var(--border-width) solid var(--line);
+  border-radius: var(--radius);
+  background: var(--raised);
+  cursor: pointer;
+}
+
+.prompt-send {
+  min-height: 48px;
+  border: 0;
+  border-radius: var(--radius);
+  background: var(--accent);
+  color: var(--on-accent);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.prompt-send:disabled {
+  background: var(--raised);
+  color: var(--muted);
+  cursor: default;
+}
+
+.prompt-box .error {
+  padding: 0;
+}
+
+.prompt-source {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+
+.prompt-source-clear {
+  border: 0;
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+}

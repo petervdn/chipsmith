@@ -8,6 +8,8 @@ import { isJobRunning } from '../queries/jobs.ts';
 import { useSong } from '../queries/songs.ts';
 import { useTabCounts } from './use-tab-counts.ts';
 import type { Route } from '../router.ts';
+import '../jobs/jobs.css';
+import './TopBar.css';
 
 const LOGO_SIZE = 32;
 

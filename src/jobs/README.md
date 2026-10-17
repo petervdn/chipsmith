@@ -2,7 +2,10 @@
 
 The jobs: their page, a job's card, and the line of a running one.
 
+- `JobCard.css`: the look of JobCard.tsx
 - `JobCard.tsx`: a job's card on the Jobs page
-- `jobs.css`: the look of the prompt box, the job cards and the running count
+- `jobs.css`: what the jobs' parts share: the spinner and the time
+- `JobsPage.css`: the look of JobsPage.tsx
 - `JobsPage.tsx`: every prompt sent, as a card, newest first
+- `JobStrip.css`: the look of JobStrip.tsx
 - `JobStrip.tsx`: one line for a running job, above the songs list

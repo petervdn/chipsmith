@@ -5,6 +5,9 @@ import { useState } from 'react';
 import { GuideEditor } from './GuideEditor.tsx';
 import { useGuides } from '../queries/guides.ts';
 import { usePageTitle } from '../use-page-title.ts';
+import '../lists/lists.css';
+import './guides.css';
+import './GuidesPage.css';
 
 /** What is open: a guide by id, a new one, or nothing. */
 type OpenGuide = { guideId: string } | 'new' | null;

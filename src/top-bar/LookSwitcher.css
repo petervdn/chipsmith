@@ -1,0 +1,12 @@
+/* The look of LookSwitcher.tsx. */
+
+/* the switch between light and dark (LookSwitcher.tsx) */
+.look-switcher {
+  min-width: var(--touch);
+  min-height: var(--touch);
+  border: var(--border-width) solid var(--line);
+  border-radius: var(--radius);
+  background: var(--raised);
+  font-size: 1.125rem;
+  cursor: pointer;
+}

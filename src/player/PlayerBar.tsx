@@ -5,6 +5,7 @@ import { formatSeconds } from '../format.ts';
 import { getSongPosition } from '../playback/audio-engine.ts';
 import { usePlayerStore } from '../stores/player-store.ts';
 import { usePreferencesStore } from '../stores/preferences-store.ts';
+import './PlayerBar.css';
 
 /** The player bar. */
 export function PlayerBar() {

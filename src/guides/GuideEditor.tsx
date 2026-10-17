@@ -2,6 +2,9 @@
 // it is chosen by default, Save, Delete and Cancel.
 import type { Guide } from '../../shared/guide.types.ts';
 import { useGuideEditor } from './use-guide-editor.ts';
+import '../lists/lists.css';
+import './guides.css';
+import './GuideEditor.css';
 
 type GuideEditorProps = { guide: Guide | null; onDone: () => void };
 

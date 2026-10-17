@@ -1,0 +1,31 @@
+/* The look of FilterBar.tsx. */
+
+/* the filter bar */
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  margin-bottom: 12px;
+}
+
+.filter-words {
+  flex: 1 1 240px;
+  min-height: var(--touch);
+  padding: 0 12px;
+  border: var(--border-width) solid var(--line);
+  border-radius: var(--radius);
+  background: var(--card);
+}
+
+.tag-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  width: 100%;
+}
+
+.tag-count {
+  color: var(--muted);
+  font-size: 0.75rem;
+}

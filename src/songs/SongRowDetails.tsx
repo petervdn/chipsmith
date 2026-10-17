@@ -5,6 +5,8 @@
 import { useState } from 'react';
 import type { SongListing } from '../../shared/api.types.ts';
 import { copyText } from '../copy-text.ts';
+import '../lists/lists.css';
+import './SongRowDetails.css';
 
 type SongRowDetailsProps = { listing: SongListing; titlesById: Map<string, string> };
 

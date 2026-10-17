@@ -1,0 +1,38 @@
+/* The look of SongRowDetails.tsx. */
+
+.row-details {
+  padding: 4px 12px 12px 64px;
+  font-size: 0.875rem;
+}
+
+@media (max-width: 759px) {
+  .row-details {
+    padding-left: 12px;
+  }
+}
+
+.row-prompt {
+  padding: 8px 10px;
+  border-radius: var(--radius);
+  background: var(--raised);
+}
+
+.row-prompt + .row-prompt {
+  margin-top: 6px;
+}
+
+.row-prompt-text {
+  margin: 0 0 6px;
+  white-space: pre-wrap;
+}
+
+.row-prompt-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.row-facts {
+  margin: 8px 0 0;
+  color: var(--muted);
+}

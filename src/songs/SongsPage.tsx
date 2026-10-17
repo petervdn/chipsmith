@@ -17,6 +17,8 @@ import { SongRowDetails } from './SongRowDetails.tsx';
 import { StatusButtons } from '../lists/StatusButtons.tsx';
 import { UndoBar, useUndo } from '../lists/UndoBar.tsx';
 import { usePageTitle } from '../use-page-title.ts';
+import '../lists/lists.css';
+import './SongsPage.css';
 
 type SongsPageProps = { jobs: Job[] };
 

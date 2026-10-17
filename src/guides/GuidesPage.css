@@ -1,0 +1,45 @@
+/* The look of GuidesPage.tsx. */
+
+.guides-page {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.guides-intro {
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+
+/* a guide's row: its name, "default", and the start of its text on one line */
+.guide-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 10px;
+  width: 100%;
+  min-height: var(--touch);
+  padding: 10px 4px;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.guide-default {
+  padding: 1px 6px;
+  border-radius: var(--radius);
+  background: var(--accent);
+  color: var(--on-accent);
+  font-size: 0.75rem;
+}
+
+.guide-preview {
+  flex: 1 1 100%;
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 0.8125rem;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}

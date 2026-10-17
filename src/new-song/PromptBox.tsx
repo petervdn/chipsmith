@@ -8,6 +8,8 @@ import { getRandomPrompt } from './random-prompt.ts';
 import { useSendPrompt } from '../queries/jobs.ts';
 import { navigate } from '../router.ts';
 import { useGuideChoice } from '../guides/use-guide-choice.ts';
+import '../lists/lists.css';
+import './PromptBox.css';
 
 /** The song a prompt is sent again from: its id, its title, and whether it changed after its prompt. */
 export type PromptSource = { songId: string; title: string; isChangedAfterPrompt: boolean };

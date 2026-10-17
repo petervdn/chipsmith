@@ -1,0 +1,18 @@
+/* The look of Logo.tsx. */
+
+.logo {
+  display: block;
+  flex: none;
+}
+
+.logo-note {
+  fill: var(--accent);
+}
+
+.logo-note-outline {
+  fill: var(--logo-outline);
+}
+
+.logo-anvil {
+  fill: var(--fg);
+}

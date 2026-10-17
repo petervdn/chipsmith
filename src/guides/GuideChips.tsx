@@ -3,6 +3,8 @@
 // be read here, opened under the chips, without leaving the prompt; a link opens the Guides page to
 // make or change them.
 import type { Guide } from '../../shared/guide.types.ts';
+import '../lists/lists.css';
+import './GuideChips.css';
 
 type GuideChipsProps = {
   guides: Guide[];

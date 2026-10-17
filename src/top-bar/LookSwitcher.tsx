@@ -1,5 +1,6 @@
 // ☾ / ☀ in the top bar: switches the page between light and dark.
 import { useLook } from './use-look.ts';
+import './LookSwitcher.css';
 
 /** The light / dark switch. */
 export function LookSwitcher() {

@@ -1,34 +1,14 @@
-/* The lists of songs and clips: the filter bar above them, their rows (wrapping on a phone, one
-   line on a desktop) and the status buttons. Uses the tokens of style.css. */
+/* What the lists of songs and clips share: the rows (wrapping on a phone, one line on a desktop,
+   with ▶ and ⌄ where they have them), the tag chip, the small row buttons and warnings. Imported by
+   each component that shows them. */
 
-/* the filter bar */
-.filter-bar {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px 12px;
-  margin-bottom: 12px;
-}
-.filter-words {
-  flex: 1 1 240px;
-  min-height: var(--touch);
-  padding: 0 12px;
-  border: var(--border-width) solid var(--line);
-  border-radius: var(--radius);
-  background: var(--card);
-}
 .filter-switch {
   display: inline-flex;
   align-items: center;
   gap: 6px;
   color: var(--muted);
 }
-.tag-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  width: 100%;
-}
+
 .tag-chip {
   min-height: 32px;
   padding: 0 10px;
@@ -37,14 +17,11 @@
   background: var(--card);
   cursor: pointer;
 }
+
 .tag-chip.is-on {
   border-color: var(--accent);
   background: var(--accent);
   color: var(--on-accent);
-}
-.tag-count {
-  color: var(--muted);
-  font-size: 0.75rem;
 }
 
 /* a list of songs or clips: on a phone each row wraps, its facts under its title */
@@ -56,9 +33,11 @@
   border-top: var(--border-width) solid var(--line);
   border-bottom: var(--border-width) solid var(--line);
 }
+
 .item-list > li + li {
   border-top: var(--border-width) solid var(--line);
 }
+
 .item-row {
   position: relative;
   display: grid;
@@ -70,12 +49,14 @@
   gap: 2px 12px;
   padding: 10px 12px;
 }
+
 .item-main {
   grid-area: main;
   display: flex;
   flex-direction: column;
   min-width: 0;
 }
+
 .item-title {
   font-weight: 600;
   overflow: hidden;
@@ -83,17 +64,20 @@
   white-space: nowrap;
   text-decoration: none;
 }
+
 /* the title's link covers the whole row, under the status buttons */
 .item-link::after {
   content: '';
   position: absolute;
   inset: 0;
 }
+
 .item-id {
   font-weight: 400;
   color: var(--muted);
   font-size: 0.8125rem;
 }
+
 .item-tags,
 .item-prompt {
   color: var(--muted);
@@ -102,6 +86,7 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
 .item-facts {
   grid-area: facts;
   display: flex;
@@ -110,34 +95,6 @@
   color: var(--muted);
   font-size: 0.8125rem;
   font-variant-numeric: tabular-nums;
-}
-.status-buttons {
-  grid-area: status;
-  position: relative;
-  z-index: 1;
-  display: flex;
-  gap: 4px;
-}
-.status-buttons button {
-  width: var(--touch);
-  height: var(--touch);
-  border: 0;
-  border-radius: var(--radius);
-  background: none;
-  font-size: 1.25rem;
-  color: var(--muted);
-  cursor: pointer;
-}
-.status-keep.is-on {
-  color: var(--keep);
-}
-.status-buttons .status-reject {
-  font-size: 0.9375rem;
-  opacity: 0.45;
-}
-.status-buttons .status-reject.is-on {
-  color: var(--reject);
-  opacity: 1;
 }
 
 /* on a desktop a row is one line: title, facts, status */
@@ -155,39 +112,6 @@
   }
 }
 
-/* the offer to undo a reject, above the player bar */
-.undo-bar {
-  position: fixed;
-  left: 50%;
-  bottom: 88px;
-  z-index: 20;
-  transform: translateX(-50%);
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  max-width: calc(100% - 32px);
-  padding: 8px 8px 8px 16px;
-  border-radius: calc(var(--radius) * 1.25);
-  background: var(--fg);
-  color: var(--bg);
-  box-shadow: 0 4px 16px rgb(0 0 0 / 25%);
-}
-.undo-text {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.undo-button {
-  min-height: var(--touch);
-  padding: 0 14px;
-  border: 0;
-  border-radius: var(--radius);
-  background: var(--accent);
-  color: var(--on-accent);
-  font-weight: 600;
-  cursor: pointer;
-}
-
 /* ⌄ opens a row's details (after ▶'s layout in player.css, so more specific than it) */
 .item-row.has-play.has-expand {
   grid-template-columns: auto 1fr auto auto;
@@ -195,55 +119,14 @@
     'play main status expand'
     'play facts status expand';
 }
+
 @media (min-width: 760px) {
   .item-row.has-play.has-expand {
     grid-template-columns: auto 1fr auto auto auto;
     grid-template-areas: 'play main facts status expand';
   }
 }
-.row-expand {
-  grid-area: expand;
-  position: relative;
-  z-index: 1;
-  width: 32px;
-  height: var(--touch);
-  border: 0;
-  border-radius: var(--radius);
-  background: none;
-  color: var(--muted);
-  font-size: 1.125rem;
-  cursor: pointer;
-  transition: transform 0.15s;
-}
-.row-expand.is-open {
-  transform: rotate(180deg);
-}
-.row-details {
-  padding: 4px 12px 12px 64px;
-  font-size: 0.875rem;
-}
-@media (max-width: 759px) {
-  .row-details {
-    padding-left: 12px;
-  }
-}
-.row-prompt {
-  padding: 8px 10px;
-  border-radius: var(--radius);
-  background: var(--raised);
-}
-.row-prompt + .row-prompt {
-  margin-top: 6px;
-}
-.row-prompt-text {
-  margin: 0 0 6px;
-  white-space: pre-wrap;
-}
-.row-prompt-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
+
 .row-action {
   display: inline-flex;
   align-items: center;
@@ -256,10 +139,7 @@
   text-decoration: none;
   cursor: pointer;
 }
-.row-facts {
-  margin: 8px 0 0;
-  color: var(--muted);
-}
+
 .row-warning {
   margin: 0 0 6px;
   color: var(--keep);
@@ -274,15 +154,6 @@
   }
   .item-facts {
     gap: 0 8px;
-  }
-  .status-buttons {
-    gap: 0;
-  }
-  .status-buttons button {
-    width: 34px;
-  }
-  .row-expand {
-    width: 28px;
   }
 }
 
@@ -313,10 +184,29 @@
   .item-row:hover {
     background: color-mix(in srgb, var(--raised) 60%, transparent);
   }
-  .status-buttons button:hover {
-    background: var(--raised);
+}
+
+.item-row.has-play {
+  grid-template-columns: auto 1fr auto;
+  grid-template-areas:
+    'play main status'
+    'play facts status';
+}
+
+.item-row.has-play .play-button {
+  grid-area: play;
+}
+
+@media (min-width: 760px) {
+  .item-row.has-play {
+    grid-template-columns: auto 1fr auto auto;
+    grid-template-areas: 'play main facts status';
   }
-  .status-buttons .status-reject:hover {
-    opacity: 1;
+}
+
+@media (max-width: 759px) {
+  .item-row .play-button {
+    width: 36px;
+    height: 36px;
   }
 }

@@ -1,6 +1,7 @@
 // A bar under the top bar on every page when a program the app calls cannot be used: which, what it
 // is needed for, the path tried and why, and which setting points to it; with "Check again".
 import { useCheckProgramsAgain, usePrograms } from './queries/programs.ts';
+import './ProgramWarning.css';
 
 /** The warning bar, shown only when a program is missing. */
 export function ProgramWarning() {

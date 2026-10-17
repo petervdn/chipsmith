@@ -1,0 +1,27 @@
+/* The look of SongsPage.tsx. */
+
+.row-expand {
+  grid-area: expand;
+  position: relative;
+  z-index: 1;
+  width: 32px;
+  height: var(--touch);
+  border: 0;
+  border-radius: var(--radius);
+  background: none;
+  color: var(--muted);
+  font-size: 1.125rem;
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+
+.row-expand.is-open {
+  transform: rotate(180deg);
+}
+
+/* a phone: tighter rows, so the title and the facts keep their room */
+@media (max-width: 759px) {
+  .row-expand {
+    width: 28px;
+  }
+}

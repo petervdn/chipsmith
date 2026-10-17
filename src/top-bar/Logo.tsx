@@ -1,5 +1,6 @@
 // The logo: a note above an anvil, drawn on a grid of pixels in the look's colours; the note has an
 // outline of a pixel, seen where the page is light.
+import './Logo.css';
 
 /** A run of pixels on one row: x, y and how many. */
 type PixelRun = [number, number, number];

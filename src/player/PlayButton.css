@@ -1,0 +1,38 @@
+/* The look of PlayButton.tsx. */
+
+/* ▶ on a song's row and page */
+.play-button {
+  position: relative;
+  z-index: 1;
+  width: var(--touch);
+  height: var(--touch);
+  border: var(--border-width) solid var(--line);
+  border-radius: var(--round);
+  background: var(--card);
+  font-size: 0.8125rem;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+}
+
+/* its audio is being rendered */
+.play-button:disabled {
+  color: var(--muted);
+  cursor: default;
+}
+
+/* orange while its song plays (the player's state); the hover look only where there is a mouse, as a
+   phone keeps a tapped button "hovered" until the next tap */
+.play-button.is-playing {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+@media (hover: hover) {
+  .play-button:hover {
+    border-color: var(--accent);
+  }
+  .play-button.is-playing:hover {
+    color: var(--on-accent);
+  }
+}

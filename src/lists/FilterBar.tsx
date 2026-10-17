@@ -1,6 +1,8 @@
 // The filter bar above a list: words to find, the tags in the list to pick from, and a switch for
 // the rejected. It shows and changes a ListFilter; what it filters is the list's.
 import type { ListFilter } from './list-filter.ts';
+import './lists.css';
+import './FilterBar.css';
 
 type FilterBarProps = {
   filter: ListFilter;

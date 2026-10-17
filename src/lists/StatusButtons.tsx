@@ -1,6 +1,7 @@
 // The two buttons that set a song's or a clip's status: ★ keeps it, a quiet ✕ rejects it (which hides it
 // from the list until "rejected" is ticked); pressed again, either goes back to heard.
 import type { Status } from '../../shared/catalogue.types.ts';
+import './StatusButtons.css';
 
 type StatusButtonsProps = { status: Status; onChange: (status: Status) => void };
 

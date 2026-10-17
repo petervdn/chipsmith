@@ -3,6 +3,8 @@
 import type { Job } from '../../shared/job.types.ts';
 import { formatSeconds } from '../format.ts';
 import { getNowText, getPhaseName, useElapsed } from './JobCard.tsx';
+import './jobs.css';
+import './JobStrip.css';
 
 type JobStripProps = { job: Job };
 

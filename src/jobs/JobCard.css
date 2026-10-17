@@ -1,0 +1,117 @@
+/* The look of JobCard.tsx. */
+
+.job-card {
+  margin-bottom: 12px;
+  padding: 12px;
+  border: var(--border-width) solid var(--accent);
+  border-radius: calc(var(--radius) * 1.25);
+  background: var(--card);
+}
+
+.job-card.is-done {
+  border-color: var(--line);
+}
+
+.job-card.is-failed {
+  border-color: var(--reject);
+}
+
+.job-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.job-phase {
+  font-weight: 600;
+}
+
+.job-remove {
+  min-width: var(--touch);
+  min-height: var(--touch);
+  margin: -8px -8px -8px 0;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.job-prompt {
+  margin: 6px 0;
+  color: var(--muted);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.job-now {
+  margin: 6px 0;
+  font-size: 0.875rem;
+}
+
+.job-summary {
+  margin: 6px 0;
+  font-size: 0.875rem;
+}
+
+.job-songs {
+  list-style: none;
+  margin: 8px 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.job-song {
+  display: flex;
+  gap: 8px;
+  color: var(--muted);
+}
+
+.job-song.is-done,
+.job-song.is-rendering {
+  color: var(--fg);
+}
+
+.job-song.is-failed {
+  color: var(--reject);
+}
+
+.job-song-mark {
+  width: 14px;
+  text-align: center;
+}
+
+.job-notes-toggle {
+  padding: 4px 0;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  font-size: 0.8125rem;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.job-notes {
+  margin: 4px 0 0;
+  padding-left: 0;
+  list-style: none;
+  font-size: 0.8125rem;
+  max-height: 240px;
+  overflow-y: auto;
+}
+
+.job-note-time {
+  display: inline-block;
+  width: 44px;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.job-guides {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.8125rem;
+}

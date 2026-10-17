@@ -1,0 +1,39 @@
+/* The look of GuideEditor.tsx. */
+
+.guide-save:disabled {
+  background: var(--raised);
+  color: var(--muted);
+  cursor: default;
+}
+
+.guide-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px 0;
+}
+
+.guide-name,
+.guide-text {
+  padding: 10px 12px;
+  font-size: 1rem;
+  border: var(--border-width) solid var(--line);
+  border-radius: var(--radius);
+  background: var(--card);
+  color: inherit;
+}
+
+.guide-text {
+  min-height: 30vh;
+  resize: vertical;
+}
+
+.guide-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.guide-delete {
+  margin-left: auto;
+}

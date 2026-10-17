@@ -1,0 +1,10 @@
+/* The look of JobsPage.tsx. */
+
+.new-heading {
+  margin: 20px 0 8px;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--muted);
+}

@@ -9,6 +9,8 @@ import { PlayButton } from '../player/PlayButton.tsx';
 import { isJobRunning } from '../queries/jobs.ts';
 import { useSongs } from '../queries/songs.ts';
 import { usePageTitle } from '../use-page-title.ts';
+import '../lists/lists.css';
+import './HomePage.css';
 
 const LATEST_COUNT = 5;
 const LOGO_SIZE = 96;

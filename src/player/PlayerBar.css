@@ -1,0 +1,75 @@
+/* The look of PlayerBar.tsx. */
+
+.player-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 10;
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  align-items: center;
+  gap: 4px 12px;
+  padding: 8px 16px;
+  padding-bottom: max(8px, env(safe-area-inset-bottom));
+  background: var(--card);
+  border-top: var(--border-width) solid var(--line);
+}
+
+.player-play {
+  width: 48px;
+  height: 48px;
+  border: 0;
+  border-radius: var(--round);
+  background: var(--accent);
+  color: var(--card);
+  font-size: 1rem;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+}
+
+.player-play.is-loading {
+  font-size: 0.75rem;
+}
+
+.player-middle {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.player-title {
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+.player-seek {
+  width: 100%;
+  accent-color: var(--accent);
+}
+
+.player-time {
+  color: var(--muted);
+  font-size: 0.8125rem;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.player-mute {
+  width: var(--touch);
+  height: var(--touch);
+  border: 0;
+  background: none;
+  font-size: 1.125rem;
+  cursor: pointer;
+}
+
+.player-error {
+  grid-column: 1 / -1;
+  margin: 0;
+  color: var(--reject);
+  font-size: 0.8125rem;
+}

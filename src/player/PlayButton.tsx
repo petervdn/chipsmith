@@ -4,6 +4,7 @@
 import { getSongPosition } from '../playback/audio-engine.ts';
 import { fetchSong } from '../queries/songs.ts';
 import { usePlayerStore } from '../stores/player-store.ts';
+import './PlayButton.css';
 
 type PlayButtonProps = { songId: string; isWaitingForAudio: boolean };
 

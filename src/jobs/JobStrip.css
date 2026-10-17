@@ -1,0 +1,34 @@
+/* The look of JobStrip.tsx. */
+
+/* a running job's line above the songs list */
+.job-strip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+  padding: 10px 12px;
+  border: var(--border-width) solid var(--accent);
+  border-radius: calc(var(--radius) * 1.25);
+  background: var(--card);
+  text-decoration: none;
+}
+
+.job-strip-phase {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.job-strip-now {
+  flex: 1;
+  min-width: 0;
+  color: var(--muted);
+  font-size: 0.8125rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.job-strip-go {
+  color: var(--muted);
+  font-size: 1.125rem;
+}

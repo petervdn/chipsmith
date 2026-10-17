@@ -7,6 +7,7 @@ import type { PromptSource } from './PromptBox.tsx';
 import { PromptBox } from './PromptBox.tsx';
 import { useSongs } from '../queries/songs.ts';
 import { usePageTitle } from '../use-page-title.ts';
+import './NewPage.css';
 
 /** The New page. */
 export function NewPage() {

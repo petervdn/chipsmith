@@ -1,6 +1,7 @@
 // A bar above the player bar after a change that takes something out of sight (a reject): says what
 // happened and offers to undo it, for a few seconds. `useUndo` keeps the one offer a page has.
 import { useCallback, useEffect, useState } from 'react';
+import './UndoBar.css';
 
 /** How long an undo is offered, in milliseconds. */
 const OFFER_TIME = 8000;

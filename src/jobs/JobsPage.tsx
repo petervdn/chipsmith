@@ -4,6 +4,7 @@ import type { Job } from '../../shared/job.types.ts';
 import { JobCard } from './JobCard.tsx';
 import { isJobRunning, useRemoveJob } from '../queries/jobs.ts';
 import { usePageTitle } from '../use-page-title.ts';
+import './JobsPage.css';
 
 type JobsPageProps = { jobs: Job[] };
 

@@ -1,162 +1,11 @@
-/* The New page (the prompt box and the job cards), the line of a running job above the songs list,
-   and the count on the New tab. Uses the tokens of style.css. */
+/* What the jobs' parts share: the spinner of a running job and the time it has been going. */
 
-.new-page {
-  max-width: 720px;
-  margin: 0 auto;
-}
-.new-heading {
-  margin: 20px 0 8px;
-  font-size: 0.8125rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-  color: var(--muted);
-}
-
-.prompt-box {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin: 8px 0 12px;
-}
-.prompt-text {
-  min-height: 20vh;
-  padding: 12px;
-  font-size: 1rem;
-  border: var(--border-width) solid var(--line);
-  border-radius: var(--radius);
-  background: var(--card);
-  resize: vertical;
-}
-.prompt-tools {
-  display: flex;
-  justify-content: flex-end;
-}
-.prompt-random {
-  min-height: var(--touch);
-  padding: 0 14px;
-  border: var(--border-width) solid var(--line);
-  border-radius: var(--radius);
-  background: var(--raised);
-  cursor: pointer;
-}
-.prompt-send {
-  min-height: 48px;
-  border: 0;
-  border-radius: var(--radius);
-  background: var(--accent);
-  color: var(--on-accent);
-  font-weight: 600;
-  cursor: pointer;
-}
-.prompt-send:disabled {
-  background: var(--raised);
-  color: var(--muted);
-  cursor: default;
-}
-.prompt-box .error {
-  padding: 0;
-}
-
-.job-card {
-  margin-bottom: 12px;
-  padding: 12px;
-  border: var(--border-width) solid var(--accent);
-  border-radius: calc(var(--radius) * 1.25);
-  background: var(--card);
-}
-.job-card.is-done {
-  border-color: var(--line);
-}
-.job-card.is-failed {
-  border-color: var(--reject);
-}
-.job-head {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.job-phase {
-  font-weight: 600;
-}
 .job-time {
   margin-left: auto;
   color: var(--muted);
   font-variant-numeric: tabular-nums;
 }
-.job-remove {
-  min-width: var(--touch);
-  min-height: var(--touch);
-  margin: -8px -8px -8px 0;
-  border: 0;
-  background: none;
-  color: var(--muted);
-  cursor: pointer;
-}
-.job-prompt {
-  margin: 6px 0;
-  color: var(--muted);
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-.job-now {
-  margin: 6px 0;
-  font-size: 0.875rem;
-}
-.job-summary {
-  margin: 6px 0;
-  font-size: 0.875rem;
-}
-.job-songs {
-  list-style: none;
-  margin: 8px 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-.job-song {
-  display: flex;
-  gap: 8px;
-  color: var(--muted);
-}
-.job-song.is-done,
-.job-song.is-rendering {
-  color: var(--fg);
-}
-.job-song.is-failed {
-  color: var(--reject);
-}
-.job-song-mark {
-  width: 14px;
-  text-align: center;
-}
-.job-notes-toggle {
-  padding: 4px 0;
-  border: 0;
-  background: none;
-  color: var(--muted);
-  font-size: 0.8125rem;
-  text-decoration: underline;
-  cursor: pointer;
-}
-.job-notes {
-  margin: 4px 0 0;
-  padding-left: 0;
-  list-style: none;
-  font-size: 0.8125rem;
-  max-height: 240px;
-  overflow-y: auto;
-}
-.job-note-time {
-  display: inline-block;
-  width: 44px;
-  color: var(--muted);
-  font-variant-numeric: tabular-nums;
-}
+
 .job-spinner {
   width: 12px;
   height: 12px;
@@ -165,52 +14,9 @@
   border-radius: var(--round);
   animation: job-spin 0.9s linear infinite;
 }
+
 @keyframes job-spin {
   to {
     transform: rotate(360deg);
   }
-}
-
-/* a running job's line above the songs list */
-.job-strip {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 8px;
-  padding: 10px 12px;
-  border: var(--border-width) solid var(--accent);
-  border-radius: calc(var(--radius) * 1.25);
-  background: var(--card);
-  text-decoration: none;
-}
-.job-strip-phase {
-  font-weight: 600;
-  white-space: nowrap;
-}
-.job-strip-now {
-  flex: 1;
-  min-width: 0;
-  color: var(--muted);
-  font-size: 0.8125rem;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.job-strip-go {
-  color: var(--muted);
-  font-size: 1.125rem;
-}
-.prompt-source {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin: 0;
-  color: var(--muted);
-  font-size: 0.875rem;
-}
-.prompt-source-clear {
-  border: 0;
-  background: none;
-  color: var(--muted);
-  cursor: pointer;
 }

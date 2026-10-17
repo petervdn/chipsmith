@@ -1,0 +1,115 @@
+/* The look of GuideChips.tsx. */
+
+/* the chips under the prompt box, in a panel of their own; a chosen one in inverted colours */
+.guide-chips {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  margin: 12px 0;
+  padding: 16px;
+  border: var(--border-width) solid var(--line);
+  border-radius: var(--radius);
+  background: var(--card);
+}
+
+.guide-chips-label {
+  padding: 0 6px;
+  font-weight: 600;
+}
+
+.guide-chips-help {
+  max-width: 40em;
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+
+.guide-chips-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.guide-chip {
+  min-height: var(--touch);
+  padding: 0 16px;
+}
+
+.guide-chip.is-on {
+  border-color: var(--fg);
+  background: var(--fg);
+  color: var(--bg);
+}
+
+/* the guides' texts, to read without leaving the prompt */
+.guide-texts {
+  width: 100%;
+}
+
+.guide-texts > summary,
+.guide-read > summary {
+  display: flex;
+  align-items: center;
+  min-height: var(--touch);
+  cursor: pointer;
+}
+
+.guide-texts > summary {
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+
+.guide-texts > summary::before,
+.guide-read > summary::before {
+  content: '▸';
+  width: 1.2em;
+  color: var(--muted);
+}
+
+.guide-texts[open] > summary::before,
+.guide-read[open] > summary::before {
+  content: '▾';
+}
+
+.guide-texts > summary::-webkit-details-marker,
+.guide-read > summary::-webkit-details-marker {
+  display: none;
+}
+
+.guide-texts > summary,
+.guide-read > summary {
+  list-style: none;
+}
+
+.guide-read {
+  margin-left: 1.2em;
+  border-top: var(--border-width) solid var(--line);
+}
+
+.guide-read > summary {
+  font-weight: 600;
+}
+
+.guide-read-chosen {
+  margin-left: 4px;
+  padding: 1px 6px;
+  border-radius: var(--radius);
+  background: var(--accent);
+  color: var(--on-accent);
+  font-size: 0.75rem;
+  font-weight: 400;
+}
+
+.guide-read-text {
+  max-height: 40vh;
+  overflow-y: auto;
+  margin: 0 0 12px 1.2em;
+  color: var(--muted);
+  font-size: 0.875rem;
+  white-space: pre-wrap;
+}
+
+.guide-chips-edit {
+  font-size: 0.8125rem;
+}

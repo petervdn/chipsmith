@@ -5,6 +5,7 @@ import { PlayButton } from '../player/PlayButton.tsx';
 import { useSong } from '../queries/songs.ts';
 import { getClipLabel } from '../clips/ClipsPage.tsx';
 import { usePageTitle } from '../use-page-title.ts';
+import './SongPage.css';
 
 type SongPageProps = { songId: string };
 
