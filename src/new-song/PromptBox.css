@@ -17,20 +17,6 @@
   resize: vertical;
 }
 
-.prompt-box-tools {
-  display: flex;
-  justify-content: flex-end;
-}
-
-.prompt-box-random {
-  min-height: var(--touch);
-  padding: 0 14px;
-  border: var(--border-width) solid var(--line);
-  border-radius: var(--radius);
-  background: var(--raised);
-  cursor: pointer;
-}
-
 /* the prompt and its panels, with Create at their right (CreatePanel.css) */
 .prompt-box-body {
   display: flex;
@@ -72,8 +58,4 @@
   background: none;
   color: var(--muted);
   cursor: pointer;
-}
-
-.prompt-box-random.is-on {
-  border-color: var(--fg);
 }

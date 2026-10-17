@@ -112,29 +112,18 @@ export function PromptBox({ initialText, source, onClearSource }: PromptBoxProps
               if (event.key === 'Enter' && (event.metaKey || event.ctrlKey)) send();
             }}
           />
-          <div className="prompt-box-tools">
-            <button
-              type="button"
-              className={`prompt-box-random${isBuilding ? ' is-on' : ''}`}
-              onClick={() => setBuilding(!isBuilding)}
-              aria-expanded={isBuilding}
-              title="build a prompt from parts, rolled at random or picked (nothing is sent)"
-            >
-              🎲 Build a prompt
-            </button>
-          </div>
-          {isBuilding && (
-            <PromptBuilder
-              onUse={(built) => {
-                const isOwnText = text.trim() !== '' && text !== usedText;
-                if (isOwnText && !window.confirm('Replace what is in the box with this prompt?')) {
-                  return;
-                }
-                setText(built);
-                setUsedText(built);
-              }}
-            />
-          )}
+          <PromptBuilder
+            isOpen={isBuilding}
+            onToggle={() => setBuilding(!isBuilding)}
+            onUse={(built) => {
+              const isOwnText = text.trim() !== '' && text !== usedText;
+              if (isOwnText && !window.confirm('Replace what is in the box with this prompt?')) {
+                return;
+              }
+              setText(built);
+              setUsedText(built);
+            }}
+          />
           <StructurePanel choice={structureChoice} />
           <GuideChips guides={guides} chosenIds={chosenIds} onToggle={toggleGuide} />
         </div>
