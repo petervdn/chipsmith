@@ -1,7 +1,7 @@
 // The editor bar's metronome: a switch that clicks the beats while the song plays (the first of a
-// bar higher), and a small slider for how loud, beside it. Both are kept in the preferences.
+// bar higher), and a small slider for how loud (up to well above the music), beside it. Both are kept in the preferences.
 import { Metronome } from 'lucide-react';
-import { QUIETEST_DB, LOUDEST_DB, formatVolume } from '../player/volume.ts';
+import { METRONOME_LOUDEST_DB, QUIETEST_DB, formatVolume } from '../player/volume.ts';
 import { usePreferencesStore } from '../stores/preferences-store.ts';
 import { ControlGroup } from './ControlGroup.tsx';
 import './MetronomeControls.css';
@@ -33,7 +33,7 @@ export function MetronomeControls() {
         type="range"
         className="metronome-controls-volume"
         min={QUIETEST_DB}
-        max={LOUDEST_DB}
+        max={METRONOME_LOUDEST_DB}
         step={1}
         value={volume}
         onChange={(event) => setVolume(Number(event.target.value))}

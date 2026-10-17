@@ -1,10 +1,11 @@
 /**
  * The editor's metronome: a click on every beat of the song now playing, higher and louder on the
  * first beat of a bar, scheduled a little ahead on the audio clock so it stays with the song. It
- * plays through its own volume (the preferences store's) into the page's output, so the player's
- * volume and the mute switch apply to it too. When the song plays from another place, it follows.
+ * plays through its own volume (the preferences store's, which goes well above the music's) and a
+ * limiter that keeps a loud click from clipping, into the page's output, so the player's volume and
+ * the mute switch apply to it too. When the song plays from another place, it follows.
  */
-import { getGain } from '../player/volume.ts';
+import { METRONOME_LOUDEST_DB, getGain } from '../player/volume.ts';
 import { usePreferencesStore } from '../stores/preferences-store.ts';
 import { getContext, getOutput, getSongZero } from './audio-engine.ts';
 import type { MetronomeTempo } from './metronome-clicks.ts';
@@ -14,11 +15,13 @@ import { getClicks } from './metronome-clicks.ts';
 const LOOK_INTERVAL = 25;
 const LOOK_AHEAD = 0.12;
 /** How long a click sounds, in seconds, and how fast its volume follows the slider. */
-const CLICK_SECONDS = 0.035;
+const CLICK_SECONDS = 0.07;
 const VOLUME_EASE = 0.02;
 /** A click's pitch, in hertz, and its loudness: the first beat of a bar higher and louder. */
-const DOWNBEAT = { frequency: 1760, gain: 1 };
-const BEAT = { frequency: 1175, gain: 0.55 };
+const DOWNBEAT = { frequency: 880, gain: 1 };
+const BEAT = { frequency: 587, gain: 0.7 };
+/** The limiter's ceiling in decibels, how hard it holds, and how fast it catches and lets go. */
+const LIMIT = { threshold: -3, ratio: 20, attack: 0.001, release: 0.05 };
 /** How far the song's start may move, in seconds, before it counts as played from a new place. */
 const MOVED = 0.001;
 
@@ -31,10 +34,21 @@ const MOVED = 0.001;
 export function startMetronome(tempo: MetronomeTempo): () => void {
   const audio = getContext();
   const volume = audio.createGain();
-  volume.gain.value = getGain(usePreferencesStore.getState().metronomeVolume);
-  volume.connect(getOutput());
+  volume.gain.value = getGain(usePreferencesStore.getState().metronomeVolume, METRONOME_LOUDEST_DB);
+  const limiter = audio.createDynamicsCompressor();
+  limiter.threshold.value = LIMIT.threshold;
+  limiter.knee.value = 0;
+  limiter.ratio.value = LIMIT.ratio;
+  limiter.attack.value = LIMIT.attack;
+  limiter.release.value = LIMIT.release;
+  volume.connect(limiter);
+  limiter.connect(getOutput());
   const unsubscribe = usePreferencesStore.subscribe(({ metronomeVolume }) =>
-    volume.gain.setTargetAtTime(getGain(metronomeVolume), audio.currentTime, VOLUME_EASE),
+    volume.gain.setTargetAtTime(
+      getGain(metronomeVolume, METRONOME_LOUDEST_DB),
+      audio.currentTime,
+      VOLUME_EASE,
+    ),
   );
   let scheduled: OscillatorNode[] = [];
   let zero: number | null = null;
@@ -80,11 +94,12 @@ export function startMetronome(tempo: MetronomeTempo): () => void {
     unsubscribe();
     silence();
     volume.disconnect();
+    limiter.disconnect();
   };
 }
 
 /**
- * Plays one click: a short blip that dies away.
+ * Plays one click: a short square-wave blip that dies away.
  *
  * @param audio - The audio context.
  * @param destination - Where the click goes: the metronome's volume.
@@ -101,7 +116,7 @@ function playClick(
   const { frequency, gain } = isDownbeat ? DOWNBEAT : BEAT;
   const oscillator = audio.createOscillator();
   const envelope = audio.createGain();
-  oscillator.type = 'triangle';
+  oscillator.type = 'square';
   oscillator.frequency.value = frequency;
   envelope.gain.setValueAtTime(gain, time);
   envelope.gain.exponentialRampToValueAtTime(gain / 1000, time + CLICK_SECONDS);

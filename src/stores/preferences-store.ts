@@ -23,7 +23,7 @@ type PreferencesStore = {
   trackNameWidth: number;
   /** Whether the editor's metronome clicks while its song plays. */
   isMetronomeOn: boolean;
-  /** The metronome's volume, in decibels (player/volume.ts), under the player's volume. */
+  /** The metronome's volume, in decibels (player/volume.ts), up to well above the music's. */
   metronomeVolume: number;
   setMuted: (isMuted: boolean) => void;
   setLookId: (lookId: string) => void;
@@ -34,8 +34,8 @@ type PreferencesStore = {
   setMetronomeVolume: (metronomeVolume: number) => void;
 };
 
-/** The metronome's volume to start with, in decibels: under the music. */
-const METRONOME_DB = -12;
+/** The metronome's volume to start with, in decibels: as loud as the music. */
+const METRONOME_DB = 0;
 
 /**
  * Returns the look the system is set to, which the page is in until the top bar's switch chooses.
