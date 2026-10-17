@@ -33,9 +33,9 @@ for the format and the list). A decision made in a conversation is not done unti
 
 ## Where the knowledge is
 
-- The skills (`.claude/skills/`, docs/adr/0025): **create-song** (how a job's Claude makes songs from
-  a prompt), **create-instrument**, and per chip **create-nes-instrument** and
-  **create-scc-instrument**: what was verified and the sounds that worked.
+- The skills (`.claude/skills/`, docs/adr/0025): **write-song** (where a job starts: the prompt, the
+  structure, the music), **furnace-song** (writing it down as a .fur: the script, rows, pitch,
+  effects, macros) and per chip **nes-chip**, **scc-chip** (channels, instruments, idioms, levels).
 - `docs/fur-format.md`: the .fur format as `fur/` writes it.
 - The user's taste is in their **style guides** (`data/guides/`, the Guides page): chosen per prompt,
   sent with it, and kept with what it made (docs/adr/0019).

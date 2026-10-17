@@ -1,7 +1,7 @@
 // The New page: a prompt for Claude, written in a box that takes the screen; sending it leads to the
 // Jobs page.
 // `/new?from=<song>` starts with that song's prompt, to send it again; `/new?base=<song>` starts with
-// "Based on <song> [<id>]: ", for a prompt that changes that song (the create-song skill).
+// "Based on <song> [<id>]: ", for a prompt that changes that song (the furnace-song skill).
 import { useState } from 'react';
 import type { PromptSource } from './PromptBox.tsx';
 import { PromptBox } from './PromptBox.tsx';

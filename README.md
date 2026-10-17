@@ -15,7 +15,7 @@ An unofficial tool: it uses Furnace's command line, and is not part of the Furna
 
 ```
 prompt (New page)
-  → a job: Claude Code, run headless, writes jobs/<id>/script.ts       (the create-song skill)
+  → a job: Claude Code, run headless, writes jobs/<id>/script.ts       (the write-song skill)
   → the script writes one Furnace file (.fur) per song                 (fur/, make/fur-file-builder.ts)
   → Furnace renders each .fur file, ffmpeg encodes it as FLAC          (render/)
   → each song is a clip in clips/<id>/ and a song in songs/<id>/       (make/make-song.ts)

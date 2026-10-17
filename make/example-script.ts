@@ -1,5 +1,5 @@
 /**
- * An example of a job's script (the create-song skill): one short NES song in D minor, eight bars of
+ * An example of a job's script (the furnace-song skill): one short NES song in D minor, eight bars of
  * a bouncing bass, a held pulse motif and a drum pattern, with instruments after the old project's fm_01.
  * Check: `node make/check-script.ts make/example-script.ts`.
  */
