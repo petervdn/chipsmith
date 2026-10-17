@@ -72,7 +72,8 @@ export function getNowText({ now, notes }: Job): string {
 
 /**
  * Shows the card of a job: its phase, how long it has been going, what it is doing now, the songs
- * it makes, how it ended, and its steps on demand.
+ * it makes, how it ended, and its steps on demand. A job that is over shows as one line, its prompt,
+ * opened on a tap.
  *
  * @param props - The component's props.
  * @param props.job - The job shown.
@@ -81,28 +82,74 @@ export function getNowText({ now, notes }: Job): string {
  * @returns The card's section element.
  */
 export function JobCard({ job, onRemove }: JobCardProps) {
-  const [isShowingNotes, setShowingNotes] = useState(false);
   const isRunning = isJobRunning(job);
+  const [isShowingNotes, setShowingNotes] = useState(false);
+  const [isOpen, setOpen] = useState(isRunning);
   const elapsed = useElapsed(job);
   const phaseName = getPhaseName(job);
   const now = getNowText(job);
+
+  const removeButton = onRemove && (
+    <button
+      type="button"
+      className="job-card-remove"
+      onClick={onRemove}
+      title="remove this job from the list (its songs stay)"
+    >
+      ✕
+    </button>
+  );
+  if (!isRunning && !isOpen) {
+    const madeCount = job.songs.filter((song) => song.songId).length;
+    return (
+      <section className={`job-card is-${job.phase} is-closed`}>
+        <header className="job-card-head">
+          <button
+            type="button"
+            className="job-card-toggle"
+            onClick={() => setOpen(true)}
+            aria-expanded={false}
+            title="show the job"
+          >
+            <span className="job-card-mark" aria-hidden="true">
+              ▸
+            </span>
+            <span className="job-card-title">{job.prompt.split('\n')[0]}</span>
+            <span className="job-card-outcome">
+              {job.phase === 'failed'
+                ? 'failed'
+                : `${madeCount} ${madeCount === 1 ? 'song' : 'songs'}`}
+            </span>
+          </button>
+          <span className="jobs-time">{formatSeconds(elapsed)}</span>
+          {removeButton}
+        </header>
+      </section>
+    );
+  }
 
   return (
     <section className={`job-card is-${job.phase}`}>
       <header className="job-card-head">
         {isRunning && <span className="jobs-spinner" aria-hidden="true" />}
-        <span className="job-card-phase">{phaseName}</span>
-        <span className="jobs-time">{formatSeconds(elapsed)}</span>
-        {onRemove && (
+        {isRunning ? (
+          <span className="job-card-phase">{phaseName}</span>
+        ) : (
           <button
             type="button"
-            className="job-card-remove"
-            onClick={onRemove}
-            title="remove this job from the list (its songs stay)"
+            className="job-card-toggle"
+            onClick={() => setOpen(false)}
+            aria-expanded={true}
+            title="fold the job to one line"
           >
-            ✕
+            <span className="job-card-mark" aria-hidden="true">
+              ▾
+            </span>
+            <span className="job-card-phase">{phaseName}</span>
           </button>
         )}
+        <span className="jobs-time">{formatSeconds(elapsed)}</span>
+        {removeButton}
       </header>
       <p className="job-card-prompt">{job.prompt}</p>
       {job.guides.length > 0 && (

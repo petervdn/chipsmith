@@ -115,3 +115,46 @@
   color: var(--muted);
   font-size: 0.8125rem;
 }
+
+/* a job that is over, folded to one line: its prompt, what it made, its time */
+.job-card.is-closed {
+  margin-bottom: 6px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+}
+
+.job-card-toggle {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  min-height: var(--touch);
+  padding: 0;
+  border: 0;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+}
+
+.job-card-mark {
+  flex: none;
+  width: 1em;
+  color: var(--muted);
+}
+
+.job-card-title {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.job-card-outcome {
+  flex: none;
+  color: var(--muted);
+  font-size: 0.8125rem;
+}
+
+.job-card.is-failed .job-card-outcome {
+  color: var(--reject);
+}
