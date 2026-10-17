@@ -2,7 +2,8 @@
  * Rendering a .fur to a WAV with the Furnace app's command line. Furnace opens a CoreMIDI client every
  * time it starts, which macOS has refused after many quick launches: renders run one at a time, and a
  * failed render is tried again after a pause that grows (docs/adr/0015, docs/later.md). 75 renders
- * back to back without a pause all worked (2026-10-17).
+ * back to back without a pause all worked (2026-10-17). A render that takes longer than RENDER_LIMIT
+ * is stopped and not tried again: a .fur that Furnace hangs on (seen 2026-10-17) would hang again.
  */
 import { spawn } from 'node:child_process';
 import { getSettings } from '../config/settings.ts';
@@ -11,6 +12,11 @@ import { getSettings } from '../config/settings.ts';
 const RETRY_PAUSE = 1000;
 /** Tries before a render is given up. */
 const TRIES = 3;
+/** Milliseconds a render may take; a song of minutes renders in seconds. */
+const RENDER_LIMIT = 90 * 1000;
+
+/** A render stopped for taking too long. */
+class RenderTimeout extends Error {}
 
 let queue: Promise<unknown> = Promise.resolve();
 
@@ -45,6 +51,7 @@ async function renderWithRetries(furFile: string, wavFile: string): Promise<void
       ]);
       return;
     } catch (error) {
+      if (error instanceof RenderTimeout) throw error;
       lastError = error;
     }
   }
@@ -58,8 +65,18 @@ function runFurnace(args: string[]): Promise<void> {
     furnace.stderr.on('data', (chunk: Buffer) => {
       errors = (errors + chunk.toString()).slice(-2000);
     });
-    furnace.on('error', reject);
+    const timer = setTimeout(() => {
+      furnace.kill('SIGKILL');
+      reject(
+        new RenderTimeout(`Furnace took longer than ${RENDER_LIMIT / 1000} s and was stopped`),
+      );
+    }, RENDER_LIMIT);
+    furnace.on('error', (error) => {
+      clearTimeout(timer);
+      reject(error);
+    });
     furnace.on('close', (code) => {
+      clearTimeout(timer);
       if (code === 0) resolve();
       else reject(new Error(`exit ${code}: ${errors.trim()}`));
     });
