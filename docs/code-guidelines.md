@@ -35,6 +35,21 @@ cut to what applies. A rule that is not followed is taken out, not left to rot.
   a function in a module, called from the component.
 - **What a component keeps is declared at its head** (its `useState`s), before what it does.
 
+## State
+
+Where state lives, in this order (why: docs/adr/0017):
+1. **Local** (`useState`) in the component that uses it.
+2. **Lifted** to the nearest common parent, while the props stay few.
+3. **Context** for a value a subtree needs and that changes rarely.
+4. **A Zustand store** (`src/stores/`, one per concern, actions beside the state) when lifting means
+   props through many layers or the state is the whole app's; components subscribe with a selector.
+5. **The address** only where navigation matters (a list's filter).
+
+- **The server's data is TanStack Query** (queries and mutations, `src/queries/`); never copied into a
+  store.
+- **Components never touch storage**: what survives a reload is a store with `persist`
+  (`partialize` what survives, `version` its shape).
+
 ## Names
 
 - **A name ends in what the thing is**, with what tells it apart before it: `songId`, `clipFolder`,
