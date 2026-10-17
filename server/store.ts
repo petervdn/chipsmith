@@ -10,6 +10,7 @@ import {
   readFileSync,
   readdirSync,
   renameSync,
+  rmSync,
   writeFileSync,
 } from 'node:fs';
 import { join } from 'node:path';
@@ -84,6 +85,35 @@ export function getClipFolder(store: Store, clipId: string): string {
 export function saveSong(store: Store, song: Song): void {
   writeJsonAtomically(join(store.root, 'songs', song.id, SONG_FILE), song);
   store.songs.set(song.id, song);
+}
+
+/**
+ * Deletes a song's folder, then the clips it played that are left with no song to play them and no
+ * clip made from them, and so on up to the clips those were made from. A clip that another song
+ * plays, or that a kept clip was made from, stays.
+ *
+ * @param store - The clips and songs in memory.
+ * @param songId - The id of the song to delete.
+ * @returns The ids of the clips deleted with it.
+ */
+export function deleteSong(store: Store, songId: string): string[] {
+  const song = store.songs.get(songId);
+  if (!song) throw new Error(`no song ${songId}`);
+  rmSync(join(store.root, 'songs', songId), { recursive: true, force: true });
+  store.songs.delete(songId);
+  const deleted: string[] = [];
+  // a queue, not a set: a parent passed over while it still had a child is looked at again
+  const queue = song.tracks.flatMap((track) => track.blocks.map((block) => block.clip));
+  for (let clipId = queue.shift(); clipId !== undefined; clipId = queue.shift()) {
+    const clip = store.clips.get(clipId);
+    if (!clip || getSongsUsingClip(store, clipId).length > 0) continue;
+    if (getChildClips(store, clipId).length > 0) continue;
+    rmSync(getClipFolder(store, clipId), { recursive: true, force: true });
+    store.clips.delete(clipId);
+    deleted.push(clipId);
+    if (clip.parent) queue.push(clip.parent.clip);
+  }
+  return deleted;
 }
 
 /**

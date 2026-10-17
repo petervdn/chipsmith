@@ -1,6 +1,5 @@
 // The clip pool: every clip with its name, its prompt, its length and the songs that use it, the
-// filter bar above it, and ★ / ✕ on each row.
-import type { Status } from '../../shared/catalogue.types.ts';
+// filter bar above it, and ★ on each row.
 import type { Clip } from '../../shared/clip.types.ts';
 import { FilterBar } from '../lists/FilterBar.tsx';
 import { formatSeconds } from '../format.ts';
@@ -8,7 +7,6 @@ import { getTagCounts, isShown } from '../lists/list-filter.ts';
 import { useClips, useSetClipStatus } from '../queries/clips.ts';
 import { useListFilter } from '../lists/use-list-filter.ts';
 import { StatusButtons } from '../lists/StatusButtons.tsx';
-import { UndoBar, useUndo } from '../lists/UndoBar.tsx';
 import { usePageTitle } from '../use-page-title.ts';
 import { Breadcrumbs } from '../Breadcrumbs.tsx';
 import '../lists/lists.css';
@@ -26,35 +24,23 @@ export function getClipLabel({ name }: Clip): string {
 }
 
 /**
- * Shows the clips list, newest first, with the filter bar above it and ★ / ✕ on each row.
+ * Shows the clips list, newest first, with the filter bar above it and ★ on each row.
  *
  * @returns The page's section element.
  */
 export function ClipsPage() {
   const { data: listings, error } = useClips();
-  const { mutateAsync: sendStatus } = useSetClipStatus();
+  const { mutate: setStatus } = useSetClipStatus();
   const [filter, setFilter] = useListFilter();
-  const [undoOffer, setUndoOffer] = useUndo();
   usePageTitle('Clips');
   const items = (listings ?? []).map((listing) => ({
     listing,
     text: `${getClipLabel(listing.clip)} ${listing.clip.prompt} ${listing.clip.id}`,
     tags: listing.clip.tags,
-    status: listing.clip.status,
   }));
   const shown = items
     .filter((item) => isShown(item, filter))
     .sort((first, second) => second.listing.clip.created.localeCompare(first.listing.clip.created));
-
-  async function setStatus(clip: Clip, status: Status): Promise<void> {
-    await sendStatus({ clipId: clip.id, status });
-    if (status === 'rejected' && !filter.isShowingRejected) {
-      setUndoOffer({
-        text: `Rejected clip ${clip.id}; it is hidden now.`,
-        undo: () => void setStatus(clip, clip.status),
-      });
-    }
-  }
 
   return (
     <section className="list-page">
@@ -87,13 +73,12 @@ export function ClipsPage() {
               </span>
               <StatusButtons
                 status={clip.status}
-                onChange={(status) => void setStatus(clip, status)}
+                onChange={(status) => setStatus({ clipId: clip.id, status })}
               />
             </div>
           </li>
         ))}
       </ul>
-      <UndoBar offer={undoOffer} onClose={() => setUndoOffer(null)} />
     </section>
   );
 }

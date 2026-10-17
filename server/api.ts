@@ -11,6 +11,7 @@ import type {
   CatalogueChange,
   ClipListing,
   ProgramCheck,
+  SongDeletion,
   SongDetail,
   SongListing,
 } from '../shared/api.types.ts';
@@ -32,6 +33,7 @@ import type { GuideStore } from './guides.ts';
 import { createGuide, deleteGuide, listGuides, openGuides, updateGuide } from './guides.ts';
 import type { Store } from './store.ts';
 import {
+  deleteSong,
   getClipFolder,
   getSongsUsingClip,
   openStore,
@@ -188,6 +190,11 @@ async function route(
     const change = checkCatalogueChange(await readJsonBody(request));
     saveSong(store, { ...song, ...change, updated: new Date().toISOString() });
     return sendJson(response, getSongDetail(store, id));
+  }
+  if (kind === 'songs' && id && !file && method === 'DELETE') {
+    if (!store.songs.has(id)) return sendError(response, 404, `no song ${id}`);
+    const deletion: SongDeletion = { clipIds: deleteSong(store, id) };
+    return sendJson(response, deletion);
   }
   if (kind === 'songs' && id && file === 'tracks' && method === 'PUT') {
     const song = store.songs.get(id);

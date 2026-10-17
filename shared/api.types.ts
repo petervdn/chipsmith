@@ -33,6 +33,9 @@ export type SongDetail = {
 /** A clip in the clips list, with the songs that use it. */
 export type ClipListing = { clip: Clip; usedBy: string[] };
 
+/** What deleting a song answers: the clips deleted with it, which no other song played. */
+export type SongDeletion = { clipIds: string[] };
+
 /** A change to a song's or a clip's catalogue fields; a field left out stays as it is. */
 export type CatalogueChange = { status?: Status; tags?: Tag[] };
 

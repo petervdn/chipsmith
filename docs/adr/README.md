@@ -41,3 +41,4 @@ Consequences.
 | [0025](0025-song-knowledge-is-skills.md) | How songs and instruments are made is in skills, one per subject and chip | accepted |
 | [0026](0026-the-page-shows-its-own-pop-ups.md) | The page shows its own dialogs and tooltips, never the browser's | accepted |
 | [0027](0027-icons-from-lucide.md) | The page's icons come from Lucide | accepted |
+| [0028](0028-a-song-not-wanted-is-deleted.md) | A song not wanted is deleted, not rejected | accepted |

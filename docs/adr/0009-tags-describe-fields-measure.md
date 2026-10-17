@@ -13,7 +13,8 @@ Explorations make many songs and clips; they must be found again.
   (`bass`, `lead`), character or technique (`walking-bass`, `harsh`), and the user's own (`good-bass`,
   `for-title-screen`), which also serve as playlists. A tag says who gave it: Claude, when it made the
   clip, from a fixed list in the notes; or the user. Variations and splits take their parent's tags.
-- A status: new, heard, keeper (shown as ★), rejected (hidden unless asked).
+- A status: new, heard, keeper (shown as ★), rejected (hidden unless asked). Rejected was taken
+  out: a song not wanted is deleted (0028).
 
 ## Alternatives
 - **Facts as tags** (`120bpm`, `7-8`). They cannot be filtered as ranges and drift in spelling.

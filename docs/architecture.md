@@ -15,7 +15,8 @@ docs/code-guidelines.md.
 - Clips are one shared pool (0005); a song points to clips by id. A clip's audio and source never
   change: a change is a new clip whose parent is the old one (`variation`), and a cut is new clips
   whose parent is the whole one (`split`). Which songs use a clip is worked out, not stored.
-- Songs and clips have tags (descriptions) and a status: new, heard, keeper, rejected (0009).
+- Songs and clips have tags (descriptions) and a status: new, heard, keeper (0009). A song not
+  wanted is deleted, with the clips no other song plays (0028).
 - A song keeps the prompt it was made from (`prompt`, never changed; 0016); its clips keep their own.
   "Prompt again" on a song's row sends only the song's prompt; the new songs note the song
   (`promptedFrom`). A song whose clips were made by other prompts shows as changed after its prompt.
@@ -50,8 +51,8 @@ source.fur and no audio.flac, recording the Furnace that rendered it (`server/mi
 a song waiting for its audio shows … for ▶ and its list is read again until it has it. A change is written to its file, then to the copy in memory.
 
 Routes: `GET /api/songs`, `GET /api/songs/<id>`, `PATCH /api/songs/<id>` (status, tags),
-`PUT /api/songs/<id>/tracks` (the arrangement, saved from the editor), `POST /api/songs/<id>/split`,
-`GET /api/clips`, `PATCH /api/clips/<id>`, and `GET /media/clips/<id>/audio.flac` with byte ranges.
+`DELETE /api/songs/<id>` (with the clips only it played), `PUT /api/songs/<id>/tracks` (the
+arrangement, saved from the editor), `POST /api/songs/<id>/split`, `GET /api/clips`, `PATCH /api/clips/<id>`, and `GET /media/clips/<id>/audio.flac` with byte ranges.
 What they answer is typed in `shared/api.types.ts`.
 
 ## The pages
@@ -62,8 +63,8 @@ page but Home starts with breadcrumbs, the last its heading (Songs › Seven Tee
 
 - **Home** (`/`): the logo and what the app is, a + New song button, the running jobs, how many songs
   there are (kept, not heard yet) and the five made last with ▶.
-- **Songs** (`/songs`): every song, with the filter bar (words, tags, rejected or not), its facts, ▶,
-  ★ / ✕, and ⌄ to open the row: its prompt (copy, prompt again), its facts and its prompt links.
+- **Songs** (`/songs`): every song, with the filter bar (words, tags), its facts, ▶, ★, a trash can
+  (asked first), and ⌄ to open the row: its prompt (copy, prompt again), its facts and its prompt links.
 - **Song** (`/songs/<id>`): the song opened in the editor (`src/editor/`): a timeline of its tracks
   (a ruler of bars, each block drawn as the slice of its clip's waveform it plays, repeats after it,
   a playhead), ▶ / ❚❚ from a cursor set on the ruler and ■ back to it, zoom, the song's clips in a

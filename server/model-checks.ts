@@ -18,7 +18,7 @@ import {
 } from './json-checks.ts';
 import { checkSentStructure } from './structure-checks.ts';
 
-const STATUSES: readonly Status[] = ['new', 'heard', 'keeper', 'rejected'];
+const STATUSES: readonly Status[] = ['new', 'heard', 'keeper'];
 const TAG_SOURCES: readonly Tag['by'][] = ['claude', 'user'];
 const RELATIONS: readonly ClipParent['relation'][] = ['variation', 'split'];
 

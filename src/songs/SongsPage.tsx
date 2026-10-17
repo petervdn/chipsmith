@@ -1,12 +1,11 @@
-// The songs list: every song with its length, tempo, meter, tags and status, the
-// filter bar above it, ▶, ★ / ✕ and ⌄ (more) on each row, and a line for each job on its way. A
-// row's title opens the song.
+// The songs list: every song with its length, tempo, meter, tags and status, the filter bar above
+// it, ▶, ★, a trash can and ⌄ (more) on each row, and a line for each job on its way. A row's title
+// opens the song.
 import { ChevronDown } from 'lucide-react';
 import { useState } from 'react';
 import type { Job } from '../../shared/job.types.ts';
 import { JobStrip } from '../jobs/JobStrip.tsx';
 import { isJobRunning } from '../queries/jobs.ts';
-import type { Status } from '../../shared/catalogue.types.ts';
 import type { Song } from '../../shared/song.types.ts';
 import { FilterBar } from '../lists/FilterBar.tsx';
 import { PlayButton } from '../player/PlayButton.tsx';
@@ -14,11 +13,11 @@ import { formatMeter, formatSeconds } from '../format.ts';
 import { getTagCounts, isShown } from '../lists/list-filter.ts';
 import { groupByTime } from '../lists/time-groups.ts';
 import { useNow } from '../lists/use-now.ts';
-import { useSetSongStatus, useSongs } from '../queries/songs.ts';
+import { useDeleteSong, useSetSongStatus, useSongs } from '../queries/songs.ts';
 import { useListFilter } from '../lists/use-list-filter.ts';
 import { SongRowDetails } from './SongRowDetails.tsx';
 import { StatusButtons } from '../lists/StatusButtons.tsx';
-import { UndoBar, useUndo } from '../lists/UndoBar.tsx';
+import { askToConfirm } from '../stores/confirm-store.ts';
 import { usePageTitle } from '../use-page-title.ts';
 import { Breadcrumbs } from '../Breadcrumbs.tsx';
 import '../lists/lists.css';
@@ -35,9 +34,9 @@ type SongsPageProps = { jobs: Job[] };
  */
 export function SongsPage({ jobs }: SongsPageProps) {
   const { data: listings, error } = useSongs();
-  const { mutateAsync: sendStatus } = useSetSongStatus();
+  const { mutate: setStatus } = useSetSongStatus();
+  const { mutate: deleteSong } = useDeleteSong();
   const [filter, setFilter] = useListFilter();
-  const [undoOffer, setUndoOffer] = useUndo();
   const [openSongs, setOpenSongs] = useState<string[]>([]);
   const now = useNow();
   usePageTitle('Songs');
@@ -52,21 +51,15 @@ export function SongsPage({ jobs }: SongsPageProps) {
     listing,
     text: listing.song.title,
     tags: listing.song.tags,
-    status: listing.song.status,
   }));
   const shown = items
     .filter((item) => isShown(item, filter))
     .sort((first, second) => second.listing.song.created.localeCompare(first.listing.song.created));
   const groups = groupByTime(shown, ({ listing }) => listing.song.created, now);
 
-  async function setStatus(song: Song, status: Status): Promise<void> {
-    await sendStatus({ songId: song.id, status });
-    if (status === 'rejected' && !filter.isShowingRejected) {
-      setUndoOffer({
-        text: `Rejected "${song.title}"; it is hidden now.`,
-        undo: () => void setStatus(song, song.status),
-      });
-    }
+  async function confirmDelete(song: Song): Promise<void> {
+    const question = `Delete "${song.title}"? The clips no other song plays go with it.`;
+    if (await askToConfirm({ question, answer: 'Delete', isDanger: true })) deleteSong(song.id);
   }
 
   return (
@@ -125,7 +118,9 @@ export function SongsPage({ jobs }: SongsPageProps) {
                   </span>
                   <StatusButtons
                     status={song.status}
-                    onChange={(status) => void setStatus(song, status)}
+                    onChange={(status) => setStatus({ songId: song.id, status })}
+                    onDelete={() => void confirmDelete(song)}
+                    deleteLabel="delete this song"
                   />
                   <button
                     type="button"
@@ -144,7 +139,6 @@ export function SongsPage({ jobs }: SongsPageProps) {
           }),
         ])}
       </ul>
-      <UndoBar offer={undoOffer} onClose={() => setUndoOffer(null)} />
     </section>
   );
 }

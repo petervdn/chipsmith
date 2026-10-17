@@ -1,5 +1,4 @@
-// The home page's latest songs are the newest first, without the rejected, and its counts leave
-// them out too.
+// The home page's latest songs are the newest first, and its counts tell the kept and the new.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import type { SongListing } from '../../shared/api.types.ts';
@@ -36,16 +35,16 @@ function getListing({ id, created, status }: { id: string; created: string; stat
 
 const LISTINGS = [
   getListing({ id: 's0001', created: '2026-10-01T10:00:00Z', status: 'keeper' }),
-  getListing({ id: 's0002', created: '2026-10-03T10:00:00Z', status: 'rejected' }),
+  getListing({ id: 's0002', created: '2026-10-03T10:00:00Z', status: 'heard' }),
   getListing({ id: 's0003', created: '2026-10-02T10:00:00Z', status: 'new' }),
   getListing({ id: 's0004', created: '2026-10-04T10:00:00Z', status: 'heard' }),
 ];
 
-test('the latest songs are the newest first, without the rejected', () => {
+test('the latest songs are the newest first', () => {
   const latest = getLatestSongs(LISTINGS, 2).map(({ song }) => song.id);
-  assert.deepEqual(latest, ['s0004', 's0003']);
+  assert.deepEqual(latest, ['s0004', 's0002']);
 });
 
-test('the counts leave the rejected out', () => {
-  assert.deepEqual(getSongCounts(LISTINGS), { songCount: 3, keeperCount: 1, newCount: 1 });
+test('the counts tell the kept and the new', () => {
+  assert.deepEqual(getSongCounts(LISTINGS), { songCount: 4, keeperCount: 1, newCount: 1 });
 });

@@ -2,7 +2,7 @@
 
 Chiptune songs made from prompts, and remade a piece at a time. You write what you want; Claude
 composes it as [Furnace](https://github.com/tildearrow/furnace) files (.fur); Furnace renders them; the
-songs show up in a web app you can listen to from your phone, keep, reject, prompt again or build on.
+songs show up in a web app you can listen to from your phone, keep, delete, prompt again or build on.
 
 **The main idea: a song breaks down into parts as fine as you want.** Each part is a clip: a stretch
 of bars, one track or several, with its own Furnace file, its own audio and the prompt that made it.
@@ -32,7 +32,7 @@ prompt (New page)
 - **The files are the data**: the data folder's `clips/` and `songs/` hold JSON the server reads
   into memory when it starts. There is no database.
 
-**Where it stands:** making songs from prompts, listening, keeping, rejecting, prompting again and
+**Where it stands:** making songs from prompts, listening, keeping, deleting, prompting again and
 building on a song work. Splitting a song into parts and prompting a part again come with the song
 editor, which is next.
 

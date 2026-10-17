@@ -1,9 +1,9 @@
 /**
- * The songs from the server: the list, one song, and changing a song's status. A list or song that
+ * The songs from the server: the list, one song, and changing or deleting a song. A list or song that
  * waits for audio (rendered when the server starts) is read again until it has it.
  */
 import { useMutation, useQuery } from '@tanstack/react-query';
-import type { SongDetail, SongListing } from '../../shared/api.types.ts';
+import type { SongDeletion, SongDetail, SongListing } from '../../shared/api.types.ts';
 import type { Status } from '../../shared/catalogue.types.ts';
 import { getQueryKey, queryClient } from './client.ts';
 import { requestJson, sendJson } from './request.ts';
@@ -67,6 +67,27 @@ export function useSetSongStatus() {
       sendJson<SongDetail>(`/api/songs/${encodeURIComponent(songId)}`, 'PATCH', { status }),
     onSuccess: (detail) => {
       queryClient.setQueryData(getQueryKey({ type: 'song', songId: detail.song.id }), detail);
+      return queryClient.invalidateQueries({
+        queryKey: getQueryKey({ type: 'songs' }),
+        exact: true,
+      });
+    },
+  });
+}
+
+/**
+ * Deletes a song on the server, with the clips no other song played; it leaves the cache, and the
+ * songs list and the clip pool are read again.
+ *
+ * @returns The mutation, called with the song's id.
+ */
+export function useDeleteSong() {
+  return useMutation({
+    mutationFn: (songId: string) =>
+      sendJson<SongDeletion>(`/api/songs/${encodeURIComponent(songId)}`, 'DELETE', null),
+    onSuccess: (_deletion, songId) => {
+      queryClient.removeQueries({ queryKey: getQueryKey({ type: 'song', songId }) });
+      void queryClient.invalidateQueries({ queryKey: getQueryKey({ type: 'clips' }) });
       return queryClient.invalidateQueries({
         queryKey: getQueryKey({ type: 'songs' }),
         exact: true,

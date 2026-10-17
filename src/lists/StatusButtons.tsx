@@ -1,20 +1,31 @@
-// The two buttons that set a song's or a clip's status: ★ keeps it, a quiet ✕ rejects it (which hides it
-// from the list until "rejected" is ticked); pressed again, either goes back to heard.
-import { Star, X } from 'lucide-react';
+// The buttons at the end of a song's or a clip's row: ★ keeps it (pressed again, it goes back to
+// heard), and a quiet trash can deletes it, where it can be deleted.
+import { Star, Trash2 } from 'lucide-react';
 import type { Status } from '../../shared/catalogue.types.ts';
 import './StatusButtons.css';
 
-type StatusButtonsProps = { status: Status; onChange: (status: Status) => void };
+/** How large the trash can is drawn, in pixels. */
+const TRASH_SIZE = 16;
+
+type StatusButtonsProps = {
+  status: Status;
+  onChange: (status: Status) => void;
+  onDelete?: () => void;
+  deleteLabel?: string;
+};
 
 /**
- * Shows ★ and ✕ for a status: each sets its status, and pressed again goes back to heard.
+ * Shows ★ for a status, which keeps the item and pressed again goes back to heard, and a trash can
+ * when the item can be deleted.
  *
  * @param props - The component's props.
  * @param props.status - The status shown.
  * @param props.onChange - Called with the status chosen.
+ * @param props.onDelete - Called when the trash can is pressed; without it there is no trash can.
+ * @param props.deleteLabel - What the trash can's tooltip says it deletes.
  * @returns The buttons' element.
  */
-export function StatusButtons({ status, onChange }: StatusButtonsProps) {
+export function StatusButtons({ status, onChange, onDelete, deleteLabel }: StatusButtonsProps) {
   return (
     <span className="status-buttons">
       <button
@@ -26,23 +37,17 @@ export function StatusButtons({ status, onChange }: StatusButtonsProps) {
       >
         <Star fill={status === 'keeper' ? 'currentColor' : 'none'} />
       </button>
-      <button
-        type="button"
-        className={`status-buttons-reject${status === 'rejected' ? ' is-on' : ''}`}
-        data-tooltip={
-          status === 'rejected'
-            ? 'rejected; press to take it back'
-            : 'reject (hides it from the list)'
-        }
-        aria-label={
-          status === 'rejected'
-            ? 'rejected; press to take it back'
-            : 'reject (hides it from the list)'
-        }
-        onClick={() => onChange(status === 'rejected' ? 'heard' : 'rejected')}
-      >
-        <X />
-      </button>
+      {onDelete && (
+        <button
+          type="button"
+          className="status-buttons-delete"
+          data-tooltip={deleteLabel ?? 'delete'}
+          aria-label={deleteLabel ?? 'delete'}
+          onClick={onDelete}
+        >
+          <Trash2 size={TRASH_SIZE} />
+        </button>
+      )}
     </span>
   );
 }

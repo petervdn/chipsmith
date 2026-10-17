@@ -1,8 +1,9 @@
 // The store reads what it wrote, a clip's facts from its source and never from its clip.json, and a
-// file that does not fit is reported without stopping the rest.
+// file that does not fit is reported without stopping the rest; a song deleted takes the clips only
+// it played with it.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdtempSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import type { Clip, ClipRecord } from '../shared/clip.types.ts';
@@ -12,7 +13,7 @@ import { getNoteValue } from '../fur/notes.ts';
 import { getFurFileBytes } from '../fur/write.ts';
 import { buildFurFile } from '../make/fur-file-builder.ts';
 import { getClipFacts } from '../make/fur-file-facts.ts';
-import { getSongsUsingClip, openStore, saveClip, saveSong } from './store.ts';
+import { deleteSong, getSongsUsingClip, openStore, saveClip, saveSong } from './store.ts';
 
 const FUR_FILE = buildFurFile({
   title: 'test',
@@ -117,4 +118,32 @@ test('a clip.json that does not fit is reported, and the others still read', () 
   assert.equal(store.clips.size, 1);
   assert.equal(store.unreadable.length, 1);
   assert.match(store.unreadable[0]?.error ?? '', /\.id: not a string/);
+});
+
+test('a song deleted takes the clips only it played, and the clips they were made from', () => {
+  const root = makeRoot();
+  const store = openStore(root);
+  const split: Clip = { ...CLIP, id: 'c0002', parent: { clip: 'c0001', relation: 'split' } };
+  const shared: Clip = { ...CLIP, id: 'c0003' };
+  for (const clip of [CLIP, split, shared]) {
+    mkdirSync(join(root, 'clips', clip.id), { recursive: true });
+    writeFileSync(join(root, 'clips', clip.id, 'source.fur'), getFurFileBytes(FUR_FILE));
+    saveClip(store, clip);
+  }
+  const blocks = [
+    { clip: 'c0002', start: 0, trim: null, repeats: 1 },
+    { clip: 'c0003', start: 0, trim: null, repeats: 1 },
+  ];
+  saveSong(store, { ...SONG, tracks: [{ id: 't1', name: 'Bass', blocks }] });
+  saveSong(store, {
+    ...SONG,
+    id: 's0002',
+    tracks: [{ id: 't1', name: 'Bass', blocks: blocks.slice(1) }],
+  });
+  assert.deepEqual(deleteSong(store, 's0001'), ['c0002', 'c0001']);
+  assert.equal(existsSync(join(root, 'songs', 's0001')), false);
+  assert.equal(existsSync(join(root, 'clips', 'c0001')), false);
+  const reopened = openStore(root);
+  assert.deepEqual([...reopened.songs.keys()], ['s0002']);
+  assert.deepEqual([...reopened.clips.keys()], ['c0003']);
 });

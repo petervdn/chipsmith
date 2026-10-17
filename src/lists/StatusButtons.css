@@ -23,14 +23,11 @@
   color: var(--keep);
 }
 
-.status-buttons .status-buttons-reject {
-  font-size: 0.9375rem;
-  opacity: 0.45;
-}
-
-.status-buttons .status-buttons-reject.is-on {
-  color: var(--reject);
-  opacity: 1;
+.status-buttons .status-buttons-delete {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.5;
 }
 
 /* a phone: tighter rows, so the title and the facts keep their room */
@@ -48,7 +45,8 @@
   .status-buttons button:hover {
     background: var(--raised);
   }
-  .status-buttons .status-buttons-reject:hover {
+  .status-buttons .status-buttons-delete:hover {
+    color: var(--reject);
     opacity: 1;
   }
 }
