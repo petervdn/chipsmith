@@ -90,11 +90,10 @@ page but Home starts with breadcrumbs, the last its heading (Songs › Seven Tee
   as wide as their bars, a section edited when tapped; between two tiles the gap, how one section
   leads into the next (drums, bass, harmony, lead, all together; `shared/lead-ins.ts`), picked or
   rolled; saved as new or over a saved one; 0023), and
-  the Harmony panel (everything Claude's choice at first: the key and mode, the kind and colour of
-  the chords, how often they change, the bass, the cadences, a key change, each a row with a die and
-  a lock; how strictly; a progression per part of the structure, or one for the whole song: a
-  preset of the mode, made up at random from the settings (`progression-generator.ts`), or your
-  own, as tiles of Roman numerals named in the key and written short, `i ♭VI V:½`), and the style
+  the Harmony panel (everything Claude's choice at first: the scale, the key's note, the feel and
+  the colour in plain words, each a row with a die and a lock; and chords to hear and keep per part
+  of the structure, or for the whole song: three presets that fit the scale and feel, each heard
+  in the browser on chip-like sounds, `src/playback/progression-preview.ts`), and the style
   guides as chips to send with it (their texts readable in place). Sending it leads to Jobs.
 - **Jobs** (`/jobs`): every prompt sent, as a card, newest first; one that is over can be removed
   (✕; `removed` in its job.json, its files kept). The tab counts the jobs on their way.

@@ -1,19 +1,13 @@
 /**
- * A harmony in words: the lines of a prompt that ask for it (its key, its settings, a progression
- * per part with the chords named in the key), and the short line the page shows it as. Knows
- * nothing of files or the page.
+ * A harmony in words: the lines of a prompt that ask for it (its scale, feel and colour, and the
+ * progressions kept with their chords named in the key), and the short line the page shows it as.
+ * Knows nothing of files or the page.
  */
 import { getChordName } from './chord-numerals.ts';
-import type { HarmonyOption } from './harmony-settings.ts';
-import {
-  HARMONY_SETTING_NAMES,
-  HARMONY_SETTINGS,
-  STRICTNESSES,
-  VARIATION_ENDINGS,
-  getHarmonyOption,
-} from './harmony-settings.ts';
-import type { Chord, PartHarmony, SentHarmony } from './harmony.types.ts';
-import { getProgressionBars, writeBars, writeProgression } from './progression-notation.ts';
+import { COLOURS, FEELS, getHarmonyWord } from './harmony-words.ts';
+import type { Chord, PartProgression, SentHarmony } from './harmony.types.ts';
+import { getMode } from './modes.ts';
+import { getProgressionBars, writeBars } from './progression-notation.ts';
 
 /**
  * Returns the lines of a prompt that ask for a harmony.
@@ -22,120 +16,90 @@ import { getProgressionBars, writeBars, writeProgression } from './progression-n
  * @returns The lines, starting with an empty one; none for a harmony that asks for nothing.
  */
 export function getHarmonyLines(harmony: SentHarmony): string[] {
-  const settings = getSettingAsks(harmony);
-  const parts = harmony.parts.flatMap((part) => getPartLines(part, harmony.note));
-  const key = getKeyLine(harmony);
-  if (!key && settings.length === 0 && parts.length === 0) return [];
-  const strictness = getHarmonyOption(STRICTNESSES, harmony.strictness)?.ask ?? '';
+  const feel = harmony.feel ? getHarmonyWord(FEELS, harmony.feel)?.ask : undefined;
+  const colour = harmony.colour ? getHarmonyWord(COLOURS, harmony.colour)?.ask : undefined;
+  const lines = [
+    getScaleLine(harmony),
+    feel ? `- Feel: ${feel}.` : null,
+    colour ? `- Colour: ${colour}.` : null,
+    ...harmony.parts.map((part) => getPartLine(part, harmony.note)),
+  ].filter((line) => line !== null);
+  if (lines.length === 0) return [];
   return [
     '',
-    `Harmony, for every song (${strictness}); where the prompt itself names a key or chords, the prompt wins:`,
-    ...(key ? [`- ${key}`] : []),
-    ...(settings.length > 0 ? [`- Chords: ${settings.join('; ')}.`] : []),
-    ...(parts.length > 0
-      ? [
-          '- Progressions, as Roman numerals on the major scale of the key (♭VI is the major chord on the minor sixth), each repeated to fill its part:',
-          ...parts,
-        ]
-      : []),
+    'Harmony, for every song; where the prompt itself names a key or chords, the prompt wins:',
+    ...lines,
   ];
 }
 
 /**
- * Returns a harmony as one short line: its key, its settings and its progressions.
+ * Returns a harmony as one short line: its scale, feel and colour, and its progressions.
  *
  * @param harmony - The harmony.
- * @returns The line, like `A minor · 7ths · A: i ♭VI ♭III ♭VII`; empty when it asks for nothing.
+ * @returns The line, like `E phrygian · dark · a little colour · A: Em F Em Dm`; empty when it asks
+ *   for nothing.
  */
 export function getHarmonySummary(harmony: SentHarmony): string {
-  const key = [harmony.note, harmony.mode].filter(Boolean).join(' ');
-  const settings = HARMONY_SETTING_NAMES.flatMap((name) => {
-    const value = harmony.settings[name];
-    const options: readonly HarmonyOption[] = HARMONY_SETTINGS[name].options;
-    return value ? (getHarmonyOption(options, value)?.label ?? []) : [];
-  });
-  const parts = harmony.parts.flatMap(({ letter, progression }) =>
-    progression ? `${letter ? `${letter}: ` : ''}${writeProgression(progression.chords)}` : [],
+  const scale = [harmony.note, harmony.mode].filter(Boolean).join(' ');
+  const colour = harmony.colour ? getHarmonyWord(COLOURS, harmony.colour)?.label : undefined;
+  const parts = harmony.parts.map(
+    ({ letter, progression }) =>
+      `${letter ? `${letter}: ` : ''}${progression.name} (${getChordNames(progression.chords, harmony.note).join(' ')})`,
   );
-  return [key, ...settings, ...parts].filter(Boolean).join(' · ');
+  return [scale, harmony.feel, colour ? `${colour} colour` : null, ...parts]
+    .filter(Boolean)
+    .join(' · ');
 }
 
 /**
- * Returns the line that asks for a harmony's key.
+ * Names a progression's chords: in the key where it has a note, else as numerals.
+ *
+ * @param chords - The chords.
+ * @param note - The key's note, or null.
+ * @returns The names, one per chord.
+ */
+export function getChordNames(chords: Chord[], note: string | null): string[] {
+  return chords.map((chord) =>
+    note ? (getChordName(chord.numeral, note) ?? chord.numeral) : chord.numeral,
+  );
+}
+
+/**
+ * Returns the line that asks for a harmony's scale.
  *
  * @param harmony - The harmony.
  * @param harmony.note - The key's note, or null.
- * @param harmony.mode - The key's mode, or null.
+ * @param harmony.mode - The mode, or null.
  * @returns The line, or null when both are Claude's choice.
  */
-function getKeyLine({ note, mode }: SentHarmony): string | null {
-  if (note && mode) return `Key: ${note} ${mode}.`;
-  if (note) return `Key: on ${note}, the mode your choice.`;
-  if (mode) return `Mode: ${mode}, the key's note your choice.`;
+function getScaleLine({ note, mode }: SentHarmony): string | null {
+  const sound = mode ? getMode(mode)?.sound : undefined;
+  const heard = sound ? ` (${sound})` : '';
+  if (note && mode) return `- Scale: ${note} ${mode}${heard}.`;
+  if (mode) return `- Scale: ${mode}${heard}, on a note of your choice.`;
+  if (note) return `- Key note: ${note}, the scale your choice.`;
   return null;
 }
 
 /**
- * Returns what a harmony's settings ask for.
+ * Returns the line that asks for a part's progression, heard and kept.
  *
- * @param harmony - The harmony.
- * @returns A phrase per setting that is not Claude's choice.
- */
-function getSettingAsks(harmony: SentHarmony): string[] {
-  return HARMONY_SETTING_NAMES.flatMap((name) => {
-    const value = harmony.settings[name];
-    const options: readonly HarmonyOption[] = HARMONY_SETTINGS[name].options;
-    return value ? (getHarmonyOption(options, value)?.ask ?? []) : [];
-  });
-}
-
-/**
- * Returns the lines that ask for a part's progression and how its variations end.
- *
- * @param part - The part's harmony.
- * @param part.letter - Its letter, or null for the whole song.
- * @param part.progression - Its progression, or null.
- * @param part.variation - How its variations end.
+ * @param part - The part's progression.
+ * @param part.letter - The part's letter, or null for the whole song.
+ * @param part.progression - The progression.
  * @param note - The key's note, to name the chords in, or null.
- * @returns The lines, none when the part asks for nothing.
+ * @returns The line.
  */
-function getPartLines(
-  { letter, progression, variation }: PartHarmony,
-  note: string | null,
-): string[] {
-  const name = letter ?? 'The whole song';
-  const lines: string[] = [];
-  if (progression) {
-    const label = progression.name ? ` ("${progression.name}")` : '';
-    lines.push(`  - ${name}: ${getChordsText(progression.chords, note)}${label}.`);
-  }
-  if (letter && variation !== 'same') {
-    const ask = getHarmonyOption(VARIATION_ENDINGS, variation)?.ask ?? '';
-    const of = progression ? 'it' : `the progression of ${letter}`;
-    lines.push(`  - ${letter}′ and other variations of ${letter}: ${of}, with ${ask}.`);
-  }
-  return lines;
-}
-
-/**
- * Returns a progression's chords in words: the numerals, their names in the key, their lengths.
- *
- * @param chords - The chords.
- * @param note - The key's note, or null when the chords cannot be named.
- * @returns The chords, like `i ♭VI ♭III ♭VII (Am F C G), a bar each, 4 bars`.
- */
-function getChordsText(chords: Chord[], note: string | null): string {
-  const bars = writeBars(getProgressionBars(chords));
+function getPartLine({ letter, progression }: PartProgression, note: string | null): string {
+  const { chords } = progression;
+  const where = letter ? `${letter}'s progression` : "The song's progression";
+  const numerals = chords.map((chord) => chord.numeral).join(' ');
+  const names = note ? ` (${getChordNames(chords, note).join(' ')})` : '';
   const isEven = chords.every((chord) => chord.bars === chords[0]?.bars);
-  const names = note ? chords.map((chord) => getChordName(chord.numeral, note) ?? '?') : null;
-  if (isEven) {
-    const each = chords[0]?.bars === 1 ? 'a bar' : `${writeBars(chords[0]?.bars ?? 1)} bars`;
-    const named = names ? ` (${names.join(' ')})` : '';
-    return `${chords.map((chord) => chord.numeral).join(' ')}${named}, ${each} each, ${bars} bars`;
-  }
-  const listed = chords.map(
-    (chord, i) =>
-      `${chord.numeral}${names ? ` ${names[i]}` : ''} for ${writeBars(chord.bars)} ${chord.bars > 1 ? 'bars' : 'bar'}`,
-  );
-  return `${listed.join(', ')}: ${bars} bars`;
+  const first = chords[0]?.bars ?? 1;
+  const lengths = isEven
+    ? `${first === 1 ? 'a bar' : `${writeBars(first)} bars`} each`
+    : `lasting ${chords.map((chord) => writeBars(chord.bars)).join(', ')} bars`;
+  const total = writeBars(getProgressionBars(chords));
+  return `- ${where}, heard and chosen: ${numerals}${names}, ${lengths}, ${total} bars round; Roman numerals on the major scale of the key, written in ${progression.mode}. Use it as the part's harmony, repeated to fill it; vary its voicing and rhythm, and let its variations end their own way.`;
 }

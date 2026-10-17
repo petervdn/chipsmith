@@ -1,35 +1,34 @@
 // The Harmony panel on New: always the harmony chosen in one line, with 🎲 Roll for the unlocked
-// rows and progressions and ▸ at its right; ▸ opens under them the key, its mode and the settings
-// (each a row with a die and a lock; "any" is Claude's choice), how strictly it is followed, a
-// progression per part of the structure chosen (or one for the whole song), and setting it all to
-// any.
+// rows and ▸ at its right; ▸ opens under them the scale (how the one chosen sounds under it), the
+// key's note, the feel and the colour, each a row with a die and a lock ("any" is Claude's choice),
+// then chords to hear and keep per part (ChordAudition.tsx), and setting it all to any. How one
+// section leads into the next is the Structure panel's.
 import { Dices } from 'lucide-react';
 import { useState } from 'react';
+import type { ReactNode } from 'react';
 import { getHarmonySummary } from '../../shared/harmony-prompt.ts';
-import type { HarmonyOption } from '../../shared/harmony-settings.ts';
-import {
-  HARMONY_SETTING_NAMES,
-  HARMONY_SETTINGS,
-  STRICTNESSES,
-} from '../../shared/harmony-settings.ts';
+import { COLOURS, FEELS } from '../../shared/harmony-words.ts';
 import { getMode, MODES, NOTES } from '../../shared/modes.ts';
 import '../lists/lists.css';
+import { ChordAudition } from './ChordAudition.tsx';
 import { FoldPanel } from './FoldPanel.tsx';
-import { HarmonyPart } from './HarmonyPart.tsx';
 import { PartRow } from './PartRow.tsx';
-import { getPartLock } from './random-harmony.ts';
+import type { HarmonyRowName } from './random-harmony.ts';
+import { getHearingNote } from './random-harmony.ts';
 import type { useHarmonyChoice } from './use-harmony-choice.ts';
+import { useProgressionPreview } from './use-progression-preview.ts';
 import './HarmonyPanel.css';
 
 type HarmonyPanelProps = { choice: ReturnType<typeof useHarmonyChoice> };
 
-/** The most options a setting shows as switches; one with more is a menu. */
-const MOST_SWITCHES = 4;
+/** A choice of a row: its value and its label. */
+type RowOption = { value: string; label: string };
+
 /** What a menu's choice of "any" is valued. */
 const ANY = '';
-/** The notes and the modes as a menu's options. */
-const NOTE_OPTIONS = NOTES.map((note) => ({ value: note, label: note }));
-const MODE_OPTIONS = MODES.map(({ name }) => ({ value: name, label: name }));
+/** The options of the rows shown as switches, and of the key's note, a menu. */
+const MODE_OPTIONS: RowOption[] = MODES.map(({ name }) => ({ value: name, label: name }));
+const NOTE_OPTIONS: RowOption[] = NOTES.map((note) => ({ value: note, label: note }));
 
 /**
  * Shows the Harmony panel: the harmony chosen, and under it while open what changes it.
@@ -40,29 +39,39 @@ const MODE_OPTIONS = MODES.map(({ name }) => ({ value: name, label: name }));
  */
 export function HarmonyPanel({ choice }: HarmonyPanelProps) {
   const [isOpen, setOpen] = useState(false);
-  const { choice: harmony, parts, locked, sent } = choice;
+  const preview = useProgressionPreview();
+  const { choice: harmony, locked, sent } = choice;
   const summary = sent ? getHarmonySummary(sent) : '';
-  const mode = harmony.mode ? (getMode(harmony.mode) ?? null) : null;
-  function renderMenu(
-    options: readonly { value: string; label: string }[],
-    value: string | null,
-    onPick: (picked: string | null) => void,
-    label: string,
-  ) {
+  const hearingNote = getHearingNote(harmony);
+  const sound = harmony.mode ? getMode(harmony.mode)?.sound : undefined;
+  function renderRow(name: HarmonyRowName, label: string, children: ReactNode) {
     return (
-      <select
-        value={value ?? ANY}
-        aria-label={label}
-        onChange={(event) => onPick(event.target.value === ANY ? null : event.target.value)}
+      <PartRow
+        label={label}
+        name={label.toLowerCase()}
+        isLocked={locked.includes(name)}
+        onRoll={() => choice.rollRow(name)}
+        onToggleLock={() => choice.toggleLock(name)}
       >
-        <option value={ANY}>any</option>
-        {options.map((option) => (
-          <option key={option.value} value={option.value}>
-            {option.label}
-          </option>
-        ))}
-      </select>
+        {children}
+      </PartRow>
     );
+  }
+  function renderSwitches(name: HarmonyRowName, options: RowOption[], value: string | null) {
+    return [{ value: ANY, label: 'any' }, ...options].map((option) => {
+      const isOn = (value ?? ANY) === option.value;
+      return (
+        <button
+          key={option.value || 'any'}
+          type="button"
+          className={`list-chip${isOn ? ' is-on' : ''}`}
+          onClick={() => choice.setRow(name, option.value === ANY ? null : option.value)}
+          aria-pressed={isOn}
+        >
+          {option.label}
+        </button>
+      );
+    });
   }
   return (
     <FoldPanel
@@ -79,7 +88,7 @@ export function HarmonyPanel({ choice }: HarmonyPanelProps) {
           type="button"
           className="harmony-panel-button"
           onClick={choice.roll}
-          data-tooltip="pick the unlocked rows and progressions again"
+          data-tooltip="pick the unlocked rows again"
         >
           <Dices /> Roll
         </button>
@@ -88,97 +97,65 @@ export function HarmonyPanel({ choice }: HarmonyPanelProps) {
       onToggle={() => setOpen(!isOpen)}
       toggleLabels={{
         open: 'hide the harmony',
-        closed: 'change the harmony: the key, the chords, a progression per part',
+        closed: 'change the harmony: the scale, the feel, chords to hear and keep',
       }}
     >
       <p className="harmony-panel-help">
-        The harmony of the songs, optional: what is on any is Claude's choice. Chords are Roman
-        numerals on the major scale of the key: upper case major, lower case minor; ♭VI is the major
-        chord on the minor sixth.
+        The sound of the songs' chords, in plain words; any is Claude's choice. How one section
+        leads into the next is set between the tiles of the structure.
       </p>
+      {renderRow(
+        'mode',
+        'Scale',
+        <>
+          {renderSwitches('mode', MODE_OPTIONS, harmony.mode)}
+          {sound && (
+            <span className="harmony-panel-sound">
+              {harmony.mode}: {sound}
+            </span>
+          )}
+        </>,
+      )}
       <div className="harmony-panel-rows">
-        <PartRow
-          label="Key"
-          name="key"
-          isLocked={locked.includes('note')}
-          onRoll={() => choice.rollRow('note')}
-          onToggleLock={() => choice.toggleLock('note')}
-        >
-          {renderMenu(NOTE_OPTIONS, harmony.note, choice.setNote, 'the key')}
-        </PartRow>
-        <PartRow
-          label="Mode"
-          name="mode"
-          isLocked={locked.includes('mode')}
-          onRoll={() => choice.rollRow('mode')}
-          onToggleLock={() => choice.toggleLock('mode')}
-        >
-          {renderMenu(MODE_OPTIONS, harmony.mode, choice.setMode, 'the mode')}
-        </PartRow>
-        {HARMONY_SETTING_NAMES.map((name) => {
-          const { label } = HARMONY_SETTINGS[name];
-          const options: readonly HarmonyOption[] = HARMONY_SETTINGS[name].options;
-          const value = harmony.settings[name];
-          return (
-            <PartRow
-              key={name}
-              label={label}
-              name={label.toLowerCase()}
-              isLocked={locked.includes(name)}
-              onRoll={() => choice.rollRow(name)}
-              onToggleLock={() => choice.toggleLock(name)}
-            >
-              {options.length > MOST_SWITCHES
-                ? renderMenu(options, value, (picked) => choice.setSetting(name, picked), label)
-                : [{ value: null, label: 'any', ask: '' }, ...options].map((option) => (
-                    <button
-                      key={option.value ?? ANY}
-                      type="button"
-                      className={`list-chip${value === option.value ? ' is-on' : ''}`}
-                      onClick={() => choice.setSetting(name, option.value)}
-                      data-tooltip={option.ask || "Claude's choice"}
-                    >
-                      {option.label}
-                    </button>
-                  ))}
-            </PartRow>
-          );
-        })}
-      </div>
-      <div className="harmony-panel-strictness">
-        <span className="harmony-panel-label">How strictly</span>
-        {STRICTNESSES.map((strictness) => (
-          <button
-            key={strictness.value}
-            type="button"
-            className={`list-chip${harmony.strictness === strictness.value ? ' is-on' : ''}`}
-            onClick={() => choice.setStrictness(strictness.value)}
+        {renderRow(
+          'note',
+          'Key note',
+          <select
+            value={harmony.note ?? ANY}
+            aria-label="the key's note"
+            onChange={(event) =>
+              choice.setRow('note', event.target.value === ANY ? null : event.target.value)
+            }
           >
-            {strictness.label}
-          </button>
-        ))}
+            <option value={ANY}>any</option>
+            {NOTE_OPTIONS.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>,
+        )}
+        {renderRow('colour', 'Colour', renderSwitches('colour', COLOURS, harmony.colour))}
       </div>
+      {renderRow('feel', 'Feel', renderSwitches('feel', FEELS, harmony.feel))}
       <h3 className="harmony-panel-heading">
-        Progressions{' '}
-        <span>
-          {parts[0]?.letter ? 'per part of the structure' : 'for the whole song (no structure)'}
-        </span>
+        Chords <span>optional</span>
       </h3>
-      {parts.map((part) => (
-        <HarmonyPart
-          key={part.key}
-          part={part}
-          progression={harmony.progressions[part.key] ?? null}
-          variation={harmony.variations[part.key] ?? 'same'}
-          mode={mode}
-          note={harmony.note}
-          isLocked={locked.includes(getPartLock(part))}
-          onRoll={() => choice.rollPart(part)}
-          onToggleLock={() => choice.toggleLock(getPartLock(part))}
-          onChange={(progression) => choice.setProgression(part, progression)}
-          onVariation={(ending) => choice.setVariation(part, ending)}
-        />
-      ))}
+      <ChordAudition
+        parts={choice.parts}
+        hearingPart={choice.hearingPart}
+        progressions={harmony.progressions}
+        candidates={choice.candidates}
+        hearingNote={hearingNote}
+        isNoteChosen={harmony.note !== null}
+        playingId={preview.playingId}
+        onPlay={(id, chords) => void preview.play(id, chords, hearingNote)}
+        onStop={preview.stop}
+        onHearFor={choice.hearFor}
+        onKeep={choice.keep}
+        onDrop={choice.drop}
+        onPickOthers={choice.pickOthers}
+      />
       <div className="harmony-panel-end">
         <button type="button" className="harmony-panel-button" onClick={choice.clear}>
           Set all to any

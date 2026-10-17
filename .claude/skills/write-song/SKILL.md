@@ -38,18 +38,15 @@ A prompt may send a structure as a numbered line per section: its name, its bars
 ## The harmony
 
 A prompt may send a harmony: lines under "Harmony", for every song. What it leaves out is yours.
-- **Key** and mode; without them, choose. **Chords** says their kind, colour, how often they change,
-  the bass, the cadences and a key change.
-- **Progressions** are Roman numerals on the major scale of the key (in A minor, ♭VI is F), the
-  chord names after them, each chord's bars given. A part's progression repeats to fill its
-  section; where its bars do not divide by it, end the section on a cadence. "The whole song" is
-  for a song without a structure.
-- **Variations** (A′) say how they end against their part's progression.
-- **Follow it exactly**: play those chords, in that rhythm, in bass and harmony. **A starting
-  point**: keep its key and character, change chords where the melody asks for it.
-- Chords on a chip are implied (bass and arpeggios, a voice playing chord tones in turn); a
-  seventh or a ninth needs a voice free for it. The prompt's own words win where they name a key
-  or chords.
+- **Scale**: the mode (and its note), with how it sounds. Write in it.
+- **Feel** and **colour** say in plain words what the chords should do and how much may come from
+  outside the scale; choose chords that do that.
+- **A part's progression, heard and chosen**: the user heard it and kept it. Roman numerals on the
+  major scale of the key (in A minor, ♭VI is F), the chord names after them when there is a note.
+  Use it as that part's harmony, repeated to fill it; vary voicing and rhythm, and let variations
+  (A′) end their own way. Parts without one are yours, in the same scale and feel.
+- Chords on a chip are implied (bass and arpeggios, a voice playing chord tones in turn); a seventh
+  or a ninth needs a voice free for it. The prompt's own words win where they name a key or chords.
 
 ## What sections do
 

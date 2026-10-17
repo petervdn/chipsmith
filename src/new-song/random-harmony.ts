@@ -1,113 +1,69 @@
 /**
- * The harmony chosen on New: its key, its settings, how strictly it is followed, and a progression
- * per part of the structure chosen (or one for the whole song), each picked by hand or at random,
- * and what of it is sent with the prompt. A progression rolled is a preset of the mode or one made
- * up (progression-generator.ts), in the kind of chords asked for. Knows nothing of the page.
+ * The harmony chosen on New: its scale (a mode on a note), feel and colour, each picked by hand or
+ * at random, and a progression per part of the structure (or one for the whole song) heard and kept
+ * from the presets that fit; and what of it is sent with the prompt. Knows nothing of the page.
  */
-import { HARMONY_SETTINGS, setHarmonySetting } from '../../shared/harmony-settings.ts';
-import type {
-  HarmonyOption,
-  HarmonySettingName,
-  Strictness,
-  VariationEnding,
-} from '../../shared/harmony-settings.ts';
-import type {
-  Chord,
-  HarmonySettings,
-  PartHarmony,
-  Progression,
-  SentHarmony,
-} from '../../shared/harmony.types.ts';
+import { COLOURS, FEELS } from '../../shared/harmony-words.ts';
+import type { PartProgression, Progression, SentHarmony } from '../../shared/harmony.types.ts';
 import { getMode, MODES, NOTES } from '../../shared/modes.ts';
-import { getProgressionBars, writeBars } from '../../shared/progression-notation.ts';
-import { getModePresets } from '../../shared/progression-presets.ts';
+import type { ProgressionPreset } from '../../shared/progression-presets.ts';
+import { getPresetsFor } from '../../shared/progression-presets.ts';
 import type { Section } from '../../shared/structure.types.ts';
-import { generateProgression, getCycleBars, setChordKind } from './progression-generator.ts';
 
 /** The harmony as it is being chosen: what is null is Claude's choice. */
 export type HarmonyChoice = {
   note: string | null;
   mode: string | null;
-  settings: HarmonySettings;
-  strictness: Strictness;
-  /** The progression of each part, by its key. */
-  progressions: Record<string, Progression | null>;
-  /** How the variations of each part end, by its key. */
-  variations: Record<string, VariationEnding>;
+  feel: string | null;
+  colour: string | null;
+  /** The progression kept for each part, by its key. */
+  progressions: Record<string, Progression>;
 };
 
-/** A row of the harmony that is rolled: the key's note, its mode, or a setting. */
-export type HarmonyRowName = 'note' | 'mode' | HarmonySettingName;
+/** A row of the harmony that is rolled. */
+export type HarmonyRowName = 'note' | 'mode' | 'feel' | 'colour';
 
-/** A part a progression is chosen for: one of the structure's letters, or the whole song. */
+/** A part a progression is kept for: one of the structure's letters, or the whole song. */
 export type HarmonyPart = {
   /** What its progression is kept under. */
   key: string;
   /** Its letter, or null for the whole song. */
   letter: string | null;
-  /** The bars of its first section, or null for the whole song. */
-  bars: number | null;
-  /** Whether the structure has variations of it (A′). */
-  hasVariations: boolean;
 };
 
 /** The rows rolled, in the order they are picked. */
-export const HARMONY_ROWS: HarmonyRowName[] = [
-  'note',
-  'mode',
-  'chords',
-  'colour',
-  'rhythm',
-  'bass',
-  'cadence',
-  'keyChange',
-];
+export const HARMONY_ROWS: HarmonyRowName[] = ['note', 'mode', 'feel', 'colour'];
 
 /** A harmony that asks for nothing: everything Claude's choice. */
 export const OPEN_HARMONY: HarmonyChoice = {
   note: null,
   mode: null,
-  settings: {
-    chords: null,
-    colour: null,
-    rhythm: null,
-    bass: null,
-    cadence: null,
-    keyChange: null,
-  },
-  strictness: 'exact',
+  feel: null,
+  colour: null,
   progressions: {},
-  variations: {},
 };
 
 /** The key a whole song's progression is kept under. */
 const WHOLE_SONG = 'whole';
-/** How often a rolled progression is a preset of the mode rather than one made up. */
-const PRESET_CHANCE = 0.4;
-/** The mode a progression is made up in when the mode is Claude's choice. */
-const DEFAULT_MODE = 'major';
+/** The notes a progression is heard on when the key's note is Claude's choice: major and minor. */
+const MAJOR_NOTE = 'C';
+const MINOR_NOTE = 'A';
+/** The semitones of a minor third, which makes a mode minor. */
+const MINOR_THIRD = 3;
 
 /**
- * Returns the parts a progression is chosen for: each letter of a structure, in the order they
- * come, or the whole song when there is no structure.
+ * Returns the parts a progression is kept for: each letter of a structure, in the order they come,
+ * or the whole song when there is no structure.
  *
  * @param sections - The structure's sections, or null for none.
  * @returns The parts.
  */
 export function getHarmonyParts(sections: Section[] | null): HarmonyPart[] {
-  if (!sections || sections.length === 0) {
-    return [{ key: WHOLE_SONG, letter: null, bars: null, hasVariations: false }];
-  }
-  const letters = [...new Set(sections.map((section) => section.letter))];
-  return letters.map((letter) => {
-    const ofLetter = sections.filter((section) => section.letter === letter);
-    return {
-      key: letter,
-      letter,
-      bars: ofLetter[0]?.bars ?? null,
-      hasVariations: ofLetter.some((section) => section.variant > 0),
-    };
-  });
+  if (!sections || sections.length === 0) return [{ key: WHOLE_SONG, letter: null }];
+  return [...new Set(sections.map((section) => section.letter))].map((letter) => ({
+    key: letter,
+    letter,
+  }));
 }
 
 /**
@@ -123,163 +79,130 @@ export function rollHarmonyRow(
   name: HarmonyRowName,
   getRandom: () => number,
 ): HarmonyChoice {
-  if (name === 'note') return { ...choice, note: pickOne(NOTES, getRandom) ?? null };
-  if (name === 'mode') {
-    return { ...choice, mode: pickOne(MODES, getRandom)?.name ?? null };
-  }
-  return { ...choice, settings: rollSetting(choice.settings, name, getRandom) };
+  const values = {
+    note: NOTES,
+    mode: MODES.map((mode) => mode.name),
+    feel: FEELS.map((feel) => feel.value),
+    colour: COLOURS.map((colour) => colour.value),
+  } satisfies Record<HarmonyRowName, string[]>;
+  return { ...choice, [name]: pickOne(values[name], getRandom) ?? null };
 }
 
 /**
- * Picks a part's progression again at random: now and then a preset of the mode, else one made up
- * from the settings; in the kind of chords asked for.
+ * Picks every row again at random, except the locked ones; the progressions kept stay.
  *
  * @param choice - The harmony.
- * @param part - The part.
+ * @param locked - The rows kept.
  * @param getRandom - Gives numbers from 0 up to 1, as Math.random does.
- * @returns The harmony, the part's progression picked again.
- */
-export function rollProgression(
-  choice: HarmonyChoice,
-  part: HarmonyPart,
-  getRandom: () => number,
-): HarmonyChoice {
-  const mode = getMode(choice.mode ?? DEFAULT_MODE) ?? MODES[0];
-  if (!mode) return choice;
-  const presets = getModePresets(choice.mode);
-  const preset = getRandom() < PRESET_CHANCE ? pickOne(presets, getRandom) : undefined;
-  const progression: Progression = preset
-    ? {
-        name: preset.name,
-        chords: preset.chords.map((chord) => ({
-          ...chord,
-          numeral: setChordKind(chord.numeral, choice.settings.chords, mode),
-        })),
-      }
-    : {
-        name: 'rolled',
-        chords: generateProgression(
-          {
-            mode,
-            settings: choice.settings,
-            bars: getCycleBars(part.bars, choice.settings.rhythm),
-          },
-          getRandom,
-        ),
-      };
-  return setProgression(choice, part, progression);
-}
-
-/**
- * Picks every row and part again at random, except the locked ones.
- *
- * @param choice - The harmony.
- * @param parts - The parts there are.
- * @param locked - The rows and parts kept (a part by `getPartLock`).
- * @param getRandom - Gives numbers from 0 up to 1, as Math.random does.
- * @returns The harmony, the unlocked rows and parts picked again.
+ * @returns The harmony, the unlocked rows picked again.
  */
 export function rollHarmony(
   choice: HarmonyChoice,
-  parts: HarmonyPart[],
-  locked: string[],
+  locked: HarmonyRowName[],
   getRandom: () => number,
 ): HarmonyChoice {
-  let next = choice;
-  for (const name of HARMONY_ROWS) {
-    if (!locked.includes(name)) next = rollHarmonyRow(next, name, getRandom);
-  }
-  for (const part of parts) {
-    if (!locked.includes(getPartLock(part))) next = rollProgression(next, part, getRandom);
-  }
-  return next;
+  return HARMONY_ROWS.reduce(
+    (next, name) => (locked.includes(name) ? next : rollHarmonyRow(next, name, getRandom)),
+    choice,
+  );
 }
 
 /**
- * Sets a part's progression.
+ * Picks presets to hear for a scale and a feel, different ones, avoiding those just heard where
+ * there are enough others.
+ *
+ * @param choice - The harmony.
+ * @param choice.mode - Its mode, or null for any.
+ * @param choice.feel - Its feel, or null for any.
+ * @param count - How many to pick.
+ * @param avoid - The ids of the presets to avoid.
+ * @param getRandom - Gives numbers from 0 up to 1, as Math.random does.
+ * @returns The presets, in the order they are offered.
+ */
+export function pickCandidates(
+  { mode, feel }: HarmonyChoice,
+  count: number,
+  avoid: string[],
+  getRandom: () => number,
+): ProgressionPreset[] {
+  const all = getPresetsFor(mode, feel);
+  const fresh = all.filter((preset) => !avoid.includes(preset.id));
+  const pool = fresh.length >= count ? fresh : all;
+  const picked: ProgressionPreset[] = [];
+  const left = [...pool];
+  while (picked.length < count && left.length > 0) {
+    const [preset] = left.splice(Math.floor(getRandom() * left.length), 1);
+    if (preset) picked.push(preset);
+  }
+  return pool.filter((preset) => picked.includes(preset));
+}
+
+/**
+ * Keeps a preset as a part's progression, in the scale chosen; with no scale chosen, the preset's
+ * own becomes it, so the chords are heard as written.
  *
  * @param choice - The harmony.
  * @param part - The part.
- * @param progression - Its progression, or null for Claude's choice.
- * @returns The harmony, the part's progression set.
+ * @param preset - The preset kept.
+ * @returns The harmony, the part's progression kept.
  */
-export function setProgression(
+export function keepProgression(
   choice: HarmonyChoice,
   part: HarmonyPart,
-  progression: Progression | null,
+  preset: ProgressionPreset,
 ): HarmonyChoice {
-  return { ...choice, progressions: { ...choice.progressions, [part.key]: progression } };
+  const mode = choice.mode ?? preset.modes[0] ?? null;
+  const progression: Progression = {
+    name: preset.name,
+    mode: mode ?? 'major',
+    chords: preset.chords,
+  };
+  return { ...choice, mode, progressions: { ...choice.progressions, [part.key]: progression } };
 }
 
 /**
- * Returns what a part's lock is kept as among the locked rows.
+ * Lets go of a part's progression: it is Claude's choice again.
  *
+ * @param choice - The harmony.
  * @param part - The part.
- * @returns Its name in the locked list.
+ * @returns The harmony, without the part's progression.
  */
-export function getPartLock(part: HarmonyPart): string {
-  return `part:${part.key}`;
+export function dropProgression(choice: HarmonyChoice, part: HarmonyPart): HarmonyChoice {
+  const progressions = Object.fromEntries(
+    Object.entries(choice.progressions).filter(([key]) => key !== part.key),
+  );
+  return { ...choice, progressions };
 }
 
 /**
- * Says how a progression fills its part: how long it is, and how often it goes round.
+ * Returns the note progressions are heard on: the key's, or one that suits the scale.
  *
- * @param chords - The progression's chords.
- * @param part - The part.
- * @returns The text, like `4 bars, 2 times round in A's 8` or `6 bars: A's 8 do not divide by it`.
+ * @param choice - The harmony.
+ * @param choice.note - The key's note, or null.
+ * @param choice.mode - The mode, or null.
+ * @returns The note.
  */
-export function getProgressionFit(chords: Chord[], part: HarmonyPart): string {
-  const bars = getProgressionBars(chords);
-  const length = `${writeBars(bars)} ${bars === 1 ? 'bar' : 'bars'}`;
-  if (part.bars === null || bars === 0) return `${length}, repeated through the song`;
-  const times = part.bars / bars;
-  const of = `${part.letter ?? 'the part'}'s ${part.bars}`;
-  if (!Number.isInteger(times)) return `${length}: ${of} do not divide by it`;
-  return times === 1 ? `${length}, all of ${of}` : `${length}, ${times} times round in ${of}`;
+export function getHearingNote({ note, mode }: HarmonyChoice): string {
+  if (note) return note;
+  const isMinor = mode ? (getMode(mode)?.steps.includes(MINOR_THIRD) ?? false) : false;
+  return isMinor ? MINOR_NOTE : MAJOR_NOTE;
 }
 
 /**
- * Returns the harmony to send with a prompt: the parts there are, each with a progression or a
- * variation's ending asked for.
+ * Returns the harmony to send with a prompt: the progressions of the parts there are now.
  *
  * @param choice - The harmony.
  * @param parts - The parts there are now.
  * @returns The harmony to send, or null when it asks for nothing.
  */
 export function getSentHarmony(choice: HarmonyChoice, parts: HarmonyPart[]): SentHarmony | null {
-  const partHarmonies: PartHarmony[] = parts
-    .map((part) => ({
-      letter: part.letter,
-      progression: choice.progressions[part.key] ?? null,
-      variation: part.hasVariations ? (choice.variations[part.key] ?? 'same') : 'same',
-    }))
-    .filter(({ progression, variation }) => progression !== null || variation !== 'same');
-  const hasSettings = Object.values(choice.settings).some((value) => value !== null);
-  if (!choice.note && !choice.mode && !hasSettings && partHarmonies.length === 0) return null;
-  return {
-    note: choice.note,
-    mode: choice.mode,
-    settings: choice.settings,
-    strictness: choice.strictness,
-    parts: partHarmonies,
-  };
-}
-
-/**
- * Picks a setting again at random.
- *
- * @param settings - The settings.
- * @param name - The setting.
- * @param getRandom - Gives numbers from 0 up to 1, as Math.random does.
- * @returns The settings, that one picked again.
- */
-function rollSetting(
-  settings: HarmonySettings,
-  name: HarmonySettingName,
-  getRandom: () => number,
-): HarmonySettings {
-  const options: readonly HarmonyOption[] = HARMONY_SETTINGS[name].options;
-  return setHarmonySetting(settings, name, pickOne(options, getRandom)?.value ?? null);
+  const kept: PartProgression[] = parts.flatMap((part) => {
+    const progression = choice.progressions[part.key];
+    return progression ? [{ letter: part.letter, progression }] : [];
+  });
+  const { note, mode, feel, colour } = choice;
+  if (!note && !mode && !feel && !colour && kept.length === 0) return null;
+  return { note, mode, feel, colour, parts: kept };
 }
 
 /**

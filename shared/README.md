@@ -11,13 +11,13 @@ Nothing here reads files or touches the page.
 - `clip.types.ts`: a clip, what it was made from and what slice of the music it is
 - `guide.types.ts`: a style guide, and a guide as it was sent with a prompt
 - `harmony-prompt.ts`: a harmony as the lines of a prompt that ask for it, and as one short line
-- `harmony-settings.ts`: a harmony's settings (chords, colour, changes, bass, cadences, key change) and their options
-- `harmony.types.ts`: a song's harmony as a prompt asks for it: key, settings, a progression per part
+- `harmony-words.ts`: a harmony's feels and colours in plain words, and how a prompt asks for each
+- `harmony.types.ts`: a song's harmony as a prompt asks for it: scale, feel, colour, a progression kept per part
 - `job.types.ts`: a job: a prompt on its way to songs, its phases and notes
 - `lead-ins.ts`: how one section can lead into the next (drums, bass, harmony, lead, all), and how a prompt asks for each
-- `modes.ts`: the notes and modes a key can be in, and each mode's own chords
+- `modes.ts`: the notes and modes a key can be in, how each mode sounds, and its own chords
 - `progression-notation.ts`: a progression written short (i ♭VI V:½), read and written
-- `progression-presets.ts`: the progressions a part can start from, by the modes they fit
+- `progression-presets.ts`: the progressions offered to hear and keep, by the modes and feels they fit
 - `song-length.ts`: how long a song is, from its blocks and its clips' lengths
 - `song.types.ts`: a song: tracks of blocks that point to clips
 - `structure-notation.ts`: a structure written short (A8 A'8 B8), read and written; how a section stands to those before

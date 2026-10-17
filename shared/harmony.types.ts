@@ -1,42 +1,33 @@
 /**
- * A song's harmony as a prompt asks for it: its key, how its chords are (harmony-settings.ts), and a
- * progression per part of its structure, or one for the whole song. What is left out (null) is
- * Claude's choice. What was sent with a prompt is copied into the job and the songs it made.
+ * A song's harmony as a prompt asks for it: its scale (a mode on a note), its feel and colour in
+ * plain words, and the progressions heard and kept, one per part of its structure or one for the
+ * whole song. What is left out (null) is Claude's choice. What was sent with a prompt is copied into
+ * the job and the songs it made.
  */
-import type {
-  HarmonySettingName,
-  HarmonyValue,
-  Strictness,
-  VariationEnding,
-} from './harmony-settings.ts';
 
 /** A chord of a progression: its numeral on the major scale of the key, and its length in bars. */
 export type Chord = { numeral: string; bars: number };
 
-/** A progression: its name (a preset's, "rolled" or "your own") and its chords, in order. */
-export type Progression = { name: string; chords: Chord[] };
+/** A progression: its name, the mode it is written in, and its chords, in order. */
+export type Progression = { name: string; mode: string; chords: Chord[] };
 
-/** The settings of a harmony, each a value or null for Claude's choice. */
-export type HarmonySettings = { [Name in HarmonySettingName]: HarmonyValue<Name> | null };
-
-/** The harmony of a part, or of the whole song. */
-export type PartHarmony = {
+/** A progression kept for a part, or for the whole song. */
+export type PartProgression = {
   /** The part's letter (A to Z), or null for the whole song. */
   letter: string | null;
-  /** Its progression, repeated to fill its bars, or null for Claude's choice. */
-  progression: Progression | null;
-  /** How its variations (A′, A″) end. */
-  variation: VariationEnding;
+  progression: Progression;
 };
 
 /** A harmony as it was sent with a prompt, copied. */
 export type SentHarmony = {
   /** The key's note, or null for Claude's choice. */
   note: string | null;
-  /** The key's mode, or null for Claude's choice. */
+  /** The mode (scale), or null for Claude's choice. */
   mode: string | null;
-  settings: HarmonySettings;
-  strictness: Strictness;
-  /** The parts with a progression or a variation's ending asked for. */
-  parts: PartHarmony[];
+  /** The feel (shared/harmony-words.ts), or null. */
+  feel: string | null;
+  /** The colour (shared/harmony-words.ts), or null. */
+  colour: string | null;
+  /** The progressions kept, each for a part or the whole song. */
+  parts: PartProgression[];
 };

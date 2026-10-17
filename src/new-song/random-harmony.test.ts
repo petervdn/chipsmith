@@ -1,72 +1,62 @@
-// The harmony's parts follow the structure's letters; rolling keeps what is locked; what is sent
+// The harmony's parts follow the structure's letters; rolling keeps what is locked; presets to hear
+// fit the scale and feel; a kept progression sets the scale when none was chosen; what is sent
 // leaves out what asks for nothing.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import type { VariationEnding } from '../../shared/harmony-settings.ts';
+import { PROGRESSION_PRESETS } from '../../shared/progression-presets.ts';
 import { readNotation } from '../../shared/structure-notation.ts';
 import {
+  dropProgression,
   getHarmonyParts,
-  getPartLock,
-  getProgressionFit,
+  getHearingNote,
   getSentHarmony,
+  keepProgression,
   OPEN_HARMONY,
+  pickCandidates,
   rollHarmony,
 } from './random-harmony.ts';
 
 test('a part per letter, in order, or the whole song', () => {
-  const sections = readNotation("A8 A'8 B4 A8 C16").sections;
-  assert.deepEqual(getHarmonyParts(sections), [
-    { key: 'A', letter: 'A', bars: 8, hasVariations: true },
-    { key: 'B', letter: 'B', bars: 4, hasVariations: false },
-    { key: 'C', letter: 'C', bars: 16, hasVariations: false },
+  assert.deepEqual(getHarmonyParts(readNotation("A8 A'8 B4 A8 C16").sections), [
+    { key: 'A', letter: 'A' },
+    { key: 'B', letter: 'B' },
+    { key: 'C', letter: 'C' },
   ]);
-  assert.deepEqual(getHarmonyParts(null), [
-    { key: 'whole', letter: null, bars: null, hasVariations: false },
-  ]);
+  assert.deepEqual(getHarmonyParts(null), [{ key: 'whole', letter: null }]);
 });
 
 test('nothing asked, nothing sent', () => {
   assert.equal(getSentHarmony(OPEN_HARMONY, getHarmonyParts(null)), null);
 });
 
-test('rolling picks every unlocked row and part, and keeps the locked ones', () => {
-  const parts = getHarmonyParts(readNotation('A8 B8').sections);
-  const [partA, partB] = parts;
-  assert.ok(partA && partB);
-  const kept = { ...OPEN_HARMONY, note: 'D', progressions: { [partB.key]: null } };
-  const rolled = rollHarmony(kept, parts, ['note', getPartLock(partB)], () => 0.5);
+test('rolling picks the unlocked rows and keeps the locked ones', () => {
+  const rolled = rollHarmony({ ...OPEN_HARMONY, note: 'D' }, ['note'], () => 0.5);
   assert.equal(rolled.note, 'D');
-  assert.ok(rolled.mode !== null);
-  assert.ok(Object.values(rolled.settings).every((value) => value !== null));
-  assert.ok(rolled.progressions['A']);
-  assert.equal(rolled.progressions['B'], null);
-  const sent = getSentHarmony(rolled, parts);
-  assert.deepEqual(
-    sent?.parts.map((part) => part.letter),
-    ['A'],
-  );
+  assert.ok(rolled.mode && rolled.feel && rolled.colour);
 });
 
-test('a variation ending is sent only for a part that has variations', () => {
-  const parts = getHarmonyParts(readNotation("A8 A'8 B8").sections);
-  const variations: Record<string, VariationEnding> = Object.fromEntries([
-    ['A', 'reharmonised'],
-    ['B', 'half-cadence'],
-  ]);
-  const choice = { ...OPEN_HARMONY, variations };
-  assert.deepEqual(getSentHarmony(choice, parts)?.parts, [
-    { letter: 'A', progression: null, variation: 'reharmonised' },
-  ]);
-});
-
-test('how a progression fills its part', () => {
-  const [part] = getHarmonyParts(readNotation('A8').sections);
-  assert.ok(part);
-  for (const [bars, fit] of [
-    [4, "4 bars, 2 times round in A's 8"],
-    [8, "8 bars, all of A's 8"],
-    [3, "3 bars: A's 8 do not divide by it"],
-  ] as const) {
-    assert.equal(getProgressionFit([{ numeral: 'i', bars }], part), fit);
+test('presets to hear fit the scale and the feel, never the same twice in a pick', () => {
+  const choice = { ...OPEN_HARMONY, mode: 'minor', feel: 'dark' };
+  const picked = pickCandidates(choice, 3, [], () => 0);
+  assert.equal(picked.length, 3);
+  assert.equal(new Set(picked.map((preset) => preset.id)).size, 3);
+  for (const preset of picked) {
+    assert.ok(preset.modes.includes('minor') && preset.feels.includes('dark'), preset.id);
   }
+});
+
+test('a kept progression sets the scale when none was chosen, and is sent for its part', () => {
+  const [part] = getHarmonyParts(readNotation('A8 B8').sections);
+  const epic = PROGRESSION_PRESETS.find((preset) => preset.id === 'epic-minor');
+  assert.ok(part && epic);
+  const kept = keepProgression(OPEN_HARMONY, part, epic);
+  assert.equal(kept.mode, 'minor');
+  assert.equal(getHearingNote(kept), 'A');
+  assert.deepEqual(
+    getSentHarmony(kept, getHarmonyParts(readNotation('A8 B8').sections))?.parts.map(
+      ({ letter, progression }) => [letter, progression.name, progression.mode],
+    ),
+    [['A', 'Epic', 'minor']],
+  );
+  assert.deepEqual(dropProgression(kept, part).progressions, {});
 });

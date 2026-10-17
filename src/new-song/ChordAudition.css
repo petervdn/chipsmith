@@ -1,0 +1,102 @@
+/* The look of ChordAudition.tsx: the part chips, then a row per progression (▶, its name, its
+   chords, keep), the one kept outlined in the accent. */
+
+.chord-audition {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.chord-audition-hint {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.8125rem;
+}
+
+.chord-audition-parts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.chord-audition-parts .lucide {
+  width: 12px;
+  height: 12px;
+  margin-left: 4px;
+}
+
+.chord-audition-label {
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+
+.chord-audition-row {
+  display: grid;
+  grid-template-columns: var(--touch) minmax(6em, max-content) minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 8px 4px 4px;
+  border: var(--border-width) solid var(--line);
+  border-radius: var(--radius);
+  background: var(--card);
+}
+
+.chord-audition-row.is-kept {
+  border-color: var(--accent);
+  box-shadow: inset 0 0 0 1px var(--accent);
+}
+
+.chord-audition-name {
+  font-weight: 600;
+}
+
+.chord-audition-chords {
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 0.875rem;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.chord-audition-play,
+.chord-audition-drop,
+.chord-audition-keep,
+.chord-audition-others {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-width: var(--touch);
+  min-height: var(--touch);
+  padding: 0 10px;
+  border: var(--border-width) solid var(--line);
+  border-radius: var(--radius);
+  background: var(--raised);
+  cursor: pointer;
+}
+
+.chord-audition-play {
+  padding: 0;
+  border-radius: var(--round);
+}
+
+.chord-audition-play.is-on,
+.chord-audition-keep.is-on {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+.chord-audition-keep:disabled {
+  cursor: default;
+}
+
+.chord-audition-others {
+  align-self: flex-start;
+}
+
+.chord-audition .lucide {
+  width: 16px;
+  height: 16px;
+}

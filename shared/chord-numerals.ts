@@ -2,7 +2,8 @@
  * A chord written as a Roman numeral on the major scale of the key: `♭VI`, `ii7`, `V7`, `viiø7`,
  * `♭VII5`. Upper case is major and lower case minor; a mark after it makes it diminished (°),
  * half-diminished (ø) or augmented (+); what follows adds to it (7, maj7, 6, 9, add9, sus2, sus4, or
- * 5 for a power chord). Read, written back the one way, and named in a key (`♭VI` in A is F).
+ * 5 for a power chord). Read, written back the one way, and named in a key (`♭VI` in A is F); a
+ * key's note as a pitch.
  * Knows nothing of files or the page.
  */
 
@@ -120,6 +121,16 @@ export function getChordName(text: string, note: string): string | null {
   const suffixes: Partial<Record<ChordAddition, string>> = CHORD_SUFFIXES[numeral.quality];
   const base = suffixes[''] ?? '';
   return `${root}${suffixes[numeral.addition] ?? `${base}${numeral.addition}`}`;
+}
+
+/**
+ * Returns a key's note as a pitch.
+ *
+ * @param note - The note, like `A`, `C♯`, `Eb`.
+ * @returns Its pitch in semitones above C, 0 to 11, or null when it does not read.
+ */
+export function getNotePitch(note: string): number | null {
+  return readNote(note)?.pitch ?? null;
 }
 
 /**

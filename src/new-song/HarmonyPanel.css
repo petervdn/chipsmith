@@ -1,6 +1,7 @@
 /* The look of HarmonyPanel.tsx, in its panel (FoldPanel.css): the harmony in one line, Roll at its
-   right; while open, the rows (PartRow.css) in two columns on a wide screen, how strictly, and the
-   parts' progressions (HarmonyPart.css) under a heading. */
+   right; while open, the rows (PartRow.css), the key's note and the colour side by side on a wide
+   screen, how the scale chosen sounds under its switches, and the chords (ChordAudition.css) under a
+   heading. */
 
 .harmony-panel-summary {
   margin: 0;
@@ -33,6 +34,12 @@
   height: 16px;
 }
 
+.harmony-panel-sound {
+  flex-basis: 100%;
+  color: var(--muted);
+  font-size: 0.8125rem;
+}
+
 .harmony-panel-rows {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
@@ -43,19 +50,6 @@
   .harmony-panel-rows {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-}
-
-.harmony-panel-strictness {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 6px;
-}
-
-.harmony-panel-label {
-  margin-right: 4px;
-  color: var(--muted);
-  font-size: 0.75rem;
 }
 
 .harmony-panel-heading {

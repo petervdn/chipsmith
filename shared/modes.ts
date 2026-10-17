@@ -1,29 +1,57 @@
 /**
- * The keys a song can be in: the notes and the modes (scales), each mode its steps above the key's
- * note, and the chords that are its own, as numerals on the major scale (chord-numerals.ts):
+ * The keys a song can be in: the notes and the modes (scales), each mode how it sounds, its steps
+ * above the key's note, and the chords that are its own, as numerals on the major scale (chord-numerals.ts):
  * stacked in thirds from each step, or, for a scale whose chords are not (the blues), listed.
  * Knows nothing of files or the page.
  */
 import type { Numeral } from './chord-numerals.ts';
 import { readNumeral, writeNumeral } from './chord-numerals.ts';
 
-/** A mode: its name, its steps in semitones above the key's note, and its chords where listed. */
-export type Mode = { name: string; steps: number[]; chords?: string[] };
+/**
+ * A mode: its name, how it sounds in a few words, its steps in semitones above the key's note, and
+ * its chords where listed.
+ */
+export type Mode = { name: string; sound: string; steps: number[]; chords?: string[] };
 
 /** The notes a key is on. */
 export const NOTES = ['C', 'C♯', 'D', 'E♭', 'E', 'F', 'F♯', 'G', 'A♭', 'A', 'B♭', 'B'];
 
 /** The modes and scales a key is in. */
 export const MODES: Mode[] = [
-  { name: 'major', steps: [0, 2, 4, 5, 7, 9, 11] },
-  { name: 'minor', steps: [0, 2, 3, 5, 7, 8, 10] },
-  { name: 'dorian', steps: [0, 2, 3, 5, 7, 9, 10] },
-  { name: 'phrygian', steps: [0, 1, 3, 5, 7, 8, 10] },
-  { name: 'lydian', steps: [0, 2, 4, 6, 7, 9, 11] },
-  { name: 'mixolydian', steps: [0, 2, 4, 5, 7, 9, 10] },
-  { name: 'harmonic minor', steps: [0, 2, 3, 5, 7, 8, 11] },
-  { name: 'phrygian dominant', steps: [0, 1, 4, 5, 7, 8, 10] },
-  { name: 'blues', steps: [0, 3, 5, 6, 7, 10], chords: ['I7', 'IV7', 'V7'] },
+  { name: 'major', sound: 'bright and plain', steps: [0, 2, 4, 5, 7, 9, 11] },
+  { name: 'minor', sound: 'sad, serious', steps: [0, 2, 3, 5, 7, 8, 10] },
+  {
+    name: 'dorian',
+    sound: 'minor but hopeful, a bright sixth; funky, folky',
+    steps: [0, 2, 3, 5, 7, 9, 10],
+  },
+  {
+    name: 'phrygian',
+    sound: 'dark, a Spanish or metal edge from the flat second',
+    steps: [0, 1, 3, 5, 7, 8, 10],
+  },
+  {
+    name: 'lydian',
+    sound: 'dreamy and floating, from the raised fourth',
+    steps: [0, 2, 4, 6, 7, 9, 11],
+  },
+  {
+    name: 'mixolydian',
+    sound: 'major with a bluesy flat seventh; rock',
+    steps: [0, 2, 4, 5, 7, 9, 10],
+  },
+  {
+    name: 'harmonic minor',
+    sound: 'dramatic and exotic, a strong pull home',
+    steps: [0, 2, 3, 5, 7, 8, 11],
+  },
+  { name: 'phrygian dominant', sound: 'Middle Eastern or flamenco', steps: [0, 1, 4, 5, 7, 8, 10] },
+  {
+    name: 'blues',
+    sound: 'bluesy, all dominant chords',
+    steps: [0, 3, 5, 6, 7, 10],
+    chords: ['I7', 'IV7', 'V7'],
+  },
 ];
 
 /** The steps from a chord's root to its third, fifth and seventh in a seven-note scale. */
