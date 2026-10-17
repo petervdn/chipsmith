@@ -1,7 +1,7 @@
 /**
- * Each track of what plays on a tap of its own on the way to the output: its gain, which mutes the
- * tracks not heard (mute and solo) at once, also while playing, and its peak after that gain, for
- * its level meter. Before the player's mute switch. Knows nothing of what is shown.
+ * Each track of what plays on a tap of its own on the way to the output: its gain, which sets its
+ * level (its fader) and mutes the tracks not heard (mute and solo) at once, also while playing, and
+ * its peak after that gain, for its level meter. Before the player's mute switch. Knows nothing of what is shown.
  */
 
 /** Samples read at a time: about 21 ms at 48 kHz, longer than a frame, so no peak falls between. */
@@ -9,12 +9,16 @@ const SAMPLE_COUNT = 1024;
 /** Seconds in which a track's gain moves most of the way to a new one, so muting does not click. */
 const GAIN_SMOOTHING = 0.005;
 
+import { TRACK_LOUDEST_DB, getGain as getVolumeGain } from '../player/volume.ts';
+
 /** A track's tap: what its sources play into, and its two channels' analysers. */
 type TrackTap = { input: GainNode; analysers: AnalyserNode[] };
 
 let taps = new Map<string, TrackTap>();
 /** The tracks not heard, kept across plays. */
 let unheardTrackIds = new Set<string>();
+/** Each track's level in decibels, by its id, kept across plays; a track not in it plays at 0 dB. */
+let trackVolumes: Record<string, number> = {};
 const samples = new Float32Array(SAMPLE_COUNT);
 
 /**
@@ -42,6 +46,21 @@ export function getTrackInput(
  */
 export function setUnheardTracks(trackIds: string[]): void {
   unheardTrackIds = new Set(trackIds);
+  setTapGains();
+}
+
+/**
+ * Sets each track's level, at once for the tracks playing and for the next plays.
+ *
+ * @param volumes - Each track's level in decibels, by its id.
+ */
+export function setTrackVolumes(volumes: Record<string, number>): void {
+  trackVolumes = volumes;
+  setTapGains();
+}
+
+/** Moves every playing track's gain to what its level and mute or solo make it. */
+function setTapGains(): void {
   for (const [trackId, { input }] of taps) {
     input.gain.setTargetAtTime(getGain(trackId), input.context.currentTime, GAIN_SMOOTHING);
   }
@@ -86,5 +105,6 @@ function makeTap(context: AudioContext, trackId: string, output: AudioNode): Tra
 }
 
 function getGain(trackId: string): number {
-  return unheardTrackIds.has(trackId) ? 0 : 1;
+  if (unheardTrackIds.has(trackId)) return 0;
+  return getVolumeGain(trackVolumes[trackId] ?? 0, TRACK_LOUDEST_DB);
 }

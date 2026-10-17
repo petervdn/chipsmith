@@ -146,7 +146,7 @@ export function removeBlock(tracks: Track[], place: BlockPlace): Edited {
 export function addTrack(tracks: Track[]): Track[] {
   const numbers = tracks.map((track) => Number(/^t(\d+)$/.exec(track.id)?.[1] ?? 0));
   const next = Math.max(0, ...numbers) + 1;
-  return [...tracks, { id: `t${next}`, name: `Track ${tracks.length + 1}`, blocks: [] }];
+  return [...tracks, { id: `t${next}`, name: `Track ${tracks.length + 1}`, volume: 0, blocks: [] }];
 }
 
 /**
@@ -162,6 +162,20 @@ export function renameTrack(tracks: Track[], trackId: string, name: string): Tra
   const track = tracks.find((candidate) => candidate.id === trackId);
   if (!trimmed || !track || track.name === trimmed) return tracks;
   return tracks.map((track) => (track.id === trackId ? { ...track, name: trimmed } : track));
+}
+
+/**
+ * Sets a track's level; the level it has already leaves the tracks as they were.
+ *
+ * @param tracks - The song's tracks.
+ * @param trackId - The track.
+ * @param volume - Its level, in decibels.
+ * @returns The tracks with the track's level set.
+ */
+export function setTrackVolume(tracks: Track[], trackId: string, volume: number): Track[] {
+  const track = tracks.find((candidate) => candidate.id === trackId);
+  if (!track || track.volume === volume) return tracks;
+  return tracks.map((track) => (track.id === trackId ? { ...track, volume } : track));
 }
 
 /**

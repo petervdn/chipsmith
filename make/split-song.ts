@@ -60,6 +60,7 @@ export function splitSong(
   const tracks = clips.map((clip, i): Track => ({
     id: `t${i + 1}`,
     name: getTrackName(clip.name.stem, chipChannels[i] ?? `Channel ${i + 1}`),
+    volume: 0,
     blocks: [{ clip: clip.id, start: 0, trim: null, repeats: 1 }],
   }));
   return { tracks, clips };

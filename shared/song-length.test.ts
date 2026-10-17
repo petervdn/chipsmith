@@ -21,10 +21,11 @@ test('the last block with its repeats sets the length', () => {
     harmony: null,
     promptedFrom: null,
     tracks: [
-      { id: 'a', name: 'A', blocks: [{ clip: 'c1', start: 0, trim: null, repeats: 3 }] },
+      { id: 'a', name: 'A', volume: 0, blocks: [{ clip: 'c1', start: 0, trim: null, repeats: 3 }] },
       {
         id: 'b',
         name: 'B',
+        volume: 0,
         blocks: [
           { clip: 'c2', start: TICKS_PER_BEAT * 4, trim: { offset: 0, length: 96 }, repeats: 1 },
         ],

@@ -5,7 +5,7 @@ docs/code-guidelines.md.
 
 ## The model
 
-- **A song** is an arrangement (tracks, each a row of blocks) and the prompt it was made from. A block places a clip at a time on the
+- **A song** is an arrangement (tracks, each a row of blocks with a level in dB) and the prompt it was made from. A block places a clip at a time on the
   song's grid (ticks, `TICKS_PER_BEAT` to a beat), with an optional trim and a number of repeats.
 - **A clip** is one piece of audio: a whole piece, or a slice of it by bars and chip channels. Every
   clip is the same kind of thing, however it was cut. It holds all of its own information (0004):
@@ -79,8 +79,8 @@ page but Home starts with breadcrumbs, the last its heading (Songs › Seven Tee
   the selected block's or track's details in the margin right of it where there is room (else beside
   and under it), and the selected block's
   clip with its prompt and versions. Editing (0022): drag a block to move it (to another track too),
-  its edges to trim it, drag a clip from the song's clips onto a track as a new block, snapped to a grid; repeat, duplicate, untrim, remove; add, rename and remove tracks; mute
-  and solo (not saved); undo and redo; Save or Revert. Split into channels (a song that is one whole clip
+  its edges to trim it, drag a clip from the song's clips onto a track as a new block, snapped to a grid; repeat, duplicate, untrim, remove; add, rename and remove tracks; a fader per
+  track (saved, heard in playback only; one undo step per move); mute and solo (not saved); undo and redo; Save or Revert. Split into channels (a song that is one whole clip
   of more than one channel; what cutting does to the sound: docs/splitting.md): a track per channel
   that plays, each one block of a new clip, the whole song on that channel alone, rendered in the
   background and shown striped until its audio is in (`fur/cut.ts`, `make/split-song.ts`,

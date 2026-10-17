@@ -24,7 +24,16 @@ export type Block = {
 };
 
 /** A row of the arrangement (docs/adr/0008: a track, not a channel). */
-export type Track = { id: string; name: string; blocks: Block[] };
+export type Track = {
+  id: string;
+  name: string;
+  /**
+   * Its level in decibels, set by its fader: 0 plays its clips as rendered. Heard in playback only;
+   * the clips' audio never changes.
+   */
+  volume: number;
+  blocks: Block[];
+};
 
 /** A song as its song.json holds it. */
 export type Song = {

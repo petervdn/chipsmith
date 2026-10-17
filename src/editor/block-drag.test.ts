@@ -9,8 +9,13 @@ import { GRID_STEPS } from './grid.ts';
 
 const BAR = GRID_STEPS[0];
 const TRACKS: Track[] = [
-  { id: 't1', name: 'Bass', blocks: [{ clip: 'c1', start: 384, trim: null, repeats: 1 }] },
-  { id: 't2', name: 'Lead', blocks: [] },
+  {
+    id: 't1',
+    name: 'Bass',
+    volume: 0,
+    blocks: [{ clip: 'c1', start: 384, trim: null, repeats: 1 }],
+  },
+  { id: 't2', name: 'Lead', volume: 0, blocks: [] },
 ];
 const PLACE = { trackId: 't1', index: 0 };
 

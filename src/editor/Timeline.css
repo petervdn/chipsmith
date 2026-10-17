@@ -110,6 +110,12 @@
   gap: 3px;
 }
 
+/* the track's fader, as wide as its name */
+.timeline-track-name > .fader {
+  width: 100%;
+  height: 16px;
+}
+
 .timeline-track-mix button {
   width: 24px;
   height: 20px;

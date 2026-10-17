@@ -25,6 +25,7 @@ test('repeats follow each other and trims become offsets', () => {
       {
         id: 't1',
         name: 'A',
+        volume: 0,
         blocks: [
           { clip: 'c1', start: 0, trim: null, repeats: 2 },
           {

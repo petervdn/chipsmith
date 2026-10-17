@@ -119,7 +119,12 @@ export async function makeSong({
     harmony,
     promptedFrom,
     tracks: [
-      { id: 't1', name: 'Whole', blocks: [{ clip: clipId, start: 0, trim: null, repeats: 1 }] },
+      {
+        id: 't1',
+        name: 'Whole',
+        volume: 0,
+        blocks: [{ clip: clipId, start: 0, trim: null, repeats: 1 }],
+      },
     ],
   };
   writeJsonAtomically(join(clipFolder, 'clip.json'), clip);

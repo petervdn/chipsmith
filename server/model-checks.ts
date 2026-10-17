@@ -199,6 +199,8 @@ function checkTrack(value: unknown, path: string): Track {
   return {
     id: getString(track['id'], `${path}.id`),
     name: getString(track['name'], `${path}.name`),
+    // songs saved before tracks had a level play at 0 dB, as rendered
+    volume: track['volume'] === undefined ? 0 : getNumber(track['volume'], `${path}.volume`),
     blocks: getArray(track['blocks'], `${path}.blocks`, checkBlock),
   };
 }

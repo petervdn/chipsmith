@@ -15,6 +15,7 @@ import {
   removeTrack,
   renameTrack,
   setRepeats,
+  setTrackVolume,
   trimBlock,
 } from './song-edits.ts';
 import type { BlockPlace } from './song-edits.ts';
@@ -213,6 +214,12 @@ export function SongEditor({ detail }: SongEditorProps) {
               wasDragged={() => drag.wasDragged() || pan.wasPanned()}
               onToggleMute={toggleMute}
               onToggleSolo={toggleSolo}
+              onVolume={(trackId, volume) =>
+                draft.changeTracks(
+                  (tracks) => setTrackVolume(tracks, trackId, volume),
+                  `volume ${trackId}`,
+                )
+              }
               onAddTrack={() => draft.changeTracks(addTrack)}
               onPanStart={pan.startPan}
               waitingClipIds={waitingClipIds}

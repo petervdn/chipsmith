@@ -11,6 +11,7 @@ import {
   removeTrack,
   renameTrack,
   setRepeats,
+  setTrackVolume,
   trimBlock,
 } from './song-edits.ts';
 
@@ -18,12 +19,13 @@ const TRACKS: Track[] = [
   {
     id: 't1',
     name: 'Bass',
+    volume: 0,
     blocks: [
       { clip: 'c1', start: 0, trim: null, repeats: 1 },
       { clip: 'c2', start: 768, trim: null, repeats: 1 },
     ],
   },
-  { id: 't2', name: 'Lead', blocks: [] },
+  { id: 't2', name: 'Lead', volume: 0, blocks: [] },
 ];
 
 test('a block moved to another track goes in order of its start, the old tracks untouched', () => {
@@ -69,7 +71,7 @@ test('a copy goes right after the block and its repeats', () => {
 
 test('a new track gets the next id; a track is renamed and removed', () => {
   const added = addTrack(TRACKS);
-  assert.deepEqual(added[2], { id: 't3', name: 'Track 3', blocks: [] });
+  assert.deepEqual(added[2], { id: 't3', name: 'Track 3', volume: 0, blocks: [] });
   assert.equal(renameTrack(added, 't3', '  Drums ')[2]?.name, 'Drums');
   assert.equal(renameTrack(added, 't3', '  ')[2]?.name, 'Track 3');
   assert.deepEqual(
@@ -84,4 +86,14 @@ test('a block added goes in order of its start, a whole clip played once', () =>
   assert.deepEqual(tracks[0]?.blocks[1], { clip: 'c3', start: 384, trim: null, repeats: 1 });
   assert.equal(TRACKS[0]?.blocks.length, 2);
   assert.deepEqual(addBlock(TRACKS, { clipId: 'c3', start: 0, trackId: 'none' }).place, null);
+});
+
+test("a track's level is set, the others and the old tracks untouched", () => {
+  const tracks = setTrackVolume(TRACKS, 't2', -6);
+  assert.deepEqual(
+    tracks.map((track) => track.volume),
+    [0, -6],
+  );
+  assert.equal(TRACKS[1]?.volume, 0);
+  assert.equal(setTrackVolume(TRACKS, 't1', 0), TRACKS);
 });

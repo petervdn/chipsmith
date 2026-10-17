@@ -71,7 +71,12 @@ test('a whole song becomes a track per channel of blocks of new clips', () => {
     harmony: null,
     promptedFrom: null,
     tracks: [
-      { id: 't1', name: 'Whole', blocks: [{ clip: 'c0001', start: 0, trim: null, repeats: 1 }] },
+      {
+        id: 't1',
+        name: 'Whole',
+        volume: 0,
+        blocks: [{ clip: 'c0001', start: 0, trim: null, repeats: 1 }],
+      },
     ],
   };
   const { tracks } = splitSong(root, song, whole);
@@ -109,9 +114,15 @@ test('a whole song becomes a track per channel of blocks of new clips', () => {
     {
       id: 't1',
       name: 'Lead · Pulse 1',
+      volume: 0,
       blocks: [{ clip: 'c0002', start: 0, trim: null, repeats: 1 }],
     },
-    { id: 't2', name: 'Triangle', blocks: [{ clip: 'c0003', start: 0, trim: null, repeats: 1 }] },
+    {
+      id: 't2',
+      name: 'Triangle',
+      volume: 0,
+      blocks: [{ clip: 'c0003', start: 0, trim: null, repeats: 1 }],
+    },
   ]);
   assert.ok(existsSync(join(root, 'clips', 'c0002', 'source.fur')));
   assert.ok(existsSync(join(root, 'clips', 'c0003', 'clip.json')));

@@ -31,6 +31,7 @@ const SONG: Song = {
     {
       id: 't1',
       name: 'Bass',
+      volume: 0,
       blocks: [
         { clip: 'c0001', start: 0, trim: null, repeats: 1 },
         { clip: 'c0001', start: 1536, trim: { offset: 384, length: 768 }, repeats: 2 },
@@ -98,7 +99,12 @@ test('a song of one untrimmed block of a whole clip of several channels can be s
   const whole: Song = {
     ...SONG,
     tracks: [
-      { id: 't1', name: 'Whole', blocks: [{ clip: 'c0001', start: 0, trim: null, repeats: 1 }] },
+      {
+        id: 't1',
+        name: 'Whole',
+        volume: 0,
+        blocks: [{ clip: 'c0001', start: 0, trim: null, repeats: 1 }],
+      },
     ],
   };
   const four = { ...CLIP, channels: [0, 1, 2, 3] };

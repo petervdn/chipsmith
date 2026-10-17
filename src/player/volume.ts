@@ -8,6 +8,8 @@
 export const LOUDEST_DB = 0;
 /** The loudest the metronome goes, in decibels: well above the music, to be heard over it. */
 export const METRONOME_LOUDEST_DB = 18;
+/** The loudest a track's fader goes, in decibels: a little above the audio as rendered. */
+export const TRACK_LOUDEST_DB = 6;
 /** The slider's lowest step, in decibels; it is silence. */
 export const QUIETEST_DB = -48;
 

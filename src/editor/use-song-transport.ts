@@ -28,7 +28,11 @@ export function useSongTransport(detail: SongDetail, loop: Loop | null) {
   const playSong = usePlayerStore((state) => state.playSong);
   const stopSong = usePlayerStore((state) => state.stopSong);
   const isPaused = mode === 'stopped' && pausedAt !== null;
-  const tracksKey = JSON.stringify([detail.song.tracks, loop]);
+  // what is played, not how loud: a fader moved while playing is heard through the track's gain
+  const tracksKey = JSON.stringify([
+    detail.song.tracks.map(({ id, blocks }) => ({ id, blocks })),
+    loop,
+  ]);
   const playedKeyRef = useRef(tracksKey);
   useEffect(() => {
     if (tracksKey === playedKeyRef.current) return;
