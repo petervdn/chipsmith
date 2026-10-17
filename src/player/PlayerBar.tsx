@@ -6,6 +6,7 @@ import { getSongPosition } from '../playback/audio-engine.ts';
 import { usePlayerStore } from '../stores/player-store.ts';
 import { usePreferencesStore } from '../stores/preferences-store.ts';
 import { LOUDEST_DB, QUIETEST_DB, formatVolume } from './volume.ts';
+import { useMarkHeard } from './use-mark-heard.ts';
 import './PlayerBar.css';
 
 /**
@@ -16,6 +17,7 @@ import './PlayerBar.css';
  */
 export function PlayerBar() {
   const player = usePlayerStore();
+  useMarkHeard();
   const { playSong, seekSong, stopSong } = player;
   const isMuteOn = usePreferencesStore((preferences) => preferences.isMuted);
   const setMuted = usePreferencesStore((preferences) => preferences.setMuted);

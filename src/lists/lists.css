@@ -224,3 +224,15 @@
 .list > .list-group + li {
   border-top: 0;
 }
+
+/* a song not played yet: a small dot left of its row */
+.list-unheard {
+  position: absolute;
+  top: 50%;
+  left: 2px;
+  width: 7px;
+  height: 7px;
+  margin-top: -3.5px;
+  border-radius: 50%;
+  background: var(--accent);
+}

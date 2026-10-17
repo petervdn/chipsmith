@@ -98,6 +98,13 @@ export function SongsPage({ jobs }: SongsPageProps) {
             return (
               <li key={song.id}>
                 <div className="list-row has-play has-expand">
+                  {song.status === 'new' && (
+                    <span
+                      className="list-unheard"
+                      title="not played yet"
+                      aria-label="not played yet"
+                    />
+                  )}
                   <PlayButton songId={song.id} isWaitingForAudio={listing.isWaitingForAudio} />
                   <span className="list-main">
                     <a
