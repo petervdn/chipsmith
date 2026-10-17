@@ -46,6 +46,7 @@ time in the background, every clip that has a source.fur and no audio.flac (`ser
 a song waiting for its audio shows … for ▶ and its list is read again until it has it. A change is written to its file, then to the copy in memory.
 
 Routes: `GET /api/songs`, `GET /api/songs/<id>`, `PATCH /api/songs/<id>` (status, tags),
+`PUT /api/songs/<id>/tracks` (the arrangement, saved from the editor),
 `GET /api/clips`, `PATCH /api/clips/<id>`, and `GET /media/clips/<id>/audio.flac` with byte ranges.
 What they answer is typed in `shared/api.types.ts`.
 
@@ -61,8 +62,10 @@ holds (Jobs turning while one runs), in a song the song's title, and at the righ
 - **Song** (`/songs/<id>`): the song opened in the editor (`src/editor/`): a timeline of its tracks
   (a ruler of bars, each block drawn as the slice of its clip's waveform it plays, repeats after it,
   a playhead), ▶ / ■ from a cursor set on the ruler, zoom, and the selected block's clip with its
-  prompt and versions. To come: editing the blocks, cutting a clip into sections and stems, a prompt
-  on the selection.
+  prompt and versions. Editing (0022): drag a block to move it (to another track too), its edges to
+  trim it, snapped to a grid; repeat, duplicate, untrim, remove; add, rename and remove tracks; mute
+  and solo (not saved); undo and redo; Save or Revert. To come: cutting a clip into sections and
+  stems, a prompt on the selection.
 - **Clips** (`/clips`): the pool, with the same filter bar.
 - **Guides** (`/guides`): the style guides, made, edited and deleted.
 - **New** (`/new`): a prompt for Claude in a box that takes the screen, and the style guides as chips
@@ -148,5 +151,5 @@ phases:
 
 ## Still to build
 
-1. The song editor: editing blocks (move, trim, repeat, tracks, undo), a prompt on the selection.
-2. Cutting a whole clip into sections and stems (0010), and versions of a clip (0014).
+1. Cutting a whole clip into sections and stems (0010), so a song can be edited by part.
+2. A prompt on the editor's selection, its new clips replacing the blocks, with versions (0014).

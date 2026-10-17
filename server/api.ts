@@ -26,7 +26,7 @@ import type { JobStore } from './jobs.ts';
 import { createJob, listJobs, openJobs, removeJob } from './jobs.ts';
 import { copyExamplesIfEmpty } from './examples.ts';
 import { isAudioMissing, renderMissingAudio } from './missing-audio.ts';
-import { checkGuideDraft, checkStatus, checkTags } from './model-checks.ts';
+import { checkGuideDraft, checkStatus, checkTags, checkTracks } from './model-checks.ts';
 import type { GuideStore } from './guides.ts';
 import {
   createGuide,
@@ -176,6 +176,17 @@ async function route(
     if (!song) return sendError(response, 404, `no song ${id}`);
     const change = checkCatalogueChange(await readJsonBody(request));
     saveSong(store, { ...song, ...change, updated: new Date().toISOString() });
+    return sendJson(response, getSongDetail(store, id));
+  }
+  if (kind === 'songs' && id && file === 'tracks' && method === 'PUT') {
+    const song = store.songs.get(id);
+    if (!song) return sendError(response, 404, `no song ${id}`);
+    const tracks = checkTracks(getObject(await readJsonBody(request), 'body')['tracks'], 'tracks');
+    const unknown = tracks
+      .flatMap((track) => track.blocks)
+      .find((block) => !store.clips.has(block.clip));
+    if (unknown) return sendError(response, 400, `no clip ${unknown.clip}`);
+    saveSong(store, { ...song, tracks, updated: new Date().toISOString() });
     return sendJson(response, getSongDetail(store, id));
   }
   if (kind === 'clips' && id && method === 'PATCH') {

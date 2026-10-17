@@ -1,14 +1,31 @@
-// An opened song as the editor shows it: ▶ / ■ from the cursor and the zoom above the timeline, the
-// timeline, and the selected block's details below it. For now it reads; editing comes next.
+// An opened song in the editor: the bar of controls (play, undo and redo, the grid, a new track,
+// zoom, save and revert), the timeline of the draft, and the selected block's or track's details.
 import { useRef, useState } from 'react';
 import type { SongDetail } from '../../shared/api.types.ts';
 import { useClips } from '../queries/clips.ts';
 import { BlockDetails } from './BlockDetails.tsx';
-import type { BlockPlace } from './Timeline.tsx';
-import { Timeline } from './Timeline.tsx';
-import { getBlockSpans } from './timeline.ts';
+import { BAR_STEP, GRID_STEPS } from './grid.ts';
+import {
+  addTrack,
+  duplicateBlock,
+  getBlock,
+  removeBlock,
+  removeTrack,
+  renameTrack,
+  setRepeats,
+  trimBlock,
+} from './song-edits.ts';
+import type { BlockPlace } from './song-edits.ts';
+import { ROW_HEIGHT, Timeline } from './Timeline.tsx';
+import { getBlockSpans, getClipTicks, getTicksPerBar } from './timeline.ts';
+import { getHeardTracks } from './track-mix.ts';
+import { TrackDetails } from './TrackDetails.tsx';
+import { useBlockDrag } from './use-block-drag.ts';
+import { useEditorKeys } from './use-editor-keys.ts';
 import { useElementWidth } from './use-element-width.ts';
+import { useSongDraft } from './use-song-draft.ts';
 import { useSongTransport } from './use-song-transport.ts';
+import { useTrackMix } from './use-track-mix.ts';
 import { useZoom } from './use-zoom.ts';
 import { getVersions } from './versions.ts';
 import './SongEditor.css';
@@ -16,41 +33,103 @@ import './SongEditor.css';
 type SongEditorProps = { detail: SongDetail };
 
 /**
- * Shows an opened song in the editor: ▶ / ■ from the cursor and the zoom above the timeline, the
- * timeline, and the selected block's details below it.
+ * Shows the song editor.
  *
  * @param props - The component's props.
- * @param props.detail - The opened song, with its clips.
- * @returns The song editor element.
+ * @param props.detail - The song as saved, with the clips it plays.
+ * @returns The editor's element.
  */
 export function SongEditor({ detail }: SongEditorProps) {
-  const [selected, setSelected] = useState<BlockPlace | null>(null);
+  const [step, setStep] = useState(BAR_STEP);
   const scrollRef = useRef<HTMLDivElement>(null);
   const { song, clips, isWaitingForAudio } = detail;
+  const draft = useSongDraft(detail);
+  const { mix, toggleMute, toggleSolo } = useTrackMix();
+  const draftSong = { ...song, tracks: draft.tracks };
+  const heardSong = { ...song, tracks: getHeardTracks(draft.tracks, mix) };
+  const transport = useSongTransport({ ...detail, song: heardSong });
   const width = useElementWidth(scrollRef);
-  const { pixelsPerBar, zoomIn, zoomOut, fit } = useZoom({ song, clips, width });
-  const { cursor, mode, togglePlaying, moveTo, playFrom } = useSongTransport(detail);
+  const { pixelsPerBar, zoomIn, zoomOut, fit } = useZoom({ song: draftSong, clips, width });
+  const ticksPerBar = getTicksPerBar(song);
+  function getPlaceTicks(place: BlockPlace): number {
+    return getClipTicks(clips, getBlock(draft.tracks, place)?.clip ?? '', song.bpm);
+  }
+  const drag = useBlockDrag({
+    tracks: draft.tracks,
+    pixelsPerTick: pixelsPerBar / ticksPerBar,
+    rowHeight: ROW_HEIGHT,
+    step,
+    ticksPerBar,
+    getClipTicks: getPlaceTicks,
+    onEdit: (edited) => draft.edit(() => edited),
+  });
   const { data: pool } = useClips();
-  const span = selected
-    ? getBlockSpans(song, clips).find(
-        (candidate) => candidate.trackId === selected.trackId && candidate.index === selected.index,
+  const selection = draft.selection;
+  const place = selection?.kind === 'block' ? selection.place : null;
+  useEditorKeys({
+    togglePlaying: transport.togglePlaying,
+    removeSelected: () => {
+      if (place) draft.edit((tracks) => removeBlock(tracks, place));
+    },
+    undo: draft.undo,
+    redo: draft.redo,
+    save: draft.save,
+    clearSelection: () => draft.select(null),
+  });
+  const span = place
+    ? getBlockSpans(draftSong, clips).find(
+        (candidate) => candidate.trackId === place.trackId && candidate.index === place.index,
       )
     : undefined;
   const clip = clips.find((candidate) => candidate.id === span?.clipId);
+  const selectedTrack =
+    selection?.kind === 'track'
+      ? draft.tracks.find((track) => track.id === selection.trackId)
+      : undefined;
   const poolClips = (pool ?? []).map((listing) => listing.clip);
+  const shownSong = drag.preview ? { ...song, tracks: drag.preview.tracks } : draftSong;
   return (
     <div className="song-editor">
       <div className="song-editor-bar">
         <button
           type="button"
-          className={`song-editor-play${mode === 'stopped' ? '' : ' is-on'}`}
-          onClick={togglePlaying}
+          className={`song-editor-play${transport.mode === 'stopped' ? '' : ' is-on'}`}
+          onClick={transport.togglePlaying}
           disabled={isWaitingForAudio}
-          title={mode === 'stopped' ? 'play from the cursor' : 'stop'}
+          title={transport.mode === 'stopped' ? 'play from the cursor (Space)' : 'stop (Space)'}
         >
-          {mode === 'stopped' ? '▶' : mode === 'loading' ? '…' : '■'}
+          {transport.mode === 'stopped' ? '▶' : transport.mode === 'loading' ? '…' : '■'}
         </button>
-        <span className="song-editor-zoom">
+        <span className="song-editor-group">
+          <button type="button" onClick={draft.undo} disabled={!draft.canUndo} title="undo (⌘Z)">
+            ↶
+          </button>
+          <button type="button" onClick={draft.redo} disabled={!draft.canRedo} title="redo (⇧⌘Z)">
+            ↷
+          </button>
+        </span>
+        <select
+          className="song-editor-grid"
+          value={step.id}
+          onChange={(event) =>
+            setStep(GRID_STEPS.find((candidate) => candidate.id === event.target.value) ?? BAR_STEP)
+          }
+          title="what blocks snap to when dragged (Alt: no snapping)"
+        >
+          {GRID_STEPS.map((candidate) => (
+            <option key={candidate.id} value={candidate.id}>
+              snap: {candidate.name}
+            </option>
+          ))}
+        </select>
+        <button
+          type="button"
+          className="song-editor-button"
+          onClick={() => draft.changeTracks(addTrack)}
+        >
+          + Track
+        </button>
+        <span className="song-editor-group">
           <button type="button" onClick={zoomOut} title="zoom out">
             −
           </button>
@@ -61,28 +140,83 @@ export function SongEditor({ detail }: SongEditorProps) {
             +
           </button>
         </span>
+        <span className="song-editor-save">
+          {draft.hasChanges && <span className="song-editor-unsaved">unsaved changes</span>}
+          {draft.hasChanges && (
+            <button type="button" className="song-editor-button" onClick={draft.revert}>
+              Revert
+            </button>
+          )}
+          <button
+            type="button"
+            className="song-editor-button is-primary"
+            onClick={draft.save}
+            disabled={!draft.hasChanges || draft.isSaving}
+            title="save the song as it is now (⌘S)"
+          >
+            {draft.isSaving ? 'Saving…' : 'Save'}
+          </button>
+        </span>
       </div>
+      {draft.saveError && <p className="error">{draft.saveError.message}</p>}
       <div ref={scrollRef} className="song-editor-scroll">
         <Timeline
-          song={song}
+          song={shownSong}
           clips={clips}
           pixelsPerBar={pixelsPerBar}
-          selected={selected}
-          cursor={cursor}
-          onSelect={setSelected}
-          onMoveTo={moveTo}
+          selection={selection}
+          mix={mix}
+          cursor={transport.cursor}
+          onSelect={draft.select}
+          onMoveTo={transport.moveTo}
+          onPress={drag.startPress}
+          wasDragged={drag.wasDragged}
         />
       </div>
-      {span ? (
+      {place && span && (
         <BlockDetails
-          song={song}
+          song={draftSong}
           span={span}
           clip={clip}
           versions={clip ? getVersions(clip.id, poolClips.length > 0 ? poolClips : clips) : []}
-          onPlayFrom={playFrom}
+          onPlayFrom={transport.playFrom}
+          onRepeats={(repeats) => draft.edit((tracks) => setRepeats(tracks, place, repeats))}
+          onDuplicate={() =>
+            draft.edit((tracks) => duplicateBlock(tracks, place, getPlaceTicks(place)))
+          }
+          onUntrim={() =>
+            draft.edit((tracks) =>
+              trimBlock(
+                tracks,
+                place,
+                { start: span.start - (getBlock(tracks, place)?.trim?.offset ?? 0), trim: null },
+                getPlaceTicks(place),
+              ),
+            )
+          }
+          onRemove={() => draft.edit((tracks) => removeBlock(tracks, place))}
         />
-      ) : (
-        <p className="song-editor-hint">Tap a block to see its clip.</p>
+      )}
+      {selectedTrack && (
+        <TrackDetails
+          track={selectedTrack}
+          isMuted={mix.muted.includes(selectedTrack.id)}
+          isSoloed={mix.soloed.includes(selectedTrack.id)}
+          onRename={(name) =>
+            draft.changeTracks((tracks) => renameTrack(tracks, selectedTrack.id, name))
+          }
+          onToggleMute={() => toggleMute(selectedTrack.id)}
+          onToggleSolo={() => toggleSolo(selectedTrack.id)}
+          onRemove={() => {
+            draft.changeTracks((tracks) => removeTrack(tracks, selectedTrack.id));
+            draft.select(null);
+          }}
+        />
+      )}
+      {!selection && (
+        <p className="song-editor-hint">
+          Tap a block or a track's name to see it. Drag a block to move it, its edges to trim it.
+        </p>
       )}
     </div>
   );

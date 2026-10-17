@@ -34,7 +34,7 @@ export async function requestJson<Answer>(path: string, init?: RequestInit): Pro
  */
 export function sendJson<Answer>(
   path: string,
-  method: 'POST' | 'PATCH' | 'DELETE',
+  method: 'POST' | 'PATCH' | 'PUT' | 'DELETE',
   body: unknown,
 ): Promise<Answer> {
   return requestJson<Answer>(path, {

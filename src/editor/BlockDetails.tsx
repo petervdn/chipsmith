@@ -15,6 +15,10 @@ type BlockDetailsProps = {
   clip: Clip | undefined;
   versions: Clip[];
   onPlayFrom: (seconds: number) => void;
+  onRepeats: (repeats: number) => void;
+  onDuplicate: () => void;
+  onUntrim: () => void;
+  onRemove: () => void;
 };
 
 /**
@@ -26,10 +30,24 @@ type BlockDetailsProps = {
  * @param props.span - The block, as the timeline draws it.
  * @param props.clip - The block's clip, or undefined when it is missing.
  * @param props.versions - The versions of the clip, oldest first.
+ * @param props.onRepeats - Called with how many times the block should play.
+ * @param props.onDuplicate - Called to place a copy right after the block.
+ * @param props.onUntrim - Called to let the block play its whole clip again.
+ * @param props.onRemove - Called to remove the block.
  * @param props.onPlayFrom - Called with the block's start, in seconds, to play the song from there.
  * @returns The block details element.
  */
-export function BlockDetails({ song, span, clip, versions, onPlayFrom }: BlockDetailsProps) {
+export function BlockDetails({
+  song,
+  span,
+  clip,
+  versions,
+  onPlayFrom,
+  onRepeats,
+  onDuplicate,
+  onUntrim,
+  onRemove,
+}: BlockDetailsProps) {
   const ticksPerBar = getTicksPerBar(song);
   const trackName = song.tracks.find((track) => track.id === span.trackId)?.name ?? span.trackId;
   const fromBar = formatBar(span.start / ticksPerBar);
@@ -54,6 +72,37 @@ export function BlockDetails({ song, span, clip, versions, onPlayFrom }: BlockDe
           ▶ from here
         </button>
       </header>
+      <div className="block-details-actions">
+        <span className="block-details-repeats">
+          <button
+            type="button"
+            onClick={() => onRepeats(span.repeats - 1)}
+            disabled={span.repeats <= 1}
+            title="play it one time fewer"
+          >
+            −
+          </button>
+          <span>×{span.repeats}</span>
+          <button
+            type="button"
+            onClick={() => onRepeats(span.repeats + 1)}
+            title="play it once more"
+          >
+            +
+          </button>
+        </span>
+        <button type="button" onClick={onDuplicate} title="place a copy right after it">
+          Duplicate
+        </button>
+        {clip && span.slice && span.slice.duration < clip.seconds - 0.01 && (
+          <button type="button" onClick={onUntrim} title="play the whole clip again">
+            Untrim
+          </button>
+        )}
+        <button type="button" className="block-details-remove" onClick={onRemove}>
+          Remove
+        </button>
+      </div>
       {clip && (
         <>
           <p className="block-details-facts">

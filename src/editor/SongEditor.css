@@ -1,41 +1,69 @@
-/* The look of SongEditor.tsx: the timeline scrolls sideways inside its box, never the page. */
+/* The look of SongEditor.tsx: the bar of controls wraps on a phone; the timeline scrolls sideways
+   inside its box, never the page. */
 
 .song-editor-bar {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 8px;
   margin-bottom: 8px;
 }
 
-.song-editor-play {
+.song-editor-bar button,
+.song-editor-grid {
   min-width: var(--touch);
   min-height: var(--touch);
   border: var(--border-width) solid var(--line);
   border-radius: var(--radius);
   background: var(--raised);
-  font-size: 1rem;
   cursor: pointer;
 }
 
-.song-editor-play.is-on {
+.song-editor-bar button:disabled {
+  color: var(--muted);
+  cursor: default;
+}
+
+.song-editor-play {
+  font-size: 1rem;
+}
+
+.song-editor-bar .song-editor-play.is-on {
   border-color: var(--accent);
   background: var(--accent);
   color: var(--on-accent);
 }
 
-.song-editor-zoom {
+.song-editor-group {
   display: flex;
   gap: 4px;
+}
+
+.song-editor-grid {
+  padding: 0 8px;
+}
+
+.song-editor-button {
+  padding: 0 14px;
+}
+
+.song-editor-save {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   margin-left: auto;
 }
 
-.song-editor-zoom button {
-  min-width: var(--touch);
-  min-height: var(--touch);
-  border: var(--border-width) solid var(--line);
-  border-radius: var(--radius);
-  background: var(--raised);
-  cursor: pointer;
+.song-editor-unsaved {
+  color: var(--muted);
+  font-size: 0.8125rem;
+}
+
+.song-editor-bar .song-editor-button.is-primary:not(:disabled) {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--on-accent);
+  font-weight: 600;
 }
 
 .song-editor-scroll {

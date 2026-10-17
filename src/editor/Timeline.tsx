@@ -1,54 +1,64 @@
-// The song's timeline: a ruler of bars, a row per track with its blocks drawn as the slice of their
-// clip's waveform they play (repeats after them, fainter), and the playhead. A tap on the ruler moves
-// the play position there; a tap on a block selects it.
+// The song's timeline: a ruler of bars, a row per track with its blocks, and the playhead. A tap on
+// the ruler moves the play position there; a tap on a track's name or a block selects it; blocks
+// are dragged to move and trim them.
 import { useRef } from 'react';
-import type { CSSProperties } from 'react';
+import type { CSSProperties, PointerEvent as ReactPointerEvent } from 'react';
 import type { Clip } from '../../shared/clip.types.ts';
 import { getTicksPerSecond } from '../../shared/song-length.ts';
 import type { Song } from '../../shared/song.types.ts';
-import { getClipLabel } from '../clips/ClipsPage.tsx';
-import type { BlockSpan } from './timeline.ts';
+import type { DragMode } from './block-drag.ts';
+import type { BlockPlace } from './song-edits.ts';
 import { getBarLabelStep, getBlockSpans, getTicksPerBar, getTimelineBars } from './timeline.ts';
+import { TimelineBlock } from './TimelineBlock.tsx';
+import type { TrackMix } from './track-mix.ts';
+import { isHeard } from './track-mix.ts';
+import type { Selection } from './use-song-draft.ts';
 import { usePlayheadLine } from './use-playhead-line.ts';
-import { Waveform } from './Waveform.tsx';
 import './Timeline.css';
 
-/** A block by where it is: its track and its place in the track's blocks. */
-export type BlockPlace = { trackId: string; index: number };
+/** How tall a track's row is drawn, in pixels; Timeline.css draws it so. */
+export const ROW_HEIGHT = 52;
 
 type TimelineProps = {
   song: Song;
   clips: Clip[];
   pixelsPerBar: number;
-  selected: BlockPlace | null;
+  selection: Selection;
+  mix: TrackMix;
   cursor: number;
-  onSelect: (place: BlockPlace | null) => void;
+  onSelect: (selection: Selection) => void;
   onMoveTo: (seconds: number) => void;
+  onPress: (event: ReactPointerEvent, place: BlockPlace, mode: DragMode) => void;
+  wasDragged: () => boolean;
 };
 
 /**
- * Shows the song's timeline: a ruler of bars, a row per track with its blocks, and the playhead. A
- * tap on the ruler moves the play position there; a tap on a block selects it, and a tap beside the
- * blocks selects none.
+ * Shows the timeline of a song.
  *
  * @param props - The component's props.
- * @param props.song - The song.
- * @param props.clips - The clips the song's blocks play.
- * @param props.pixelsPerBar - How wide a bar is drawn, in pixels.
- * @param props.selected - The selected block, or null.
- * @param props.cursor - The cursor, in seconds.
- * @param props.onSelect - Called with the block tapped, or null when none is.
- * @param props.onMoveTo - Called with the second tapped on the ruler.
+ * @param props.song - The song, with the tracks to draw (the draft, or a drag's preview).
+ * @param props.clips - The clips its blocks play.
+ * @param props.pixelsPerBar - How wide a bar is drawn.
+ * @param props.selection - The block or track selected, or null.
+ * @param props.mix - The tracks muted and soloed; a track not heard is drawn faint.
+ * @param props.cursor - Where play starts, in seconds, shown by the playhead while stopped.
+ * @param props.onSelect - Called with what a tap selects, or null for a tap on empty space.
+ * @param props.onMoveTo - Called with the second a tap on the ruler points at.
+ * @param props.onPress - Called on a press on a block or one of its edges.
+ * @param props.wasDragged - Tells whether a drag just ended, so its click selects nothing.
  * @returns The timeline element.
  */
 export function Timeline({
   song,
   clips,
   pixelsPerBar,
-  selected,
+  selection,
+  mix,
   cursor,
   onSelect,
   onMoveTo,
+  onPress,
+  wasDragged,
 }: TimelineProps) {
   const lineRef = useRef<HTMLDivElement>(null);
   const ticksPerBar = getTicksPerBar(song);
@@ -59,9 +69,10 @@ export function Timeline({
   const bars = getTimelineBars(spans, ticksPerBar);
   const labelStep = getBarLabelStep(pixelsPerBar);
   const clipsById = new Map(clips.map((clip) => [clip.id, clip]));
-  const style: CSSProperties & Record<'--bar-width' | '--lane-width', string> = {
+  const style: CSSProperties & Record<'--bar-width' | '--lane-width' | '--row-height', string> = {
     '--bar-width': `${pixelsPerBar}px`,
     '--lane-width': `${bars * pixelsPerBar}px`,
+    '--row-height': `${ROW_HEIGHT}px`,
   };
   return (
     <div className="timeline" style={style}>
@@ -84,83 +95,56 @@ export function Timeline({
           )}
         </div>
       </div>
-      {song.tracks.map((track) => (
-        <div key={track.id} className="timeline-row">
-          <div className="timeline-track-name">{track.name}</div>
-          <div className="timeline-lane" onClick={() => onSelect(null)}>
-            {spans
-              .filter((span) => span.trackId === track.id)
-              .map((span) => (
-                <TimelineBlock
-                  key={span.index}
-                  span={span}
-                  clip={clipsById.get(span.clipId)}
-                  pixelsPerTick={pixelsPerTick}
-                  isSelected={selected?.trackId === track.id && selected.index === span.index}
-                  onSelect={() => onSelect({ trackId: track.id, index: span.index })}
-                />
-              ))}
+      {song.tracks.map((track) => {
+        const isTrackSelected = selection?.kind === 'track' && selection.trackId === track.id;
+        const marks = [
+          mix.muted.includes(track.id) ? 'muted' : '',
+          mix.soloed.includes(track.id) ? 'solo' : '',
+        ].filter(Boolean);
+        return (
+          <div
+            key={track.id}
+            className={`timeline-row${isHeard(track.id, mix) ? '' : ' is-unheard'}`}
+          >
+            <button
+              type="button"
+              className={`timeline-track-name${isTrackSelected ? ' is-selected' : ''}`}
+              onClick={() => onSelect({ kind: 'track', trackId: track.id })}
+              title="the track: rename, mute, solo, remove"
+            >
+              <span className="timeline-track-title">{track.name}</span>
+              {marks.length > 0 && <span className="timeline-track-mix">{marks.join(' · ')}</span>}
+            </button>
+            <div className="timeline-lane" onClick={() => onSelect(null)}>
+              {spans
+                .filter((span) => span.trackId === track.id)
+                .map((span) => {
+                  const place = { trackId: track.id, index: span.index };
+                  return (
+                    <TimelineBlock
+                      key={span.index}
+                      span={span}
+                      clip={clipsById.get(span.clipId)}
+                      pixelsPerTick={pixelsPerTick}
+                      isSelected={
+                        selection?.kind === 'block' &&
+                        selection.place.trackId === track.id &&
+                        selection.place.index === span.index
+                      }
+                      onPress={(event, mode) => onPress(event, place, mode)}
+                      onSelect={() => {
+                        if (!wasDragged()) onSelect({ kind: 'block', place });
+                      }}
+                    />
+                  );
+                })}
+            </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
       <div className="timeline-playhead">
         <div ref={lineRef} className="timeline-playhead-line" />
       </div>
     </div>
-  );
-}
-
-type TimelineBlockProps = {
-  span: BlockSpan;
-  clip: Clip | undefined;
-  pixelsPerTick: number;
-  isSelected: boolean;
-  onSelect: () => void;
-};
-
-/**
- * Shows a block and its repeats, each drawn as the slice of its clip's waveform it plays, the repeats
- * fainter.
- *
- * @param props - The component's props.
- * @param props.span - The block, as the timeline draws it.
- * @param props.clip - The block's clip, or undefined when it is missing.
- * @param props.pixelsPerTick - How wide a tick is drawn, in pixels.
- * @param props.isSelected - Whether the block is selected.
- * @param props.onSelect - Called when the block or one of its repeats is tapped.
- * @returns The block's elements, one for each play.
- */
-function TimelineBlock({ span, clip, pixelsPerTick, isSelected, onSelect }: TimelineBlockProps) {
-  const width = span.length * pixelsPerTick;
-  const label = clip ? getClipLabel(clip) : `missing ${span.clipId}`;
-  return (
-    <>
-      {Array.from({ length: span.repeats }, (_unused, repeat) => (
-        <button
-          key={repeat}
-          type="button"
-          className={`timeline-block${repeat > 0 ? ' is-repeat' : ''}${isSelected ? ' is-selected' : ''}${clip ? '' : ' is-missing'}`}
-          style={{ left: (span.start + repeat * span.length) * pixelsPerTick, width }}
-          onClick={(event) => {
-            event.stopPropagation();
-            onSelect();
-          }}
-          title={`${label} · ${span.clipId}${span.repeats > 1 ? ` · ×${span.repeats}` : ''}`}
-        >
-          {span.slice && (
-            <Waveform
-              clipId={span.clipId}
-              offset={span.slice.offset}
-              duration={span.slice.duration}
-              width={width}
-            />
-          )}
-          <span className="timeline-block-label">
-            {repeat === 0 ? label : repeat + 1}
-            {repeat === 0 && span.repeats > 1 && ` ×${span.repeats}`}
-          </span>
-        </button>
-      ))}
-    </>
   );
 }

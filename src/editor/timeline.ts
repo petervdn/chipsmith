@@ -30,6 +30,19 @@ const BARS_AFTER_END = 4;
 const LEAST_BARS = 8;
 
 /**
+ * Returns how long a clip is in ticks at a song's tempo.
+ *
+ * @param clips - The clips the song plays.
+ * @param clipId - The clip.
+ * @param bpm - The song's tempo.
+ * @returns Its length in ticks; a beat when the clip is not known.
+ */
+export function getClipTicks(clips: Clip[], clipId: string, bpm: number): number {
+  const clip = clips.find((candidate) => candidate.id === clipId);
+  return clip ? Math.round(clip.seconds * getTicksPerSecond(bpm)) : TICKS_PER_BEAT;
+}
+
+/**
  * Returns the ticks to a bar of a song.
  *
  * @param song - The song.

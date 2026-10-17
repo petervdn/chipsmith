@@ -68,3 +68,37 @@
   color: var(--fg);
   font-weight: 600;
 }
+
+.block-details-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.block-details-actions button {
+  min-width: var(--touch);
+  min-height: var(--touch);
+  padding: 0 14px;
+  border: var(--border-width) solid var(--line);
+  border-radius: var(--radius);
+  background: var(--raised);
+  cursor: pointer;
+}
+
+.block-details-actions button:disabled {
+  color: var(--muted);
+  cursor: default;
+}
+
+.block-details-repeats {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-variant-numeric: tabular-nums;
+}
+
+.block-details-actions .block-details-remove {
+  color: var(--reject);
+}

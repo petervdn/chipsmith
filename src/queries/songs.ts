@@ -7,6 +7,7 @@ import type { SongDetail, SongListing } from '../../shared/api.types.ts';
 import type { Status } from '../../shared/catalogue.types.ts';
 import { getQueryKey, queryClient } from './client.ts';
 import { requestJson, sendJson } from './request.ts';
+import type { Track } from '../../shared/song.types.ts';
 
 /** Milliseconds between reads while audio is being rendered. */
 const WAITING_INTERVAL = 3000;
@@ -64,6 +65,26 @@ export function useSetSongStatus() {
   return useMutation({
     mutationFn: ({ songId, status }: { songId: string; status: Status }) =>
       sendJson<SongDetail>(`/api/songs/${encodeURIComponent(songId)}`, 'PATCH', { status }),
+    onSuccess: (detail) => {
+      queryClient.setQueryData(getQueryKey({ type: 'song', songId: detail.song.id }), detail);
+      return queryClient.invalidateQueries({
+        queryKey: getQueryKey({ type: 'songs' }),
+        exact: true,
+      });
+    },
+  });
+}
+
+/**
+ * Saves a song's tracks on the server; the server's answer becomes the cached song, and the songs
+ * list is read again.
+ *
+ * @returns The mutation, called with the song's id (`songId`) and its `tracks`.
+ */
+export function useSaveTracks() {
+  return useMutation({
+    mutationFn: ({ songId, tracks }: { songId: string; tracks: Track[] }) =>
+      sendJson<SongDetail>(`/api/songs/${encodeURIComponent(songId)}/tracks`, 'PUT', { tracks }),
     onSuccess: (detail) => {
       queryClient.setQueryData(getQueryKey({ type: 'song', songId: detail.song.id }), detail);
       return queryClient.invalidateQueries({

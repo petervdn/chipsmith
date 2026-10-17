@@ -184,6 +184,17 @@ function checkParent(value: unknown, path: string): ClipParent {
   };
 }
 
+/**
+ * Checks a list of tracks, each with its blocks.
+ *
+ * @param value - The value to check, as it came in.
+ * @param path - Where the value is, named in an error.
+ * @returns The tracks.
+ */
+export function checkTracks(value: unknown, path: string): Track[] {
+  return getArray(value, path, checkTrack);
+}
+
 function checkTrack(value: unknown, path: string): Track {
   const track = getObject(value, path);
   return {
