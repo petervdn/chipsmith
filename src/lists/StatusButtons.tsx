@@ -4,9 +4,6 @@ import { Star, Trash2 } from 'lucide-react';
 import type { Status } from '../../shared/catalogue.types.ts';
 import './StatusButtons.css';
 
-/** How large the trash can is drawn, in pixels. */
-const TRASH_SIZE = 16;
-
 type StatusButtonsProps = {
   status: Status;
   onChange: (status: Status) => void;
@@ -45,7 +42,7 @@ export function StatusButtons({ status, onChange, onDelete, deleteLabel }: Statu
           aria-label={deleteLabel ?? 'delete'}
           onClick={onDelete}
         >
-          <Trash2 size={TRASH_SIZE} />
+          <Trash2 />
         </button>
       )}
     </span>

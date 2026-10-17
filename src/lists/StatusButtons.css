@@ -23,10 +23,12 @@
   color: var(--keep);
 }
 
+/* the icon is sized by the text (style.css): smaller than the star, as quiet as the jobs' trash cans */
 .status-buttons .status-buttons-delete {
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: 0.875rem;
   opacity: 0.5;
 }
 
