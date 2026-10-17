@@ -42,3 +42,4 @@ Consequences.
 | [0026](0026-the-page-shows-its-own-pop-ups.md) | The page shows its own dialogs and tooltips, never the browser's | accepted |
 | [0027](0027-icons-from-lucide.md) | The page's icons come from Lucide | accepted |
 | [0028](0028-a-song-not-wanted-is-deleted.md) | A song not wanted is deleted, not rejected | accepted |
+| [0029](0029-clips-are-not-in-the-top-bar.md) | Clips are not in the top bar; the page stays at its address | accepted |

@@ -1,7 +1,6 @@
-// How many of each the top bar's tabs hold: the songs, the clips, the style guides and the jobs on
+// How many of each the top bar's tabs hold: the songs, the style guides and the jobs on
 // their way; null for what has not been read yet, and for jobs when none is on its way.
 import type { Job } from '../../shared/job.types.ts';
-import { useClips } from '../queries/clips.ts';
 import { isJobRunning } from '../queries/jobs.ts';
 import { useGuides } from '../queries/guides.ts';
 import { useSongs } from '../queries/songs.ts';
@@ -9,7 +8,6 @@ import { useSongs } from '../queries/songs.ts';
 /** The counts of the top bar's tabs. */
 export type TabCounts = {
   songCount: number | null;
-  clipCount: number | null;
   guideCount: number | null;
   jobCount: number | null;
 };
@@ -29,15 +27,13 @@ function getRunningCount(jobs: Job[]): number | null {
  * Gives the counts of the top bar's tabs, from what the lists read.
  *
  * @param jobs - Every job, of which those on their way are counted.
- * @returns How many songs, clips and style guides there are and the jobs on their way; each null while it has not been read, and the jobs null when none is on its way.
+ * @returns How many songs and style guides there are and the jobs on their way; each null while it has not been read, and the jobs null when none is on its way.
  */
 export function useTabCounts(jobs: Job[]): TabCounts {
   const { data: songListings } = useSongs();
-  const { data: clipListings } = useClips();
   const { data: guides } = useGuides();
   return {
     songCount: songListings ? songListings.length : null,
-    clipCount: clipListings ? clipListings.length : null,
     guideCount: guides ? guides.length : null,
     jobCount: getRunningCount(jobs),
   };

@@ -1,4 +1,4 @@
-// The bar at the top of every page: the logo (home), Songs, Clips, Guides and Jobs with how many each
+// The bar at the top of every page: the logo (home), Songs, Guides and Jobs with how many each
 // holds (Jobs: how many are on their way; the one open marked, Jobs turning while one runs), a
 // button for a new song at the right, and the switch between light and dark.
 import { Plus } from 'lucide-react';
@@ -28,7 +28,7 @@ type TopBarProps = { route: Route; jobs: Job[] };
 export function TopBar({ route, jobs }: TopBarProps) {
   const isSongs = route.page === 'songs' || route.page === 'song';
   const isAnyRunning = jobs.some(isJobRunning);
-  const { songCount, clipCount, guideCount, jobCount } = useTabCounts(jobs);
+  const { songCount, guideCount, jobCount } = useTabCounts(jobs);
   const barRef = useRef<HTMLElement>(null);
   useTopBarHeight(barRef);
   return (
@@ -40,9 +40,6 @@ export function TopBar({ route, jobs }: TopBarProps) {
       <nav className="top-bar-nav">
         <a href="/songs" className={`top-bar-link${isSongs ? ' is-on' : ''}`}>
           Songs <span className="top-bar-count">{getCountText(songCount)}</span>
-        </a>
-        <a href="/clips" className={`top-bar-link${route.page === 'clips' ? ' is-on' : ''}`}>
-          Clips <span className="top-bar-count">{getCountText(clipCount)}</span>
         </a>
         <a href="/guides" className={`top-bar-link${route.page === 'guides' ? ' is-on' : ''}`}>
           Guides <span className="top-bar-count">{getCountText(guideCount)}</span>

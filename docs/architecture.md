@@ -57,7 +57,7 @@ What they answer is typed in `shared/api.types.ts`.
 
 ## The pages
 
-`src/`, React (0013), a folder per area (a page, the top bar, the player, the lists; 0020). One top bar on every page: the logo (home), Songs | Clips | Guides | Jobs, each with how many it
+`src/`, React (0013), a folder per area (a page, the top bar, the player, the lists; 0020). One top bar on every page: the logo (home), Songs | Guides | Jobs, each with how many it
 holds (Jobs turning while one runs), and at the right + New song (an action, not a section). Every
 page but Home starts with breadcrumbs, the last its heading (Songs › Seven Teeth).
 
@@ -82,7 +82,8 @@ page but Home starts with breadcrumbs, the last its heading (Songs › Seven Tee
   that plays, each one block of a new clip, the whole song on that channel alone, rendered in the
   background and shown striped until its audio is in (`fur/cut.ts`, `make/split-song.ts`,
   `POST /api/songs/<id>/split`). To come: a prompt on the selection.
-- **Clips** (`/clips`): the pool, with the same filter bar.
+- **Clips** (`/clips`): the pool, with the same filter bar; not in the top bar (0029), opened by its
+  address.
 - **Guides** (`/guides`): the style guides, made, edited and deleted.
 - **New** (`/new`): a prompt for Claude in a box, a prompt builder under it (the chips as switches, one or more; a part per row, rolled
   at random or picked, each with a lock, the sentence they make on top; "Use" fills the box, which is otherwise its own),
@@ -196,7 +197,6 @@ phases:
    - Why not draw the structure sent: Claude may not follow its bars exactly, songs without one get
      nothing, and labels pinned to the timeline stay put when blocks move.
 3. Rethink what clips are for. The pool is shared (0005) so a clip can play in more than one song,
-   but no song shares one: the Clips page is a long flat list of clips each played by one song,
-   and some by none. To weigh: keep `clips/` on disk but drop Clips from the top bar (a song's
-   clips are in its editor), or group the page by song; clean up the clips no song plays; reuse
-   across songs, if wanted, as a picker in the editor's clip column. The outcome is an ADR beside 0005.
+   but no song shares one. Clips has left the top bar (0029); still to weigh: drop the Clips page or
+   group it by song; clean up the clips no song plays; reuse across songs, if wanted, as a picker in
+   the editor's clip column. The outcome is an ADR beside 0005.
