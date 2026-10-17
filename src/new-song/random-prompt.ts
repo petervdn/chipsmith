@@ -4,7 +4,10 @@
  * or by hand, and a part can be kept while the others are picked again. Knows nothing of the page.
  */
 
-/** The parts, in the order a prompt joins them. */
+/**
+ * The parts, in the order a prompt joins them. The ideas are about the music, not its form: where
+ * sections fall is the Structure panel's.
+ */
 const COUNTS = ['One', 'Two', 'Three'];
 const MOODS = [
   'dark',
@@ -93,26 +96,26 @@ const IDEAS = [
   'built around a call-and-response hook',
   'where the triangle carries the melody',
   'with arpeggiated chords',
-  'with a breakdown in the middle',
-  'with a key change near the end',
   'with the noise channel playing a breakbeat',
   'with an echo on the lead',
   'with a catchy whistled-style melody',
-  'with a long build-up to a big drop',
-  'with a slow intro that speeds up',
   'with a counter-melody against the lead',
   'with stabbing chords on the offbeat',
   'with a pedal note under changing chords',
   'with vibrato on the lead',
   'with pitch slides in the bass',
-  'with a drum solo halfway',
   'that ends on an unresolved chord',
   'with a melody that climbs throughout',
-  'with a quiet middle section',
   'with a riff passed between the channels',
   'with fast arpeggio runs',
-  'with a minor-key turn in the bridge',
   'with sparse drums and lots of space',
+  'with a hook built on three notes',
+  'with call-and-response between the two pulses',
+  'with ghost notes on the snare',
+  'with the melody in thirds',
+  'with a dotted rhythm in the lead',
+  'with a bass that jumps in octaves',
+  'with a chromatic line in the bass',
   'with the melody doubled in octaves',
 ];
 
