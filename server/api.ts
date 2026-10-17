@@ -46,6 +46,10 @@ import {
   saveClip,
   saveSong,
 } from './store.ts';
+import { checkSentStructure } from './structure-checks.ts';
+import { routeStructures } from './structure-routes.ts';
+import type { StructureStore } from './structures.ts';
+import { openStructures } from './structures.ts';
 
 /**
  * Checks the programs the app calls, and warns in the server's log of each one that cannot be used.
@@ -102,6 +106,7 @@ export function chiptuneServer(root: string): Plugin {
       startRenderingMissingAudio(store);
       const jobs = openJobs(root);
       const guides = openGuides(root);
+      const structures = openStructures(root);
       let programChecks = checkProgramsAndWarn();
       // one runner: a restart of the server (Vite restarts it when a server file changes) replaces it
       globalThis.chiptuneStopJobRunner?.();
@@ -120,19 +125,26 @@ export function chiptuneServer(root: string): Plugin {
           );
           return;
         }
-        route({ store, jobs, guides }, request, response, path).catch((error: unknown) => {
-          sendError(response, 400, error instanceof Error ? error.message : String(error));
-        });
+        route({ store, jobs, guides, structures }, request, response, path).catch(
+          (error: unknown) => {
+            sendError(response, 400, error instanceof Error ? error.message : String(error));
+          },
+        );
       });
     },
   };
 }
 
 /** What the routes read and change: the clips and songs, the jobs, the guides. */
-type Stores = { store: Store; jobs: JobStore; guides: GuideStore };
+type Stores = {
+  store: Store;
+  jobs: JobStore;
+  guides: GuideStore;
+  structures: StructureStore;
+};
 
 async function route(
-  { store, jobs, guides }: Stores,
+  { store, jobs, guides, structures }: Stores,
   request: IncomingMessage,
   response: ServerResponse,
   path: string,
@@ -160,9 +172,13 @@ async function route(
     if (fromSong && !song) return sendError(response, 400, `no song ${fromSong}`);
     const guideIds = getArray(body['guideIds'] ?? [], 'body.guideIds', getString);
     const sent = getSentGuides(guides, guideIds);
-    return sendJson(response, createJob(jobs, prompt, sent, song ? song.id : null));
+    const structure = checkSentStructure(body['structure'], 'body.structure');
+    return sendJson(response, createJob(jobs, prompt, sent, song ? song.id : null, structure));
   }
   if (kind === 'guides') return routeGuides(guides, request, response, { id, method });
+  if (kind === 'structures') {
+    return routeStructures(structures, request, response, { id, method });
+  }
   if (kind === 'rescan' && method === 'POST') {
     rescanStore(store);
     return sendJson(response, { songs: store.songs.size, clips: store.clips.size });

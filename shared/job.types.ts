@@ -3,6 +3,7 @@
  * composes a script, the script builds a .fur file per song, each song is rendered; then done or failed.
  */
 import type { SentGuide } from './guide.types.ts';
+import type { SentStructure } from './structure.types.ts';
 
 /** Where a job is. */
 export type JobPhase = 'queued' | 'composing' | 'building' | 'rendering' | 'done' | 'failed';
@@ -23,6 +24,8 @@ export type Job = {
   prompt: string;
   /** The style guides chosen with the prompt, copied when it was sent. */
   guides: SentGuide[];
+  /** The structure chosen with the prompt, copied when it was sent, or null. */
+  structure: SentStructure | null;
   created: string;
   phase: JobPhase;
   /** When the phase began. */

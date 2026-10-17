@@ -64,6 +64,7 @@ test('a whole song becomes a track per channel of blocks of new clips', () => {
     status: 'keeper',
     prompt: 'a bass line',
     guides: [],
+    structure: null,
     promptedFrom: null,
     tracks: [
       { id: 't1', name: 'Whole', blocks: [{ clip: 'c0001', start: 0, trim: null, repeats: 1 }] },

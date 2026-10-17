@@ -40,6 +40,7 @@ const SONG: Song = {
   status: 'new',
   prompt: '',
   guides: [],
+  structure: null,
   promptedFrom: null,
   tracks: [
     { id: 't1', name: 'Bass', blocks: [{ clip: 'c0001', start: 0, trim: null, repeats: 2 }] },

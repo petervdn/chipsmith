@@ -19,6 +19,7 @@ function getListing({ id, created, status }: { id: string; created: string; stat
       status,
       prompt: '',
       guides: [],
+      structure: null,
       promptedFrom: null,
       tracks: [],
     },

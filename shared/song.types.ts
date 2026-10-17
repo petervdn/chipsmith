@@ -4,6 +4,7 @@
  */
 import type { Status, Tag } from './catalogue.types.ts';
 import type { SentGuide } from './guide.types.ts';
+import type { SentStructure } from './structure.types.ts';
 
 /** Ticks to a beat: a block's place and length are counted in them. */
 export const TICKS_PER_BEAT = 96;
@@ -38,6 +39,8 @@ export type Song = {
   prompt: string;
   /** The style guides sent with the prompt, as they were then (docs/adr/0019). */
   guides: SentGuide[];
+  /** The structure sent with the prompt, as it was then, or null. */
+  structure: SentStructure | null;
   /** The song whose prompt was sent again to make this one, or null. */
   promptedFrom: string | null;
   tracks: Track[];

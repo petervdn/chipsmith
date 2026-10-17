@@ -31,6 +31,7 @@ clips/<id>/source.fur     its own Furnace file
 clips/<id>/script.ts      its own copy of the script that wrote it
 songs/<id>/song.json      a song's arrangement (shared/song.types.ts)
 guides/<id>/guide.json    a style guide (shared/guide.types.ts), sent with a prompt when chosen
+structures/<id>/structure.json  a song structure (shared/structure.types.ts), sent with a prompt when chosen
 ```
 
 The files are the data (0006). Ids are a letter and a number: `c0001` for clips, `s0001` for songs.

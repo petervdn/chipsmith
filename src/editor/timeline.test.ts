@@ -24,6 +24,7 @@ const SONG: Song = {
   status: 'new',
   prompt: '',
   guides: [],
+  structure: null,
   promptedFrom: null,
   tracks: [
     {

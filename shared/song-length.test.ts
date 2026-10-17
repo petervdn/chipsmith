@@ -17,6 +17,7 @@ test('the last block with its repeats sets the length', () => {
     status: 'new',
     prompt: '',
     guides: [],
+    structure: null,
     promptedFrom: null,
     tracks: [
       { id: 'a', name: 'A', blocks: [{ clip: 'c1', start: 0, trim: null, repeats: 3 }] },

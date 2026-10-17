@@ -36,3 +36,4 @@ Consequences.
 | [0020](0020-the-page-is-grouped-by-area.md) | The page is grouped by area; a component's CSS is beside it; no barrel files | accepted |
 | [0021](0021-comments-are-full-jsdoc.md) | A function's comment is full JSDoc, checked by the linter | accepted |
 | [0022](0022-an-edit-is-a-draft-until-saved.md) | An edit is a draft in the page until it is saved (for now) | accepted |
+| [0023](0023-a-structure-is-part-of-the-prompt.md) | A song's structure is part of the prompt, saved like a style guide | accepted |

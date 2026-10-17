@@ -8,6 +8,7 @@ import type { SentGuide } from '../shared/guide.types.ts';
 import type { Job, JobPhase } from '../shared/job.types.ts';
 import { JOB_IDS, claimId } from '../make/ids.ts';
 import { writeJsonAtomically } from './store.ts';
+import type { SentStructure } from '../shared/structure.types.ts';
 
 /** The notes a job keeps; older ones are dropped. */
 const MOST_NOTES = 200;
@@ -36,6 +37,7 @@ export function openJobs(root: string): JobStore {
         guides: job.guides ?? [],
         removed: job.removed ?? null,
         now: job.now ?? null,
+        structure: job.structure ?? null,
       });
     } catch {
       /* a job.json that does not read is left; jobs are a log, not data */
@@ -62,6 +64,7 @@ export function getJobFolder(store: JobStore, jobId: string): string {
  * @param prompt - The prompt.
  * @param guides - Copies of the guides chosen with the prompt.
  * @param promptedFrom - The id of the song whose prompt was sent again, or null.
+ * @param structure - The structure chosen with the prompt, copied, or null for none.
  * @returns The job made.
  */
 export function createJob(
@@ -69,6 +72,7 @@ export function createJob(
   prompt: string,
   guides: SentGuide[],
   promptedFrom: string | null,
+  structure: SentStructure | null = null,
 ): Job {
   const id = claimId(store.root, JOB_IDS);
   const now = new Date().toISOString();
@@ -76,6 +80,7 @@ export function createJob(
     id,
     prompt,
     guides,
+    structure,
     created: now,
     phase: 'queued',
     phaseStarted: now,

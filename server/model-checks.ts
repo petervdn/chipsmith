@@ -16,6 +16,7 @@ import {
   getString,
   getStringOrNull,
 } from './json-checks.ts';
+import { checkSentStructure } from './structure-checks.ts';
 
 const STATUSES: readonly Status[] = ['new', 'heard', 'keeper', 'rejected'];
 const TAG_SOURCES: readonly Tag['by'][] = ['claude', 'user'];
@@ -155,6 +156,7 @@ export function checkSong(value: unknown, path: string): Song {
     status: checkStatus(song['status'], `${path}.status`),
     prompt: getString(song['prompt'], `${path}.prompt`),
     guides: checkSentGuides(song['guides'], `${path}.guides`),
+    structure: checkSentStructure(song['structure'], `${path}.structure`),
     promptedFrom: getStringOrNull(song['promptedFrom'] ?? null, `${path}.promptedFrom`),
     tracks: getArray(song['tracks'], `${path}.tracks`, checkTrack),
   };

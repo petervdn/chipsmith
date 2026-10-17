@@ -15,6 +15,7 @@ import { renderClipAudio } from '../render/render-clip.ts';
 import { writeJsonAtomically } from '../server/store.ts';
 import { CLIP_IDS, SONG_IDS, claimId } from './ids.ts';
 import { getBeatsPerBar, getBpm, getChipNames } from './fur-file-facts.ts';
+import type { SentStructure } from '../shared/structure.types.ts';
 
 /** What a new song is made from. */
 export type NewSong = {
@@ -26,6 +27,8 @@ export type NewSong = {
   prompt: string;
   /** The style guides sent with the prompt, copied. */
   guides: SentGuide[];
+  /** The structure sent with the prompt, copied, or null. */
+  structure?: SentStructure | null;
   promptId: string;
   /** The script that wrote the .fur file, copied into the clip. */
   scriptFile: string;
@@ -49,6 +52,7 @@ export type MadeSong = { songId: string; clipId: string };
  * @param newSong.furFile - The .fur file, written as the clip's source.fur.
  * @param newSong.prompt - The prompt as written, or what the song was made from.
  * @param newSong.guides - The style guides sent with the prompt, copied into the clip and the song.
+ * @param newSong.structure - The structure sent with the prompt, copied into the song, or null.
  * @param newSong.promptId - The id of the prompt, kept in the clip.
  * @param newSong.scriptFile - The script that wrote the .fur file, copied into the clip.
  * @param newSong.tags - The tags of the clip and the song.
@@ -63,6 +67,7 @@ export async function makeSong({
   furFile,
   prompt,
   guides,
+  structure = null,
   promptId,
   scriptFile,
   tags,
@@ -110,6 +115,7 @@ export async function makeSong({
     status,
     prompt,
     guides,
+    structure,
     promptedFrom,
     tracks: [
       { id: 't1', name: 'Whole', blocks: [{ clip: clipId, start: 0, trim: null, repeats: 1 }] },
