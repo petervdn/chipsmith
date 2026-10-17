@@ -1,4 +1,5 @@
-/* The look of TimelineBlock.tsx: a touch screen's swipe still scrolls past a block; its edges are
+/* The look of TimelineBlock.tsx: in its track's colour (`--track-color`, set on the row), the
+   waveform and label dark on it; a touch screen's swipe still scrolls past a block; its edges are
    wider to the finger. */
 
 .timeline-block {
@@ -6,10 +7,10 @@
   top: 4px;
   bottom: 4px;
   overflow: hidden;
-  border: var(--border-width) solid var(--line);
+  border: var(--border-width) solid color-mix(in srgb, var(--track-color, var(--raised)) 70%, #000);
   border-radius: calc(var(--radius) * 0.5);
-  background: var(--raised);
-  color: var(--muted);
+  background: var(--track-color, var(--raised));
+  color: color-mix(in srgb, var(--on-accent) 75%, transparent);
   cursor: grab;
   touch-action: pan-x pan-y;
   user-select: none;
@@ -19,13 +20,13 @@
 
 .timeline-block.is-repeat {
   border-style: dashed;
-  opacity: 0.45;
+  opacity: 0.5;
 }
 
 .timeline-block.is-selected {
   border-color: var(--fg);
-  box-shadow: inset 0 0 0 1px var(--fg);
-  color: var(--fg);
+  box-shadow: 0 0 0 2px var(--fg);
+  color: var(--on-accent);
 }
 
 .timeline-block.is-missing {
@@ -42,8 +43,9 @@
   left: 4px;
   max-width: calc(100% - 8px);
   overflow: hidden;
-  color: var(--fg);
+  color: var(--on-accent);
   font-size: 0.6875rem;
+  font-weight: 600;
   white-space: nowrap;
   text-overflow: ellipsis;
   pointer-events: none;
@@ -66,7 +68,7 @@
 }
 
 .timeline-block.is-selected .timeline-block-edge {
-  background: color-mix(in srgb, var(--fg) 25%, transparent);
+  background: color-mix(in srgb, var(--on-accent) 30%, transparent);
 }
 
 @media (pointer: coarse) {

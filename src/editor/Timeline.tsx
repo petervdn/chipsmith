@@ -8,7 +8,13 @@ import { getTicksPerSecond } from '../../shared/song-length.ts';
 import type { Song } from '../../shared/song.types.ts';
 import type { DragMode } from './block-drag.ts';
 import type { BlockPlace } from './song-edits.ts';
-import { getBarLabelStep, getBlockSpans, getTicksPerBar, getTimelineBars } from './timeline.ts';
+import {
+  getBarLabelStep,
+  getBlockSpans,
+  getTicksPerBar,
+  getTimelineBars,
+  getTrackColor,
+} from './timeline.ts';
 import { TimelineBlock } from './TimelineBlock.tsx';
 import type { TrackMix } from './track-mix.ts';
 import { isHeard } from './track-mix.ts';
@@ -95,16 +101,20 @@ export function Timeline({
           )}
         </div>
       </div>
-      {song.tracks.map((track) => {
+      {song.tracks.map((track, trackIndex) => {
         const isTrackSelected = selection?.kind === 'track' && selection.trackId === track.id;
         const marks = [
           mix.muted.includes(track.id) ? 'muted' : '',
           mix.soloed.includes(track.id) ? 'solo' : '',
         ].filter(Boolean);
+        const rowStyle: CSSProperties & Record<'--track-color', string> = {
+          '--track-color': getTrackColor(trackIndex),
+        };
         return (
           <div
             key={track.id}
             className={`timeline-row${isHeard(track.id, mix) ? '' : ' is-unheard'}`}
+            style={rowStyle}
           >
             <button
               type="button"

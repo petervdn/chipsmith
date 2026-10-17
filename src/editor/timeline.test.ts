@@ -4,7 +4,13 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import type { Clip, ClipParent } from '../../shared/clip.types.ts';
 import type { Song } from '../../shared/song.types.ts';
-import { getBarLabelStep, getBlockSpans, getTicksPerBar, getTimelineBars } from './timeline.ts';
+import {
+  getBarLabelStep,
+  getBlockSpans,
+  getTicksPerBar,
+  getTimelineBars,
+  getTrackColor,
+} from './timeline.ts';
 
 const SONG: Song = {
   id: 's0001',
@@ -75,4 +81,12 @@ test('the timeline shows the song and four bars after it', () => {
 
 test('narrow bars are numbered every fourth or eighth', () => {
   assert.deepEqual([40, 15, 6].map(getBarLabelStep), [1, 4, 8]);
+});
+
+test('the tracks take the colours in turn', () => {
+  assert.deepEqual([0, 7, 8].map(getTrackColor), [
+    'var(--track-1)',
+    'var(--track-8)',
+    'var(--track-1)',
+  ]);
 });

@@ -50,6 +50,16 @@
   background: var(--raised);
 }
 
+.timeline-track-name::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 4px;
+  background: var(--track-color);
+}
+
 .timeline-track-title {
   max-width: 100%;
   overflow: hidden;

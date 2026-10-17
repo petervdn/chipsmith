@@ -1,7 +1,8 @@
 /* The base of the page: the colour tokens (light, or dark by the system's setting unless the top
    bar's switch chose one, `data-look` on <html>), the page, links, form controls, and the shell
    (App.tsx). The accent is a bright lime, the one green: a fill with --on-accent on it, a line or
-   a mark, never text on the page. A component's own look is in its own CSS file beside it. */
+   a mark, never text on the page. The tracks' colours are bright too, the lime among them. A
+   component's own look is in its own CSS file beside it. */
 
 :root {
   --bg: #f3f5f0;
@@ -17,6 +18,15 @@
   --reject: #dc2f4b;
   color-scheme: light;
   --touch: 40px;
+  /* the tracks' colours on the timeline, bright in light and dark alike, with --on-accent on them */
+  --track-1: #a6f23a;
+  --track-2: #2ee6ff;
+  --track-3: #ff3d9a;
+  --track-4: #ff8a1f;
+  --track-5: #b47dff;
+  --track-6: #ffd23f;
+  --track-7: #4d94ff;
+  --track-8: #ff5e57;
   --font: system-ui, -apple-system, sans-serif;
   --text-size: 16px;
   --line-height: 1.4;

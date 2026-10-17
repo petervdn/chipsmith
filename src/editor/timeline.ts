@@ -24,10 +24,23 @@ export type BlockSpan = {
   slice: { offset: number; duration: number } | null;
 };
 
+/** How many colours the tracks take in turn (`--track-1` and on, in style.css). */
+const TRACK_COLORS = 8;
+
 /** Bars the timeline shows past the song's end, to place things after it. */
 const BARS_AFTER_END = 4;
 /** The fewest bars the timeline shows. */
 const LEAST_BARS = 8;
+
+/**
+ * Returns the colour of a track: the tracks take the colours in turn.
+ *
+ * @param trackIndex - The track's place among the song's tracks, from 0.
+ * @returns The colour, as a CSS value naming its token.
+ */
+export function getTrackColor(trackIndex: number): string {
+  return `var(--track-${(trackIndex % TRACK_COLORS) + 1})`;
+}
 
 /**
  * Returns how long a clip is in ticks at a song's tempo.
