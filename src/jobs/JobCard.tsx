@@ -1,9 +1,10 @@
 // A job's card on the Jobs page, from the moment its prompt is sent: in its top row its phase, how
 // long it has been going and the tokens it used; under it its stages from start to end; then,
-// labelled, the prompt, the style guides, structure and harmony sent with it, the songs it makes as
-// they come, Claude's reply, and its steps. A job that is over folds to one line.
+// labelled, the prompt, the songs it makes (a line for each asked for, its title once built), the
+// style guides, structure and harmony sent with it, Claude's reply, and its steps. A job that is
+// over folds to one line.
 import { useEffect, useState } from 'react';
-import type { Job, JobPhase, JobSong } from '../../shared/job.types.ts';
+import type { Job, JobPhase } from '../../shared/job.types.ts';
 import { formatSeconds, formatTokens } from '../format.ts';
 import { getHarmonySummary } from '../../shared/harmony-prompt.ts';
 import { writeNotation } from '../../shared/structure-notation.ts';
@@ -14,6 +15,8 @@ import './jobs.css';
 import './JobCard.css';
 import { askToConfirm } from '../stores/confirm-store.ts';
 import { getStepText } from './job-steps.ts';
+import { getJobSongRows, getSongCountText } from './job-songs.ts';
+import type { JobSongRow } from './job-songs.ts';
 import { ChevronDown, ChevronRight, Trash2 } from 'lucide-react';
 
 /** How large the trash can is drawn, in pixels. */
@@ -39,7 +42,9 @@ const SONG_STATES = {
   rendering: 'rendering…',
   done: '',
   failed: 'failed',
-} satisfies Record<JobSong['state'], string>;
+  unwritten: 'to be written',
+  unmade: 'not made',
+} satisfies Record<JobSongRow['state'], string>;
 
 /** The card, and what to do when its job is removed (a job that is over), if it can be. */
 type JobCardProps = { job: Job; onRemove?: () => void };
@@ -63,15 +68,20 @@ export function useElapsed(job: Job): number {
 }
 
 /**
- * Returns what a job is doing in a few words, such as "Rendering 2 of 5".
+ * Returns what a job is doing in a few words, such as "Claude is composing · 3 songs" or
+ * "Rendering 2 of 5".
  *
  * @param job - The job.
- * @param job.phase - The phase the job is in.
- * @param job.songs - The songs it makes, counted while it renders.
- * @returns The phase's name, with which song of how many while it renders.
+ * @returns The phase's name, with how many songs it makes while it runs, and which song of how many
+ *   while it renders.
  */
-export function getPhaseName({ phase, songs }: Job): string {
-  if (phase !== 'rendering') return PHASE_NAMES[phase];
+export function getPhaseName(job: Job): string {
+  const { phase, songs } = job;
+  const isRunning = isJobRunning(job);
+  const countText = isRunning ? getSongCountText(job, isRunning) : null;
+  if (phase !== 'rendering') {
+    return countText ? `${PHASE_NAMES[phase]} · ${countText}` : PHASE_NAMES[phase];
+  }
   const doneCount = songs.filter((song) => song.state === 'done').length;
   return `Rendering ${Math.min(doneCount + 1, songs.length)} of ${songs.length}`;
 }
@@ -122,8 +132,8 @@ export function JobCard({ job, onRemove }: JobCardProps) {
       <Trash2 size={TRASH_SIZE} />
     </button>
   );
+  const songCountText = getSongCountText(job, isRunning);
   if (!isRunning && !isOpen) {
-    const madeCount = job.songs.filter((song) => song.songId).length;
     return (
       <section className={`job-card is-${job.phase} is-closed`}>
         <header className="job-card-head">
@@ -142,9 +152,7 @@ export function JobCard({ job, onRemove }: JobCardProps) {
           <span className="jobs-time">{formatSeconds(elapsed)}</span>
           {tokens}
           <span className="job-card-outcome">
-            {job.phase === 'done'
-              ? `${madeCount} ${madeCount === 1 ? 'song' : 'songs'}`
-              : job.phase}
+            {job.phase === 'done' ? (songCountText ?? 'no songs') : job.phase}
           </span>
           {removeButton}
         </header>
@@ -195,6 +203,30 @@ export function JobCard({ job, onRemove }: JobCardProps) {
       <dl className="job-card-facts">
         <dt>Prompt</dt>
         <dd className="job-card-prompt">{job.prompt}</dd>
+        {songCountText && (
+          <>
+            <dt>{songCountText}</dt>
+            <dd>
+              <ul className="job-card-songs">
+                {getJobSongRows(job, isRunning).map((song, i) => (
+                  <li key={i} className={`job-card-song is-${song.state}`}>
+                    {song.state === 'rendering' && (
+                      <span className="jobs-spinner" aria-hidden="true" />
+                    )}
+                    {song.songId ? (
+                      <a href={`/songs/${encodeURIComponent(song.songId)}`}>{song.title}</a>
+                    ) : (
+                      <span>{song.title}</span>
+                    )}
+                    {SONG_STATES[song.state] && (
+                      <span className="job-card-song-state">{SONG_STATES[song.state]}</span>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </dd>
+          </>
+        )}
         {job.guides.length > 0 && (
           <>
             <dt>Style guides</dt>
@@ -226,30 +258,6 @@ export function JobCard({ job, onRemove }: JobCardProps) {
           <>
             <dt>Harmony</dt>
             <dd className="job-card-notation">{getHarmonySummary(job.harmony)}</dd>
-          </>
-        )}
-        {job.songs.length > 0 && (
-          <>
-            <dt>Songs</dt>
-            <dd>
-              <ul className="job-card-songs">
-                {job.songs.map((song) => (
-                  <li key={song.title} className={`job-card-song is-${song.state}`}>
-                    {song.state === 'rendering' && (
-                      <span className="jobs-spinner" aria-hidden="true" />
-                    )}
-                    {song.songId ? (
-                      <a href={`/songs/${encodeURIComponent(song.songId)}`}>{song.title}</a>
-                    ) : (
-                      <span>{song.title}</span>
-                    )}
-                    {SONG_STATES[song.state] && (
-                      <span className="job-card-song-state">{SONG_STATES[song.state]}</span>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            </dd>
           </>
         )}
         {job.summary && !isRunning && (

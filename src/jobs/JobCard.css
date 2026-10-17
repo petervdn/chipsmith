@@ -98,7 +98,9 @@
   min-height: 28px;
 }
 
-.job-card-song.is-waiting {
+.job-card-song.is-waiting,
+.job-card-song.is-unwritten,
+.job-card-song.is-unmade {
   color: var(--muted);
 }
 

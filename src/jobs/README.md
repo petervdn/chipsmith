@@ -2,6 +2,7 @@
 
 The jobs: their page, a job's card, and the line of a running one.
 
+- `job-songs.ts`: a job's songs as its card lists them (one for each asked for), and their count
 - `job-stages.ts`: a job's stages from start to end, and where it is with each
 - `JobStages.css`: the look of JobStages.tsx
 - `JobStages.tsx`: a job's stages in a row: done, current, to come, or where it failed
