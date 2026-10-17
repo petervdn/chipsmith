@@ -46,7 +46,7 @@ export function GuideEditor({ guide, onDone }: GuideEditorProps) {
           checked={draft.isDefault}
           onChange={(event) => changeDraft({ isDefault: event.target.checked })}
         />
-        Chosen by default for a new prompt
+        Preselected by default on New (any number of guides can be)
       </label>
       <div className="guide-editor-actions">
         <button type="submit" className="guides-save" disabled={!canSave}>

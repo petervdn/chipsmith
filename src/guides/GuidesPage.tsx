@@ -53,7 +53,9 @@ export function GuidesPage() {
                 title="edit this style guide"
               >
                 <span className="list-title">{guide.name}</span>
-                {guide.isDefault && <span className="guides-page-default">default</span>}
+                {guide.isDefault && (
+                  <span className="guides-page-default">preselected by default</span>
+                )}
                 <span className="guides-page-preview">{guide.text}</span>
               </button>
             )}
