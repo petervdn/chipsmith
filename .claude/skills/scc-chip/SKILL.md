@@ -23,6 +23,11 @@ Chip-specific sound is where Claude is weakest: say what is new so the user can 
 - Five equal voices with any wave: chords can be held (one voice per note), not only arpeggiated;
   pads, organs and string-like leads are its strength next to the NES's pulses.
 - `03xx` portamento works on SCC channels too.
+- **A release** (the SCC has no envelope): a `vol` macro with a `release` point holds there while
+  the note sounds and plays the rest when it ends, if it ends with `NOTE_RELEASE` (`===`) or
+  `MACRO_RELEASE` (`REL`); `NOTE_OFF` cuts it within a tick (measured: 149 ms of fade against 16).
+  Heard only before a rest: the channel's next note cuts the tail. A slight release is 6-10 ticks
+  of falling volume after the release point.
 
 ## Levels (measured, same note, volume 15)
 
