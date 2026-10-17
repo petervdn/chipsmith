@@ -1,5 +1,5 @@
 /* The look of PromptBuilder.tsx: a row per part, label, value and lock on one line, in two columns
-   on a wide screen; on a phone the label goes above. */
+   of equal width on a wide screen; on a phone the label goes above. */
 
 .prompt-builder {
   padding: 12px;
@@ -17,10 +17,6 @@
 @media (min-width: 720px) {
   .prompt-builder-rows {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-  /* the last part (the idea) has the longest values: it takes the whole width */
-  .prompt-builder-row:last-child:nth-child(odd) {
-    grid-column: 1 / -1;
   }
 }
 
