@@ -116,6 +116,18 @@ export function getBlockSpans(song: Song, clips: Clip[]): BlockSpan[] {
 }
 
 /**
+ * Returns how many bars the song itself takes, which fitting shows across the timeline's width.
+ *
+ * @param spans - The song's blocks as the timeline draws them.
+ * @param ticksPerBar - Ticks to a bar of the song.
+ * @returns The bars up to the end of its last block, at least 1.
+ */
+export function getSongBars(spans: BlockSpan[], ticksPerBar: number): number {
+  const end = spans.reduce((last, span) => Math.max(last, span.end), 0);
+  return Math.max(1, Math.ceil(end / ticksPerBar));
+}
+
+/**
  * Returns how many bars the timeline shows: the song's, and some after it to place things.
  *
  * @param spans - The song's blocks as the timeline draws them.
