@@ -1,12 +1,12 @@
 /**
- * The look the page is in: the one kept in the preferences, put on <html> as `data-look` for
- * style.css, and the steps to the one before and after it.
+ * The look the page is in, light or dark: the one kept in the preferences, put on <html> as
+ * `data-look` for style.css, and the step to the other one.
  */
 import { useLayoutEffect } from 'react';
 import { getLook, getNextLook } from './looks.ts';
 import { usePreferencesStore } from './stores/preferences-store.ts';
 
-/** The look, and how to step to the one before or after. */
+/** The look, and how to switch to the other one. */
 export function useLook() {
   const lookId = usePreferencesStore((state) => state.lookId);
   const setLookId = usePreferencesStore((state) => state.setLookId);
@@ -16,7 +16,6 @@ export function useLook() {
   }, [look.id]);
   return {
     look,
-    showPreviousLook: () => setLookId(getNextLook({ lookId: look.id, step: -1 }).id),
     showNextLook: () => setLookId(getNextLook({ lookId: look.id, step: 1 }).id),
   };
 }

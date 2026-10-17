@@ -21,13 +21,25 @@
   margin: 8px 0 12px;
 }
 .prompt-text {
-  min-height: 40vh;
+  min-height: 20vh;
   padding: 12px;
   font-size: 1rem;
   border: var(--border-width) solid var(--line);
   border-radius: var(--radius);
   background: var(--card);
   resize: vertical;
+}
+.prompt-tools {
+  display: flex;
+  justify-content: flex-end;
+}
+.prompt-random {
+  min-height: var(--touch);
+  padding: 0 14px;
+  border: var(--border-width) solid var(--line);
+  border-radius: var(--radius);
+  background: var(--raised);
+  cursor: pointer;
 }
 .prompt-send {
   min-height: 48px;
@@ -39,7 +51,8 @@
   cursor: pointer;
 }
 .prompt-send:disabled {
-  opacity: 0.5;
+  background: var(--raised);
+  color: var(--muted);
   cursor: default;
 }
 .prompt-box .error {
@@ -49,7 +62,7 @@
 .job-card {
   margin-bottom: 12px;
   padding: 12px;
-  border: var(--border-width) solid var(--accent-text);
+  border: var(--border-width) solid var(--accent);
   border-radius: calc(var(--radius) * 1.25);
   background: var(--card);
 }
@@ -72,11 +85,13 @@
   color: var(--muted);
   font-variant-numeric: tabular-nums;
 }
-.job-hide {
+.job-remove {
+  min-width: var(--touch);
+  min-height: var(--touch);
+  margin: -8px -8px -8px 0;
   border: 0;
   background: none;
   color: var(--muted);
-  font-size: 1rem;
   cursor: pointer;
 }
 .job-prompt {
@@ -146,7 +161,7 @@
   width: 12px;
   height: 12px;
   border: calc(var(--border-width) * 2) solid var(--line);
-  border-top-color: var(--accent-text);
+  border-top-color: var(--accent);
   border-radius: var(--round);
   animation: job-spin 0.9s linear infinite;
 }
@@ -154,19 +169,6 @@
   to {
     transform: rotate(360deg);
   }
-}
-.top-badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 18px;
-  height: 18px;
-  margin-left: 6px;
-  padding: 0 5px;
-  border-radius: calc(var(--radius) * 1.125);
-  background: var(--accent);
-  color: var(--on-accent);
-  font-size: 0.6875rem;
 }
 
 /* a running job's line above the songs list */
@@ -176,7 +178,7 @@
   gap: 10px;
   margin-bottom: 8px;
   padding: 10px 12px;
-  border: var(--border-width) solid var(--accent-text);
+  border: var(--border-width) solid var(--accent);
   border-radius: calc(var(--radius) * 1.25);
   background: var(--card);
   text-decoration: none;

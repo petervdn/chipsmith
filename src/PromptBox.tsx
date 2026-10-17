@@ -1,10 +1,12 @@
-// The box on the New page where a prompt is written and sent, with the style guides chosen as chips;
-// the job it makes shows below it at once.
+// The box on the New page where a prompt is written (or made up at random) and sent, with the style
+// guides chosen as chips; sending it leads to the Jobs page.
 // Opened from a song's "Prompt again", it starts with that song's prompt and notes the song, until
 // the note is cleared.
 import { useState } from 'react';
 import { GuideChips } from './GuideChips.tsx';
+import { getRandomPrompt } from './random-prompt.ts';
 import { useSendPrompt } from './queries/jobs.ts';
+import { navigate } from './router.ts';
 import { useGuideChoice } from './use-guide-choice.ts';
 
 /** The song a prompt is sent again from: its id, its title, and whether it changed after its prompt. */
@@ -32,6 +34,7 @@ export function PromptBox({ initialText, source, onClearSource }: PromptBoxProps
           setText('');
           resetChoice();
           onClearSource();
+          navigate('/jobs');
         },
       },
     );
@@ -77,9 +80,19 @@ export function PromptBox({ initialText, source, onClearSource }: PromptBoxProps
           if (event.key === 'Enter' && (event.metaKey || event.ctrlKey)) send();
         }}
       />
+      <div className="prompt-tools">
+        <button
+          type="button"
+          className="prompt-random"
+          onClick={() => setText(getRandomPrompt(Math.random))}
+          title="fill the box with a prompt made up at random (nothing is sent)"
+        >
+          🎲 Random prompt
+        </button>
+      </div>
       <GuideChips guides={guides} chosenIds={chosenIds} onToggle={toggleGuide} />
       <button type="submit" className="prompt-send" disabled={!text.trim() || isSending}>
-        {isSending ? 'Sending…' : 'Make'}
+        {isSending ? 'Sending…' : 'Create song'}
       </button>
       {error && <p className="error">{error.message}</p>}
     </form>

@@ -1,6 +1,7 @@
 // The style guides as chips under the prompt box, in a panel of their own with a line saying what
-// they do: a chosen one is sent along with the prompt, copied (docs/adr/0019). A link opens the
-// Guides page to make or change them.
+// they do: a chosen one is sent along with the prompt, copied (docs/adr/0019). Each guide's text can
+// be read here, opened under the chips, without leaving the prompt; a link opens the Guides page to
+// make or change them.
 import type { Guide } from '../shared/guide.types.ts';
 
 type GuideChipsProps = {
@@ -34,6 +35,22 @@ export function GuideChips({ guides, chosenIds, onToggle }: GuideChipsProps) {
             </button>
           ))}
         </div>
+      )}
+      {guides.length > 0 && (
+        <details className="guide-texts">
+          <summary>Read what the guides say</summary>
+          {guides.map((guide) => (
+            <details key={guide.id} className="guide-read">
+              <summary>
+                {guide.name}
+                {chosenIds.includes(guide.id) && (
+                  <span className="guide-read-chosen"> · goes along</span>
+                )}
+              </summary>
+              <p className="guide-read-text">{guide.text}</p>
+            </details>
+          ))}
+        </details>
       )}
       <a className="guide-chips-edit" href="/guides">
         {guides.length === 0 ? 'Make a style guide →' : 'Make or change guides →'}

@@ -1,5 +1,5 @@
 /**
- * The two looks, light and dark, in the order the top bar's ‹ › steps through them; style.css holds
+ * The two looks, light and dark, in the order the top bar's switch goes through them; style.css holds
  * their colours under `data-look`. Knows nothing of the page.
  */
 

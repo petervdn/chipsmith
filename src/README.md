@@ -5,8 +5,8 @@ out without the page is in a module of its own beside it, with its test.
 
 - `App.tsx`: the top bar and the page the address is
 - `Logo.tsx`: the logo, a note above an anvil in pixels
-- `JobCard.tsx`: a job's card on the New page
-- `LookSwitcher.tsx`: ‹ › in the top bar, to switch between light and dark
+- `JobCard.tsx`: a job's card on the Jobs page
+- `LookSwitcher.tsx`: ☾ / ☀ in the top bar, to switch between light and dark
 - `JobStrip.tsx`: one line for a running job, above the songs list
 - `FilterBar.tsx`: the filter bar above a list
 - `GuideChips.tsx`: the style guides as chips under the prompt box
@@ -27,12 +27,13 @@ out without the page is in a module of its own beside it, with its test.
 - `jobs.css`: the look of the prompt box, the job cards and the running count
 - `list-filter.ts`: the filter both lists share
 - `lists.css`: the look of the lists: filter bar, rows, status buttons
-- `looks.ts`: the two looks, light and dark, and stepping between them
+- `looks.ts`: the two looks, light and dark, and switching between them
 - `main.tsx`: the page's entry
 - `pages/`: one file to a page
 - `player.css`: the look of ▶ and the player bar
 - `playback/`: playing a song: what plays when, the audio, the shared player
 - `queries/`: everything read from or sent to the server (TanStack Query)
+- `random-prompt.ts`: a prompt made up from parts at random, to start from
 - `router.ts`: which page the address is, and moving between them
 - `stores/`: Zustand stores: the player and the preferences
 - `style.css`: the colours, the page, the top bar and a song's page, for phone and desktop
@@ -40,4 +41,5 @@ out without the page is in a module of its own beside it, with its test.
 - `use-guide-editor.ts`: a style guide's draft, saved or deleted
 - `use-list-filter.ts`: a list's filter kept in the address
 - `use-look.ts`: the look the page is in, and stepping to another
+- `use-tab-counts.ts`: how many each of the top bar's tabs holds
 - `use-page-title.ts`: the browser tab's title, the page's name and then chipsmith

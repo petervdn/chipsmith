@@ -29,6 +29,9 @@ export type Job = {
   phaseStarted: string;
   finished: string | null;
   notes: JobNote[];
+  /** What Claude is doing this moment while it composes, read from its log as it streams (thinking,
+   * a file being written), or null when the last note says it. */
+  now: string | null;
   songs: JobSong[];
   /** Claude's reply at the end of composing. */
   summary: string | null;
@@ -37,4 +40,6 @@ export type Job = {
   promptedFrom: string | null;
   /** The process id of Claude while it composes, to see after a restart whether it still runs. */
   claudePid: number | null;
+  /** When it was taken off the Jobs page, once over; its files are kept. */
+  removed: string | null;
 };

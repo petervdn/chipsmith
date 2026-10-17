@@ -1,6 +1,7 @@
 /**
  * Which page the address is, and moving between them without reloading. Pages: `/` home,
- * `/songs` the songs list, `/songs/<id>` one song, `/clips` the clip pool, `/guides` the style guides, `/new` a prompt and its jobs. Knows nothing of what a page shows.
+ * `/songs` the songs list, `/songs/<id>` one song, `/clips` the clip pool, `/guides` the style guides, `/new` a prompt, `/jobs`
+ * every prompt sent. Knows nothing of what a page shows.
  */
 import { useEffect, useState } from 'react';
 
@@ -11,7 +12,8 @@ export type Route =
   | { page: 'song'; songId: string }
   | { page: 'clips' }
   | { page: 'guides' }
-  | { page: 'new' };
+  | { page: 'new' }
+  | { page: 'jobs' };
 
 /** The route of an address's path (a query after it is not the route's). */
 export function getRoute(address: string): Route {
@@ -22,6 +24,7 @@ export function getRoute(address: string): Route {
   if (/^\/clips\/?$/.test(path)) return { page: 'clips' };
   if (/^\/guides\/?$/.test(path)) return { page: 'guides' };
   if (/^\/new\/?$/.test(path)) return { page: 'new' };
+  if (/^\/jobs\/?$/.test(path)) return { page: 'jobs' };
   return { page: 'home' };
 }
 

@@ -28,8 +28,7 @@
 }
 @media (hover: hover) {
   .play-button:hover {
-    border-color: var(--accent-text);
-    color: var(--accent-text);
+    border-color: var(--accent);
   }
   .play-button.is-playing:hover {
     color: var(--on-accent);

@@ -21,7 +21,8 @@
   cursor: pointer;
 }
 .guide-save:disabled {
-  opacity: 0.5;
+  background: var(--raised);
+  color: var(--muted);
   cursor: default;
 }
 .guide-new {
@@ -45,7 +46,10 @@
   cursor: pointer;
 }
 .guide-default {
-  color: var(--accent-text);
+  padding: 1px 6px;
+  border-radius: var(--radius);
+  background: var(--accent);
+  color: var(--on-accent);
   font-size: 0.75rem;
 }
 .guide-preview {
@@ -120,6 +124,63 @@
   border-color: var(--fg);
   background: var(--fg);
   color: var(--bg);
+}
+/* the guides' texts, to read without leaving the prompt */
+.guide-texts {
+  width: 100%;
+}
+.guide-texts > summary,
+.guide-read > summary {
+  display: flex;
+  align-items: center;
+  min-height: var(--touch);
+  cursor: pointer;
+}
+.guide-texts > summary {
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+.guide-texts > summary::before,
+.guide-read > summary::before {
+  content: '▸';
+  width: 1.2em;
+  color: var(--muted);
+}
+.guide-texts[open] > summary::before,
+.guide-read[open] > summary::before {
+  content: '▾';
+}
+.guide-texts > summary::-webkit-details-marker,
+.guide-read > summary::-webkit-details-marker {
+  display: none;
+}
+.guide-texts > summary,
+.guide-read > summary {
+  list-style: none;
+}
+.guide-read {
+  margin-left: 1.2em;
+  border-top: var(--border-width) solid var(--line);
+}
+.guide-read > summary {
+  font-weight: 600;
+}
+.guide-read-chosen {
+  margin-left: 4px;
+  padding: 1px 6px;
+  border-radius: var(--radius);
+  background: var(--accent);
+  color: var(--on-accent);
+  font-size: 0.75rem;
+  font-weight: 400;
+}
+.guide-read-text {
+  max-height: 40vh;
+  overflow-y: auto;
+  margin: 0 0 12px 1.2em;
+  color: var(--muted);
+  font-size: 0.875rem;
+  white-space: pre-wrap;
 }
 .guide-chips-edit {
   font-size: 0.8125rem;

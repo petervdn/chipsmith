@@ -1,4 +1,4 @@
-// A job's card on the New page, from the moment its prompt is sent: its phase, how long it has been
+// A job's card on the Jobs page, from the moment its prompt is sent: its phase, how long it has been
 // going, what it is doing now, the songs it makes as they come, and how it ended.
 import { useEffect, useState } from 'react';
 import type { Job, JobPhase, JobSong } from '../shared/job.types.ts';
@@ -21,7 +21,8 @@ const SONG_MARKS = {
   failed: '✗',
 } satisfies Record<JobSong['state'], string>;
 
-type JobCardProps = { job: Job; onHide: () => void };
+/** The card, and what to do when its job is removed (a job that is over), if it can be. */
+type JobCardProps = { job: Job; onRemove?: () => void };
 
 /** Seconds a job has been going, or went, kept current every second while it runs. */
 export function useElapsed(job: Job): number {
@@ -43,13 +44,18 @@ export function getPhaseName({ phase, songs }: Job): string {
   return `Rendering ${Math.min(doneCount + 1, songs.length)} of ${songs.length}`;
 }
 
+/** What a running job is doing now: what Claude is in the middle of, else its last note. */
+export function getNowText({ now, notes }: Job): string {
+  return now ?? notes.at(-1)?.text ?? '';
+}
+
 /** The card of a job. */
-export function JobCard({ job, onHide }: JobCardProps) {
+export function JobCard({ job, onRemove }: JobCardProps) {
   const [isShowingNotes, setShowingNotes] = useState(false);
   const isRunning = isJobRunning(job);
   const elapsed = useElapsed(job);
   const phaseName = getPhaseName(job);
-  const lastNote = job.notes.at(-1)?.text ?? '';
+  const now = getNowText(job);
 
   return (
     <section className={`job-card is-${job.phase}`}>
@@ -57,8 +63,13 @@ export function JobCard({ job, onHide }: JobCardProps) {
         {isRunning && <span className="job-spinner" aria-hidden="true" />}
         <span className="job-phase">{phaseName}</span>
         <span className="job-time">{formatSeconds(elapsed)}</span>
-        {!isRunning && (
-          <button type="button" className="job-hide" onClick={onHide} title="hide this card">
+        {onRemove && (
+          <button
+            type="button"
+            className="job-remove"
+            onClick={onRemove}
+            title="remove this job from the list (its songs stay)"
+          >
             ✕
           </button>
         )}
@@ -67,7 +78,7 @@ export function JobCard({ job, onHide }: JobCardProps) {
       {job.guides.length > 0 && (
         <p className="job-guides">with {job.guides.map((guide) => guide.name).join(', ')}</p>
       )}
-      {isRunning && <p className="job-now">{lastNote}</p>}
+      {isRunning && <p className="job-now">{now}</p>}
       {job.songs.length > 0 && (
         <ul className="job-songs">
           {job.songs.map((song) => (

@@ -12,7 +12,9 @@ import type { Job, JobSong } from '../shared/job.types.ts';
 import type { BuiltPlan } from '../make/build-script.ts';
 import { makeSong } from '../make/make-song.ts';
 import { readFurFile } from '../fur/read.ts';
-import { isRunning, readLogNews, startClaude } from './claude-run.ts';
+import type { LogPlace } from './claude-log.ts';
+import { LOG_START, readLogNews } from './claude-log.ts';
+import { isRunning, startClaude } from './claude-run.ts';
 import type { JobStore } from './jobs.ts';
 import { addNotes, getJobFolder, setPhase, updateJob } from './jobs.ts';
 import type { Store } from './store.ts';
@@ -38,6 +40,7 @@ const SYSTEM_PROMPT = [
   'You are running headless, started from the chiptune app; the user is not at this terminal and cannot answer.',
   'Read notes/making-songs.md first and follow it.',
   'Before each step, say in one short line what you are about to do; the user sees these lines live.',
+  'That includes the long ones: say a line before you plan the songs and before you write or rewrite the script.',
   'Finish with a short plain reply (1-3 sentences): what you made and anything the user should know.',
 ].join(' ');
 
@@ -64,7 +67,7 @@ function getGuideLines(guides: SentGuide[]): string[] {
 }
 
 /** What the runner keeps of the Claude run of the job in its composing phase. */
-type ClaudeWatch = { jobId: string; pid: number | undefined; position: number };
+type ClaudeWatch = { jobId: string; pid: number | undefined; place: LogPlace };
 
 /** Starts the ticker that moves jobs on; gives a function that stops it. */
 export function startJobRunner(jobs: JobStore, store: Store): () => void {
@@ -117,7 +120,7 @@ function startComposing(jobs: JobStore, job: Job): ClaudeWatch {
     logFile: join(folder, 'claude.log'),
   });
   updateJob(jobs, job.id, { claudePid: pid ?? null });
-  return { jobId: job.id, pid, position: 0 };
+  return { jobId: job.id, pid, place: LOG_START };
 }
 
 /**
@@ -126,9 +129,9 @@ function startComposing(jobs: JobStore, job: Job): ClaudeWatch {
  */
 function resumeWatching(jobs: JobStore, job: Job): ClaudeWatch {
   const logFile = join(getJobFolder(jobs, job.id), 'claude.log');
-  const news = readLogNews(logFile, 0, PROJECT_FOLDER);
+  const news = readLogNews(logFile, LOG_START, PROJECT_FOLDER);
   const pid = job.claudePid ?? undefined;
-  return { jobId: job.id, pid, position: news.result ? 0 : news.position };
+  return { jobId: job.id, pid, place: news.result ? LOG_START : news };
 }
 
 /** Reads what Claude said since the last look; when it is done, builds and renders. */
@@ -138,10 +141,11 @@ async function followClaude(
   watch: ClaudeWatch,
 ): Promise<ClaudeWatch | null> {
   const folder = getJobFolder(jobs, watch.jobId);
-  const news = readLogNews(join(folder, 'claude.log'), watch.position, PROJECT_FOLDER);
+  const news = readLogNews(join(folder, 'claude.log'), watch.place, PROJECT_FOLDER);
   if (news.notes.length > 0) addNotes(jobs, watch.jobId, news.notes);
+  if (jobs.jobs.get(watch.jobId)?.now !== news.now) updateJob(jobs, watch.jobId, { now: news.now });
   if (news.result) {
-    updateJob(jobs, watch.jobId, { summary: news.result.text });
+    updateJob(jobs, watch.jobId, { summary: news.result.text, now: null });
     if (news.result.isError) throw new Error(`Claude stopped with an error: ${news.result.text}`);
     await buildAndRender(jobs, store, watch.jobId);
     return null;
@@ -149,7 +153,7 @@ async function followClaude(
   if (watch.pid !== undefined && !isRunning(watch.pid)) {
     throw new Error('Claude stopped without a result (see claude.log)');
   }
-  return { ...watch, position: news.position };
+  return { ...watch, place: { position: news.position, progress: news.progress } };
 }
 
 async function buildAndRender(jobs: JobStore, store: Store, jobId: string): Promise<void> {

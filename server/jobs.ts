@@ -25,8 +25,13 @@ export function openJobs(root: string): JobStore {
     if (!existsSync(file)) continue;
     try {
       const job: Job = JSON.parse(readFileSync(file, 'utf8'));
-      // a job from before style guides has none
-      store.jobs.set(job.id, { ...job, guides: job.guides ?? [] });
+      // a job from before style guides has none, nor one from before removing or `now` those
+      store.jobs.set(job.id, {
+        ...job,
+        guides: job.guides ?? [],
+        removed: job.removed ?? null,
+        now: job.now ?? null,
+      });
     } catch {
       /* a job.json that does not read is left; jobs are a log, not data */
     }
@@ -57,14 +62,31 @@ export function createJob(
     phaseStarted: now,
     finished: null,
     notes: [{ at: now, text: 'prompt received' }],
+    now: null,
     songs: [],
     summary: null,
     error: null,
     claudePid: null,
     promptedFrom,
+    removed: null,
   };
   saveJob(store, job);
   return job;
+}
+
+/** Every job not removed, newest first. */
+export function listJobs(store: JobStore): Job[] {
+  return [...store.jobs.values()]
+    .filter((job) => !job.removed)
+    .sort((first, second) => second.created.localeCompare(first.created));
+}
+
+/** Takes a job that is over off the list; its files stay, with `removed` in its job.json. */
+export function removeJob(store: JobStore, jobId: string): void {
+  const job = store.jobs.get(jobId);
+  if (!job) throw new Error(`no job ${jobId}`);
+  if (!job.finished) throw new Error(`job ${jobId} is still on its way`);
+  updateJob(store, jobId, { removed: new Date().toISOString() });
 }
 
 /** Changes a job and writes it. */

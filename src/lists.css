@@ -38,8 +38,9 @@
   cursor: pointer;
 }
 .tag-chip.is-on {
-  border-color: var(--accent-text);
-  color: var(--accent-text);
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--on-accent);
 }
 .tag-count {
   color: var(--muted);

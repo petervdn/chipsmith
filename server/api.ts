@@ -20,11 +20,10 @@ import type { Clip } from '../shared/clip.types.ts';
 import type { Song } from '../shared/song.types.ts';
 import { getSongSeconds } from '../shared/song-length.ts';
 import { sendError, sendFile, sendJson, readJsonBody } from './http.ts';
-import type { Job } from '../shared/job.types.ts';
 import { getArray, getObject, getString, getStringOrNull } from './json-checks.ts';
 import { startJobRunner } from './job-runner.ts';
 import type { JobStore } from './jobs.ts';
-import { createJob, openJobs } from './jobs.ts';
+import { createJob, listJobs, openJobs, removeJob } from './jobs.ts';
 import { copyExamplesIfEmpty } from './examples.ts';
 import { isAudioMissing, renderMissingAudio } from './missing-audio.ts';
 import { checkGuideDraft, checkStatus, checkTags } from './model-checks.ts';
@@ -133,6 +132,11 @@ async function route(
   }
   if (area !== 'api') return sendError(response, 404, 'not found');
   if (kind === 'jobs' && !id && method === 'GET') return sendJson(response, listJobs(jobs));
+  if (kind === 'jobs' && id && method === 'DELETE') {
+    if (!jobs.jobs.has(id)) return sendError(response, 404, `no job ${id}`);
+    removeJob(jobs, id);
+    return sendJson(response, listJobs(jobs));
+  }
   if (kind === 'jobs' && !id && method === 'POST') {
     const body = getObject(await readJsonBody(request), 'body');
     const prompt = getString(body['prompt'], 'body.prompt').trim();
@@ -187,14 +191,6 @@ async function routeGuides(
     return sendError(response, 404, 'not found');
   }
   sendJson(response, listGuides(guides));
-}
-
-/** The jobs, newest first: those not finished, and the finished ones of the last hour. */
-function listJobs(jobs: JobStore): Job[] {
-  const hourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
-  return [...jobs.jobs.values()]
-    .filter((job) => !job.finished || job.finished > hourAgo)
-    .sort((first, second) => second.created.localeCompare(first.created));
 }
 
 function listSongs(store: Store): SongListing[] {

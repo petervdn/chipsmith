@@ -1,18 +1,18 @@
-// ‹ name › in the top bar: the looks of the page, one after another, to compare them.
+// ☾ / ☀ in the top bar: switches the page between light and dark.
 import { useLook } from './use-look.ts';
 
-/** The look switcher. */
+/** The light / dark switch. */
 export function LookSwitcher() {
-  const { look, showPreviousLook, showNextLook } = useLook();
+  const { look, showNextLook } = useLook();
+  const isDark = look.id === 'dark';
   return (
-    <div className="look-switcher">
-      <button type="button" onClick={showPreviousLook} title="the look before">
-        ‹
-      </button>
-      <span className="look-name">{look.name}</span>
-      <button type="button" onClick={showNextLook} title="the next look">
-        ›
-      </button>
-    </div>
+    <button
+      type="button"
+      className="look-switcher"
+      onClick={showNextLook}
+      title={isDark ? 'switch to light' : 'switch to dark'}
+    >
+      {isDark ? '☀' : '☾'}
+    </button>
   );
 }

@@ -1,7 +1,7 @@
 /* The look of the app, for a phone (one column, rows that wrap, big touch targets) and a desktop
    (rows on one line). Colours are tokens: light, or dark by the system's setting, unless the top bar's
-   switch chose one (`data-look` on <html>, looks.ts). The accent is a bright lime: a fill, with
-   --on-accent on it; as text or a line on the light page it is --accent-text, a deeper shade. */
+   switch chose one (`data-look` on <html>, looks.ts). The accent is a bright lime, the one green: a
+   fill with --on-accent on it, a line or a mark, never text on the page. */
 
 :root {
   --bg: #f3f5f0;
@@ -11,8 +11,8 @@
   --muted: #666d5f;
   --line: #d5dbcd;
   --accent: #a6f23a;
-  --accent-text: #4a8a00;
   --on-accent: #1a1d17;
+  --logo-outline: #1a1d17;
   --keep: #c08400;
   --reject: #dc2f4b;
   color-scheme: light;
@@ -34,8 +34,8 @@
     --muted: #9a9aa3;
     --line: #3a3a41;
     --accent: #a6f23a;
-    --accent-text: #a6f23a;
     --on-accent: #18181b;
+    --logo-outline: transparent;
     --keep: #ffb83d;
     --reject: #ff4d6d;
     color-scheme: dark;
@@ -49,8 +49,8 @@
   --muted: #9a9aa3;
   --line: #3a3a41;
   --accent: #a6f23a;
-  --accent-text: #a6f23a;
   --on-accent: #18181b;
+  --logo-outline: transparent;
   --keep: #ffb83d;
   --reject: #ff4d6d;
   color-scheme: dark;
@@ -103,8 +103,14 @@ textarea {
   padding: 0 14px;
   border-radius: var(--radius);
   text-decoration: none;
+  gap: 6px;
   font-weight: 600;
   color: var(--muted);
+  white-space: nowrap;
+}
+.top-count {
+  font-weight: 400;
+  font-size: 0.8125rem;
 }
 .top-link.is-on {
   color: var(--fg);
@@ -128,30 +134,15 @@ textarea {
   outline: 2px solid var(--fg);
   outline-offset: 2px;
 }
-.top-new .top-badge {
-  background: var(--on-accent);
-  color: var(--accent-text);
-}
 /* the switch between light and dark (LookSwitcher.tsx) */
 .look-switcher {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-.look-switcher button {
   min-width: var(--touch);
   min-height: var(--touch);
   border: var(--border-width) solid var(--line);
   border-radius: var(--radius);
   background: var(--raised);
+  font-size: 1.125rem;
   cursor: pointer;
-}
-.look-name {
-  min-width: 4em;
-  text-align: center;
-  color: var(--muted);
-  font-size: 0.8125rem;
-  white-space: nowrap;
 }
 .top-crumb {
   display: flex;
@@ -246,17 +237,28 @@ textarea {
   cursor: pointer;
 }
 
-/* a phone: the logo and the links share one row */
-@media (max-width: 480px) {
+/* a phone: the logo, + New song and the switch on one row, the tabs across the whole row under them */
+@media (max-width: 600px) {
   .top-bar {
     gap: 4px 6px;
     padding-left: 10px;
     padding-right: 10px;
   }
   .top-nav {
+    order: 1;
+    width: 100%;
+    justify-content: space-between;
     gap: 0;
   }
   .top-link {
-    padding: 0 8px;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0;
+    padding: 2px 8px;
+    line-height: 1.15;
+  }
+  .top-crumb {
+    order: 2;
+    width: 100%;
   }
 }

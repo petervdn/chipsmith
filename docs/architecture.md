@@ -51,8 +51,8 @@ What they answer is typed in `shared/api.types.ts`.
 
 ## The pages
 
-`src/`, React (0013). One top bar on every page: the logo (home), Songs | Clips | Guides, in a song the
-song's title, and at the right + New song (an action, not a section).
+`src/`, React (0013). One top bar on every page: the logo (home), Songs | Clips | Guides | Jobs, each with how many it
+holds (Jobs turning while one runs), in a song the song's title, and at the right + New song (an action, not a section).
 
 - **Home** (`/`): the logo and what the app is, a + New song button, the running jobs, how many songs
   there are (kept, not heard yet) and the five made last with ▶.
@@ -62,10 +62,12 @@ song's title, and at the right + New song (an action, not a section).
   timeline, playback, the selected block's clip with its prompt and versions, a prompt box.
 - **Clips** (`/clips`): the pool, with the same filter bar.
 - **Guides** (`/guides`): the style guides, made, edited and deleted.
-- **New** (`/new`): a prompt for Claude in a box that takes the screen, the style guides as chips to
-  send with it, and the cards of its jobs.
+- **New** (`/new`): a prompt for Claude in a box that takes the screen, and the style guides as chips
+  to send with it (their texts readable in place). Sending it leads to Jobs.
+- **Jobs** (`/jobs`): every prompt sent, as a card, newest first; one that is over can be removed
+  (✕; `removed` in its job.json, its files kept). The tab counts the jobs on their way.
 
-The page is light or dark: as the system is set, until the top bar's ‹ › switches it (`src/looks.ts`,
+The page is light or dark: as the system is set, until the top bar's ☾ / ☀ switches it (`src/looks.ts`,
 the colours in `src/style.css`), kept in the preferences. The accent is a bright lime.
 
 The page is laid out for a phone first (one column, rows that wrap, 40 px touch targets) and a
@@ -76,7 +78,7 @@ desktop (rows on one line), in `src/style.css`.
 Where state lives follows 0017: local first, lifted, context for a subtree, a Zustand store when it is
 the app's. Everything from the server is TanStack Query (`src/queries/`: songs, a song, clips, jobs
 polled while one runs, and the mutations), its keys from `getQueryKey({ type })`. The stores
-(`src/stores/`): the player (not persisted) and preferences (mute, hidden job cards, the look; localStorage,
+(`src/stores/`): the player (not persisted) and preferences (mute, the look; localStorage,
 through Zustand's persist); no component touches storage. A list's filter is in the address only: the
 top bar's links open a list unfiltered, and the back button returns to a filtered one.
 
@@ -125,15 +127,16 @@ to start with; nothing is carried over from another song), and becomes a job (`s
 `jobs/<id>/job.json`, out of git) the moment it arrives. The chosen guides (`server/guides.ts`) are
 copied into the job, given to Claude as part of the prompt, and copied into every song and clip it
 makes (`guides` beside `prompt`), so a later change to a guide does not change what they were made
-from (0019). Its card shows on the New page (running ones,
-then those of the last hour, until hidden); a running job also has one line above the songs list,
-and the + New song button in the top bar counts the running ones. The runner (`server/job-runner.ts`) takes one job at a time through its
+from (0019). Its card shows on the Jobs page; a running job also has one line above the songs list and on the
+home page, and the Jobs tab turns while one runs. The runner (`server/job-runner.ts`) takes one job at a time through its
 phases:
 1. **composing**: Claude Code runs headless (`server/claude-run.ts`: `claude -p`, detached, its
    stream written to `jobs/<id>/claude.log`). It follows `notes/making-songs.md` and writes
    `jobs/<id>/script.ts`, whose default export gives a plan per song (`make/song-plan.ts`), its music
    made with `make/fur-file-builder.ts`; it checks them with `make/check-script.ts`. Its lines and what
-   its tools do are read from the log every second and become the job's notes.
+   its tools do are read from the log every second (`server/claude-log.ts`) and become the job's
+   notes; what it is in the middle of (thinking, a line or a file being written, from the streamed
+   partial messages) is the card's "now" line.
 2. **building**: `make/build-script.ts` runs the script in a process of its own and writes a .fur per
    song; the card lists the songs.
 3. **rendering**: each song is made and rendered in turn (`make/make-song.ts`) and shows in the list as

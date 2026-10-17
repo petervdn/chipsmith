@@ -17,7 +17,7 @@ export function isJobRunning({ phase }: Job): boolean {
   return phase !== 'done' && phase !== 'failed';
 }
 
-/** The jobs the server lists (running ones and those of the last hour). */
+/** Every job, newest first. */
 export function useJobs(): Job[] {
   const { data } = useQuery({
     queryKey: getQueryKey({ type: 'jobs' }),
@@ -31,6 +31,15 @@ export function useJobs(): Job[] {
     void queryClient.invalidateQueries({ queryKey: getQueryKey({ type: 'songs' }), exact: true });
   }, [madeCount]);
   return jobs;
+}
+
+/** Takes a job that is over off the Jobs page. */
+export function useRemoveJob() {
+  return useMutation({
+    mutationFn: (jobId: string) =>
+      sendJson<Job[]>(`/api/jobs/${encodeURIComponent(jobId)}`, 'DELETE', null),
+    onSuccess: (jobs) => queryClient.setQueryData(getQueryKey({ type: 'jobs' }), jobs),
+  });
 }
 
 /** Sends a prompt (with the song it is sent again from, if so); the jobs are read again at once. */
