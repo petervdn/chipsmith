@@ -203,4 +203,7 @@ sent is a card, newest first.
   (`--touch`); on a desktop a row is one line. Nothing scrolls sideways.
 - **Colours are tokens** on `:root`, with a dark set under `prefers-color-scheme: dark` and under
   `data-look="dark"` (the top bar's switch).
-- **A control that does not say what it does gets a tooltip.**
+- **A control that does not say what it does gets a tooltip**: `data-tooltip`, shown by the page's
+  own tooltip (`src/tooltip/`), never `title`.
+- **Nothing pops up from the browser**: a question before a change is `askToConfirm`
+  (`src/stores/confirm-store.ts`), never `window.confirm`, `alert` or `prompt` (docs/adr/0026).
