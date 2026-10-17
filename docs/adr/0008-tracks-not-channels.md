@@ -4,7 +4,10 @@
 - Date: 2026-10-16
 
 ## Context
-Calling the arrangement's rows "channels" was considered.
+Calling the arrangement's rows "channels" was considered, twice: they are the lanes of the timeline,
+as a tracker's channels are. But Furnace calls the chip's voices channels (its pattern columns, its
+docs, `channelCount` in the file), and our code talks about those too: a clip's `channels`, the
+.fur builder's rows per channel, splitting a song into its channels.
 
 ## Decision
 A row of a song's arrangement is a track. "Channel" means only a chip channel (pulse 1, triangle,
