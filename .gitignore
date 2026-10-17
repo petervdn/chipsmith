@@ -1,6 +1,7 @@
-# What is made with the app (clips, songs, jobs) is never in git (docs/adr/0018); the examples are
-# in examples/ and are copied into an empty data folder.
-data/
+# What is made with the app (clips, songs, jobs, guidance) is never in git (docs/adr/0018): the data
+# folder is, with only its README; the examples are in examples/ and are copied into an empty one.
+data/*
+!data/README.md
 
 node_modules/
 dist/

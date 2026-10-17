@@ -85,8 +85,8 @@ what is missing, what it is needed for and which setting to change, with "Check 
 
 ## Your songs, the examples and git
 
-What you make is yours and never in git: the data folder (`data/` unless `CHIPSMITH_DATA` says
-otherwise) is ignored. Back it up, or make it a git repository of its own. A fresh checkout has five
+What you make is yours and never in git: everything in the data folder (`data/` unless
+`CHIPSMITH_DATA` says otherwise) is ignored, but for its README. Back it up, or make it a git repository of its own. A fresh checkout has five
 example songs in `examples/`; when the data folder has no clips and no songs, the server copies them
 into it.
 

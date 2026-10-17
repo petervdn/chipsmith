@@ -10,7 +10,8 @@ its first commit that whole earlier project, batches of .fur files included. Som
 user's library and no audio for it, as nothing rendered a missing audio.flac, although 0011 said the server would.
 
 ## Decision
-- The data folder (`CHIPSMITH_DATA`, default `data/` in the project folder) is ignored by git.
+- What is in the data folder (`CHIPSMITH_DATA`, default `data/` in the project folder) is ignored
+  by git; the folder itself is in it with a README, so a checkout shows where what is made lives.
   Nothing made with the app is committed.
 - `examples/` holds five songs and their clips (clip.json, source.fur, script.ts, no audio), picked
   for spread: a 3/4 action fugue on NES + SCC+, a fast NES fugue, two ambient chord pieces (NES; NES +
