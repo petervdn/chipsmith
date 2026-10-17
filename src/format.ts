@@ -1,4 +1,4 @@
-/** How numbers are shown on the page: a length in minutes and seconds, a meter. */
+/** How numbers are shown on the page: a length in minutes and seconds, a meter, tokens. */
 
 /**
  * Returns a length in minutes and seconds: "1:05" for 65 seconds.
@@ -22,13 +22,23 @@ export function formatMeter(beats: number): string {
 }
 
 /**
- * Returns a number of tokens as it is shown: in thousands from a thousand on.
+ * Returns a number of tokens as a short count: in thousands from a thousand on.
+ *
+ * @param tokens - The tokens.
+ * @returns "850", "15k" or "1.2k".
+ */
+export function formatTokenCount(tokens: number): string {
+  if (tokens < 1000) return `${tokens}`;
+  const thousands = tokens / 1000;
+  return `${thousands < 10 ? Math.round(thousands * 10) / 10 : Math.round(thousands)}k`;
+}
+
+/**
+ * Returns a number of tokens as it is shown: its short count and the word.
  *
  * @param tokens - The tokens.
  * @returns "850 tokens", "15k tokens" or "1.2k tokens".
  */
 export function formatTokens(tokens: number): string {
-  if (tokens < 1000) return `${tokens} tokens`;
-  const thousands = tokens / 1000;
-  return `${thousands < 10 ? Math.round(thousands * 10) / 10 : Math.round(thousands)}k tokens`;
+  return `${formatTokenCount(tokens)} tokens`;
 }

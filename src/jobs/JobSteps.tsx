@@ -1,9 +1,9 @@
 // A job's steps: while it runs, its current step (labelled, with a spinner, its text shimmering),
 // and on demand every step, each with its time, a bar of its share of the job's time, and the
-// tokens Claude wrote in it.
+// tokens Claude wrote in it before its text.
 import { useState } from 'react';
 import type { Job } from '../../shared/job.types.ts';
-import { formatSeconds, formatTokens } from '../format.ts';
+import { formatSeconds, formatTokenCount, formatTokens } from '../format.ts';
 import { getStepLengths, getStepTokens } from './job-steps.ts';
 import './JobSteps.css';
 
@@ -74,12 +74,15 @@ export function JobSteps({ job, isRunning, elapsed, now, totalTokens }: JobSteps
                 >
                   <span style={{ width: `${(length?.share ?? 0) * 100}%` }} />
                 </span>
+                <span
+                  className="job-steps-tokens"
+                  title={tokens === null ? '' : `${formatTokens(tokens)} Claude wrote in this step`}
+                >
+                  {tokens === null ? '' : formatTokenCount(tokens)}
+                </span>
                 <span className="job-steps-text">
                   {isCurrent && <span className="jobs-spinner" aria-label="in progress" />}
                   <span className="job-steps-words">{note.text}</span>
-                </span>
-                <span className="job-steps-tokens" title="the tokens Claude wrote in this step">
-                  {tokens === null ? '' : formatTokens(tokens)}
                 </span>
               </li>
             );
