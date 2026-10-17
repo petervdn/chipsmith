@@ -2,7 +2,6 @@
    are drawn as lines behind the blocks. */
 
 .timeline {
-  --track-name-width: 120px;
   --row-height: 78px;
   position: relative;
   width: max-content;
@@ -33,6 +32,23 @@
 .timeline-corner {
   display: flex;
   align-items: center;
+}
+
+/* the track names' right edge, dragged to make them wider or narrower */
+.timeline-name-edge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  width: 8px;
+  cursor: col-resize;
+  touch-action: none;
+}
+
+.timeline-name-edge:hover,
+.timeline-name-edge:active {
+  border-right: 2px solid var(--accent);
 }
 
 /* the small + in the corner above the track names */

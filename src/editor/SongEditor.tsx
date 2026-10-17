@@ -34,7 +34,8 @@ import { useHeardTracks } from './use-heard-tracks.ts';
 import { useSongTransport } from './use-song-transport.ts';
 import { useTimelinePan } from './use-timeline-pan.ts';
 import { useTrackMix } from './use-track-mix.ts';
-import { TRACK_NAME_WIDTH, useZoom } from './use-zoom.ts';
+import { useTrackNameResize } from './use-track-name-resize.ts';
+import { useZoom } from './use-zoom.ts';
 import { useWheelZoom } from './use-wheel-zoom.ts';
 import { getVersions } from './versions.ts';
 import '../jobs/jobs.css';
@@ -64,8 +65,14 @@ export function SongEditor({ detail }: SongEditorProps) {
   useHeardTracks(draft.tracks, mix);
   const transport = useSongTransport({ ...detail, song: draftSong });
   const width = useElementWidth(scrollRef);
-  const { pixelsPerBar, zoomIn, zoomOut, fit, zoomTo } = useZoom({ song: draftSong, clips, width });
-  useWheelZoom(scrollRef, { pixelsPerBar, trackNameWidth: TRACK_NAME_WIDTH, zoomTo });
+  const { trackNameWidth, resizeHandlers } = useTrackNameResize();
+  const { pixelsPerBar, zoomIn, zoomOut, fit, zoomTo } = useZoom({
+    song: draftSong,
+    clips,
+    width,
+    trackNameWidth,
+  });
+  useWheelZoom(scrollRef, { pixelsPerBar, trackNameWidth, zoomTo });
   const ticksPerBar = getTicksPerBar(song);
   function getPlaceTicks(place: BlockPlace): number {
     return getClipTicks(clips, getBlock(draft.tracks, place)?.clip ?? '', song.bpm);
@@ -92,11 +99,11 @@ export function SongEditor({ detail }: SongEditorProps) {
     songId: song.id,
     isOn: isFollowingPlayhead,
     pixelsPerSecond: (pixelsPerBar / ticksPerBar) * getTicksPerSecond(song.bpm),
-    leftInset: TRACK_NAME_WIDTH,
+    leftInset: trackNameWidth,
   });
   useEdgeScroll(scrollRef, {
     isDragging: drag.preview !== null || clipDrag.drag !== null,
-    leftInset: TRACK_NAME_WIDTH,
+    leftInset: trackNameWidth,
     onScroll: () => {
       drag.redrag();
       clipDrag.redrag();
@@ -174,6 +181,8 @@ export function SongEditor({ detail }: SongEditorProps) {
               song={shownSong}
               clips={clips}
               pixelsPerBar={pixelsPerBar}
+              trackNameWidth={trackNameWidth}
+              resizeHandlers={resizeHandlers}
               selection={selection}
               mix={mix}
               cursor={transport.cursor}

@@ -28,6 +28,7 @@ saved, playing from a cursor, the zoom, and the selected block's clip or track.
 - `TrackMeter.css`: the look of TrackMeter.tsx
 - `TrackMeter.tsx`: a track's level meter beside its name
 - `track-mix.ts`: which tracks are heard, by mute and solo
+- `track-name-width.ts`: how wide the track names are drawn, and the bounds of dragging them
 - `TrackDetails.css`: the look of TrackDetails.tsx
 - `TrackDetails.tsx`: the selected track: its name, remove
 - `TransportButtons.css`: the look of TransportButtons.tsx
@@ -45,6 +46,7 @@ saved, playing from a cursor, the zoom, and the selected block's clip or track.
 - `use-song-transport.ts`: playing the song from its cursor, stopping, moving the cursor
 - `use-timeline-pan.ts`: dragging empty space with a mouse scrolls the timeline
 - `use-track-mix.ts`: the tracks muted and soloed while editing
+- `use-track-name-resize.ts`: dragging the track names' edge resizes them, kept in the preferences
 - `use-track-meter.ts`: a track's meter moved every frame while its song plays
 - `use-wheel-zoom.ts`: scrolling over the timeline zooms it, about the moment under the pointer
 - `use-zoom.ts`: the pixels to a bar: fitted, or zoomed in and out

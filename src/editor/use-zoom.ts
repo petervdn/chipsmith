@@ -10,8 +10,6 @@ const LEAST_PIXELS = 4;
 const MOST_PIXELS = 600;
 /** How much one step zooms in or out. */
 const STEP = 1.5;
-/** The width of the track names, which the fitted bars leave free; Timeline.css draws them so. */
-export const TRACK_NAME_WIDTH = 120;
 
 /**
  * Keeps how wide a bar is drawn: fitted to the timeline's width until zoomed, then a step in or out
@@ -21,13 +19,24 @@ export const TRACK_NAME_WIDTH = 120;
  * @param timeline.song - The song.
  * @param timeline.clips - The clips the song's blocks play.
  * @param timeline.width - The timeline's width, in pixels, which the bars are fitted to.
+ * @param timeline.trackNameWidth - The width of the track names, which the fitted bars leave free.
  * @returns `pixelsPerBar`, how wide a bar is drawn; `zoomIn` and `zoomOut`, which zoom a step; and
  * `fit`, which fits the timeline to the width again; `zoomTo`, which sets the width of a bar.
  */
-export function useZoom({ song, clips, width }: { song: Song; clips: Clip[]; width: number }) {
+export function useZoom({
+  song,
+  clips,
+  width,
+  trackNameWidth,
+}: {
+  song: Song;
+  clips: Clip[];
+  width: number;
+  trackNameWidth: number;
+}) {
   const [zoomed, setZoomed] = useState<number | null>(null);
   const bars = getTimelineBars(getBlockSpans(song, clips), getTicksPerBar(song));
-  const fitted = Math.max(LEAST_PIXELS, (width - TRACK_NAME_WIDTH) / bars);
+  const fitted = Math.max(LEAST_PIXELS, (width - trackNameWidth) / bars);
   const pixelsPerBar = zoomed ?? fitted;
   function zoomTo(pixels: number): void {
     setZoomed(Math.min(MOST_PIXELS, Math.max(LEAST_PIXELS, pixels)));

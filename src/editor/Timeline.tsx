@@ -1,5 +1,5 @@
 // The song's timeline: a ruler of bars, a row per track (its name, which selects it, mute and solo,
-// and its level meter) with its blocks, and the playhead. A tap or drag on the ruler moves the play position; a tap
+// and its level meter; the names' right edge drags them wider) with its blocks, and the playhead. A tap or drag on the ruler moves the play position; a tap
 // on a block selects it; blocks are dragged to move and trim them.
 import { Plus } from 'lucide-react';
 import { useRef, useState } from 'react';
@@ -21,6 +21,7 @@ import { TrackMeter } from './TrackMeter.tsx';
 import type { TrackMix } from './track-mix.ts';
 import { isHeard } from './track-mix.ts';
 import type { Selection } from './use-song-draft.ts';
+import type { ResizeHandlers } from './use-track-name-resize.ts';
 import { usePlayheadLine } from './use-playhead-line.ts';
 import './Timeline.css';
 import { LANE_TRACK_ATTRIBUTE } from './lane-position.ts';
@@ -32,6 +33,8 @@ type TimelineProps = {
   song: Song;
   clips: Clip[];
   pixelsPerBar: number;
+  trackNameWidth: number;
+  resizeHandlers: ResizeHandlers;
   selection: Selection;
   mix: TrackMix;
   cursor: number;
@@ -53,6 +56,8 @@ type TimelineProps = {
  * @param props.song - The song, with the tracks to draw (the draft, or a drag's preview).
  * @param props.clips - The clips its blocks play.
  * @param props.pixelsPerBar - How wide a bar is drawn.
+ * @param props.trackNameWidth - How wide the track names are drawn, in pixels.
+ * @param props.resizeHandlers - The pointer handlers for the track names' right edge.
  * @param props.selection - The block or track selected, or null.
  * @param props.mix - The tracks muted and soloed; a track not heard is drawn faint.
  * @param props.cursor - Where play starts, in seconds, shown by the playhead while stopped.
@@ -72,6 +77,8 @@ export function Timeline({
   song,
   clips,
   pixelsPerBar,
+  trackNameWidth,
+  resizeHandlers,
   selection,
   mix,
   cursor,
@@ -95,11 +102,20 @@ export function Timeline({
   const bars = getTimelineBars(spans, ticksPerBar);
   const labelStep = getBarLabelStep(pixelsPerBar);
   const clipsById = new Map(clips.map((clip) => [clip.id, clip]));
-  const style: CSSProperties & Record<'--bar-width' | '--lane-width' | '--row-height', string> = {
+  const style: CSSProperties &
+    Record<'--bar-width' | '--lane-width' | '--row-height' | '--track-name-width', string> = {
     '--bar-width': `${pixelsPerBar}px`,
     '--lane-width': `${bars * pixelsPerBar}px`,
     '--row-height': `${ROW_HEIGHT}px`,
+    '--track-name-width': `${trackNameWidth}px`,
   };
+  const nameEdge = (
+    <span
+      className="timeline-name-edge"
+      {...resizeHandlers}
+      data-tooltip="drag to make the track names wider or narrower"
+    />
+  );
   return (
     <div className="timeline" style={style}>
       <div className="timeline-row timeline-ruler-row">
@@ -113,6 +129,7 @@ export function Timeline({
           >
             <Plus />
           </button>
+          {nameEdge}
         </div>
         <div
           className="timeline-ruler"
@@ -181,6 +198,7 @@ export function Timeline({
                 </button>
               </span>
               <TrackMeter songId={song.id} trackId={track.id} />
+              {nameEdge}
             </div>
             <div
               className="timeline-lane"

@@ -1,10 +1,12 @@
 /**
  * What this browser keeps of the page's settings, in localStorage (Zustand's persist; components
  * never touch storage, docs/adr/0017): the mute switch for testing, the look the page is in
- * (looks.ts), the player's volume, and whether the editor follows the playhead.
+ * (looks.ts), the player's volume, whether the editor follows the playhead, and how wide its track
+ * names are.
  */
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
+import { TRACK_NAME_WIDTH } from '../editor/track-name-width.ts';
 import { LOUDEST_DB } from '../player/volume.ts';
 
 /** The preferences and how to change them. */
@@ -17,10 +19,13 @@ type PreferencesStore = {
   volume: number;
   /** Whether the editor's timeline scrolls along with the playhead while the song plays. */
   isFollowingPlayhead: boolean;
+  /** How wide the editor's track names are drawn, in pixels (editor/track-name-width.ts). */
+  trackNameWidth: number;
   setMuted: (isMuted: boolean) => void;
   setLookId: (lookId: string) => void;
   setVolume: (volume: number) => void;
   setFollowingPlayhead: (isFollowingPlayhead: boolean) => void;
+  setTrackNameWidth: (trackNameWidth: number) => void;
 };
 
 /**
@@ -44,16 +49,19 @@ export const usePreferencesStore = create<PreferencesStore>()(
       setVolume: (volume) => set({ volume }),
       isFollowingPlayhead: true,
       setFollowingPlayhead: (isFollowingPlayhead) => set({ isFollowingPlayhead }),
+      trackNameWidth: TRACK_NAME_WIDTH,
+      setTrackNameWidth: (trackNameWidth) => set({ trackNameWidth }),
     }),
     {
       name: 'chiptune.preferences',
       version: 1,
       storage: createJSONStorage(() => localStorage),
-      partialize: ({ isMuted, lookId, volume, isFollowingPlayhead }) => ({
+      partialize: ({ isMuted, lookId, volume, isFollowingPlayhead, trackNameWidth }) => ({
         isMuted,
         lookId,
         volume,
         isFollowingPlayhead,
+        trackNameWidth,
       }),
     },
   ),
