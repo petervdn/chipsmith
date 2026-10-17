@@ -19,8 +19,11 @@
   cursor: pointer;
 }
 
+/* a button that cannot be pressed: no fill, only its outline, its symbol faint */
 .song-editor-bar button:disabled {
+  background: transparent;
   color: var(--muted);
+  opacity: 0.4;
   cursor: default;
 }
 
