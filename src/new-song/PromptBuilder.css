@@ -1,6 +1,6 @@
 /* The look of PromptBuilder.tsx: a card the width of the prompt, its bar always shown and the
-   builder under it while open; per part a small label above its lock and menu, the lock right of
-   the menu, in two columns of equal width on a wide screen. */
+   builder under it while open: the sentence large at its top; per part a small label above its
+   lock and menu, the lock right of the menu, in two columns of equal width on a wide screen. */
 
 .prompt-builder {
   overflow: hidden;
@@ -127,16 +127,30 @@
   }
 }
 
+/* the sentence, the block's point, large at the top, with Roll and Use at its right */
+.prompt-builder-result {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 12px 16px;
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: var(--border-width) solid var(--line);
+}
+
 .prompt-builder-text {
-  margin: 12px 0 0;
-  font-style: italic;
+  flex: 1 1 280px;
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.35;
 }
 
 .prompt-builder-actions {
-  margin-top: 12px;
   display: flex;
-  justify-content: space-between;
+  flex: none;
   gap: 8px;
+  margin-left: auto;
 }
 
 .prompt-builder-actions button {

@@ -1,8 +1,8 @@
 // The prompt builder under the prompt box: a bar the width of the box that opens and closes it, and
-// in it a row per part of a prompt (its value to pick, a lock),
-// 🎲 Roll for the unlocked parts and "Use as prompt" (above the sentence, so they stay put as it
-// changes length), and the sentence they make. "Use as prompt" puts the sentence in the box; the box
-// is written to only by that button, so what is typed there afterwards is the box's own.
+// in it the sentence the parts make, large at the top, with 🎲 Roll for the unlocked parts and Use ↑
+// at its right (beside it, so they stay put as it changes length), and under it a row per part of a
+// prompt (its value to pick, a lock). Use puts the sentence in the box; the box is written to only
+// by that button, so what is typed there afterwards is the box's own.
 import { LockIcon } from './LockIcon.tsx';
 import { PROMPT_PARTS } from './random-prompt.ts';
 import { usePromptBuilder } from './use-prompt-builder.ts';
@@ -17,7 +17,7 @@ type PromptBuilderProps = { isOpen: boolean; onToggle: () => void; onUse: (text:
  * @param props - The component's props.
  * @param props.isOpen - Whether it is open.
  * @param props.onToggle - Called when the bar is pressed.
- * @param props.onUse - Called with the sentence when "Use as prompt" is pressed.
+ * @param props.onUse - Called with the sentence when Use is pressed.
  * @returns The builder's section element.
  */
 export function PromptBuilder({ isOpen, onToggle, onUse }: PromptBuilderProps) {
@@ -39,6 +39,22 @@ export function PromptBuilder({ isOpen, onToggle, onUse }: PromptBuilderProps) {
       </button>
       {isOpen && (
         <div className="prompt-builder-body">
+          <div className="prompt-builder-result">
+            <p className="prompt-builder-text">{text}</p>
+            <div className="prompt-builder-actions">
+              <button type="button" onClick={roll} title="pick the unlocked parts again">
+                🎲 Roll
+              </button>
+              <button
+                type="button"
+                className="is-primary"
+                onClick={() => onUse(text)}
+                title="use as the prompt: put this sentence in the box above"
+              >
+                Use ↑
+              </button>
+            </div>
+          </div>
           <div className="prompt-builder-rows">
             {PROMPT_PARTS.map(({ name, label, values }) => {
               const isLocked = locked.includes(name);
@@ -70,15 +86,6 @@ export function PromptBuilder({ isOpen, onToggle, onUse }: PromptBuilderProps) {
               );
             })}
           </div>
-          <div className="prompt-builder-actions">
-            <button type="button" onClick={roll} title="pick the unlocked parts again">
-              🎲 Roll
-            </button>
-            <button type="button" className="is-primary" onClick={() => onUse(text)}>
-              Use as prompt ↑
-            </button>
-          </div>
-          <p className="prompt-builder-text">{text}</p>
         </div>
       )}
     </section>
