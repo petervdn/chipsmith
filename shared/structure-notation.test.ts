@@ -15,6 +15,14 @@ test("A8 A'8 B8 A8 C16(climax) reads and writes back", () => {
   );
 });
 
+test('a part again in other bars is a variation, not a repeat', () => {
+  const sections = readNotation('A8 B8 A4 A8').sections ?? [];
+  assert.deepEqual(
+    sections.map((_section, i) => getRelation(sections, i)),
+    ['new', 'new', 'variation', 'repeat'],
+  );
+});
+
 test('a token that does not read is named', () => {
   assert.equal(readNotation('A8 X!9').error, '"X!9" is not a section (like A8, A\'8, C16(climax))');
   assert.equal(readNotation('A0').error, '"A0": bars are 1 to 256');

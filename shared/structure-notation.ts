@@ -73,17 +73,17 @@ export function writeNotation(sections: Section[]): string {
  *
  * @param sections - The structure's sections.
  * @param index - The section's place among them.
- * @returns `new` for a part first heard, `variation` for a variant first heard, `repeat` for a
- *   letter and variant heard before.
+ * @returns `new` for a part first heard, `variation` for a variant first heard or a section heard
+ *   before in other bars, `repeat` for a letter and variant heard before in as many bars.
  */
 export function getRelation(sections: Section[], index: number): SectionRelation {
   const section = sections[index];
   if (!section) return 'new';
-  const isHeard = sections
+  const heard = sections
     .slice(0, index)
-    .some((earlier) => earlier.letter === section.letter && earlier.variant === section.variant);
-  if (isHeard) return 'repeat';
-  return section.variant === 0 ? 'new' : 'variation';
+    .filter((earlier) => earlier.letter === section.letter && earlier.variant === section.variant);
+  if (heard.some((earlier) => earlier.bars === section.bars)) return 'repeat';
+  return section.variant === 0 && heard.length === 0 ? 'new' : 'variation';
 }
 
 /**

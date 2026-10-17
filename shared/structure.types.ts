@@ -1,9 +1,9 @@
 /**
  * A song's structure: the sections it is made of, in order, as a prompt asks for them. A section is a
  * part by its letter (A, B, C…), and a variant of it (0 the part itself, 1 its first variation A′, 2
- * the second A″); the same letter and variant again is that section repeated. A structure can be
- * saved and named (structures/<id>/structure.json), and what was sent with a prompt is copied into
- * the job and the songs it made.
+ * the second A″); the same letter and variant again is that section repeated (in other bars, a
+ * variation of it). A structure can be saved and named (structures/<id>/structure.json), and what
+ * was sent with a prompt is copied into the job and the songs it made.
  */
 
 /** A section of a song. */
