@@ -1,6 +1,7 @@
 // A job's steps: while it runs, its current step (labelled, with a spinner, its text shimmering),
 // and on demand every step, each with its time, a bar of its share of the job's time, and the
-// tokens Claude wrote in it before its text.
+// tokens Claude wrote in it before its text; the last is the current step, Claude's live one while
+// it is in the middle of something that is not a step yet.
 import { useState } from 'react';
 import type { Job } from '../../shared/job.types.ts';
 import { formatSeconds, formatTokenCount, formatTokens } from '../format.ts';
@@ -27,6 +28,7 @@ type JobStepsProps = {
  */
 export function JobSteps({ job, isRunning, elapsed, now }: JobStepsProps) {
   const [isShowingAll, setShowingAll] = useState(false);
+  const live = isRunning && job.now ? getStepText(job.now) : '';
   const lengths = getStepLengths(
     job.notes,
     job.created,
@@ -48,7 +50,9 @@ export function JobSteps({ job, isRunning, elapsed, now }: JobStepsProps) {
           onClick={() => setShowingAll(!isShowingAll)}
           aria-expanded={isShowingAll}
         >
-          {isShowingAll ? 'Hide the steps' : `Show all steps (${job.notes.length})`}
+          {isShowingAll
+            ? 'Hide the steps'
+            : `Show all steps (${job.notes.length + (live ? 1 : 0)})`}
         </button>
       </div>
       {isShowingAll && (
@@ -56,7 +60,7 @@ export function JobSteps({ job, isRunning, elapsed, now }: JobStepsProps) {
           {job.notes.map((note, i) => {
             const length = lengths[i];
             const { tokens } = note;
-            const isCurrent = isRunning && i === job.notes.length - 1;
+            const isCurrent = isRunning && !live && i === job.notes.length - 1;
             return (
               <li key={`${note.at}-${i}`} className={isCurrent ? 'is-current' : ''}>
                 <span className="job-steps-time">
@@ -87,6 +91,19 @@ export function JobSteps({ job, isRunning, elapsed, now }: JobStepsProps) {
               </li>
             );
           })}
+          {live && (
+            <li className="is-current">
+              <span className="job-steps-time" />
+              <span className="job-steps-length" />
+              <span className="job-steps-tokens">
+                {job.nowTokens ? formatTokenCount(job.nowTokens) : ''}
+              </span>
+              <span className="job-steps-text">
+                <span className="jobs-spinner" aria-label="in progress" />
+                <span className="job-steps-words">{live}</span>
+              </span>
+            </li>
+          )}
         </ol>
       )}
     </div>
