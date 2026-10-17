@@ -59,11 +59,7 @@ export function TopBar({ route, jobs }: TopBarProps) {
           Jobs <span className="top-bar-count">{getCountText(jobCount)}</span>
         </a>
       </nav>
-      <a
-        href="/new"
-        className={`top-bar-new${route.page === 'new' ? ' is-on' : ''}`}
-        title="write a prompt for a new song"
-      >
+      <a href="/new" className="top-bar-new" title="write a prompt for a new song">
         + New song
       </a>
       <LookSwitcher />
