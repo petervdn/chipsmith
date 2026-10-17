@@ -8,10 +8,13 @@ import type { SongDetail } from '../../shared/api.types.ts';
 import { getEnd, getStretches } from '../playback/schedule.ts';
 import { playStretches, stopPlaying, unlockAudio } from '../playback/audio-engine.ts';
 
+/** Whether the player is stopped, loading a song or playing it. */
+export type PlayerMode = 'stopped' | 'loading' | 'playing';
+
 /** What the player is doing, and how to change it. */
 type PlayerStore = {
   song: SongDetail | null;
-  mode: 'stopped' | 'loading' | 'playing';
+  mode: PlayerMode;
   /** How much of the song's audio has loaded, 0 to 1, while loading. */
   loaded: number;
   /** Where play starts or started, in seconds. */

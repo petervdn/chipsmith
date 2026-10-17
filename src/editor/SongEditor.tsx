@@ -21,6 +21,7 @@ import type { BlockPlace } from './song-edits.ts';
 import { ROW_HEIGHT, Timeline } from './Timeline.tsx';
 import { getBlockSpans, getClipTicks, getSongSplitCount, getTicksPerBar } from './timeline.ts';
 import { TrackDetails } from './TrackDetails.tsx';
+import { TransportButtons } from './TransportButtons.tsx';
 import { useBlockDrag } from './use-block-drag.ts';
 import { useEditorKeys } from './use-editor-keys.ts';
 import { useElementWidth } from './use-element-width.ts';
@@ -99,19 +100,13 @@ export function SongEditor({ detail }: SongEditorProps) {
   return (
     <div className="song-editor">
       <div className="song-editor-bar">
-        <ControlGroup label="play">
-          <button
-            type="button"
-            className={`song-editor-play${transport.mode === 'stopped' ? '' : ' is-on'}`}
-            onClick={transport.togglePlaying}
-            disabled={isWaitingForAudio}
-            data-tooltip={
-              transport.mode === 'stopped' ? 'play from the cursor (Space)' : 'stop (Space)'
-            }
-          >
-            {transport.mode === 'stopped' ? '▶' : transport.mode === 'loading' ? '…' : '■'}
-          </button>
-        </ControlGroup>
+        <TransportButtons
+          mode={transport.mode}
+          isPaused={transport.isPaused}
+          isWaitingForAudio={isWaitingForAudio}
+          onStop={transport.stop}
+          onTogglePlaying={transport.togglePlaying}
+        />
         <ControlGroup label="edit">
           <button
             type="button"

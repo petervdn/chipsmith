@@ -24,6 +24,8 @@ saved, playing from a cursor, the zoom, and the selected block's clip or track.
 - `track-mix.ts`: which tracks are heard, by mute and solo
 - `TrackDetails.css`: the look of TrackDetails.tsx
 - `TrackDetails.tsx`: the selected track: its name, remove
+- `TransportButtons.css`: the look of TransportButtons.tsx
+- `TransportButtons.tsx`: ■ stop, and ▶ / ❚❚ play or pause on one button
 - `use-block-drag.ts`: dragging blocks: a mouse at once, a finger after holding still
 - `use-editor-keys.ts`: the editor's keys: Space, Delete, ⌘Z, ⇧⌘Z, ⌘S, Escape
 - `use-element-width.ts`: an element's width, kept current

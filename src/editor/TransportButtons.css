@@ -1,0 +1,12 @@
+/* The look of TransportButtons.tsx: the editor bar's buttons, the symbols a little larger, play lit
+   while it plays. */
+
+.transport-buttons-button {
+  font-size: 1rem;
+}
+
+.song-editor-bar .transport-buttons-button.is-on {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--on-accent);
+}

@@ -24,16 +24,6 @@
   cursor: default;
 }
 
-.song-editor-play {
-  font-size: 1rem;
-}
-
-.song-editor-bar .song-editor-play.is-on {
-  border-color: var(--accent);
-  background: var(--accent);
-  color: var(--on-accent);
-}
-
 .song-editor-grid {
   padding: 0 8px;
 }

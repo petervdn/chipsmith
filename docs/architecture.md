@@ -66,7 +66,7 @@ page but Home starts with breadcrumbs, the last its heading (Songs › Seven Tee
   ★ / ✕, and ⌄ to open the row: its prompt (copy, prompt again), its facts and its prompt links.
 - **Song** (`/songs/<id>`): the song opened in the editor (`src/editor/`): a timeline of its tracks
   (a ruler of bars, each block drawn as the slice of its clip's waveform it plays, repeats after it,
-  a playhead), ▶ / ■ from a cursor set on the ruler, zoom, and the selected block's clip with its
+  a playhead), ▶ / ❚❚ from a cursor set on the ruler and ■ back to it, zoom, and the selected block's clip with its
   prompt and versions. Editing (0022): drag a block to move it (to another track too), its edges to
   trim it, snapped to a grid; repeat, duplicate, untrim, remove; add, rename and remove tracks; mute
   and solo (not saved); undo and redo; Save or Revert. Split into channels (a song that is one whole clip

@@ -1,4 +1,4 @@
-// The editor's keys: Space plays or stops, Delete removes the selected block, ⌘Z / ⇧⌘Z undo and
+// The editor's keys: Space plays or pauses, Delete removes the selected block, ⌘Z / ⇧⌘Z undo and
 // redo, ⌘S saves, Escape clears the selection. Keys typed into a field are left to the field.
 import { useEffect, useRef } from 'react';
 
