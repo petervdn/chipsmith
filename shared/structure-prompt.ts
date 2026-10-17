@@ -56,7 +56,7 @@ export function getStructureLines({ name, sections }: SentStructure): string[] {
   });
   return [
     '',
-    `Structure "${name}" (${writeNotation(sections)}, ${bars} bars in all), to follow for every song; a letter is a part, a ′ a variation of it:`,
+    `Structure "${name}" (${writeNotation(sections)}, ${bars} bars in all), to follow for every song; where the prompt itself says otherwise, the prompt wins; a letter is a part, a ′ a variation of it:`,
     ...lines,
   ];
 }

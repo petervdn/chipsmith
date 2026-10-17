@@ -17,7 +17,7 @@ test('a line per section, with its bars and how it stands to those before', () =
   );
   assert.deepEqual(getStructureLines({ name: 'Test', sections: withEnergy }), [
     '',
-    `Structure "Test" (A8(intro) A'8 B4 A8, 28 bars in all), to follow for every song; a letter is a part, a ′ a variation of it:`,
+    `Structure "Test" (A8(intro) A'8 B4 A8, 28 bars in all), to follow for every song; where the prompt itself says otherwise, the prompt wins; a letter is a part, a ′ a variation of it:`,
     '1. A, bars 1–8 (8 bars): a new part; intro.',
     '2. A′, bars 9–16 (8 bars): a variation of A: the same material, changed.',
     "3. B, bars 17–20 (4 bars): a new part; energy 5 of 5; only drums; led into from the section before, at its end, with a full-bar drum fill, the bass walking into the new section's root.",

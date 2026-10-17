@@ -33,6 +33,7 @@ A prompt may send a structure as a numbered line per section: its name, its bars
   walking in, a borrowed chord, a pickup…): play it at the end of the section before, in its last
   bar or less, so it stays with that section when the song is cut. Where none is said, it is yours
   to choose, and a plain cut is fine.
+- The prompt's own words win where they differ (an ending, a loop, a length).
 - Without a structure, choose a form that fits the piece and the length.
 
 ## The harmony
