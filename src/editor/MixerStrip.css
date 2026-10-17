@@ -1,0 +1,68 @@
+/* The look of MixerStrip.tsx: a narrow upright strip, a cap in its track's colour, the fader beside
+   the meter at the same height; faint when not heard, raised when selected, as its row is. */
+
+.mixer-strip {
+  position: relative;
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  width: 72px;
+  padding: 10px 4px 8px;
+  border-right: var(--border-width) solid var(--line);
+}
+
+.mixer-strip::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 4px;
+  background: var(--track-color);
+}
+
+.mixer-strip.is-selected {
+  background: var(--raised);
+}
+
+/* the name on two lines at most, so the strips stay narrow */
+.mixer-strip-name {
+  display: -webkit-box;
+  min-height: 2.4em;
+  max-width: 100%;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  background: none;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: center;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.mixer-strip-levels {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  height: 140px;
+}
+
+.mixer-strip.is-unheard .mixer-strip-levels {
+  opacity: 0.4;
+}
+
+.mixer-strip-levels > .fader {
+  height: 100%;
+}
+
+.mixer-strip-value {
+  color: var(--muted);
+  font-size: 0.6875rem;
+  font-variant-numeric: tabular-nums;
+}

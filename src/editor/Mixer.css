@@ -1,0 +1,46 @@
+/* The look of Mixer.tsx: the strips side by side in a card as the timeline's, scrolling sideways
+   when they do not fit; the master at the end, set apart. */
+
+.mixer {
+  display: flex;
+  margin-top: 8px;
+  overflow-x: auto;
+  border: var(--border-width) solid var(--line);
+  border-radius: var(--radius);
+  background: var(--card);
+}
+
+.mixer-master {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  width: 72px;
+  margin-left: auto;
+  padding: 10px 4px 8px;
+  border-left: var(--border-width) solid var(--line);
+}
+
+.mixer-master-name {
+  min-height: 2.4em;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.mixer-master-level {
+  display: flex;
+  justify-content: center;
+  height: 140px;
+}
+
+.mixer-master-level > .fader {
+  height: 100%;
+}
+
+.mixer-master-value {
+  color: var(--muted);
+  font-size: 0.6875rem;
+  font-variant-numeric: tabular-nums;
+}

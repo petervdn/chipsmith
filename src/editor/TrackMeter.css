@@ -1,13 +1,13 @@
-/* The look of TrackMeter.tsx: an upright bar at the right of a track's name, its level and peak mark
-   placed by `--level` and `--peak` (shares of its height) as use-track-meter.ts sets them. */
+/* The look of TrackMeter.tsx: an upright bar, its level and peak mark placed by `--level` and
+   `--peak` (shares of its height) as use-track-meter.ts sets them; where it stands and how tall is
+   the look of what holds it. */
 
 .track-meter {
   --level: 0;
   --peak: 0;
-  position: absolute;
-  top: 6px;
-  right: 10px;
-  bottom: 6px;
+  position: relative;
+  display: block;
+  flex: none;
   width: 6px;
   overflow: hidden;
   background: var(--raised);

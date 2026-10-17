@@ -1,5 +1,5 @@
-// A track's level meter: a thin upright bar beside its name, lit from the bottom to the level it plays
-// at, with a peak mark above it.
+// A track's level meter: a thin upright bar, beside its name and in the mixer, lit from the bottom to
+// the level it plays at, with a peak mark above it.
 import { useRef } from 'react';
 import { useTrackMeter } from './use-track-meter.ts';
 import './TrackMeter.css';

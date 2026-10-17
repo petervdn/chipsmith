@@ -34,6 +34,7 @@ import { useSongDraft } from './use-song-draft.ts';
 import { useHeardTracks } from './use-heard-tracks.ts';
 import { useSongTransport } from './use-song-transport.ts';
 import { useLoop } from './use-loop.ts';
+import { Mixer } from './Mixer.tsx';
 import { useMetronome } from './use-metronome.ts';
 import { useTimelinePan } from './use-timeline-pan.ts';
 import { useTrackMix } from './use-track-mix.ts';
@@ -102,6 +103,10 @@ export function SongEditor({ detail }: SongEditorProps) {
   const pan = useTimelinePan(scrollRef);
   const isFollowingPlayhead = usePreferencesStore((state) => state.isFollowingPlayhead);
   const isStructureShown = usePreferencesStore((state) => state.isStructureShown);
+  const isMixerOpen = usePreferencesStore((state) => state.isMixerOpen);
+  function setVolume(trackId: string, volume: number): void {
+    draft.changeTracks((tracks) => setTrackVolume(tracks, trackId, volume), `volume ${trackId}`);
+  }
   const structure = song.structure?.sections.length ? song.structure.sections : null;
   useFollowPlayhead(scrollRef, {
     songId: song.id,
@@ -214,17 +219,24 @@ export function SongEditor({ detail }: SongEditorProps) {
               wasDragged={() => drag.wasDragged() || pan.wasPanned()}
               onToggleMute={toggleMute}
               onToggleSolo={toggleSolo}
-              onVolume={(trackId, volume) =>
-                draft.changeTracks(
-                  (tracks) => setTrackVolume(tracks, trackId, volume),
-                  `volume ${trackId}`,
-                )
-              }
+              onVolume={setVolume}
               onAddTrack={() => draft.changeTracks(addTrack)}
               onPanStart={pan.startPan}
               waitingClipIds={waitingClipIds}
             />
           </div>
+          {isMixerOpen && (
+            <Mixer
+              songId={song.id}
+              tracks={draft.tracks}
+              mix={mix}
+              selectedTrackId={selection?.kind === 'track' ? selection.trackId : null}
+              onSelect={(trackId) => draft.select({ kind: 'track', trackId })}
+              onVolume={setVolume}
+              onToggleMute={toggleMute}
+              onToggleSolo={toggleSolo}
+            />
+          )}
           {place && span && (
             <BlockDetails
               song={draftSong}

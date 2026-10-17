@@ -22,21 +22,27 @@ saved, playing from a cursor, the zoom, and the selected block's clip or track.
 - `loop-range.ts`: the loop in bars: the whole song's, where a drag puts it, and in seconds
 - `LoopLane.css`: the look of LoopLane.tsx
 - `LoopLane.tsx`: the loop as a row under the ruler while looping: drag its edges, move it, draw one
+- `Mixer.css`: the look of Mixer.tsx
+- `Mixer.tsx`: the mixer under the timeline: a strip per track and the master (the player's volume)
+- `MixerStrip.css`: the look of MixerStrip.tsx
+- `MixerStrip.tsx`: a track's strip: its name, fader beside its meter, level, M and S
 - `MetronomeControls.css`: the look of MetronomeControls.tsx
 - `MetronomeControls.tsx`: the metronome's switch and its volume slider, in the editor bar
 - `structure-lane.ts`: where the structure a song was asked for lies on its timeline, from its start
 - `StructureLane.css`: the look of StructureLane.tsx
 - `StructureLane.tsx`: the structure a song was asked for, as a thin row of tiles above its first track
 - `SongEditor.css`: the look of SongEditor.tsx
-- `SongEditor.tsx`: the editor: its bar of controls, the timeline, the song's clips, the selected block's or track's details
+- `SongEditor.tsx`: the editor: its bar of controls, the timeline, the mixer, the song's clips, the selected block's or track's details
 - `Timeline.css`: the look of Timeline.tsx
 - `timeline.ts`: where blocks lie in ticks, the bars shown, which bars are numbered
 - `Timeline.tsx`: the ruler, the structure when shown, a row per track with its blocks, room under them to drag, the playhead
 - `TimelineBlock.css`: the look of TimelineBlock.tsx
 - `TimelineBlock.tsx`: a block and its repeats on the timeline, dragged and trimmed
 - `track-meter.ts`: how a track's level meter moves: up at once, eased down, its peak mark held
+- `TrackMixButtons.css`: the look of TrackMixButtons.tsx
+- `TrackMixButtons.tsx`: a track's M and S, in its row and in the mixer
 - `TrackMeter.css`: the look of TrackMeter.tsx
-- `TrackMeter.tsx`: a track's level meter beside its name
+- `TrackMeter.tsx`: a track's level meter, beside its name and in the mixer
 - `track-height.ts`: how tall the track rows are drawn: where they start, the slider's bounds, room for a fader
 - `track-mix.ts`: which tracks are heard, by mute and solo
 - `track-name-width.ts`: how wide the track names are drawn, and the bounds of dragging them

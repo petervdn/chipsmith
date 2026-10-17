@@ -105,47 +105,18 @@
   cursor: pointer;
 }
 
-.timeline-track-mix {
-  display: flex;
-  gap: 3px;
-}
-
 /* the track's fader, as wide as its name */
 .timeline-track-name > .fader {
   width: 100%;
   height: 16px;
 }
 
-.timeline-track-mix button {
-  width: 24px;
-  height: 20px;
-  padding: 0;
-  border: var(--border-width) solid var(--line);
-  border-radius: calc(var(--radius) * 0.5);
-  background: var(--card);
-  color: var(--muted);
-  font-size: 0.6875rem;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.timeline-track-mix button.is-on {
-  border-color: var(--fg);
-  background: var(--fg);
-  color: var(--bg);
-}
-
-.timeline-track-mix button.is-solo.is-on {
-  border-color: var(--keep);
-  background: var(--keep);
-  color: var(--on-accent);
-}
-
-@media (pointer: coarse) {
-  .timeline-track-mix button {
-    width: 30px;
-    height: 24px;
-  }
+/* the track's meter, upright at the right of its name */
+.timeline-track-name > .track-meter {
+  position: absolute;
+  top: 6px;
+  right: 10px;
+  bottom: 6px;
 }
 
 .timeline-row.is-unheard .timeline-lane {

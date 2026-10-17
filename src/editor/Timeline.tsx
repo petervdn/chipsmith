@@ -26,6 +26,7 @@ import { Fader } from './Fader.tsx';
 import { FADER_LEAST_TRACK_HEIGHT } from './track-height.ts';
 import { TimelineBlock } from './TimelineBlock.tsx';
 import { TrackMeter } from './TrackMeter.tsx';
+import { TrackMixButtons } from './TrackMixButtons.tsx';
 import type { TrackMix } from './track-mix.ts';
 import { isHeard } from './track-mix.ts';
 import type { Selection } from './use-song-draft.ts';
@@ -214,26 +215,12 @@ export function Timeline({
               >
                 {track.name}
               </button>
-              <span className="timeline-track-mix">
-                <button
-                  type="button"
-                  className={mix.muted.includes(track.id) ? 'is-on' : ''}
-                  onClick={() => onToggleMute(track.id)}
-                  aria-pressed={mix.muted.includes(track.id)}
-                  data-tooltip="mute (while editing, not saved)"
-                >
-                  M
-                </button>
-                <button
-                  type="button"
-                  className={`is-solo${mix.soloed.includes(track.id) ? ' is-on' : ''}`}
-                  onClick={() => onToggleSolo(track.id)}
-                  aria-pressed={mix.soloed.includes(track.id)}
-                  data-tooltip="solo (while editing, not saved)"
-                >
-                  S
-                </button>
-              </span>
+              <TrackMixButtons
+                isMuted={mix.muted.includes(track.id)}
+                isSoloed={mix.soloed.includes(track.id)}
+                onToggleMute={() => onToggleMute(track.id)}
+                onToggleSolo={() => onToggleSolo(track.id)}
+              />
               {trackHeight >= FADER_LEAST_TRACK_HEIGHT && (
                 <Fader
                   volume={track.volume}

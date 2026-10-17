@@ -1,0 +1,39 @@
+/* The look of TrackMixButtons.tsx: two small square buttons, M dark and S in the keeper's colour
+   while on; larger under a finger. */
+
+.track-mix-buttons {
+  display: flex;
+  gap: 3px;
+}
+
+.track-mix-buttons button {
+  width: 24px;
+  height: 20px;
+  padding: 0;
+  border: var(--border-width) solid var(--line);
+  border-radius: calc(var(--radius) * 0.5);
+  background: var(--card);
+  color: var(--muted);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.track-mix-buttons button.is-on {
+  border-color: var(--fg);
+  background: var(--fg);
+  color: var(--bg);
+}
+
+.track-mix-buttons button.is-solo.is-on {
+  border-color: var(--keep);
+  background: var(--keep);
+  color: var(--on-accent);
+}
+
+@media (pointer: coarse) {
+  .track-mix-buttons button {
+    width: 30px;
+    height: 24px;
+  }
+}
