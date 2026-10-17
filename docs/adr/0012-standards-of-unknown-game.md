@@ -4,7 +4,7 @@
 - Date: 2026-10-16
 
 ## Context
-The user's other project, unknown-game, has a worked-out TypeScript setup and code guidelines: strict
+Another project of the same author, unknown-game, has a worked-out TypeScript setup and code guidelines: strict
 compiler flags, oxlint, Prettier, Node's own test runner, a file-length limit held by a test, and ADRs.
 
 ## Decision

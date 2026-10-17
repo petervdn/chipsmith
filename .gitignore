@@ -8,3 +8,6 @@ dist/
 
 # local settings (see .env.example)
 .env
+
+# personal notes for Claude Code in this project
+CLAUDE.local.md

@@ -31,8 +31,16 @@ cut to what applies. A rule that is not followed is taken out, not left to rot.
 
 - **A component is a function declaration**, exported by name, its props a `type` named
   `<Component>Props` and destructured in the signature.
-- **A component shows; it does not work things out.** Filtering, sorting by a rule, lengths, routes:
-  a function in a module, called from the component.
+- **A component orchestrates the page; it holds no business logic.** It takes values and handlers
+  from hooks and lays them out: the markup, which handler goes on which control, and state that is
+  only the view's (a row open, a copy just done). What it would work out goes to one of two places:
+  - **a function in a module that knows no page**, tested beside it: filtering, sorting by a rule,
+    lengths, text made from data, routes ("Logic apart from the page");
+  - **a hook**, for logic that needs React: queries and mutations used together by a rule, effects
+    and timers, the address, a store's actions in turn. It calls those functions and gives the
+    component values and handlers ready to use.
+- **A hook is a subject of its own**: `use-<what>.ts` beside what uses it (`use-list-filter.ts`), not
+  inside a component's file.
 - **What a component keeps is declared at its head** (its `useState`s), before what it does.
 
 ## State

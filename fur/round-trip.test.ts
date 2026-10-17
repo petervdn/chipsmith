@@ -1,5 +1,5 @@
-// The check of the port (docs/adr/0002): the examples' modules, written by the Python tools, read
-// with read.ts and written again with write.ts come out byte for byte the same.
+// The check of the port (docs/adr/0002): the examples' modules (their patterns and instruments made by
+// the Python tools) read with read.ts and written again with write.ts come out byte for byte the same.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, readdirSync } from 'node:fs';

@@ -1,16 +1,16 @@
 # Making songs from a prompt
 
-For Claude running a job (started from the app; the user is not at the terminal). The job's prompt names
-its id, `jNNNN`, the script's file (`<data>/jobs/<id>/script.ts`), the data folder (`<data>`, holding
-`songs/` and `clips/`) and how the script imports the project's modules. Your work is that one file, a
+For Claude running a job (started from the app; the user is not at the terminal). The job's prompt
+names its id, `jNNNN`, the script's file (`<data>/jobs/<id>/script.ts`), the data folder (`<data>`,
+holding `songs/`, `clips/` and `guidance/`) and how the script imports the project's modules. Your work is that one file, a
 script that makes the songs. The app builds it, renders every song and puts them in the songs list; you
 do not write clips or songs. You run in the project folder; so do the commands below.
 
 ## What to do
 
-1. Read `CLAUDE.md` (musical direction, working rules) and the section of
-   `notes/feedback-by-style.md` for the style asked. Facts about Furnace, sound recipes and
-   composition lessons: `notes/furnace-howto.md` (written for the old Python tools; the facts hold).
+1. Read `CLAUDE.md` (working rules) and the user's guidance in `<data>/guidance/`, when there is
+   any: their taste (`taste.md`) and, for the style asked, its section of their feedback per style.
+   It wins over any default of yours. Facts about Furnace and sound recipes: `notes/furnace-facts.md`.
 2. Before each step, say in one short line what you are about to do. The user sees these lines live.
 3. Write the script, starting from `make/example-script.ts`.
 4. Check it: `node make/check-script.ts <data>/jobs/<id>/script.ts`. It builds and renders every song once

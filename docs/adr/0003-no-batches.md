@@ -5,7 +5,7 @@
 
 ## Context
 An exploration used to write a batch: a folder of rendered files, listened to in a player. A file
-The user liked was then imported into the song editor, which cut it into parts. So the same music lived
+the user liked was then imported into the song editor, which cut it into parts. So the same music lived
 as a render in a batch and as parts in a song, under different names, in different lists.
 
 ## Decision

@@ -30,6 +30,7 @@ clips/<id>/audio.flac     its audio (rendered from source.fur when the server st
 clips/<id>/source.fur     its own Furnace module
 clips/<id>/script.ts      its own copy of the script that wrote it
 songs/<id>/song.json      a song's arrangement (shared/song.types.ts)
+guidance/*.md             the user's taste and feedback, read by the composing Claude
 ```
 
 The files are the data (0006). Ids are a letter and a number: `c0001` for clips, `s0001` for songs.
@@ -77,8 +78,7 @@ top bar's links open a list unfiltered, and the back button returns to a filtere
   the defaults (README.md, "Settings"). `config/programs.ts` checks the programs when the server
   starts (each run once for its version; `GET`/`POST /api/programs`); a missing one shows as a bar on
   every page (`src/ProgramWarning.tsx`). Clips record the Furnace version read from Furnace itself.
-- Vite + TypeScript, strict (0012). `npm run dev` serves on port 6502, on the local network too. The
-  old player (in the user's copy of the old project, `../chiptune-archive/player`) keeps port 8765.
+- Vite + TypeScript, strict (0012). `npm run dev` serves on port 6502, on the local network too.
 - `npm test`: Node's own runner reads the TypeScript as it is. Imports name their file with its
   extension (`./store.ts`), so Vite, Node and the tests resolve them alike. `test/layout.test.ts` holds the source's map (a README in
   every folder, a comment at the head of every file, no file over 400 lines).
@@ -90,7 +90,7 @@ top bar's links open a list unfiltered, and the back button returns to a filtere
 layout, one subsong, NES / SCC / SCC+): `write.ts` lays a module out as Furnace does, `read.ts` reads
 one back, `instrument.ts` and `pattern.ts` build the blocks, `dump.ts` shows a module as text. It is
 the port of the Python tools (0002), held to them by `fur/round-trip.test.ts`: the examples' modules,
-written by the Python writer, are read and written again byte for byte. (Before the old project left
+whose patterns and instruments the Python writer made, are read and written again byte for byte. (Before the old project left
 git, all 1,534 of its modules were checked so.)
 
 ## Rendering and making songs

@@ -5,9 +5,9 @@
 
 ## Context
 The repository is public and is meant to be the tool, cloned by others. Until now it also held
-The user's songs: every clip and song (75 of them, 74 brought in from the old project), and in its first
-commit the whole old project, batches of .fur files included. Someone cloning got the user's library and
-no audio for it, as nothing rendered a missing audio.flac, although 0011 said the server would.
+the user's songs: every clip and song, most brought in from the project before its restart, and in
+its first commit that whole earlier project, batches of .fur files included. Someone cloning got the
+user's library and no audio for it, as nothing rendered a missing audio.flac, although 0011 said the server would.
 
 ## Decision
 - The data folder (`CHIPSMITH_DATA`, default `data/` in the project folder) is ignored by git.
@@ -19,9 +19,11 @@ no audio for it, as nothing rendered a missing audio.flac, although 0011 said th
 - When the server starts it renders every clip with a source.fur and no audio.flac, one at a time
   in the background. The FLAC is written under another name and renamed when whole.
 - Claude Code and a job's script run in the project folder; the data folder is named to them.
-- The user's songs and the old project were taken out of the repository's history: the first commit
-  (the old project) and every `clips/` and `songs/` were removed, the branch `archive` deleted, and
-  the history pushed again. The round trip of the .fur writer is tested on the examples' modules
+- The user's songs and the earlier project were taken out of the repository's history: the first
+  commit (the earlier project) and every `clips/` and `songs/` were removed, the branch `archive`
+  deleted, and the history pushed again. So were the user's notes (taste, feedback per style, chat
+  logs) and their name: those are in the data folder's `guidance/`, which the composing Claude is
+  told to read. The round trip of the .fur writer is tested on the examples' modules
   instead of the old project's 1,534.
 
 ## Alternatives
@@ -32,5 +34,5 @@ no audio for it, as nothing rendered a missing audio.flac, although 0011 said th
   not belong in the tool's.
 
 ## Consequences
-A fresh checkout plays its examples once their renders are done (a few seconds each). The user's data is
-in `data/` and needs a backup of its own. Old clones and forks still have the old history.
+A fresh checkout plays its examples once their renders are done (a few seconds each). The user's
+data is in `data/` and needs a backup of its own. Old clones and forks still have the old history.

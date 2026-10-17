@@ -94,10 +94,10 @@ function startComposing(jobs: JobStore, job: Job): ClaudeWatch {
     projectFolder: PROJECT_FOLDER,
     prompt: [
       `Job ${job.id}. Write the script to ${getProjectPath(join(folder, 'script.ts'))}.`,
-      `The data folder (songs/, clips/) is ${getProjectPath(jobs.root)}.`,
+      `The data folder (songs/, clips/, guidance/) is ${getProjectPath(jobs.root)}.`,
       `The script imports the project's modules from ${relative(folder, PROJECT_FOLDER)}/ (e.g. ${relative(folder, PROJECT_FOLDER)}/make/module-builder.ts).`,
       '',
-      "the user's prompt:",
+      "The user's prompt:",
       job.prompt,
     ].join('\n'),
     systemPrompt: SYSTEM_PROMPT,
