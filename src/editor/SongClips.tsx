@@ -8,7 +8,7 @@ import { useState } from 'react';
 import type { PointerEvent as ReactPointerEvent } from 'react';
 import type { Clip } from '../../shared/clip.types.ts';
 import { getChannelName } from '../../shared/clip-channels.ts';
-import { getClipLabel } from '../clips/ClipsPage.tsx';
+import { getClipLabel } from '../../shared/clip-label.ts';
 import { formatSeconds } from '../format.ts';
 import type { SongClip } from './song-clips.ts';
 import type { ClipDrag } from './use-clip-drag.ts';

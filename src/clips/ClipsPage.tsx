@@ -1,6 +1,6 @@
 // The clip pool: every clip with its name, its prompt, its length and the songs that use it, the
 // filter bar above it, and ★ on each row.
-import type { Clip } from '../../shared/clip.types.ts';
+import { getClipLabel } from '../../shared/clip-label.ts';
 import { FilterBar } from '../lists/FilterBar.tsx';
 import { formatSeconds } from '../format.ts';
 import { getTagCounts, isShown } from '../lists/list-filter.ts';
@@ -10,18 +10,6 @@ import { StatusButtons } from '../lists/StatusButtons.tsx';
 import { usePageTitle } from '../use-page-title.ts';
 import { Breadcrumbs } from '../Breadcrumbs.tsx';
 import '../lists/lists.css';
-
-/**
- * Returns a clip's name as the list shows it.
- *
- * @param clip - The clip.
- * @param clip.name - The clip's name, its section and stem.
- * @returns The section and stem, or "whole" for an unsplit clip.
- */
-export function getClipLabel({ name }: Clip): string {
-  const label = [name.section, name.stem].filter(Boolean).join(' ');
-  return label || 'whole';
-}
 
 /**
  * Shows the clips list, newest first, with the filter bar above it and ★ on each row.

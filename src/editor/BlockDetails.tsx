@@ -4,7 +4,7 @@ import { Minus, Play, Plus } from 'lucide-react';
 import type { Clip } from '../../shared/clip.types.ts';
 import { getTicksPerSecond } from '../../shared/song-length.ts';
 import type { Song } from '../../shared/song.types.ts';
-import { getClipLabel } from '../clips/ClipsPage.tsx';
+import { getClipLabel } from '../../shared/clip-label.ts';
 import { formatSeconds } from '../format.ts';
 import type { BlockSpan } from './timeline.ts';
 import { getTicksPerBar } from './timeline.ts';

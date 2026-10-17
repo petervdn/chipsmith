@@ -2,7 +2,7 @@
 // it plays. Its body drags it, its edges trim it; a tap selects it.
 import type { PointerEvent as ReactPointerEvent } from 'react';
 import type { Clip } from '../../shared/clip.types.ts';
-import { getClipLabel } from '../clips/ClipsPage.tsx';
+import { getClipLabel } from '../../shared/clip-label.ts';
 import type { DragMode } from './block-drag.ts';
 import type { BlockSpan } from './timeline.ts';
 import { Waveform } from './Waveform.tsx';
