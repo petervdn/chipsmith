@@ -5,6 +5,7 @@
  */
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
+import { LOUDEST_DB } from '../player/volume.ts';
 
 /** The preferences and how to change them. */
 type PreferencesStore = {
@@ -12,8 +13,11 @@ type PreferencesStore = {
   isMuted: boolean;
   /** The look the page is in (looks.ts). */
   lookId: string;
+  /** The player's volume, in decibels (player/volume.ts). */
+  volume: number;
   setMuted: (isMuted: boolean) => void;
   setLookId: (lookId: string) => void;
+  setVolume: (volume: number) => void;
 };
 
 /**
@@ -33,12 +37,14 @@ export const usePreferencesStore = create<PreferencesStore>()(
       lookId: getSystemLookId(),
       setMuted: (isMuted) => set({ isMuted }),
       setLookId: (lookId) => set({ lookId }),
+      volume: LOUDEST_DB,
+      setVolume: (volume) => set({ volume }),
     }),
     {
       name: 'chiptune.preferences',
       version: 1,
       storage: createJSONStorage(() => localStorage),
-      partialize: ({ isMuted, lookId }) => ({ isMuted, lookId }),
+      partialize: ({ isMuted, lookId, volume }) => ({ isMuted, lookId, volume }),
     },
   ),
 );

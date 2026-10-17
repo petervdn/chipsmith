@@ -5,6 +5,7 @@ import { formatSeconds } from '../format.ts';
 import { getSongPosition } from '../playback/audio-engine.ts';
 import { usePlayerStore } from '../stores/player-store.ts';
 import { usePreferencesStore } from '../stores/preferences-store.ts';
+import { LOUDEST_DB, QUIETEST_DB, formatVolume } from './volume.ts';
 import './PlayerBar.css';
 
 /**
@@ -18,6 +19,8 @@ export function PlayerBar() {
   const { playSong, seekSong, stopSong } = player;
   const isMuteOn = usePreferencesStore((preferences) => preferences.isMuted);
   const setMuted = usePreferencesStore((preferences) => preferences.setMuted);
+  const volume = usePreferencesStore((preferences) => preferences.volume);
+  const setVolume = usePreferencesStore((preferences) => preferences.setVolume);
   const [livePosition, setLivePosition] = useState<number | null>(null);
   useEffect(() => {
     if (player.mode !== 'playing') return;
@@ -69,14 +72,27 @@ export function PlayerBar() {
       <span className="player-bar-time">
         {formatSeconds(position)} / {formatSeconds(player.end)}
       </span>
-      <button
-        type="button"
-        className={`player-bar-mute${isMuteOn ? ' is-on' : ''}`}
-        onClick={() => setMuted(!isMuteOn)}
-        title={isMuteOn ? 'muted (for testing); press to hear' : 'mute'}
-      >
-        {isMuteOn ? '🔇' : '🔊'}
-      </button>
+      <span className="player-bar-sound">
+        <input
+          className="player-bar-volume"
+          type="range"
+          min={QUIETEST_DB}
+          max={LOUDEST_DB}
+          step={1}
+          value={volume}
+          onChange={(event) => setVolume(Number(event.target.value))}
+          aria-label="volume"
+          title={`volume: ${formatVolume(volume)}`}
+        />
+        <button
+          type="button"
+          className={`player-bar-mute${isMuteOn ? ' is-on' : ''}`}
+          onClick={() => setMuted(!isMuteOn)}
+          title={isMuteOn ? 'muted (for testing); press to hear' : 'mute'}
+        >
+          {isMuteOn ? '🔇' : '🔊'}
+        </button>
+      </span>
       {player.error && <p className="player-bar-error">{player.error}</p>}
     </div>
   );

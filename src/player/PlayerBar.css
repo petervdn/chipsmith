@@ -73,3 +73,23 @@
   color: var(--reject);
   font-size: 0.8125rem;
 }
+
+.player-bar-sound {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 4px;
+}
+
+.player-bar-volume {
+  flex: none;
+  width: 96px;
+  accent-color: var(--accent);
+}
+
+/* a phone has its own volume buttons, and the seek bar needs the room */
+@media (max-width: 480px) {
+  .player-bar-volume {
+    display: none;
+  }
+}

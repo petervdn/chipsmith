@@ -4,6 +4,7 @@
  * so the next play tries again. The preferences store's mute switch silences the speakers for testing
  * while everything else runs.
  */
+import { getGain } from '../player/volume.ts';
 import { usePreferencesStore } from '../stores/preferences-store.ts';
 import type { Stretch } from './schedule.ts';
 
@@ -137,9 +138,14 @@ function getOutput(): GainNode {
   if (!output) {
     output = getContext().createGain();
     const gain = output.gain;
-    gain.value = usePreferencesStore.getState().isMuted ? 0 : 1;
-    usePreferencesStore.subscribe(({ isMuted }) => {
-      gain.value = isMuted ? 0 : 1;
+    const { isMuted, volume } = usePreferencesStore.getState();
+    gain.value = isMuted ? 0 : getGain(volume);
+    usePreferencesStore.subscribe((preferences) => {
+      gain.setTargetAtTime(
+        preferences.isMuted ? 0 : getGain(preferences.volume),
+        getContext().currentTime,
+        0.02,
+      );
     });
     output.connect(getContext().destination);
   }
