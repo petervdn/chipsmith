@@ -3,13 +3,14 @@
 import { useEffect, useRef, useState } from 'react';
 import type { Chord } from '../../shared/harmony.types.ts';
 import { unlockAudio } from '../playback/audio-engine.ts';
+import type { PreviewStyle } from '../playback/progression-preview.ts';
 import { playProgression } from '../playback/progression-preview.ts';
 
 /**
  * Plays progressions to hear them, one at a time.
  *
- * @returns Which one plays (`playingId`, or null), `play` (by its id, its chords and the key's
- *   note; stops the one playing) and `stop`.
+ * @returns Which one plays (`playingId`, or null), `play` (by its id, its chords, the key's note and
+ *   how its chords are heard; stops the one playing) and `stop`.
  */
 export function useProgressionPreview() {
   const [playingId, setPlayingId] = useState<string | null>(null);
@@ -22,10 +23,10 @@ export function useProgressionPreview() {
   useEffect(() => () => stopRef.current?.(), []);
   return {
     playingId,
-    play: async (id: string, chords: Chord[], note: string) => {
+    play: async (id: string, chords: Chord[], note: string, style: PreviewStyle) => {
       stop();
       await unlockAudio();
-      stopRef.current = playProgression(chords, note, () => {
+      stopRef.current = playProgression(chords, note, style, () => {
         stopRef.current = null;
         setPlayingId(null);
       });

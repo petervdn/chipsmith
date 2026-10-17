@@ -17,6 +17,7 @@ import type { HarmonyRowName } from './random-harmony.ts';
 import { getHearingNote } from './random-harmony.ts';
 import type { useHarmonyChoice } from './use-harmony-choice.ts';
 import { useProgressionPreview } from './use-progression-preview.ts';
+import type { PreviewStyle } from '../playback/progression-preview.ts';
 import './HarmonyPanel.css';
 
 type HarmonyPanelProps = { choice: ReturnType<typeof useHarmonyChoice> };
@@ -39,6 +40,7 @@ const NOTE_OPTIONS: RowOption[] = NOTES.map((note) => ({ value: note, label: not
  */
 export function HarmonyPanel({ choice }: HarmonyPanelProps) {
   const [isOpen, setOpen] = useState(false);
+  const [previewStyle, setPreviewStyle] = useState<PreviewStyle>('broken');
   const preview = useProgressionPreview();
   const { choice: harmony, locked, sent } = choice;
   const summary = sent ? getHarmonySummary(sent) : '';
@@ -149,7 +151,9 @@ export function HarmonyPanel({ choice }: HarmonyPanelProps) {
         hearingNote={hearingNote}
         isNoteChosen={harmony.note !== null}
         playingId={preview.playingId}
-        onPlay={(id, chords) => void preview.play(id, chords, hearingNote)}
+        previewStyle={previewStyle}
+        onPreviewStyle={setPreviewStyle}
+        onPlay={(id, chords) => void preview.play(id, chords, hearingNote, previewStyle)}
         onStop={preview.stop}
         onChooseFor={choice.chooseFor}
         onKeep={choice.keep}

@@ -2,17 +2,25 @@
 // one for the whole song), either the progression picked for it (▶ to hear it again, change, ✕) or
 // Claude's choice (pick…). Picking opens, under that part's row, three presets that fit the scale
 // and feel, each with ▶ to hear it on chip-like sounds and "use for A"; "three others" picks again.
-// Chords show bar by bar (chord-bars.ts) with how many bars go round.
+// Chords show bar by bar (chord-bars.ts) with how many bars go round; they are heard broken up or
+// all at once, as switched.
 import { Dices, Play, Square, X } from 'lucide-react';
 import type { CSSProperties } from 'react';
 import type { Chord, Progression } from '../../shared/harmony.types.ts';
 import type { ProgressionPreset } from '../../shared/progression-presets.ts';
 import { getProgressionBars, writeBars } from '../../shared/progression-notation.ts';
+import type { PreviewStyle } from '../playback/progression-preview.ts';
 import { writeChordBars } from './chord-bars.ts';
 import { getTrackColor } from '../editor/timeline.ts';
 import type { HarmonyPart } from './random-harmony.ts';
 import '../lists/lists.css';
 import './ChordAudition.css';
+
+/** How chords can be heard, and their switches' labels. */
+const PREVIEW_STYLES: { style: PreviewStyle; label: string }[] = [
+  { style: 'broken', label: 'broken up' },
+  { style: 'together', label: 'all at once' },
+];
 
 type ChordAuditionProps = {
   parts: HarmonyPart[];
@@ -22,6 +30,8 @@ type ChordAuditionProps = {
   hearingNote: string;
   isNoteChosen: boolean;
   playingId: string | null;
+  previewStyle: PreviewStyle;
+  onPreviewStyle: (style: PreviewStyle) => void;
   onPlay: (id: string, chords: Chord[]) => void;
   onStop: () => void;
   onChooseFor: (part: HarmonyPart | null) => void;
@@ -41,6 +51,8 @@ type ChordAuditionProps = {
  * @param props.hearingNote - The note they are heard and named in.
  * @param props.isNoteChosen - Whether that is the key's note chosen, or one picked to hear them on.
  * @param props.playingId - The id of the one playing, or null.
+ * @param props.previewStyle - How chords are heard: broken up, or all their notes at once.
+ * @param props.onPreviewStyle - Called with how chords should be heard.
  * @param props.onPlay - Called with an id and chords to hear them.
  * @param props.onStop - Called to stop hearing.
  * @param props.onChooseFor - Called with the part to pick for, or null to stop picking.
@@ -57,6 +69,8 @@ export function ChordAudition({
   hearingNote,
   isNoteChosen,
   playingId,
+  previewStyle,
+  onPreviewStyle,
   onPlay,
   onStop,
   onChooseFor,
@@ -133,6 +147,20 @@ export function ChordAudition({
           ? ''
           : ` Chords are named and heard in ${hearingNote}; the song's key is Claude's choice.`}
       </p>
+      <div className="chord-audition-style">
+        <span className="chord-audition-label">Hear chords</span>
+        {PREVIEW_STYLES.map(({ style, label }) => (
+          <button
+            key={style}
+            type="button"
+            className={`list-chip${previewStyle === style ? ' is-on' : ''}`}
+            onClick={() => onPreviewStyle(style)}
+            aria-pressed={previewStyle === style}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
       {parts.map((part) => {
         const progression = progressions[part.key];
         const isChoosing = choosingPart?.key === part.key;

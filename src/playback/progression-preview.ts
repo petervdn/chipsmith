@@ -1,12 +1,16 @@
 /**
  * A progression heard before it is kept: its chords played on chip-like sounds with Web Audio, a
- * triangle bass on every beat and a square arpeggio in eighths, at a fixed tempo, once round (twice
- * when it is short). It plays into the page's output, so the player's volume and the mute switch
+ * triangle bass on every beat and the chord on squares, broken up (an arpeggio in eighths) or all
+ * its notes at once (held for the chord's length), at a fixed tempo, once round (twice when it is
+ * short). It plays into the page's output, so the player's volume and the mute switch
  * apply to it.
  */
 import type { Chord } from '../../shared/harmony.types.ts';
 import { getContext, getOutput } from './audio-engine.ts';
 import { getVoicing } from './chord-voicing.ts';
+
+/** How a progression's chords are heard: broken up into an arpeggio, or all their notes at once. */
+export type PreviewStyle = 'broken' | 'together';
 
 /** The preview's tempo, its beats in a bar, and the arpeggio's notes in a beat. */
 const PREVIEW_BPM = 112;
@@ -19,6 +23,7 @@ const START_DELAY = 0.05;
 /** How loud the bass and the arpeggio are, and how much of its step a note sounds. */
 const BASS_GAIN = 0.32;
 const ARPEGGIO_GAIN = 0.07;
+const CHORD_TONE_GAIN = 0.045;
 const NOTE_LENGTH = 0.8;
 /** The seconds in a minute, the MIDI note of A 440 Hz, and the notes in an octave. */
 const MINUTE = 60;
@@ -33,10 +38,16 @@ const DECAY = 0.05;
  *
  * @param chords - The chords.
  * @param note - The key's note.
+ * @param style - How its chords are heard: broken up, or all their notes at once.
  * @param onEnd - Called when it has played to its end (not when stopped).
  * @returns A function that stops it.
  */
-export function playProgression(chords: Chord[], note: string, onEnd: () => void): () => void {
+export function playProgression(
+  chords: Chord[],
+  note: string,
+  style: PreviewStyle,
+  onEnd: () => void,
+): () => void {
   const audio = getContext();
   const output = getOutput();
   const beatSeconds = MINUTE / PREVIEW_BPM;
@@ -61,7 +72,7 @@ export function playProgression(chords: Chord[], note: string, onEnd: () => void
               gain: BASS_GAIN,
             }),
           );
-          for (let step = 0; step < NOTES_PER_BEAT; step += 1) {
+          for (let step = 0; style === 'broken' && step < NOTES_PER_BEAT; step += 1) {
             const index = (beat * NOTES_PER_BEAT + step) % arpeggio.length;
             const stepSeconds = beatSeconds / NOTES_PER_BEAT;
             oscillators.push(
@@ -74,6 +85,17 @@ export function playProgression(chords: Chord[], note: string, onEnd: () => void
               }),
             );
           }
+        }
+        for (const tone of style === 'together' ? voicing.tones : []) {
+          oscillators.push(
+            playNote(audio, output, {
+              midi: tone,
+              at: time,
+              seconds: beats * beatSeconds * NOTE_LENGTH,
+              type: 'square',
+              gain: CHORD_TONE_GAIN,
+            }),
+          );
         }
       }
       time += beats * beatSeconds;
