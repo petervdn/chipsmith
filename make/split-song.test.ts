@@ -1,5 +1,6 @@
 // A whole song is split into a clip per channel that plays, each with its own source and the whole
-// clip as its parent, alone on a track named after its channel; its facts are read from its source.
+// clip as its parent, alone on a track named after its channel (what the song calls it, and the
+// chip's channel); its facts are read from its source.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { existsSync, mkdirSync, mkdtempSync, writeFileSync } from 'node:fs';
@@ -32,6 +33,7 @@ test('a whole song becomes a track per channel of blocks of new clips', () => {
     patternLength: 16,
     channels: [getBar('E-4'), [], [...getBar('D-2'), ...getBar('D-2'), ...getBar('F-2')], [], []],
     instruments: [makeInstrument('bass', NES_INSTRUMENT, [])],
+    channelNames: ['Lead'],
   });
   writeFileSync(join(root, 'clips', 'c0001', 'source.fur'), getFurFileBytes(furFile));
   const whole: Clip = {
@@ -86,7 +88,7 @@ test('a whole song becomes a track per channel of blocks of new clips', () => {
     [
       [
         'c0002',
-        { section: null, stem: 'Pulse 1' },
+        { section: null, stem: 'Lead' },
         { clip: 'c0001', relation: 'split' },
         [0],
         6,
@@ -103,7 +105,11 @@ test('a whole song becomes a track per channel of blocks of new clips', () => {
     ],
   );
   assert.deepEqual(tracks, [
-    { id: 't1', name: 'Pulse 1', blocks: [{ clip: 'c0002', start: 0, trim: null, repeats: 1 }] },
+    {
+      id: 't1',
+      name: 'Lead · Pulse 1',
+      blocks: [{ clip: 'c0002', start: 0, trim: null, repeats: 1 }],
+    },
     { id: 't2', name: 'Triangle', blocks: [{ clip: 'c0003', start: 0, trim: null, repeats: 1 }] },
   ]);
   assert.ok(existsSync(join(root, 'clips', 'c0002', 'source.fur')));

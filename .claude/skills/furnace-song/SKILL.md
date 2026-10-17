@@ -45,6 +45,10 @@ export default function makeSongs(): SongPlan[] {
   `beatsPerBar`, `rowsPerBeat` (4: a row is a 16th), and `channels`: one list of rows per chip
   channel for the whole song, chip by chip as NES, SCC, SID whatever order `chips` is in (each
   chip's channels: its skill). `chipVolumes` follow the same order. Repeated stretches are reused as patterns.
+- **`channelNames`**: a short name per channel for what it plays, in the order of `channels`
+  (`['Lead', 'Harmony', 'Bass', 'Drums', '']`): one or two words, a role, never the chip's own name
+  ("Pulse 1", "SID 2"); `''` for a channel that stays silent. Furnace shows them over the channels,
+  and splitting the song into channels names its tracks by them ("Bass · Triangle").
 - Rows (`fur/fur.types.ts`): `{ note, instrument, volume, effects }`, any left out. Notes from
   `getNoteValue('D-3')` (`fur/notes.ts`); `NOTE_OFF` ends one.
 

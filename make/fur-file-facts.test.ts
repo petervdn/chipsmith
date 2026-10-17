@@ -20,6 +20,7 @@ const SONG: FurSong = {
   highlights: { first: 4, second: 16 },
   orders: [],
   effectColumns: [],
+  channelNames: [],
 };
 
 test('tempo, meter and chips read as Furnace shows them', () => {

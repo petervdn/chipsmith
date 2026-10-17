@@ -145,7 +145,8 @@ function makeInfo(song: FurSong, pointers: Pointers): Uint8Array {
   for (const pointer of pointers.patterns) info.u32(pointer);
   for (const orders of song.orders) info.add(orders);
   info.add(song.effectColumns).fill(SHOWN, channelCount).fill(0, channelCount);
-  info.fill(0, channelCount).fill(0, channelCount);
+  for (let i = 0; i < channelCount; i++) info.cString(song.channelNames[i] ?? '');
+  info.fill(0, channelCount);
   info.cString(song.comment).f32(1).add(COMPAT_SECOND);
   info.u16(song.virtualTempo.numerator).u16(song.virtualTempo.denominator);
   info.fill(0, 2).fill(0, 4);

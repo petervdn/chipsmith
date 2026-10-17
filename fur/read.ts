@@ -68,7 +68,8 @@ export function readFurFile(file: Uint8Array): FurFile {
   const orders = Array.from({ length: channelCount }, () => [...reader.take(orderLength)]);
   const effectColumns = [...reader.take(channelCount)];
   reader.take(channelCount * 2);
-  for (let i = 0; i < channelCount * 2; i++) reader.cString();
+  const channelNames = Array.from({ length: channelCount }, () => reader.cString());
+  for (let i = 0; i < channelCount; i++) reader.cString();
   const comment = reader.cString();
   reader.f32();
   reader.take(28);
@@ -109,6 +110,7 @@ export function readFurFile(file: Uint8Array): FurFile {
     highlights,
     orders,
     effectColumns,
+    channelNames,
   };
   return {
     song,

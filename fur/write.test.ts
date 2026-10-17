@@ -1,4 +1,5 @@
-// A .fur file written and read back is the same, and its bytes start as a .fur does.
+// A .fur file written and read back is the same (its channels' names too), and its bytes start as a
+// .fur does.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import type { FurFile } from './fur.types.ts';
@@ -24,6 +25,7 @@ const NES_AND_SCC: FurFile = {
     highlights: { first: 4, second: 16 },
     orders: Array.from({ length: 10 }, () => [0, 1]),
     effectColumns: Array.from({ length: 10 }, () => 1),
+    channelNames: ['Lead', 'Bass', '', 'Drums', '', '', '', '', '', ''],
   },
   instruments: [makeInstrument('lead', NES_INSTRUMENT, [{ kind: 'vol', values: [15, 10] }])],
   wavetables: [makeWavetable(Array.from({ length: 32 }, (_slot, i) => i * 8))],

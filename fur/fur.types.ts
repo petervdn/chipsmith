@@ -40,6 +40,8 @@ export type FurSong = {
   orders: number[][];
   /** For each channel, how many effect columns it shows. */
   effectColumns: number[];
+  /** For each channel, the name the song gives it ("Bass"), or an empty string for none. */
+  channelNames: string[];
 };
 
 /** A whole .fur file: the song, its instrument and wavetable blocks, and its patterns. */

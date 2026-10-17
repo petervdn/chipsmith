@@ -29,6 +29,11 @@ export type FurFileDraft = {
   wavetables?: Uint8Array[];
   /** Each chip's volume, NES first. */
   chipVolumes?: number[];
+  /**
+   * A name per channel for what it plays ("Bass", "Lead", "Drums"), in the order of `channels`;
+   * Furnace shows them, and splitting the song names its tracks by them. Left out or empty: none.
+   */
+  channelNames?: string[];
 };
 
 const TICK_RATE = 60;
@@ -61,6 +66,7 @@ const CHIP_FLAGS = {
  * @param draft.instruments - The instruments, as Furnace's bytes.
  * @param draft.wavetables - The wavetables, as Furnace's bytes; none if left out.
  * @param draft.chipVolumes - Each chip's volume, in the order of CHIP_NAMES; 1 for each if left out.
+ * @param draft.channelNames - A name per channel for what it plays; none if left out.
  * @returns The .fur file.
  */
 export function buildFurFile({
@@ -75,6 +81,7 @@ export function buildFurFile({
   instruments,
   wavetables = [],
   chipVolumes,
+  channelNames = [],
 }: FurFileDraft): FurFile {
   const furnaceChips = CHIP_NAMES.filter((name) => chips.includes(name)).map((name) => {
     const chip = getFurnaceChip(CHIPS[name].furnaceId);
@@ -126,6 +133,7 @@ export function buildFurFile({
     effectColumns: channels.map((rows) =>
       Math.max(1, ...rows.map((row) => row?.effects?.length ?? 0)),
     ),
+    channelNames: channels.map((_rows, channel) => channelNames[channel]?.trim() ?? ''),
   };
   return { song, instruments, wavetables, patterns };
 }

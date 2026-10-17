@@ -10,6 +10,9 @@ instruments with it is in the skills (`.claude/skills/`, docs/adr/0025).
   demos in `references/`).
 - Block order as Furnace writes it: header, `INFO`, `FLAG` per chip, three `ADIR`, `INS2`…,
   `WAVE`…, `PATN`….
+- Each channel's name ("channel name" in INFO, a C string after the collapse status) is what the song
+  calls it (`channelNames`, "Bass"); empty when the script gives none. The short names are written
+  empty.
 - The per-channel byte the spec calls "hide status" is a **show mask: write 3**. Writing 0 hides every
   channel in the GUI (the song still plays).
 - The `EN` instrument feature has no length field.
