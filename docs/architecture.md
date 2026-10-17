@@ -63,9 +63,9 @@ desktop (rows on one line), in `src/style.css`.
 Where state lives follows 0017: local first, lifted, context for a subtree, a Zustand store when it is
 the app's. Everything from the server is TanStack Query (`src/queries/`: songs, a song, clips, jobs
 polled while one runs, and the mutations), its keys from `getQueryKey({ type })`. The stores
-(`src/stores/`): the player (not persisted), preferences (mute, hidden job cards; localStorage) and the
-lists' last filters (sessionStorage), all through Zustand's persist; no component touches storage. A
-list's filter itself is in the address.
+(`src/stores/`): the player (not persisted) and preferences (mute, hidden job cards; localStorage,
+through Zustand's persist); no component touches storage. A list's filter is in the address only: the
+top bar's links open a list unfiltered, and the back button returns to a filtered one.
 
 ## Tooling
 

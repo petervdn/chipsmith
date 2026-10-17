@@ -4,7 +4,6 @@ import type { Job } from '../shared/job.types.ts';
 import { isJobRunning } from './queries/jobs.ts';
 import { useSong } from './queries/songs.ts';
 import type { Route } from './router.ts';
-import { useListAddress } from './use-list-filter.ts';
 
 type TopBarProps = { route: Route; jobs: Job[] };
 
@@ -12,15 +11,13 @@ type TopBarProps = { route: Route; jobs: Job[] };
 export function TopBar({ route, jobs }: TopBarProps) {
   const isSongs = route.page === 'songs' || route.page === 'song';
   const runningCount = jobs.filter(isJobRunning).length;
-  const songsAddress = useListAddress('/');
-  const clipsAddress = useListAddress('/clips');
   return (
     <header className="top-bar">
       <nav className="top-nav">
-        <a href={songsAddress} className={`top-link${isSongs ? ' is-on' : ''}`}>
+        <a href="/" className={`top-link${isSongs ? ' is-on' : ''}`}>
           Songs
         </a>
-        <a href={clipsAddress} className={`top-link${route.page === 'clips' ? ' is-on' : ''}`}>
+        <a href="/clips" className={`top-link${route.page === 'clips' ? ' is-on' : ''}`}>
           Clips
         </a>
         <a

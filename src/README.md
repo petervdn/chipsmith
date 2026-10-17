@@ -25,6 +25,6 @@ out without the page is in a module of its own beside it, with its test.
 - `playback/`: playing a song: what plays when, the audio, the shared player
 - `queries/`: everything read from or sent to the server (TanStack Query)
 - `router.ts`: which page the address is, and moving between them
-- `stores/`: Zustand stores: the player, preferences, the lists' last filters
+- `stores/`: Zustand stores: the player and the preferences
 - `style.css`: the colours, the page, the top bar and a song's page, for phone and desktop
 - `use-list-filter.ts`: a list's filter kept in the address
