@@ -32,7 +32,7 @@ export function TopBar({ route, jobs }: TopBarProps) {
   useTopBarHeight(barRef);
   return (
     <header ref={barRef} className="top-bar">
-      <a href="/" className="top-bar-logo" title="home">
+      <a href="/" className="top-bar-logo" data-tooltip="home">
         <Logo size={LOGO_SIZE} />
         <span className="top-bar-logo-name">chipsmith</span>
       </a>
@@ -46,20 +46,22 @@ export function TopBar({ route, jobs }: TopBarProps) {
         <a
           href="/guides"
           className={`top-bar-link${route.page === 'guides' ? ' is-on' : ''}`}
-          title="style guides, sent along with a prompt"
+          data-tooltip="style guides, sent along with a prompt"
         >
           Guides <span className="top-bar-count">{getCountText(guideCount)}</span>
         </a>
         <a
           href="/jobs"
           className={`top-bar-link${route.page === 'jobs' ? ' is-on' : ''}`}
-          title={isAnyRunning ? 'a job is on its way' : 'every prompt sent, and what it made'}
+          data-tooltip={
+            isAnyRunning ? 'a job is on its way' : 'every prompt sent, and what it made'
+          }
         >
           {isAnyRunning && <span className="jobs-spinner" aria-hidden="true" />}
           Jobs <span className="top-bar-count">{getCountText(jobCount)}</span>
         </a>
       </nav>
-      <a href="/new" className="top-bar-new" title="write a prompt for a new song">
+      <a href="/new" className="top-bar-new" data-tooltip="write a prompt for a new song">
         + New song
       </a>
       <LookSwitcher />

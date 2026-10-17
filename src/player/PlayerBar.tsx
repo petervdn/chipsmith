@@ -49,7 +49,7 @@ export function PlayerBar() {
         type="button"
         className={`player-bar-play${player.mode === 'loading' ? ' is-loading' : ''}`}
         onClick={togglePlay}
-        title={player.mode === 'stopped' ? 'play' : 'stop'}
+        data-tooltip={player.mode === 'stopped' ? 'play' : 'stop'}
       >
         {player.mode === 'loading'
           ? `${Math.round(player.loaded * 100)}%`
@@ -84,13 +84,13 @@ export function PlayerBar() {
           value={volume}
           onChange={(event) => setVolume(Number(event.target.value))}
           aria-label="volume"
-          title={`volume: ${formatVolume(volume)}`}
+          data-tooltip={`volume: ${formatVolume(volume)}`}
         />
         <button
           type="button"
           className={`player-bar-mute${isMuteOn ? ' is-on' : ''}`}
           onClick={() => setMuted(!isMuteOn)}
-          title={isMuteOn ? 'muted (for testing); press to hear' : 'mute'}
+          data-tooltip={isMuteOn ? 'muted (for testing); press to hear' : 'mute'}
         >
           {isMuteOn ? '🔇' : '🔊'}
         </button>

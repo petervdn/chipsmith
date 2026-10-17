@@ -68,7 +68,7 @@ export function BlockDetails({
           type="button"
           className="block-details-play"
           onClick={() => onPlayFrom(startSeconds)}
-          title="play the song from this block"
+          data-tooltip="play the song from this block"
         >
           ▶ from here
         </button>
@@ -79,7 +79,7 @@ export function BlockDetails({
             type="button"
             onClick={() => onRepeats(span.repeats - 1)}
             disabled={span.repeats <= 1}
-            title="play it one time fewer"
+            data-tooltip="play it one time fewer"
           >
             −
           </button>
@@ -87,16 +87,16 @@ export function BlockDetails({
           <button
             type="button"
             onClick={() => onRepeats(span.repeats + 1)}
-            title="play it once more"
+            data-tooltip="play it once more"
           >
             +
           </button>
         </span>
-        <button type="button" onClick={onDuplicate} title="place a copy right after it">
+        <button type="button" onClick={onDuplicate} data-tooltip="place a copy right after it">
           Duplicate
         </button>
         {clip && span.slice && span.slice.duration < clip.seconds - 0.01 && (
-          <button type="button" onClick={onUntrim} title="play the whole clip again">
+          <button type="button" onClick={onUntrim} data-tooltip="play the whole clip again">
             Untrim
           </button>
         )}

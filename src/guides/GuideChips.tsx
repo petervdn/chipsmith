@@ -40,7 +40,7 @@ export function GuideChips({ guides, chosenIds, onToggle }: GuideChipsProps) {
               className={`list-chip guide-chips-chip${chosenIds.includes(guide.id) ? ' is-on' : ''}`}
               onClick={() => onToggle(guide.id)}
               aria-pressed={chosenIds.includes(guide.id)}
-              title={guide.text.slice(0, 200)}
+              data-tooltip={guide.text.slice(0, 200)}
             >
               {guide.name}
             </button>

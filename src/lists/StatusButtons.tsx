@@ -19,7 +19,7 @@ export function StatusButtons({ status, onChange }: StatusButtonsProps) {
       <button
         type="button"
         className={`status-buttons-keep${status === 'keeper' ? ' is-on' : ''}`}
-        title={status === 'keeper' ? 'kept; press to undo' : 'keep'}
+        data-tooltip={status === 'keeper' ? 'kept; press to undo' : 'keep'}
         onClick={() => onChange(status === 'keeper' ? 'heard' : 'keeper')}
       >
         {status === 'keeper' ? '★' : '☆'}
@@ -27,7 +27,7 @@ export function StatusButtons({ status, onChange }: StatusButtonsProps) {
       <button
         type="button"
         className={`status-buttons-reject${status === 'rejected' ? ' is-on' : ''}`}
-        title={
+        data-tooltip={
           status === 'rejected'
             ? 'rejected; press to take it back'
             : 'reject (hides it from the list)'

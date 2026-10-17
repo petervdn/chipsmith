@@ -43,13 +43,16 @@ export function JobsPage({ jobs }: JobsPageProps) {
       {finished.length > 0 && (
         <h2 className="jobs-page-heading jobs-page-totals">
           <span className="jobs-page-totals-label">Done</span>
-          <span className="jobs-page-totals-time" title="the time the jobs took, added up">
+          <span className="jobs-page-totals-time" data-tooltip="the time the jobs took, added up">
             {formatSeconds(totals.seconds)}
           </span>
-          <span className="jobs-page-totals-tokens" title="the tokens Claude wrote, added up">
+          <span
+            className="jobs-page-totals-tokens"
+            data-tooltip="the tokens Claude wrote, added up"
+          >
             {totals.tokens ? formatTokens(totals.tokens) : ''}
           </span>
-          <span className="jobs-page-totals-songs" title="the songs the jobs made, added up">
+          <span className="jobs-page-totals-songs" data-tooltip="the songs the jobs made, added up">
             {totals.songCount} {totals.songCount === 1 ? 'song' : 'songs'}
           </span>
           <button
@@ -62,7 +65,7 @@ export function JobsPage({ jobs }: JobsPageProps) {
               }
             }}
             disabled={isClearing}
-            title="remove every job that is over from the list (their songs stay)"
+            data-tooltip="remove every job that is over from the list (their songs stay)"
           >
             Clear
           </button>

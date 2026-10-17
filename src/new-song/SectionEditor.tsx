@@ -122,7 +122,7 @@ export function SectionEditor({
           type="button"
           onClick={() => onMove(-1)}
           disabled={index === 0}
-          title="move earlier"
+          data-tooltip="move earlier"
         >
           ←
         </button>
@@ -130,11 +130,11 @@ export function SectionEditor({
           type="button"
           onClick={() => onMove(1)}
           disabled={index === sections.length - 1}
-          title="move later"
+          data-tooltip="move later"
         >
           →
         </button>
-        <button type="button" onClick={onCopy} title="the same part again, right after">
+        <button type="button" onClick={onCopy} data-tooltip="the same part again, right after">
           Copy
         </button>
         <button type="button" className="section-editor-remove" onClick={onRemove}>

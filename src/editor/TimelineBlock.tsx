@@ -57,7 +57,7 @@ export function TimelineBlock({
             event.stopPropagation();
             onSelect();
           }}
-          title={`${label} · ${span.clipId}${span.repeats > 1 ? ` · ×${span.repeats}` : ''}`}
+          data-tooltip={`${label} · ${span.clipId}${span.repeats > 1 ? ` · ×${span.repeats}` : ''}`}
         >
           {span.slice && !isRendering && (
             <Waveform
@@ -76,12 +76,12 @@ export function TimelineBlock({
               <span
                 className="timeline-block-edge is-start"
                 onPointerDown={(event) => onPress(event, 'trim-start')}
-                title="drag to trim the start"
+                data-tooltip="drag to trim the start"
               />
               <span
                 className="timeline-block-edge is-end"
                 onPointerDown={(event) => onPress(event, 'trim-end')}
-                title="drag to trim the end"
+                data-tooltip="drag to trim the end"
               />
             </>
           )}

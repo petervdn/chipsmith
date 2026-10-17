@@ -1,5 +1,5 @@
 // The app: the top bar, a warning when a program it calls is missing, the page the address is, the
-// player bar, and the page's confirm dialog.
+// player bar, and the page's own confirm dialog and tooltip.
 import { ClipsPage } from './clips/ClipsPage.tsx';
 import { ConfirmDialog } from './dialog/ConfirmDialog.tsx';
 import { GuidesPage } from './guides/GuidesPage.tsx';
@@ -12,11 +12,12 @@ import { PlayerBar } from './player/PlayerBar.tsx';
 import { ProgramWarning } from './ProgramWarning.tsx';
 import { useJobs } from './queries/jobs.ts';
 import { useRoute } from './router.ts';
+import { Tooltip } from './tooltip/Tooltip.tsx';
 import { TopBar } from './top-bar/TopBar.tsx';
 
 /**
- * Shows the whole page: the top bar, the program warning, the page the address is, the player bar
- * and the confirm dialog.
+ * Shows the whole page: the top bar, the program warning, the page the address is, the player bar,
+ * the confirm dialog and the tooltip.
  *
  * @returns The app's element.
  */
@@ -38,6 +39,7 @@ export function App() {
       </main>
       <PlayerBar />
       <ConfirmDialog />
+      <Tooltip />
     </div>
   );
 }

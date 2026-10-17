@@ -61,7 +61,7 @@ export function StructurePanel({ choice }: StructurePanelProps) {
             type="button"
             className={`list-chip${isChosen('preset', preset.id) ? ' is-on' : ''}`}
             onClick={() => choice.choose({ kind: 'preset', id: preset.id })}
-            title={writeNotation(preset.sections)}
+            data-tooltip={writeNotation(preset.sections)}
           >
             {preset.name}
           </button>
@@ -72,7 +72,7 @@ export function StructurePanel({ choice }: StructurePanelProps) {
             type="button"
             className={`list-chip is-saved${isChosen('saved', structure.id) ? ' is-on' : ''}`}
             onClick={() => choice.choose({ kind: 'saved', id: structure.id })}
-            title={writeNotation(structure.sections)}
+            data-tooltip={writeNotation(structure.sections)}
           >
             {structure.name}
           </button>
@@ -123,7 +123,7 @@ export function StructurePanel({ choice }: StructurePanelProps) {
                   className={`structure-panel-tile is-${relation}${selected === i ? ' is-selected' : ''}`}
                   style={style}
                   onClick={() => choice.select(selected === i ? null : i)}
-                  title={`${getSectionName(section)}: ${relation}, ${section.bars} bars`}
+                  data-tooltip={`${getSectionName(section)}: ${relation}, ${section.bars} bars`}
                 >
                   <span className="structure-panel-tile-name">{getSectionName(section)}</span>
                   <span className="structure-panel-tile-bars">
@@ -137,7 +137,7 @@ export function StructurePanel({ choice }: StructurePanelProps) {
               type="button"
               className="structure-panel-add"
               onClick={() => choice.edit(addSection)}
-              title="add a new part at the end"
+              data-tooltip="add a new part at the end"
             >
               +
             </button>

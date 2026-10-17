@@ -53,7 +53,7 @@ export function SongRowDetails({ listing, titlesById }: SongRowDetailsProps) {
             type="button"
             className="list-action"
             onClick={() => void copyText(song.prompt).then(setCopyResult)}
-            title="copy the prompt"
+            data-tooltip="copy the prompt"
           >
             {copyResult === null
               ? 'Copy'
@@ -64,14 +64,14 @@ export function SongRowDetails({ listing, titlesById }: SongRowDetailsProps) {
           <a
             className="list-action"
             href={`/new?from=${encodeURIComponent(song.id)}`}
-            title="open New with this prompt, to send it again (the new songs note this one)"
+            data-tooltip="open New with this prompt, to send it again (the new songs note this one)"
           >
             Prompt again →
           </a>
           <a
             className="list-action"
             href={`/new?base=${encodeURIComponent(song.id)}`}
-            title="open New with this song as the base: Claude starts from its music and changes what you ask"
+            data-tooltip="open New with this song as the base: Claude starts from its music and changes what you ask"
           >
             Use as base →
           </a>

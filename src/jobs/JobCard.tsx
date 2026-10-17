@@ -99,7 +99,7 @@ export function JobCard({ job, onRemove }: JobCardProps) {
   const tokens = (
     <span
       className="job-card-tokens"
-      title="the tokens Claude wrote, thinking included; while it runs, what it is in the middle of counts too"
+      data-tooltip="the tokens Claude wrote, thinking included; while it runs, what it is in the middle of counts too"
     >
       {totalTokens ? formatTokens(totalTokens) : ''}
     </span>
@@ -109,7 +109,7 @@ export function JobCard({ job, onRemove }: JobCardProps) {
       type="button"
       className="job-card-remove"
       onClick={onRemove}
-      title="remove this job from the list (its songs stay)"
+      data-tooltip="remove this job from the list (its songs stay)"
     >
       ✕
     </button>
@@ -124,7 +124,7 @@ export function JobCard({ job, onRemove }: JobCardProps) {
             className="job-card-toggle"
             onClick={() => setOpen(true)}
             aria-expanded={false}
-            title="show the job"
+            data-tooltip="show the job"
           >
             <span className="job-card-mark" aria-hidden="true">
               ▸
@@ -156,7 +156,7 @@ export function JobCard({ job, onRemove }: JobCardProps) {
             className="job-card-toggle"
             onClick={() => setOpen(false)}
             aria-expanded={true}
-            title="fold the job to one line"
+            data-tooltip="fold the job to one line"
           >
             <span className="job-card-mark" aria-hidden="true">
               ▾
@@ -176,7 +176,7 @@ export function JobCard({ job, onRemove }: JobCardProps) {
                 cancelJob(job.id);
               }
             }}
-            title="stop this job"
+            data-tooltip="stop this job"
           >
             Cancel
           </button>
@@ -193,7 +193,10 @@ export function JobCard({ job, onRemove }: JobCardProps) {
               {job.guides.map((guide, i) => (
                 <span key={guide.id}>
                   {i > 0 && ', '}
-                  <a href="/guides" title="the style guides (what was sent is kept with the songs)">
+                  <a
+                    href="/guides"
+                    data-tooltip="the style guides (what was sent is kept with the songs)"
+                  >
                     {guide.name}
                   </a>
                 </span>

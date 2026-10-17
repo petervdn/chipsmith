@@ -50,7 +50,7 @@ export function GuidesPage() {
                 type="button"
                 className="guides-page-row"
                 onClick={() => setOpen({ guideId: guide.id })}
-                title="edit this style guide"
+                data-tooltip="edit this style guide"
               >
                 <span className="list-title">{guide.name}</span>
                 {guide.isDefault && (

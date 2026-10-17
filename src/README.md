@@ -27,5 +27,6 @@ At the top: the app's shell and what every area uses.
 - `songs/`: the songs list and a song opened
 - `stores/`: Zustand stores: the player, the preferences and the confirm question
 - `style.css`: the base: the colour tokens, the page, links, form controls and the shell
+- `tooltip/`: the page's own tooltip, in place of the browser's
 - `top-bar/`: the bar at the top of every page
 - `use-page-title.ts`: the browser tab's title, the page's name and then chipsmith

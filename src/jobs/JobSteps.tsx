@@ -64,7 +64,7 @@ export function JobSteps({ job, isRunning, elapsed, now }: JobStepsProps) {
                 </span>
                 <span
                   className="job-steps-length"
-                  title={
+                  data-tooltip={
                     length
                       ? `${formatSeconds(length.seconds)}, ${Math.round(length.share * 100)}% of the job`
                       : ''
@@ -74,7 +74,7 @@ export function JobSteps({ job, isRunning, elapsed, now }: JobStepsProps) {
                 </span>
                 <span
                   className="job-steps-tokens"
-                  title={
+                  data-tooltip={
                     tokens ? `${formatTokens(tokens)} Claude wrote in this step (estimated)` : ''
                   }
                 >

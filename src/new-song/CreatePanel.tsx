@@ -38,7 +38,7 @@ export function CreatePanel({
           type="button"
           onClick={() => onSongCountChange(Math.max(1, songCount - 1))}
           disabled={songCount <= 1}
-          title="one song fewer"
+          data-tooltip="one song fewer"
         >
           −
         </button>
@@ -47,7 +47,7 @@ export function CreatePanel({
           type="button"
           onClick={() => onSongCountChange(Math.min(MOST_SONGS, songCount + 1))}
           disabled={songCount >= MOST_SONGS}
-          title="one song more"
+          data-tooltip="one song more"
         >
           +
         </button>

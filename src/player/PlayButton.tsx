@@ -40,7 +40,12 @@ export function PlayButton({ songId, isWaitingForAudio }: PlayButtonProps) {
 
   if (isWaitingForAudio) {
     return (
-      <button type="button" className="play-button" disabled title="its audio is being rendered">
+      <button
+        type="button"
+        className="play-button"
+        disabled
+        data-tooltip="its audio is being rendered"
+      >
         …
       </button>
     );
@@ -50,7 +55,7 @@ export function PlayButton({ songId, isWaitingForAudio }: PlayButtonProps) {
       type="button"
       className={`play-button${isThisSong ? ' is-playing' : ''}`}
       onClick={() => void toggle()}
-      title={isThisSong ? 'stop' : 'play'}
+      data-tooltip={isThisSong ? 'stop' : 'play'}
     >
       {loadedPercent !== null ? `${loadedPercent}%` : isThisSong ? '■' : '▶'}
     </button>

@@ -15,7 +15,7 @@ export function LookSwitcher() {
       type="button"
       className="look-switcher"
       onClick={showNextLook}
-      title={isDark ? 'switch to light' : 'switch to dark'}
+      data-tooltip={isDark ? 'switch to light' : 'switch to dark'}
     >
       {isDark ? '☀' : '☾'}
     </button>

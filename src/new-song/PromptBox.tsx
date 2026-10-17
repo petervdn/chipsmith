@@ -86,7 +86,7 @@ export function PromptBox({ initialText, source, onClearSource }: PromptBoxProps
             type="button"
             className="prompt-box-source-clear"
             onClick={onClearSource}
-            title="send it as a new prompt, not linked to that song"
+            data-tooltip="send it as a new prompt, not linked to that song"
           >
             ✕
           </button>

@@ -101,7 +101,7 @@ export function SongsPage({ jobs }: SongsPageProps) {
                   {song.status === 'new' && (
                     <span
                       className="list-unheard"
-                      title="not played yet"
+                      data-tooltip="not played yet"
                       aria-label="not played yet"
                     />
                   )}
@@ -130,7 +130,7 @@ export function SongsPage({ jobs }: SongsPageProps) {
                     type="button"
                     className={`songs-page-expand${isOpen ? ' is-open' : ''}`}
                     onClick={() => toggleOpen(song.id)}
-                    title={isOpen ? 'less' : 'more: the prompt, prompt again, details'}
+                    data-tooltip={isOpen ? 'less' : 'more: the prompt, prompt again, details'}
                     aria-expanded={isOpen}
                   >
                     ⌄

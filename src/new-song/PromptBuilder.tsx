@@ -34,7 +34,7 @@ export function PromptBuilder({ isOpen, onToggle, onUse }: PromptBuilderProps) {
         className={`prompt-builder-lock${isLocked ? ' is-on' : ''}`}
         onClick={() => toggleLock(name)}
         aria-pressed={isLocked}
-        title={isLocked ? 'locked: Roll keeps it' : 'unlocked: Roll picks it again'}
+        data-tooltip={isLocked ? 'locked: Roll keeps it' : 'unlocked: Roll picks it again'}
       >
         <LockIcon isLocked={isLocked} />
       </button>
@@ -47,7 +47,7 @@ export function PromptBuilder({ isOpen, onToggle, onUse }: PromptBuilderProps) {
         className="prompt-builder-bar"
         onClick={onToggle}
         aria-expanded={isOpen}
-        title={isOpen ? 'close the builder' : 'build a prompt from parts (nothing is sent)'}
+        data-tooltip={isOpen ? 'close the builder' : 'build a prompt from parts (nothing is sent)'}
       >
         <span className="prompt-builder-bar-label">🎲 Build a prompt</span>
         <span className="prompt-builder-bar-hint">from parts, rolled at random or picked</span>
@@ -60,14 +60,14 @@ export function PromptBuilder({ isOpen, onToggle, onUse }: PromptBuilderProps) {
           <div className="prompt-builder-result">
             <p className="prompt-builder-text">{text}</p>
             <div className="prompt-builder-actions">
-              <button type="button" onClick={roll} title="pick the unlocked parts again">
+              <button type="button" onClick={roll} data-tooltip="pick the unlocked parts again">
                 🎲 Roll
               </button>
               <button
                 type="button"
                 className="is-primary"
                 onClick={() => onUse(text)}
-                title="use as the prompt: put this sentence in the box above"
+                data-tooltip="use as the prompt: put this sentence in the box above"
               >
                 Use ↑
               </button>
@@ -84,7 +84,7 @@ export function PromptBuilder({ isOpen, onToggle, onUse }: PromptBuilderProps) {
                     className={`list-chip${parts.chips.includes(chip) ? ' is-on' : ''}`}
                     onClick={() => toggleChip(chip)}
                     aria-pressed={parts.chips.includes(chip)}
-                    title="switch this chip on or off (one stays on)"
+                    data-tooltip="switch this chip on or off (one stays on)"
                   >
                     {CHIPS[chip].label}
                   </button>

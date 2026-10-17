@@ -110,7 +110,7 @@ export function Timeline({
             setScrub(null);
           }}
           onPointerCancel={() => setScrub(null)}
-          title="tap or drag to move the play position"
+          data-tooltip="tap or drag to move the play position"
         >
           {Array.from({ length: bars }, (_unused, bar) =>
             bar % labelStep === 0 ? (
@@ -137,7 +137,7 @@ export function Timeline({
                 type="button"
                 className="timeline-track-title"
                 onClick={() => onSelect({ kind: 'track', trackId: track.id })}
-                title="the track: rename, remove"
+                data-tooltip="the track: rename, remove"
               >
                 {track.name}
               </button>
@@ -147,7 +147,7 @@ export function Timeline({
                   className={mix.muted.includes(track.id) ? 'is-on' : ''}
                   onClick={() => onToggleMute(track.id)}
                   aria-pressed={mix.muted.includes(track.id)}
-                  title="mute (while editing, not saved)"
+                  data-tooltip="mute (while editing, not saved)"
                 >
                   M
                 </button>
@@ -156,7 +156,7 @@ export function Timeline({
                   className={`is-solo${mix.soloed.includes(track.id) ? ' is-on' : ''}`}
                   onClick={() => onToggleSolo(track.id)}
                   aria-pressed={mix.soloed.includes(track.id)}
-                  title="solo (while editing, not saved)"
+                  data-tooltip="solo (while editing, not saved)"
                 >
                   S
                 </button>
