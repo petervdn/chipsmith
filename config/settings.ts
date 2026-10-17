@@ -30,7 +30,8 @@ export type Settings = {
 
 /** The project folder: where `.env` is, and the data folder unless set. */
 export const PROJECT_FOLDER = join(import.meta.dirname, '..');
-const DEFAULT_PORT = 8780;
+/** The default port: 6502, after the processor of the NES, the Commodore 64 and the Apple II. */
+const DEFAULT_PORT = 6502;
 const DEFAULT_FURNACE = '/Applications/Furnace.app/Contents/MacOS/Furnace';
 
 /** The settings from variables, each named `CHIPSMITH_<NAME>`, with the defaults for what is not set. */

@@ -61,8 +61,8 @@ npm install
 npm run dev
 ```
 
-The app is served on port 8780, also on the local network (open it on a phone with the computer's
-address, e.g. `http://192.168.x.x:8780`).
+The app is served on port 6502 (after the 6502 processor of the NES and the Commodore 64), also on the local network (open it on a phone with the computer's
+address, e.g. `http://192.168.x.x:6502`).
 
 ### Settings
 
@@ -73,7 +73,7 @@ is not in git). A variable set in the shell wins over the file; what is not set 
 | Variable | What it changes | Default |
 |---|---|---|
 | `CHIPSMITH_DATA` | the folder holding `clips/`, `songs/` and `jobs/` | the project folder |
-| `CHIPSMITH_PORT` | the port the app is served on | `8780` |
+| `CHIPSMITH_PORT` | the port the app is served on | `6502` |
 | `CHIPSMITH_ARCHIVE` | the old project's checkout | `../chiptune-archive` |
 | `CHIPSMITH_FURNACE` | the Furnace binary | the app in `/Applications` |
 | `CHIPSMITH_FFMPEG` | the ffmpeg binary | `ffmpeg` |

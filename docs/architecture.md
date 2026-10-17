@@ -74,7 +74,7 @@ top bar's links open a list unfiltered, and the back button returns to a filtere
   the defaults (README.md, "Settings"). `config/programs.ts` checks the programs when the server
   starts (each run once for its version; `GET`/`POST /api/programs`); a missing one shows as a bar on
   every page (`src/ProgramWarning.tsx`). Clips record the Furnace version read from Furnace itself.
-- Vite + TypeScript, strict (0012). `npm run dev` serves on port 8780, on the local network too. The
+- Vite + TypeScript, strict (0012). `npm run dev` serves on port 6502, on the local network too. The
   old player (branch `archive`, run from `../chiptune-archive/player`) keeps port 8765 until the new
   app replaces it.
 - `npm test`: Node's own runner reads the TypeScript as it is. Imports name their file with its
