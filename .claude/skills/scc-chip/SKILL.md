@@ -26,6 +26,10 @@ Chip-specific sound is where Claude is weakest: say what is new so the user can 
 
 ## Levels (measured, same note, volume 15)
 
+- **Volume steps are even in amplitude** (measured on a square): 13 is -1.2 dB, 11 -2.7, 9 -4.5,
+  7 -6.7, 5 -9.6, 3 -14.1 against 15. A bright wave (a pulse) sounds far louder than a saw or sine
+  at the same volume: a slanted pulse at 15 measured 8 dB over a notched saw at 13, and the user
+  heard it as too loud. Set a new line's volume against the line it answers.
 - An SCC+ wave at chip volume 1.0: about 3900, against an NES pulse's 4900; we use SCC chip volume
   1.4. In a full mix with the NES, NES 0.7 / SCC 0.85 worked.
 
@@ -34,5 +38,10 @@ Chip-specific sound is where Claude is weakest: say what is new so the user can 
 Sine, triangle, saw, square, three pulse widths, organ, hollow, bell, reed, half-sine, notched saw,
 sine+octave, bright/mid/dull (for morphing), 4-bit crushed saw and sine.
 
-- **Width "PWM":** a looping `wave` macro stepping through pulse12 / 25 / 37 / square.
+- **Width "PWM":** a looping `wave` macro stepping through pulse12 / 25 / 37 / square, slowly.
+- **A `wave` macro must not switch faster than about 4 times a second** (a step of 15 ticks or
+  more at 60 Hz). Faster, each switch is heard as a pulse in the note: a loop of three slanted
+  pulses at speed 4 (15 switches a second) was heard by the user as an annoying 10-20 Hz flutter
+  in a lead, and they do not want to hear it again. For a lead, one wave; for movement, a slow
+  sweep or a morph that does not loop.
 - **Morph:** a non-looping `wave` macro bright → mid → dull, so a held note darkens.
