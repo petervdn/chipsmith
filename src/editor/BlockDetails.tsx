@@ -69,7 +69,6 @@ export function BlockDetails({
           type="button"
           className="block-details-play"
           onClick={() => onPlayFrom(startSeconds)}
-          data-tooltip="play the song from this block"
         >
           <Play fill="currentColor" /> from here
         </button>

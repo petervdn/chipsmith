@@ -50,7 +50,6 @@ export function PlayerBar() {
         type="button"
         className={`player-bar-play${player.mode === 'loading' ? ' is-loading' : ''}`}
         onClick={togglePlay}
-        data-tooltip={player.mode === 'stopped' ? 'play' : 'stop'}
         aria-label={player.mode === 'stopped' ? 'play' : 'stop'}
       >
         {player.mode === 'loading' ? (

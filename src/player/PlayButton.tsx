@@ -57,7 +57,6 @@ export function PlayButton({ songId, isWaitingForAudio }: PlayButtonProps) {
       type="button"
       className={`play-button${isThisSong ? ' is-playing' : ''}`}
       onClick={() => void toggle()}
-      data-tooltip={isThisSong ? 'stop' : 'play'}
       aria-label={isThisSong ? 'stop' : 'play'}
     >
       {loadedPercent !== null ? (

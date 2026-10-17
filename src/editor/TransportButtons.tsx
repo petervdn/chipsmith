@@ -45,7 +45,6 @@ export function TransportButtons({
         className="transport-buttons-button"
         onClick={onStop}
         disabled={mode === 'stopped' && !isPaused}
-        data-tooltip="stop, back to the cursor"
         aria-label="stop, back to the cursor"
       >
         <Square fill="currentColor" />
@@ -55,8 +54,7 @@ export function TransportButtons({
         className={`transport-buttons-button${mode === 'stopped' ? '' : ' is-on'}`}
         onClick={onTogglePlaying}
         disabled={isWaitingForAudio}
-        data-tooltip={getPlayTooltip({ mode, isPaused })}
-        aria-label={getPlayTooltip({ mode, isPaused })}
+        aria-label={getPlayLabel({ mode, isPaused })}
       >
         {getPlayIcon(mode)}
       </button>
@@ -89,14 +87,14 @@ function getPlayIcon(mode: PlayerMode) {
 }
 
 /**
- * Returns the tooltip of the play button: what pressing it does.
+ * Returns what the play button is called for screen readers: what pressing it does.
  *
  * @param state - The song's state.
  * @param state.mode - The song's mode.
  * @param state.isPaused - Whether it is paused.
- * @returns The tooltip.
+ * @returns The words.
  */
-function getPlayTooltip({ mode, isPaused }: { mode: PlayerMode; isPaused: boolean }): string {
+function getPlayLabel({ mode, isPaused }: { mode: PlayerMode; isPaused: boolean }): string {
   if (mode !== 'stopped') return 'pause (Space)';
   return isPaused ? 'play on from the pause (Space)' : 'play from the cursor (Space)';
 }
