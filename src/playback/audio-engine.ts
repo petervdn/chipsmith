@@ -1,13 +1,17 @@
 /**
  * Playing stretches of clips' audio with Web Audio, each scheduled on the audio clock so they stay
- * together. Audio is fetched and decoded once per clip, a few at a time; a load that hangs is given up
+ * together; with a loop, each pass is scheduled while the one before plays, so they join without a
+ * gap (loop.ts). Audio is fetched and decoded once per clip, a few at a time; a load that hangs is given up
  * so the next play tries again. Each track plays through a tap of its own (track-taps.ts), for its
  * meter. The preferences store's mute switch silences the speakers for testing while everything else
  * runs, the meters too.
  */
 import { getGain } from '../player/volume.ts';
 import { usePreferencesStore } from '../stores/preferences-store.ts';
-import type { Stretch } from './schedule.ts';
+import type { Loop } from './loop.ts';
+import { getLoopPass, getLoopedSecond } from './loop.ts';
+import type { Piece, Stretch } from './schedule.ts';
+import { getPieces } from './schedule.ts';
 import { clearTrackTaps, getTrackInput } from './track-taps.ts';
 
 /** Clips decoded at the same time; more stalls phone browsers. */
@@ -23,8 +27,14 @@ const buffers = new Map<string, Promise<AudioBuffer>>();
 let activeLoads = 0;
 const waitingLoads: (() => void)[] = [];
 let sources: AudioBufferSourceNode[] = [];
-/** The audio clock's time at which the song's second 0 plays, while playing. */
+/**
+ * The audio clock's time at which the play's clock is at 0, while playing: the time the song's second
+ * 0 plays on its first pass. With a loop, the play's clock runs on past the loop's end.
+ */
 let songZero: number | null = null;
+/** The loop playing, or null. */
+let playingLoop: Loop | null = null;
+/** The timer that stops the song at its end, or schedules a loop's next pass. */
 let endTimer: ReturnType<typeof setTimeout> | null = null;
 /** Counts plays, so a play that is still loading knows when it was stopped or replaced. */
 let playCount = 0;
@@ -41,13 +51,15 @@ export async function unlockAudio(): Promise<void> {
 }
 
 /**
- * Plays stretches from a second of the song, after stopping what plays. It loads the clips' audio
- * first, reporting how much has loaded while it waits.
+ * Plays stretches from a second of the song, after stopping what plays: to the song's end, or round
+ * a loop until stopped. It loads the clips' audio first, reporting how much has loaded while it
+ * waits.
  *
  * @param stretches - The stretches the song plays.
  * @param getUrl - Returns the URL of a clip's audio from its id.
- * @param from - The second of the song to play from.
- * @param end - The song's end, in seconds, at which it stops.
+ * @param from - The second of the song to play from; with a loop, before its end.
+ * @param end - The song's end, in seconds, at which it stops when there is no loop.
+ * @param loop - The loop to play round, or null to play to the end.
  * @param onProgress - Called with the share of the clips loaded, 0 to 1, as each one loads.
  * @param onEnd - Called when the song has played to its end.
  * @returns True when it started playing; false when it was stopped or replaced before it could
@@ -58,6 +70,7 @@ export async function playStretches(
   getUrl: (clipId: string) => string,
   from: number,
   end: number,
+  loop: Loop | null,
   onProgress: (fraction: number) => void,
   onEnd: () => void,
 ): Promise<boolean> {
@@ -78,30 +91,52 @@ export async function playStretches(
   if (play !== playCount) return false;
   const audio = getContext();
   const zero = audio.currentTime + START_DELAY - from;
-  for (const stretch of stretches) {
+  const fitted = stretches.flatMap((stretch) => {
     const buffer = decoded.get(getUrl(stretch.clipId));
-    const stretchEnd =
-      stretch.start + Math.min(stretch.duration, (buffer?.duration ?? 0) - stretch.offset);
-    if (!buffer || stretchEnd <= from) continue;
-    const source = audio.createBufferSource();
-    source.buffer = buffer;
-    source.connect(getTrackInput(audio, stretch.trackId, getOutput()));
-    const skip = Math.max(0, from - stretch.start);
-    source.start(
-      zero + stretch.start + skip,
-      stretch.offset + skip,
-      stretchEnd - stretch.start - skip,
-    );
-    sources.push(source);
+    if (!buffer) return [];
+    return [{ ...stretch, duration: Math.min(stretch.duration, buffer.duration - stretch.offset) }];
+  });
+  function playPieces(pieces: Piece[]): void {
+    for (const piece of pieces) {
+      const buffer = decoded.get(getUrl(piece.clipId));
+      if (!buffer) continue;
+      const source = audio.createBufferSource();
+      source.buffer = buffer;
+      source.connect(getTrackInput(audio, piece.trackId, getOutput()));
+      source.start(zero + piece.at, piece.offset, piece.duration);
+      source.addEventListener('ended', () => {
+        sources = sources.filter((other) => other !== source);
+      });
+      sources.push(source);
+    }
   }
   songZero = zero;
-  endTimer = setTimeout(
-    () => {
-      stopPlaying();
-      onEnd();
-    },
-    (end - from + START_DELAY) * 1000,
-  );
+  playingLoop = loop;
+  if (!loop) {
+    playPieces(getPieces(fitted, from, end, 0));
+    endTimer = setTimeout(
+      () => {
+        stopPlaying();
+        onEnd();
+      },
+      (end - from + START_DELAY) * 1000,
+    );
+    return true;
+  }
+  playPieces(getPieces(fitted, from, loop.end, 0));
+  /**
+   * Schedules a pass of the loop, and the timer that schedules the one after it once this one
+   * starts, so one pass is always scheduled ahead.
+   *
+   * @param pass - The pass, 1 for the first after the first.
+   */
+  function playPass(pass: number): void {
+    if (!loop) return;
+    const { at, shift } = getLoopPass(loop, pass);
+    playPieces(getPieces(fitted, loop.start, loop.end, shift));
+    endTimer = setTimeout(() => playPass(pass + 1), (zero + at - audio.currentTime) * 1000);
+  }
+  playPass(1);
   return true;
 }
 
@@ -120,23 +155,24 @@ export function stopPlaying(): void {
   sources = [];
   clearTrackTaps();
   songZero = null;
+  playingLoop = null;
 }
 
 /**
- * Returns the second of the song now playing.
+ * Returns the second of the song now playing: round a loop, the place in it.
  *
  * @returns The second, or null when nothing plays.
  */
 export function getSongPosition(): number | null {
   if (songZero === null || !context) return null;
-  return Math.max(0, context.currentTime - songZero);
+  return getLoopedSecond(Math.max(0, context.currentTime - songZero), playingLoop);
 }
 
 /**
  * Returns when the song now playing started, on the audio clock.
  *
- * @returns The audio clock's time of the song's second 0 (it may lie before the second played
- *   from), or null when nothing plays.
+ * @returns The audio clock's time of the song's second 0 on its first pass (it may lie before the
+ *   second played from; round a loop, the play's clock runs on from it), or null when nothing plays.
  */
 export function getSongZero(): number | null {
   return songZero;

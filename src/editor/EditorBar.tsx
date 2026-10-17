@@ -19,6 +19,7 @@ type EditorBarProps = {
   transport: ReturnType<typeof useSongTransport>;
   isWaitingForAudio: boolean;
   draft: ReturnType<typeof useSongDraft>;
+  loop: { isOn: boolean; toggle: () => void };
   step: GridStep;
   onStep: (step: GridStep) => void;
   splitCount: number;
@@ -35,6 +36,9 @@ type EditorBarProps = {
  * @param props.transport - Playing the song: its mode, pause, stop and play.
  * @param props.isWaitingForAudio - Whether the song's audio is still being rendered, so it cannot play.
  * @param props.draft - The song being edited: undo, redo, revert and save, and whether it changed.
+ * @param props.loop - Looping: whether it is on, and switching it.
+ * @param props.loop.isOn - Whether the song plays round its loop.
+ * @param props.loop.toggle - Switches looping on or off.
  * @param props.step - What blocks snap to.
  * @param props.onStep - Called with the step chosen to snap to.
  * @param props.splitCount - Into how many channels the song can be split; 0 when it cannot.
@@ -48,6 +52,7 @@ export function EditorBar({
   transport,
   isWaitingForAudio,
   draft,
+  loop,
   step,
   onStep,
   splitCount,
@@ -72,6 +77,8 @@ export function EditorBar({
         onTogglePlaying={transport.togglePlaying}
         isFollowing={isFollowing}
         onToggleFollowing={() => setFollowing(!isFollowing)}
+        isLooping={loop.isOn}
+        onToggleLooping={loop.toggle}
       />
       <MetronomeControls />
       <ControlGroup label="edit">

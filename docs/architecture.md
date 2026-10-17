@@ -69,7 +69,9 @@ page but Home starts with breadcrumbs, the last its heading (Songs › Seven Tee
   opened), then the song opened in the editor (`src/editor/`): a timeline of its tracks
   (a ruler of bars; under it, switched in the editor bar, the structure the song was asked for as
   tiles from bar 1, as it was sent and never following edits (0030); each block drawn as the slice
-  of its clip's waveform it plays, repeats after it, a playhead), ▶ / ❚❚ from a cursor set on the ruler and ■ back to it, a metronome (on or off, its own
+  of its clip's waveform it plays, repeats after it, a playhead), ▶ / ❚❚ from a cursor set on the ruler and ■ back to it,
+  follow (the playhead kept in the middle), a loop (the whole song, or bars drawn in a row under the
+  ruler; 0031), a metronome (on or off, its own
   volume; the first beat of a bar higher, `src/playback/metronome.ts`), zoom (and the tracks' height on a slider), the song's clips in a
   column at its left (each with its blocks counted; tapped, its first block is selected; folded to a
   strip, and on a phone folded at first and laid over the timeline when open), the timeline as wide
@@ -152,7 +154,8 @@ git, all 1,534 of its .fur files were checked so.)
 ## Playback
 
 `src/playback/`: `schedule.ts` turns a song's blocks into stretches of clips' audio in seconds;
-`audio-engine.ts` plays them with Web Audio, each on the audio clock, loading a few clips at a time.
+`audio-engine.ts` plays them with Web Audio, each on the audio clock, loading a few clips at a time;
+round a loop, each pass is scheduled while the one before plays (`loop.ts`).
 The player's state is a Zustand store (`src/stores/player-store.ts`). The player bar
 (`src/player/PlayerBar.tsx`) sits at the bottom of every page: ▶ / ■ (the share loaded while loading), the
 title, a slider to move in the song, and a mute switch for testing (the preferences store). Every song

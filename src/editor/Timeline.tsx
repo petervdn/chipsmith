@@ -1,4 +1,5 @@
-// The song's timeline: a ruler of bars, the structure the song was asked for (when shown), a row per track (its name, which selects it, mute and solo,
+// The song's timeline: a ruler of bars, the loop (while looping), the structure the song was asked
+// for (when shown), a row per track (its name, which selects it, mute and solo,
 // and its level meter; the names' right edge drags them wider) with its blocks, and the playhead. A tap or drag on the ruler moves the play position; a tap
 // on a block selects it; blocks are dragged to move and trim them.
 import { Plus } from 'lucide-react';
@@ -17,6 +18,8 @@ import {
   getTimelineBars,
   getTrackColor,
 } from './timeline.ts';
+import { LoopLane } from './LoopLane.tsx';
+import type { LoopRange } from './loop-range.ts';
 import { StructureLane } from './StructureLane.tsx';
 import { TimelineBlock } from './TimelineBlock.tsx';
 import { TrackMeter } from './TrackMeter.tsx';
@@ -28,9 +31,18 @@ import { usePlayheadLine } from './use-playhead-line.ts';
 import './Timeline.css';
 import { LANE_TRACK_ATTRIBUTE } from './lane-position.ts';
 
+/** The loop as the timeline draws and changes it. */
+export type TimelineLoop = {
+  range: LoopRange;
+  isWhole: boolean;
+  onChange: (range: LoopRange) => void;
+  onWhole: () => void;
+};
+
 type TimelineProps = {
   song: Song;
   structure: Section[] | null;
+  loop: TimelineLoop | null;
   clips: Clip[];
   pixelsPerBar: number;
   trackHeight: number;
@@ -57,6 +69,7 @@ type TimelineProps = {
  * @param props.song - The song, with the tracks to draw (the draft, or a drag's preview).
  * @param props.structure - The sections of the structure the song was asked for, drawn above its
  *   tracks, or null to draw none.
+ * @param props.loop - The loop, drawn in a row under the ruler, or null while not looping.
  * @param props.clips - The clips its blocks play.
  * @param props.pixelsPerBar - How wide a bar is drawn.
  * @param props.trackHeight - How tall a track's row is drawn, in pixels.
@@ -80,6 +93,7 @@ type TimelineProps = {
 export function Timeline({
   song,
   structure,
+  loop,
   clips,
   pixelsPerBar,
   trackHeight,
@@ -163,6 +177,16 @@ export function Timeline({
           )}
         </div>
       </div>
+      {loop && (
+        <LoopLane
+          range={loop.range}
+          isWhole={loop.isWhole}
+          pixelsPerBar={pixelsPerBar}
+          bars={bars}
+          onChange={loop.onChange}
+          onWhole={loop.onWhole}
+        />
+      )}
       {structure && <StructureLane sections={structure} pixelsPerBar={pixelsPerBar} />}
       {song.tracks.map((track, trackIndex) => {
         const isTrackSelected = selection?.kind === 'track' && selection.trackId === track.id;

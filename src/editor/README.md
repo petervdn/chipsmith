@@ -17,6 +17,9 @@ saved, playing from a cursor, the zoom, and the selected block's clip or track.
 - `song-clips.ts`: the song's clips in the order it plays them, their blocks counted; a clip's first block
 - `SongClips.css`: the look of SongClips.tsx
 - `SongClips.tsx`: the song's clips in a column left of the timeline, to select and drag onto a track
+- `loop-range.ts`: the loop in bars: the whole song's, where a drag puts it, and in seconds
+- `LoopLane.css`: the look of LoopLane.tsx
+- `LoopLane.tsx`: the loop as a row under the ruler while looping: drag its edges, move it, draw one
 - `MetronomeControls.css`: the look of MetronomeControls.tsx
 - `MetronomeControls.tsx`: the metronome's switch and its volume slider, in the editor bar
 - `structure-lane.ts`: where the structure a song was asked for lies on its timeline, from its start
@@ -38,7 +41,7 @@ saved, playing from a cursor, the zoom, and the selected block's clip or track.
 - `TrackDetails.css`: the look of TrackDetails.tsx
 - `TrackDetails.tsx`: the selected track: its name, remove
 - `TransportButtons.css`: the look of TransportButtons.tsx
-- `TransportButtons.tsx`: ■ stop, ▶ / ❚❚ play or pause on one button, and follow
+- `TransportButtons.tsx`: ■ stop, ▶ / ❚❚ play or pause on one button, follow, and loop
 - `use-block-drag.ts`: dragging blocks: moving and trimming them
 - `use-clip-drag.ts`: dragging a clip onto a track's lane, as a new block
 - `use-edge-scroll.ts`: the timeline scrolled while a drag is near its left or right edge
@@ -46,6 +49,8 @@ saved, playing from a cursor, the zoom, and the selected block's clip or track.
 - `use-element-width.ts`: an element's width, kept current
 - `use-follow-playhead.ts`: the timeline keeping the playhead in the middle of the view while the song plays
 - `use-heard-tracks.ts`: the player hearing only the tracks mute and solo leave, also while playing
+- `use-loop.ts`: the editor's loop: on or off, the whole song until one is drawn
+- `use-loop-drag.ts`: dragging in the loop row: an edge, the loop, or a new one drawn
 - `use-metronome.ts`: the metronome clicking while the song plays, when it is on
 - `use-playhead-line.ts`: the playhead moved every frame while the song plays
 - `use-press-drag.ts`: a press that becomes a drag: a mouse at once, a finger after holding still

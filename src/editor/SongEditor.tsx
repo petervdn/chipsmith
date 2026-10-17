@@ -32,6 +32,7 @@ import { useElementWidth } from './use-element-width.ts';
 import { useSongDraft } from './use-song-draft.ts';
 import { useHeardTracks } from './use-heard-tracks.ts';
 import { useSongTransport } from './use-song-transport.ts';
+import { useLoop } from './use-loop.ts';
 import { useMetronome } from './use-metronome.ts';
 import { useTimelinePan } from './use-timeline-pan.ts';
 import { useTrackMix } from './use-track-mix.ts';
@@ -64,7 +65,8 @@ export function SongEditor({ detail }: SongEditorProps) {
   const { mix, toggleMute, toggleSolo } = useTrackMix();
   const draftSong = { ...song, tracks: draft.tracks };
   useHeardTracks(draft.tracks, mix);
-  const transport = useSongTransport({ ...detail, song: draftSong });
+  const loop = useLoop(draftSong, clips);
+  const transport = useSongTransport({ ...detail, song: draftSong }, loop.loop);
   useMetronome(transport.mode === 'playing', song);
   const width = useElementWidth(scrollRef);
   const { trackNameWidth, resizeHandlers } = useTrackNameResize();
@@ -146,6 +148,7 @@ export function SongEditor({ detail }: SongEditorProps) {
         transport={transport}
         isWaitingForAudio={isWaitingForAudio}
         draft={draft}
+        loop={loop}
         step={step}
         onStep={setStep}
         splitCount={splitCount}
@@ -186,6 +189,16 @@ export function SongEditor({ detail }: SongEditorProps) {
             <Timeline
               song={shownSong}
               structure={isStructureShown ? structure : null}
+              loop={
+                loop.isOn
+                  ? {
+                      range: loop.range,
+                      isWhole: loop.isWhole,
+                      onChange: loop.setRange,
+                      onWhole: loop.setWhole,
+                    }
+                  : null
+              }
               clips={clips}
               pixelsPerBar={pixelsPerBar}
               trackHeight={trackHeight}

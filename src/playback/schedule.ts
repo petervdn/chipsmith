@@ -1,6 +1,7 @@
 /**
  * What a song plays when: every block and each of its repeats as a stretch of a clip's audio, in
- * seconds from the song's start. Given a song and its clips, gives the stretches; knows no audio.
+ * seconds from the song's start, and the pieces of them that sound between two seconds. Given a song
+ * and its clips, gives the stretches; knows no audio.
  */
 import type { Clip } from '../../shared/clip.types.ts';
 import { getTicksPerSecond } from '../../shared/song-length.ts';
@@ -57,4 +58,42 @@ export function getStretches(song: Song, clips: Clip[]): Stretch[] {
  */
 export function getEnd(stretches: Stretch[]): number {
   return stretches.reduce((end, { start, duration }) => Math.max(end, start + duration), 0);
+}
+
+/** A piece of a stretch, placed: when it plays, from where in its clip's audio, for how long. */
+export type Piece = {
+  clipId: string;
+  trackId: string;
+  /** When it plays, in seconds on the play's own clock (the song's seconds, shifted). */
+  at: number;
+  offset: number;
+  duration: number;
+};
+
+/**
+ * Returns the parts of stretches that sound between two seconds of the song, each moved by a shift:
+ * a stretch that starts before the first second is entered part way, one that ends after the last
+ * is cut.
+ *
+ * @param stretches - The stretches, each no longer than its clip's audio.
+ * @param from - The first second of the song played.
+ * @param to - The second of the song at which playing stops.
+ * @param shift - How far the pieces are moved, in seconds: 0 to play them where they are in the song.
+ * @returns The pieces that sound, in the order of their stretches.
+ */
+export function getPieces(stretches: Stretch[], from: number, to: number, shift: number): Piece[] {
+  return stretches.flatMap(({ clipId, trackId, start, offset, duration }) => {
+    const pieceStart = Math.max(start, from);
+    const pieceEnd = Math.min(start + duration, to);
+    if (pieceEnd <= pieceStart) return [];
+    return [
+      {
+        clipId,
+        trackId,
+        at: pieceStart + shift,
+        offset: offset + pieceStart - start,
+        duration: pieceEnd - pieceStart,
+      },
+    ];
+  });
 }

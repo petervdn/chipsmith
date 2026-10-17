@@ -44,3 +44,4 @@ Consequences.
 | [0028](0028-a-song-not-wanted-is-deleted.md) | A song not wanted is deleted, not rejected | accepted |
 | [0029](0029-clips-are-not-in-the-top-bar.md) | Clips are not in the top bar; the page stays at its address | accepted |
 | [0030](0030-the-structure-asked-for-is-shown-as-sent.md) | The structure a song was asked for is shown as it was sent, above its tracks | accepted |
+| [0031](0031-the-loop-is-whole-bars-in-a-row-of-its-own.md) | The editor's loop is whole bars, drawn in a row of its own under the ruler | accepted |

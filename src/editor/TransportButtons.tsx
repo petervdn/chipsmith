@@ -1,7 +1,7 @@
 // The editor's ■ and ▶ / ❚❚: stop (back to the cursor), only while playing or paused; play or
-// pause on one button; and follow, switching whether the timeline scrolls with the playhead. It
-// knows nothing of how the song is played.
-import { LoaderCircle, Pause, Play, Square } from 'lucide-react';
+// pause on one button; follow, switching whether the timeline scrolls with the playhead; and loop,
+// switching whether it plays round its loop. It knows nothing of how the song is played.
+import { LoaderCircle, Pause, Play, Repeat, Square } from 'lucide-react';
 import { ControlGroup } from './ControlGroup.tsx';
 import type { PlayerMode } from '../stores/player-store.ts';
 import './TransportButtons.css';
@@ -14,6 +14,8 @@ type TransportButtonsProps = {
   onTogglePlaying: () => void;
   isFollowing: boolean;
   onToggleFollowing: () => void;
+  isLooping: boolean;
+  onToggleLooping: () => void;
 };
 
 /**
@@ -27,6 +29,8 @@ type TransportButtonsProps = {
  * @param props.onTogglePlaying - Called to play, or to pause while playing.
  * @param props.isFollowing - Whether the timeline follows the playhead.
  * @param props.onToggleFollowing - Called to switch following on or off.
+ * @param props.isLooping - Whether the song plays round its loop.
+ * @param props.onToggleLooping - Called to switch looping on or off.
  * @returns The buttons' element.
  */
 export function TransportButtons({
@@ -37,6 +41,8 @@ export function TransportButtons({
   onTogglePlaying,
   isFollowing,
   onToggleFollowing,
+  isLooping,
+  onToggleLooping,
 }: TransportButtonsProps) {
   return (
     <ControlGroup label="play">
@@ -70,6 +76,20 @@ export function TransportButtons({
         }
       >
         follow
+      </button>
+      <button
+        type="button"
+        className={`transport-buttons-loop${isLooping ? ' is-on' : ''}`}
+        onClick={onToggleLooping}
+        aria-pressed={isLooping}
+        aria-label={isLooping ? 'looping' : 'loop'}
+        data-tooltip={
+          isLooping
+            ? 'looping: plays round the loop under the ruler'
+            : 'loop: play round the whole song, or a loop drawn under the ruler'
+        }
+      >
+        <Repeat />
       </button>
     </ControlGroup>
   );

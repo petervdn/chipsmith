@@ -1,0 +1,81 @@
+/* The look of LoopLane.tsx: a thin row; the loop a band in the accent, its edges a bar to grab
+   inside each end (so the first bar's is not under the track names; wider under a finger); empty
+   space a crosshair, to draw a new loop. */
+
+.timeline-row.loop-lane {
+  height: 24px;
+}
+
+.loop-lane-corner {
+  justify-content: space-between;
+  gap: 4px;
+  padding: 0 4px 0 10px;
+}
+
+.loop-lane-label {
+  color: var(--muted);
+  font-size: 0.6875rem;
+}
+
+.loop-lane-whole {
+  padding: 0 6px;
+  border: var(--border-width) solid var(--line);
+  border-radius: calc(var(--radius) * 0.5);
+  background: var(--card);
+  color: var(--fg);
+  font-size: 0.6875rem;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.loop-lane-whole:disabled {
+  color: var(--muted);
+  opacity: 0.5;
+  cursor: default;
+}
+
+.loop-lane .loop-lane-lane,
+.loop-lane .loop-lane-lane:active {
+  cursor: crosshair;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.loop-lane-band {
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  box-sizing: border-box;
+  border: var(--border-width) solid var(--accent);
+  border-radius: calc(var(--radius) * 0.5);
+  background: color-mix(in srgb, var(--accent) 35%, transparent);
+  cursor: grab;
+}
+
+.loop-lane-band:active {
+  cursor: grabbing;
+}
+
+.loop-lane-edge {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 6px;
+  background: var(--accent);
+  cursor: ew-resize;
+}
+
+.loop-lane-edge.is-start {
+  left: 0;
+}
+
+.loop-lane-edge.is-end {
+  right: 0;
+}
+
+@media (pointer: coarse) {
+  .loop-lane-edge {
+    width: 14px;
+  }
+}

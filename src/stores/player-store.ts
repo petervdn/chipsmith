@@ -1,12 +1,14 @@
 /**
  * The one player of the page (not persisted: a reload starts with nothing playing): which song, whether
- * it is loading, playing or stopped, and where. Components read it with a selector and change it with
+ * it is loading, playing or stopped, where, and the loop it plays round, if any. Components read it with a selector and change it with
  * its actions; the audio itself is playback/audio-engine.ts's.
  */
 import { create } from 'zustand';
 import type { SongDetail } from '../../shared/api.types.ts';
 import { getEnd, getStretches } from '../playback/schedule.ts';
 import { playStretches, stopPlaying, unlockAudio } from '../playback/audio-engine.ts';
+import type { Loop } from '../playback/loop.ts';
+import { getLoopFrom } from '../playback/loop.ts';
 
 /** Whether the player is stopped, loading a song or playing it. */
 export type PlayerMode = 'stopped' | 'loading' | 'playing';
@@ -21,12 +23,14 @@ type PlayerStore = {
   from: number;
   /** The song's length in seconds. */
   end: number;
+  /** The loop it plays round, or null to play to the end. */
+  loop: Loop | null;
   error: string | null;
-  /** Plays a song from a second; call it from a tap. */
-  playSong: (song: SongDetail, from?: number) => Promise<void>;
+  /** Plays a song from a second, round a loop if given; call it from a tap. */
+  playSong: (song: SongDetail, from?: number, loop?: Loop | null) => Promise<void>;
   /** Stops, keeping the place it stopped at. */
   stopSong: (at: number) => void;
-  /** Moves to a second of the song, playing on from there if it was playing. */
+  /** Moves to a second of the song, playing on from there (round the same loop) if it was playing. */
   seekSong: (to: number) => void;
 };
 
@@ -47,13 +51,14 @@ export const usePlayerStore = create<PlayerStore>()((set, get) => ({
   loaded: 0,
   from: 0,
   end: 0,
+  loop: null,
   error: null,
-  playSong: async (song, from = 0) => {
+  playSong: async (song, from = 0, loop = null) => {
     const unlocking = unlockAudio();
     const stretches = getStretches(song.song, song.clips);
     const end = getEnd(stretches);
-    const start = from >= end ? 0 : from;
-    set({ song, mode: 'loading', loaded: 0, from: start, end, error: null });
+    const start = loop ? getLoopFrom(from, loop) : from >= end ? 0 : from;
+    set({ song, mode: 'loading', loaded: 0, from: start, end, loop, error: null });
     await unlocking;
     try {
       const isStarted = await playStretches(
@@ -61,6 +66,7 @@ export const usePlayerStore = create<PlayerStore>()((set, get) => ({
         getClipAudioUrl,
         start,
         end,
+        loop,
         (loaded) => set({ loaded }),
         () => set({ mode: 'stopped', from: 0 }),
       );
@@ -74,8 +80,8 @@ export const usePlayerStore = create<PlayerStore>()((set, get) => ({
     set({ mode: 'stopped', from: at });
   },
   seekSong: (to) => {
-    const { song, mode, playSong } = get();
-    if (song && mode !== 'stopped') void playSong(song, to);
+    const { song, mode, loop, playSong } = get();
+    if (song && mode !== 'stopped') void playSong(song, to, loop);
     else set({ from: to });
   },
 }));
