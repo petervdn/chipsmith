@@ -1,6 +1,8 @@
 // The editor's bar of controls above the timeline, in groups: play (stop, play or pause), the
-// metronome, edit (undo, redo), snap, tracks (split, when the song can be), zoom, view (the
-// structure, when the song was asked for one), and the song (revert, save). It wraps on a phone. It knows nothing of what the controls do: it is given the values and handlers.
+// metronome, edit (undo, redo), snap, tracks (split, when the song can be), zoom (in, out, fit, and
+// the tracks' height on a slider), view (the structure, when the song was asked for one), and the
+// song (revert, save). It wraps on a phone. It knows nothing of what the controls do: it is given the
+// values and handlers, or keeps them in the preferences.
 import { Minus, Plus, Redo2, Undo2 } from 'lucide-react';
 import type { useSongDraft } from './use-song-draft.ts';
 import type { useSongTransport } from './use-song-transport.ts';
@@ -10,6 +12,7 @@ import { BAR_STEP, GRID_STEPS } from './grid.ts';
 import { MetronomeControls } from './MetronomeControls.tsx';
 import { TransportButtons } from './TransportButtons.tsx';
 import { usePreferencesStore } from '../stores/preferences-store.ts';
+import { LEAST_TRACK_HEIGHT, MOST_TRACK_HEIGHT } from './track-height.ts';
 import './EditorBar.css';
 
 type EditorBarProps = {
@@ -57,6 +60,8 @@ export function EditorBar({
   const setFollowing = usePreferencesStore((state) => state.setFollowingPlayhead);
   const isStructureShown = usePreferencesStore((state) => state.isStructureShown);
   const setStructureShown = usePreferencesStore((state) => state.setStructureShown);
+  const trackHeight = usePreferencesStore((state) => state.trackHeight);
+  const setTrackHeight = usePreferencesStore((state) => state.setTrackHeight);
   return (
     <div className="editor-bar">
       <TransportButtons
@@ -132,6 +137,17 @@ export function EditorBar({
         <button type="button" onClick={zoom.zoomIn} data-tooltip="zoom in" aria-label="zoom in">
           <Plus />
         </button>
+        <input
+          type="range"
+          className="editor-bar-track-height"
+          min={LEAST_TRACK_HEIGHT}
+          max={MOST_TRACK_HEIGHT}
+          step={1}
+          value={trackHeight}
+          onChange={(event) => setTrackHeight(Number(event.target.value))}
+          aria-label="track height"
+          data-tooltip={`track height: ${trackHeight} px`}
+        />
       </ControlGroup>
       {hasStructure && (
         <ControlGroup label="view">

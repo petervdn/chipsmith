@@ -2,10 +2,11 @@
  * What this browser keeps of the page's settings, in localStorage (Zustand's persist; components
  * never touch storage, docs/adr/0017): the mute switch for testing, the look the page is in
  * (looks.ts), the player's volume, whether the editor follows the playhead, how wide its track
- * names are, its metronome (on or off, and its volume), and whether it shows a song's structure.
+ * names are and how tall its tracks, its metronome (on or off, and its volume), and whether it shows a song's structure.
  */
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
+import { TRACK_HEIGHT } from '../editor/track-height.ts';
 import { TRACK_NAME_WIDTH } from '../editor/track-name-width.ts';
 import { LOUDEST_DB } from '../player/volume.ts';
 
@@ -21,6 +22,8 @@ type PreferencesStore = {
   isFollowingPlayhead: boolean;
   /** How wide the editor's track names are drawn, in pixels (editor/track-name-width.ts). */
   trackNameWidth: number;
+  /** How tall the editor's track rows are drawn, in pixels (editor/track-height.ts). */
+  trackHeight: number;
   /** Whether the editor's metronome clicks while its song plays. */
   isMetronomeOn: boolean;
   /** The metronome's volume, in decibels (player/volume.ts), up to well above the music's. */
@@ -32,6 +35,7 @@ type PreferencesStore = {
   setVolume: (volume: number) => void;
   setFollowingPlayhead: (isFollowingPlayhead: boolean) => void;
   setTrackNameWidth: (trackNameWidth: number) => void;
+  setTrackHeight: (trackHeight: number) => void;
   setMetronomeOn: (isMetronomeOn: boolean) => void;
   setMetronomeVolume: (metronomeVolume: number) => void;
   setStructureShown: (isStructureShown: boolean) => void;
@@ -63,6 +67,8 @@ export const usePreferencesStore = create<PreferencesStore>()(
       setFollowingPlayhead: (isFollowingPlayhead) => set({ isFollowingPlayhead }),
       trackNameWidth: TRACK_NAME_WIDTH,
       setTrackNameWidth: (trackNameWidth) => set({ trackNameWidth }),
+      trackHeight: TRACK_HEIGHT,
+      setTrackHeight: (trackHeight) => set({ trackHeight }),
       isMetronomeOn: false,
       setMetronomeOn: (isMetronomeOn) => set({ isMetronomeOn }),
       metronomeVolume: METRONOME_DB,
@@ -80,6 +86,7 @@ export const usePreferencesStore = create<PreferencesStore>()(
         volume,
         isFollowingPlayhead,
         trackNameWidth,
+        trackHeight,
         isMetronomeOn,
         metronomeVolume,
         isStructureShown,
@@ -89,6 +96,7 @@ export const usePreferencesStore = create<PreferencesStore>()(
         volume,
         isFollowingPlayhead,
         trackNameWidth,
+        trackHeight,
         isMetronomeOn,
         metronomeVolume,
         isStructureShown,

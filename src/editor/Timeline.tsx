@@ -28,14 +28,12 @@ import { usePlayheadLine } from './use-playhead-line.ts';
 import './Timeline.css';
 import { LANE_TRACK_ATTRIBUTE } from './lane-position.ts';
 
-/** How tall a track's row is drawn, in pixels; Timeline.css draws it so. */
-export const ROW_HEIGHT = 78;
-
 type TimelineProps = {
   song: Song;
   structure: Section[] | null;
   clips: Clip[];
   pixelsPerBar: number;
+  trackHeight: number;
   trackNameWidth: number;
   resizeHandlers: ResizeHandlers;
   selection: Selection;
@@ -61,6 +59,7 @@ type TimelineProps = {
  *   tracks, or null to draw none.
  * @param props.clips - The clips its blocks play.
  * @param props.pixelsPerBar - How wide a bar is drawn.
+ * @param props.trackHeight - How tall a track's row is drawn, in pixels.
  * @param props.trackNameWidth - How wide the track names are drawn, in pixels.
  * @param props.resizeHandlers - The pointer handlers for the track names' right edge.
  * @param props.selection - The block or track selected, or null.
@@ -83,6 +82,7 @@ export function Timeline({
   structure,
   clips,
   pixelsPerBar,
+  trackHeight,
   trackNameWidth,
   resizeHandlers,
   selection,
@@ -112,7 +112,7 @@ export function Timeline({
     Record<'--bar-width' | '--lane-width' | '--row-height' | '--track-name-width', string> = {
     '--bar-width': `${pixelsPerBar}px`,
     '--lane-width': `${bars * pixelsPerBar}px`,
-    '--row-height': `${ROW_HEIGHT}px`,
+    '--row-height': `${trackHeight}px`,
     '--track-name-width': `${trackNameWidth}px`,
   };
   const nameEdge = (

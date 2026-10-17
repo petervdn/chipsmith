@@ -32,6 +32,7 @@ saved, playing from a cursor, the zoom, and the selected block's clip or track.
 - `track-meter.ts`: how a track's level meter moves: up at once, eased down, its peak mark held
 - `TrackMeter.css`: the look of TrackMeter.tsx
 - `TrackMeter.tsx`: a track's level meter beside its name
+- `track-height.ts`: how tall the track rows are drawn: where they start, the slider's bounds
 - `track-mix.ts`: which tracks are heard, by mute and solo
 - `track-name-width.ts`: how wide the track names are drawn, and the bounds of dragging them
 - `TrackDetails.css`: the look of TrackDetails.tsx

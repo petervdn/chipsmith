@@ -18,7 +18,7 @@ import {
   trimBlock,
 } from './song-edits.ts';
 import type { BlockPlace } from './song-edits.ts';
-import { ROW_HEIGHT, Timeline } from './Timeline.tsx';
+import { Timeline } from './Timeline.tsx';
 import { getBlockSpans, getClipTicks, getSongSplitCount, getTicksPerBar } from './timeline.ts';
 import { SongClips } from './SongClips.tsx';
 import { getFirstBlockPlace, getSongClips } from './song-clips.ts';
@@ -68,6 +68,7 @@ export function SongEditor({ detail }: SongEditorProps) {
   useMetronome(transport.mode === 'playing', song);
   const width = useElementWidth(scrollRef);
   const { trackNameWidth, resizeHandlers } = useTrackNameResize();
+  const trackHeight = usePreferencesStore((state) => state.trackHeight);
   const { pixelsPerBar, zoomIn, zoomOut, fit, zoomTo } = useZoom({
     song: draftSong,
     clips,
@@ -82,7 +83,7 @@ export function SongEditor({ detail }: SongEditorProps) {
   const drag = useBlockDrag({
     tracks: draft.tracks,
     pixelsPerTick: pixelsPerBar / ticksPerBar,
-    rowHeight: ROW_HEIGHT,
+    rowHeight: trackHeight,
     step,
     ticksPerBar,
     getClipTicks: getPlaceTicks,
@@ -187,6 +188,7 @@ export function SongEditor({ detail }: SongEditorProps) {
               structure={isStructureShown ? structure : null}
               clips={clips}
               pixelsPerBar={pixelsPerBar}
+              trackHeight={trackHeight}
               trackNameWidth={trackNameWidth}
               resizeHandlers={resizeHandlers}
               selection={selection}

@@ -40,6 +40,12 @@
   font-size: 0.8125rem;
 }
 
+/* the tracks' height, the vertical zoom: a small slider after the zoom buttons */
+.editor-bar-track-height {
+  width: 72px;
+  accent-color: var(--accent);
+}
+
 /* a switch, outlined while it is on, as follow is */
 .editor-bar .editor-bar-switch.is-on {
   border-color: var(--fg);

@@ -70,7 +70,7 @@ page but Home starts with breadcrumbs, the last its heading (Songs › Seven Tee
   (a ruler of bars; under it, switched in the editor bar, the structure the song was asked for as
   tiles from bar 1, as it was sent and never following edits (0030); each block drawn as the slice
   of its clip's waveform it plays, repeats after it, a playhead), ▶ / ❚❚ from a cursor set on the ruler and ■ back to it, a metronome (on or off, its own
-  volume; the first beat of a bar higher, `src/playback/metronome.ts`), zoom, the song's clips in a
+  volume; the first beat of a bar higher, `src/playback/metronome.ts`), zoom (and the tracks' height on a slider), the song's clips in a
   column at its left (each with its blocks counted; tapped, its first block is selected; folded to a
   strip, and on a phone folded at first and laid over the timeline when open), the timeline as wide
   as the page's content (as the top bar's), the clips' column out in the margin left of it and
@@ -116,7 +116,7 @@ desktop (rows on one line), in `src/style.css`.
 Where state lives follows 0017: local first, lifted, context for a subtree, a Zustand store when it is
 the app's. Everything from the server is TanStack Query (`src/queries/`: songs, a song, clips, jobs
 polled while one runs, and the mutations), its keys from `getQueryKey({ type })`. The stores
-(`src/stores/`): the player (not persisted) and preferences (mute, the look, the metronome; localStorage,
+(`src/stores/`): the player (not persisted) and preferences (mute, the look, the metronome, the editor's sizes; localStorage,
 through Zustand's persist); no component touches storage. A list's filter is in the address only: the
 top bar's links open a list unfiltered, and the back button returns to a filtered one.
 
