@@ -1,4 +1,4 @@
-// The Structure panel on New: always the chosen structure, named, and as tiles as wide as their bars,
+// The Structure panel on New: always the chosen structure, as tiles as wide as their bars,
 // coloured by part, with ▸ at its right; ▸ (or a tap on a tile) opens under them the choices (none,
 // a preset, a saved structure or your own, as chips), the structure written short (editable), the
 // selected section's editor, and saving it, as new or over the saved one, or deleting a saved one;
@@ -46,7 +46,7 @@ export function StructurePanel({ choice }: StructurePanelProps) {
   }
   return (
     <FoldPanel
-      heading={`structure · ${getSummary({ kind: source.kind, name: choice.name, sections })}`}
+      label="Structure"
       summary={
         source.kind === 'none' ? (
           <p className="structure-panel-none">None: Claude chooses the form.</p>
@@ -229,27 +229,4 @@ export function StructurePanel({ choice }: StructurePanelProps) {
       )}
     </FoldPanel>
   );
-}
-
-/**
- * Returns the chosen structure in a few words: its name and length.
- *
- * @param chosen - The structure chosen.
- * @param chosen.kind - Where it came from: none, a preset, a saved one, or your own.
- * @param chosen.name - Its name; empty for your own.
- * @param chosen.sections - Its sections.
- * @returns "none", or "AABA (32 bars) · 4 sections, 32 bars".
- */
-function getSummary({
-  kind,
-  name,
-  sections,
-}: {
-  kind: string;
-  name: string;
-  sections: { bars: number }[];
-}): string {
-  if (kind === 'none') return 'none';
-  const bars = sections.reduce((sum, section) => sum + section.bars, 0);
-  return `${name || 'your own'} · ${sections.length} sections, ${bars} bars`;
 }

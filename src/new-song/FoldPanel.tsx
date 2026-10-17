@@ -1,13 +1,13 @@
-// A panel of the New page (the prompt builder, the structure, the style guides): a card with a small
-// heading and what is chosen, always shown, buttons beside it if any, and ▸ at the right, which
-// opens what changes it underneath; what was shown stays where it is. It knows nothing of what is
-// in it.
+// A panel of the New page (the prompt builder, the structure, the style guides): a card with its
+// name in its border, what is chosen always shown, buttons beside it if any, and ▸ at the right,
+// which opens what changes it underneath; what was shown stays where it is. It knows nothing of
+// what is in it.
 import { ChevronRight } from 'lucide-react';
 import type { ReactNode } from 'react';
 import './FoldPanel.css';
 
 type FoldPanelProps = {
-  heading: ReactNode;
+  label: string;
   summary: ReactNode;
   actions?: ReactNode;
   isOpen: boolean;
@@ -17,20 +17,20 @@ type FoldPanelProps = {
 };
 
 /**
- * Shows a panel: its heading and summary, its buttons and ▸, and its body while open.
+ * Shows a panel: its name, its summary, its buttons and ▸, and its body while open.
  *
  * @param props - The component's props.
- * @param props.heading - What the panel is, small, above the summary.
+ * @param props.label - What the panel is, in its border ("Structure").
  * @param props.summary - What is chosen, always shown.
  * @param props.actions - Buttons at the summary's right, before ▸; none if left out.
  * @param props.isOpen - Whether the body shows.
  * @param props.onToggle - Called when ▸ is pressed.
  * @param props.toggleLabels - What ▸ does: closing the body (while open), opening it (while closed).
  * @param props.children - The body: what changes what is chosen.
- * @returns The panel's section element.
+ * @returns The panel's fieldset element.
  */
 export function FoldPanel({
-  heading,
+  label,
   summary,
   actions,
   isOpen,
@@ -40,12 +40,10 @@ export function FoldPanel({
 }: FoldPanelProps) {
   const toggleLabel = isOpen ? toggleLabels.open : toggleLabels.closed;
   return (
-    <section className={`fold-panel${isOpen ? ' is-open' : ''}`}>
+    <fieldset className={`fold-panel${isOpen ? ' is-open' : ''}`}>
+      <legend className="fold-panel-label">{label}</legend>
       <div className="fold-panel-top">
-        <div className="fold-panel-summary">
-          <span className="fold-panel-heading">{heading}</span>
-          {summary}
-        </div>
+        <div className="fold-panel-summary">{summary}</div>
         <div className="fold-panel-actions">
           {actions}
           <button
@@ -61,6 +59,6 @@ export function FoldPanel({
         </div>
       </div>
       {isOpen && <div className="fold-panel-body">{children}</div>}
-    </section>
+    </fieldset>
   );
 }

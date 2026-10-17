@@ -57,11 +57,7 @@ export function PromptBuilder({ isOpen, onToggle, onUse }: PromptBuilderProps) {
   }
   return (
     <FoldPanel
-      heading={
-        <>
-          <Dices /> build a prompt
-        </>
-      }
+      label="Build a prompt"
       summary={<p className="prompt-builder-text">{text}</p>}
       actions={
         <>

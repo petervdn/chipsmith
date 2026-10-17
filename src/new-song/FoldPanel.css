@@ -1,10 +1,20 @@
-/* The look of FoldPanel.tsx: a card; at its top the heading small over the summary, the buttons
-   and ▸ at the right (under the summary on a narrow screen); the body under a line while open. */
+/* The look of FoldPanel.tsx: a card with its name in its border; at its top the summary, the
+   buttons and ▸ at the right (under the summary on a narrow screen); the body under a line while
+   open. */
 
 .fold-panel {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
   border: var(--border-width) solid var(--line);
   border-radius: var(--radius);
   background: var(--card);
+}
+
+.fold-panel-label {
+  margin-left: 10px;
+  padding: 0 6px;
+  font-weight: 600;
 }
 
 .fold-panel-top {
@@ -21,11 +31,6 @@
   flex-direction: column;
   gap: 6px;
   min-width: 0;
-}
-
-.fold-panel-heading {
-  color: var(--muted);
-  font-size: 0.75rem;
 }
 
 .fold-panel-actions {

@@ -26,12 +26,9 @@ type GuideChipsProps = {
  */
 export function GuideChips({ guides, chosenIds, onToggle }: GuideChipsProps) {
   const [isOpen, setOpen] = useState(false);
-  const chosenNames = guides
-    .filter((guide) => chosenIds.includes(guide.id))
-    .map((guide) => guide.name);
   return (
     <FoldPanel
-      heading={`style guides · ${chosenNames.length > 0 ? chosenNames.join(', ') : 'none'}`}
+      label="Style guides"
       summary={
         guides.length === 0 ? (
           <p className="guide-chips-none">None yet.</p>
