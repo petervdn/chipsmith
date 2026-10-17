@@ -19,12 +19,12 @@ import {
 import type { BlockPlace } from './song-edits.ts';
 import { ROW_HEIGHT, Timeline } from './Timeline.tsx';
 import { getBlockSpans, getClipTicks, getSongSplitCount, getTicksPerBar } from './timeline.ts';
-import { getHeardTracks } from './track-mix.ts';
 import { TrackDetails } from './TrackDetails.tsx';
 import { useBlockDrag } from './use-block-drag.ts';
 import { useEditorKeys } from './use-editor-keys.ts';
 import { useElementWidth } from './use-element-width.ts';
 import { useSongDraft } from './use-song-draft.ts';
+import { useHeardTracks } from './use-heard-tracks.ts';
 import { useSongTransport } from './use-song-transport.ts';
 import { useTrackMix } from './use-track-mix.ts';
 import { TRACK_NAME_WIDTH, useZoom } from './use-zoom.ts';
@@ -51,8 +51,8 @@ export function SongEditor({ detail }: SongEditorProps) {
   const draft = useSongDraft(detail);
   const { mix, toggleMute, toggleSolo } = useTrackMix();
   const draftSong = { ...song, tracks: draft.tracks };
-  const heardSong = { ...song, tracks: getHeardTracks(draft.tracks, mix) };
-  const transport = useSongTransport({ ...detail, song: heardSong });
+  useHeardTracks(draft.tracks, mix);
+  const transport = useSongTransport({ ...detail, song: draftSong });
   const width = useElementWidth(scrollRef);
   const { pixelsPerBar, zoomIn, zoomOut, fit, zoomTo } = useZoom({ song: draftSong, clips, width });
   useWheelZoom(scrollRef, { pixelsPerBar, trackNameWidth: TRACK_NAME_WIDTH, zoomTo });

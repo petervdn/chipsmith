@@ -25,6 +25,7 @@ saved, playing from a cursor, the zoom, and the selected block's clip or track.
 - `use-block-drag.ts`: dragging blocks: a mouse at once, a finger after holding still
 - `use-editor-keys.ts`: the editor's keys: Space, Delete, ⌘Z, ⇧⌘Z, ⌘S, Escape
 - `use-element-width.ts`: an element's width, kept current
+- `use-heard-tracks.ts`: the player hearing only the tracks mute and solo leave, also while playing
 - `use-playhead-line.ts`: the playhead moved every frame while the song plays
 - `use-song-draft.ts`: the song being edited: a draft with undo and redo, the selection, save and revert
 - `use-song-transport.ts`: playing the song from its cursor, stopping, moving the cursor

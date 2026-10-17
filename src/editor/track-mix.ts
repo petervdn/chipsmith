@@ -25,12 +25,12 @@ export function isHeard(trackId: string, { muted, soloed }: TrackMix): boolean {
 }
 
 /**
- * Returns the tracks that are heard.
+ * Returns the ids of the tracks that are not heard.
  *
  * @param tracks - The song's tracks.
  * @param mix - The tracks muted and soloed.
- * @returns The tracks heard, in their order.
+ * @returns The ids of the tracks not heard, in their order.
  */
-export function getHeardTracks(tracks: Track[], mix: TrackMix): Track[] {
-  return tracks.filter((track) => isHeard(track.id, mix));
+export function getUnheardTrackIds(tracks: Track[], mix: TrackMix): string[] {
+  return tracks.filter((track) => !isHeard(track.id, mix)).map((track) => track.id);
 }

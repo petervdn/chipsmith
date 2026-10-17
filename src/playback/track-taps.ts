@@ -1,16 +1,20 @@
 /**
- * Listening to each track of what plays, for its level meter: every track's sources go through a tap
- * of its own on their way to the output, before the mute switch, and its peak can be read at any
- * moment. Knows nothing of what is shown.
+ * Each track of what plays on a tap of its own on the way to the output: its gain, which mutes the
+ * tracks not heard (mute and solo) at once, also while playing, and its peak after that gain, for
+ * its level meter. Before the player's mute switch. Knows nothing of what is shown.
  */
 
 /** Samples read at a time: about 21 ms at 48 kHz, longer than a frame, so no peak falls between. */
 const SAMPLE_COUNT = 1024;
+/** Seconds in which a track's gain moves most of the way to a new one, so muting does not click. */
+const GAIN_SMOOTHING = 0.005;
 
 /** A track's tap: what its sources play into, and its two channels' analysers. */
 type TrackTap = { input: GainNode; analysers: AnalyserNode[] };
 
 let taps = new Map<string, TrackTap>();
+/** The tracks not heard, kept across plays. */
+let unheardTrackIds = new Set<string>();
 const samples = new Float32Array(SAMPLE_COUNT);
 
 /**
@@ -26,9 +30,21 @@ export function getTrackInput(
   trackId: string,
   output: AudioNode,
 ): AudioNode {
-  const tap = taps.get(trackId) ?? makeTap(context, output);
+  const tap = taps.get(trackId) ?? makeTap(context, trackId, output);
   taps.set(trackId, tap);
   return tap.input;
+}
+
+/**
+ * Sets which tracks are not heard, at once for the tracks playing and for the next plays.
+ *
+ * @param trackIds - The ids of the tracks not heard; none to hear every track.
+ */
+export function setUnheardTracks(trackIds: string[]): void {
+  unheardTrackIds = new Set(trackIds);
+  for (const [trackId, { input }] of taps) {
+    input.gain.setTargetAtTime(getGain(trackId), input.context.currentTime, GAIN_SMOOTHING);
+  }
 }
 
 /** Takes away every track's tap, when a play stops. */
@@ -54,8 +70,9 @@ export function readTrackPeak(trackId: string): number | null {
   return peak;
 }
 
-function makeTap(context: AudioContext, output: AudioNode): TrackTap {
+function makeTap(context: AudioContext, trackId: string, output: AudioNode): TrackTap {
   const input = context.createGain();
+  input.gain.value = getGain(trackId);
   input.connect(output);
   const splitter = context.createChannelSplitter(2);
   input.connect(splitter);
@@ -66,4 +83,8 @@ function makeTap(context: AudioContext, output: AudioNode): TrackTap {
     return analyser;
   });
   return { input, analysers };
+}
+
+function getGain(trackId: string): number {
+  return unheardTrackIds.has(trackId) ? 0 : 1;
 }
