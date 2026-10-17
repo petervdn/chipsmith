@@ -1,7 +1,6 @@
 // The editor's bar of controls above the timeline, in groups: play (stop, play or pause), the
-// metronome, edit (undo,
-// redo), snap, tracks (split, when the song can be), zoom, and the song (revert, save). It wraps on
-// a phone. It knows nothing of what the controls do: it is given the values and handlers.
+// metronome, edit (undo, redo), snap, tracks (split, when the song can be), zoom, view (the
+// structure, when the song was asked for one), and the song (revert, save). It wraps on a phone. It knows nothing of what the controls do: it is given the values and handlers.
 import { Minus, Plus, Redo2, Undo2 } from 'lucide-react';
 import type { useSongDraft } from './use-song-draft.ts';
 import type { useSongTransport } from './use-song-transport.ts';
@@ -20,6 +19,7 @@ type EditorBarProps = {
   step: GridStep;
   onStep: (step: GridStep) => void;
   splitCount: number;
+  hasStructure: boolean;
   isSplitting: boolean;
   onSplit: () => void;
   zoom: { zoomIn: () => void; zoomOut: () => void; fit: () => void };
@@ -35,6 +35,7 @@ type EditorBarProps = {
  * @param props.step - What blocks snap to.
  * @param props.onStep - Called with the step chosen to snap to.
  * @param props.splitCount - Into how many channels the song can be split; 0 when it cannot.
+ * @param props.hasStructure - Whether the song was asked for a structure, which can be shown.
  * @param props.isSplitting - Whether a split is on its way.
  * @param props.onSplit - Called to split the song (after asking).
  * @param props.zoom - Zooming the timeline: in, out, and fitting the song to it.
@@ -47,12 +48,15 @@ export function EditorBar({
   step,
   onStep,
   splitCount,
+  hasStructure,
   isSplitting,
   onSplit,
   zoom,
 }: EditorBarProps) {
   const isFollowing = usePreferencesStore((state) => state.isFollowingPlayhead);
   const setFollowing = usePreferencesStore((state) => state.setFollowingPlayhead);
+  const isStructureShown = usePreferencesStore((state) => state.isStructureShown);
+  const setStructureShown = usePreferencesStore((state) => state.setStructureShown);
   return (
     <div className="editor-bar">
       <TransportButtons
@@ -129,6 +133,23 @@ export function EditorBar({
           <Plus />
         </button>
       </ControlGroup>
+      {hasStructure && (
+        <ControlGroup label="view">
+          <button
+            type="button"
+            className={`editor-bar-button editor-bar-switch${isStructureShown ? ' is-on' : ''}`}
+            onClick={() => setStructureShown(!isStructureShown)}
+            aria-pressed={isStructureShown}
+            data-tooltip={
+              isStructureShown
+                ? 'showing the structure the song was asked for, above its tracks'
+                : 'show the structure the song was asked for, above its tracks'
+            }
+          >
+            structure
+          </button>
+        </ControlGroup>
+      )}
       <ControlGroup label="song" isAtEnd>
         {draft.hasChanges && <span className="editor-bar-unsaved">unsaved changes</span>}
         {draft.hasChanges && (

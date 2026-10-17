@@ -40,6 +40,12 @@
   font-size: 0.8125rem;
 }
 
+/* a switch, outlined while it is on, as follow is */
+.editor-bar .editor-bar-switch.is-on {
+  border-color: var(--fg);
+  box-shadow: inset 0 0 0 1px var(--fg);
+}
+
 .editor-bar .editor-bar-button.is-primary:not(:disabled) {
   border-color: var(--accent);
   background: var(--accent);

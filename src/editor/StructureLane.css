@@ -1,0 +1,52 @@
+/* The look of StructureLane.tsx: a thin row; its tiles as the New page's structure tiles are, a
+   variation striped and a repeat faint, small enough to sit above the tracks. */
+
+.timeline-row.structure-lane {
+  height: 26px;
+}
+
+.structure-lane-label {
+  padding-left: 10px;
+  color: var(--muted);
+  font-size: 0.6875rem;
+}
+
+.structure-lane-tile {
+  position: absolute;
+  top: 3px;
+  bottom: 3px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0 5px;
+  overflow: hidden;
+  border: var(--border-width) solid color-mix(in srgb, var(--tile-color) 70%, #000);
+  border-radius: calc(var(--radius) * 0.5);
+  background: var(--tile-color);
+  color: var(--on-accent);
+  white-space: nowrap;
+  box-sizing: border-box;
+}
+
+.structure-lane-tile.is-variation {
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--tile-color) 0 6px,
+    color-mix(in srgb, var(--tile-color) 70%, var(--card)) 6px 12px
+  );
+}
+
+.structure-lane-tile.is-repeat {
+  opacity: 0.6;
+}
+
+.structure-lane-name {
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.structure-lane-role {
+  overflow: hidden;
+  font-size: 0.6875rem;
+  text-overflow: ellipsis;
+}

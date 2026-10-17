@@ -43,3 +43,4 @@ Consequences.
 | [0027](0027-icons-from-lucide.md) | The page's icons come from Lucide | accepted |
 | [0028](0028-a-song-not-wanted-is-deleted.md) | A song not wanted is deleted, not rejected | accepted |
 | [0029](0029-clips-are-not-in-the-top-bar.md) | Clips are not in the top bar; the page stays at its address | accepted |
+| [0030](0030-the-structure-asked-for-is-shown-as-sent.md) | The structure a song was asked for is shown as it was sent, above its tracks | accepted |

@@ -19,11 +19,14 @@ saved, playing from a cursor, the zoom, and the selected block's clip or track.
 - `SongClips.tsx`: the song's clips in a column left of the timeline, to select and drag onto a track
 - `MetronomeControls.css`: the look of MetronomeControls.tsx
 - `MetronomeControls.tsx`: the metronome's switch and its volume slider, in the editor bar
+- `structure-lane.ts`: where the structure a song was asked for lies on its timeline, from its start
+- `StructureLane.css`: the look of StructureLane.tsx
+- `StructureLane.tsx`: the structure a song was asked for, as a thin row of tiles above its first track
 - `SongEditor.css`: the look of SongEditor.tsx
 - `SongEditor.tsx`: the editor: its bar of controls, the timeline, the song's clips, the selected block's or track's details
 - `Timeline.css`: the look of Timeline.tsx
 - `timeline.ts`: where blocks lie in ticks, the bars shown, which bars are numbered
-- `Timeline.tsx`: the ruler, a row per track with its blocks, room under them to drag, the playhead
+- `Timeline.tsx`: the ruler, the structure when shown, a row per track with its blocks, room under them to drag, the playhead
 - `TimelineBlock.css`: the look of TimelineBlock.tsx
 - `TimelineBlock.tsx`: a block and its repeats on the timeline, dragged and trimmed
 - `track-meter.ts`: how a track's level meter moves: up at once, eased down, its peak mark held

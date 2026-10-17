@@ -67,8 +67,9 @@ page but Home starts with breadcrumbs, the last its heading (Songs › Seven Tee
   (asked first), and ⌄ to open the row: its prompt (copy, prompt again), its facts and its prompt links.
 - **Song** (`/songs/<id>`): under its title and facts the prompt it was made from (three lines until
   opened), then the song opened in the editor (`src/editor/`): a timeline of its tracks
-  (a ruler of bars, each block drawn as the slice of its clip's waveform it plays, repeats after it,
-  a playhead), ▶ / ❚❚ from a cursor set on the ruler and ■ back to it, a metronome (on or off, its own
+  (a ruler of bars; under it, switched in the editor bar, the structure the song was asked for as
+  tiles from bar 1, as it was sent and never following edits (0030); each block drawn as the slice
+  of its clip's waveform it plays, repeats after it, a playhead), ▶ / ❚❚ from a cursor set on the ruler and ■ back to it, a metronome (on or off, its own
   volume; the first beat of a bar higher, `src/playback/metronome.ts`), zoom, the song's clips in a
   column at its left (each with its blocks counted; tapped, its first block is selected; folded to a
   strip, and on a phone folded at first and laid over the timeline when open), the timeline as wide
@@ -185,17 +186,9 @@ phases:
 ## Still to build
 
 1. A prompt on the editor's selection, its new clips replacing the blocks, with versions (0014).
-2. A song's sections labelled on the timeline, as written and never changed:
-   - A song's script also returns the sections it wrote (`A 8, A′ 8, B 4 (breakdown), A 8`), with
-     or without a structure sent; `make/check-script.ts` checks they add up to the song's length.
-   - They are kept on the whole clip (`sections` in its record), like its prompt: a clip never
-     changes, so neither do they. Clips split from it cover the same bars and keep them.
-   - The timeline draws them in a thin lane above the tracks, where the clip's block plays: moved
-     with the block, cut by its trim.
-   - A song made before, with a structure but no sections, shows the structure it was sent, marked
-     as asked rather than written; one with neither shows none.
-   - Why not draw the structure sent: Claude may not follow its bars exactly, songs without one get
-     nothing, and labels pinned to the timeline stay put when blocks move.
+2. A song's sections as written, if wanted: the script returns the sections it wrote, kept on the
+   whole clip (`sections` in its record) and drawn where its block plays, moved with it and cut by
+   its trim. For now the structure as it was sent is drawn instead (0030).
 3. Rethink what clips are for. The pool is shared (0005) so a clip can play in more than one song,
    but no song shares one. Clips has left the top bar (0029); still to weigh: drop the Clips page or
    group it by song; clean up the clips no song plays; reuse across songs, if wanted, as a picker in

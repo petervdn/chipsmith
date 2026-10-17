@@ -97,6 +97,8 @@ export function SongEditor({ detail }: SongEditorProps) {
   });
   const pan = useTimelinePan(scrollRef);
   const isFollowingPlayhead = usePreferencesStore((state) => state.isFollowingPlayhead);
+  const isStructureShown = usePreferencesStore((state) => state.isStructureShown);
+  const structure = song.structure?.sections.length ? song.structure.sections : null;
   useFollowPlayhead(scrollRef, {
     songId: song.id,
     isOn: isFollowingPlayhead,
@@ -146,6 +148,7 @@ export function SongEditor({ detail }: SongEditorProps) {
         step={step}
         onStep={setStep}
         splitCount={splitCount}
+        hasStructure={structure !== null}
         isSplitting={isSplitting}
         onSplit={async () => {
           const question = getSplitQuestion(splitCount);
@@ -181,6 +184,7 @@ export function SongEditor({ detail }: SongEditorProps) {
           <div ref={scrollRef} className="song-editor-scroll">
             <Timeline
               song={shownSong}
+              structure={isStructureShown ? structure : null}
               clips={clips}
               pixelsPerBar={pixelsPerBar}
               trackNameWidth={trackNameWidth}

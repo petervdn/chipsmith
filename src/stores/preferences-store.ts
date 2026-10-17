@@ -2,7 +2,7 @@
  * What this browser keeps of the page's settings, in localStorage (Zustand's persist; components
  * never touch storage, docs/adr/0017): the mute switch for testing, the look the page is in
  * (looks.ts), the player's volume, whether the editor follows the playhead, how wide its track
- * names are, and its metronome (on or off, and its volume).
+ * names are, its metronome (on or off, and its volume), and whether it shows a song's structure.
  */
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
@@ -25,6 +25,8 @@ type PreferencesStore = {
   isMetronomeOn: boolean;
   /** The metronome's volume, in decibels (player/volume.ts), up to well above the music's. */
   metronomeVolume: number;
+  /** Whether the editor shows the structure a song was asked for above its tracks. */
+  isStructureShown: boolean;
   setMuted: (isMuted: boolean) => void;
   setLookId: (lookId: string) => void;
   setVolume: (volume: number) => void;
@@ -32,6 +34,7 @@ type PreferencesStore = {
   setTrackNameWidth: (trackNameWidth: number) => void;
   setMetronomeOn: (isMetronomeOn: boolean) => void;
   setMetronomeVolume: (metronomeVolume: number) => void;
+  setStructureShown: (isStructureShown: boolean) => void;
 };
 
 /** The metronome's volume to start with, in decibels: as loud as the music. */
@@ -64,6 +67,8 @@ export const usePreferencesStore = create<PreferencesStore>()(
       setMetronomeOn: (isMetronomeOn) => set({ isMetronomeOn }),
       metronomeVolume: METRONOME_DB,
       setMetronomeVolume: (metronomeVolume) => set({ metronomeVolume }),
+      isStructureShown: true,
+      setStructureShown: (isStructureShown) => set({ isStructureShown }),
     }),
     {
       name: 'chiptune.preferences',
@@ -77,6 +82,7 @@ export const usePreferencesStore = create<PreferencesStore>()(
         trackNameWidth,
         isMetronomeOn,
         metronomeVolume,
+        isStructureShown,
       }) => ({
         isMuted,
         lookId,
@@ -85,6 +91,7 @@ export const usePreferencesStore = create<PreferencesStore>()(
         trackNameWidth,
         isMetronomeOn,
         metronomeVolume,
+        isStructureShown,
       }),
     },
   ),

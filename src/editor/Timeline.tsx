@@ -1,4 +1,4 @@
-// The song's timeline: a ruler of bars, a row per track (its name, which selects it, mute and solo,
+// The song's timeline: a ruler of bars, the structure the song was asked for (when shown), a row per track (its name, which selects it, mute and solo,
 // and its level meter; the names' right edge drags them wider) with its blocks, and the playhead. A tap or drag on the ruler moves the play position; a tap
 // on a block selects it; blocks are dragged to move and trim them.
 import { Plus } from 'lucide-react';
@@ -7,6 +7,7 @@ import type { CSSProperties, PointerEvent as ReactPointerEvent } from 'react';
 import type { Clip } from '../../shared/clip.types.ts';
 import { getTicksPerSecond } from '../../shared/song-length.ts';
 import type { Song } from '../../shared/song.types.ts';
+import type { Section } from '../../shared/structure.types.ts';
 import type { DragMode } from './block-drag.ts';
 import type { BlockPlace } from './song-edits.ts';
 import {
@@ -16,6 +17,7 @@ import {
   getTimelineBars,
   getTrackColor,
 } from './timeline.ts';
+import { StructureLane } from './StructureLane.tsx';
 import { TimelineBlock } from './TimelineBlock.tsx';
 import { TrackMeter } from './TrackMeter.tsx';
 import type { TrackMix } from './track-mix.ts';
@@ -31,6 +33,7 @@ export const ROW_HEIGHT = 78;
 
 type TimelineProps = {
   song: Song;
+  structure: Section[] | null;
   clips: Clip[];
   pixelsPerBar: number;
   trackNameWidth: number;
@@ -54,6 +57,8 @@ type TimelineProps = {
  *
  * @param props - The component's props.
  * @param props.song - The song, with the tracks to draw (the draft, or a drag's preview).
+ * @param props.structure - The sections of the structure the song was asked for, drawn above its
+ *   tracks, or null to draw none.
  * @param props.clips - The clips its blocks play.
  * @param props.pixelsPerBar - How wide a bar is drawn.
  * @param props.trackNameWidth - How wide the track names are drawn, in pixels.
@@ -75,6 +80,7 @@ type TimelineProps = {
  */
 export function Timeline({
   song,
+  structure,
   clips,
   pixelsPerBar,
   trackNameWidth,
@@ -157,6 +163,9 @@ export function Timeline({
           )}
         </div>
       </div>
+      {structure && (
+        <StructureLane sections={structure} pixelsPerBar={pixelsPerBar} onPanStart={onPanStart} />
+      )}
       {song.tracks.map((track, trackIndex) => {
         const isTrackSelected = selection?.kind === 'track' && selection.trackId === track.id;
         const rowStyle: CSSProperties & Record<'--track-color', string> = {
