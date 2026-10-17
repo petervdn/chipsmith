@@ -5,7 +5,7 @@
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import type { SentGuide } from '../shared/guide.types.ts';
-import type { Job, JobPhase } from '../shared/job.types.ts';
+import type { Job, JobPhase, NewNote } from '../shared/job.types.ts';
 import { JOB_IDS, claimId } from '../make/ids.ts';
 import { writeJsonAtomically } from './store.ts';
 import type { SentStructure } from '../shared/structure.types.ts';
@@ -166,23 +166,22 @@ export function setPhase(store: JobStore, jobId: string, phase: JobPhase, note: 
     phaseStarted: now,
     ...(isEnd ? { finished: now } : {}),
   });
-  return addNotes(store, job.id, [note]);
+  return addNotes(store, job.id, [{ text: note, tokens: null }]);
 }
 
 /**
- * Adds notes to a job, each with the job's tokens so far. Only the last 200 notes are kept.
+ * Adds notes to a job, each with the tokens of its own step. Only the last 200 notes are kept.
  *
  * @param store - The jobs in memory.
  * @param jobId - The job's id; an unknown id is an error.
- * @param texts - The notes' texts.
+ * @param newNotes - The notes: their texts and tokens.
  * @returns The job changed.
  */
-export function addNotes(store: JobStore, jobId: string, texts: string[]): Job {
+export function addNotes(store: JobStore, jobId: string, newNotes: NewNote[]): Job {
   const job = store.jobs.get(jobId);
   if (!job) throw new Error(`no job ${jobId}`);
   const at = new Date().toISOString();
-  const tokens = job.tokens ?? 0;
-  const notes = [...job.notes, ...texts.map((text) => ({ at, text, tokens }))].slice(-MOST_NOTES);
+  const notes = [...job.notes, ...newNotes.map((note) => ({ at, ...note }))].slice(-MOST_NOTES);
   return updateJob(store, jobId, { notes });
 }
 

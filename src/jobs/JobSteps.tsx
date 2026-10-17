@@ -4,7 +4,7 @@
 import { useState } from 'react';
 import type { Job } from '../../shared/job.types.ts';
 import { formatSeconds, formatTokenCount, formatTokens } from '../format.ts';
-import { getStepLengths, getStepTokens } from './job-steps.ts';
+import { getStepLengths } from './job-steps.ts';
 import './JobSteps.css';
 
 type JobStepsProps = {
@@ -12,7 +12,6 @@ type JobStepsProps = {
   isRunning: boolean;
   elapsed: number;
   now: string;
-  totalTokens: number;
 };
 
 /**
@@ -24,17 +23,15 @@ type JobStepsProps = {
  * @param props.elapsed - How long it has been going, or went, in seconds.
  * @param props.now - What it is doing now: Claude's live line, else its last step; empty before its
  *   first step, when no current step is shown.
- * @param props.totalTokens - The tokens Claude wrote so far, what it is in the middle of included.
  * @returns The steps' element.
  */
-export function JobSteps({ job, isRunning, elapsed, now, totalTokens }: JobStepsProps) {
+export function JobSteps({ job, isRunning, elapsed, now }: JobStepsProps) {
   const [isShowingAll, setShowingAll] = useState(false);
   const lengths = getStepLengths(
     job.notes,
     job.created,
     job.finished ?? Date.parse(job.created) + elapsed * 1000,
   );
-  const stepTokens = getStepTokens(job.notes, totalTokens);
   return (
     <div className="job-steps">
       <div className="job-steps-current">
@@ -58,7 +55,7 @@ export function JobSteps({ job, isRunning, elapsed, now, totalTokens }: JobSteps
         <ol className="job-steps-list">
           {job.notes.map((note, i) => {
             const length = lengths[i];
-            const tokens = stepTokens[i] ?? null;
+            const { tokens } = note;
             const isCurrent = isRunning && i === job.notes.length - 1;
             return (
               <li key={`${note.at}-${i}`} className={isCurrent ? 'is-current' : ''}>
@@ -77,9 +74,11 @@ export function JobSteps({ job, isRunning, elapsed, now, totalTokens }: JobSteps
                 </span>
                 <span
                   className="job-steps-tokens"
-                  title={tokens === null ? '' : `${formatTokens(tokens)} Claude wrote in this step`}
+                  title={
+                    tokens ? `${formatTokens(tokens)} Claude wrote in this step (estimated)` : ''
+                  }
                 >
-                  {tokens === null ? '' : formatTokenCount(tokens)}
+                  {tokens ? formatTokenCount(tokens) : ''}
                 </span>
                 <span className="job-steps-text">
                   {isCurrent && <span className="jobs-spinner" aria-label="in progress" />}

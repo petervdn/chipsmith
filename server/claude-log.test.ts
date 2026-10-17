@@ -47,7 +47,9 @@ test('thinking, a file being written, then the note of the write', () => {
     },
   ]);
   const written = readLogNews(logFile, writing, PROJECT);
-  assert.deepEqual(written.notes, ['writing data/jobs/j0001/script.ts']);
+  assert.equal(written.notes.length, 1);
+  assert.equal(written.notes[0]?.text, 'writing data/jobs/j0001/script.ts');
+  assert.ok((written.notes[0]?.tokens ?? 0) > 750, 'the tool call has the tokens of its input');
   assert.equal(written.now, null);
 });
 
@@ -61,14 +63,14 @@ test('a line of Claude shows as it is written', () => {
   assert.equal(readLogNews(logFile, LOG_START, PROJECT).now, 'Planning the three songs.');
 });
 
-test('a stretch of thinking becomes a note with its tokens once it ends', () => {
+test('a stretch of thinking becomes a note once it ends, its tokens beside its text', () => {
   const logFile = join(mkdtempSync(join(tmpdir(), 'chiptune-log-')), 'claude.log');
   addLines(logFile, [
     { type: 'system', subtype: 'thinking_tokens', estimated_tokens: 3550 },
     { type: 'assistant', message: { content: [{ type: 'thinking', thinking: '' }] } },
   ]);
   const news = readLogNews(logFile, LOG_START, PROJECT);
-  assert.deepEqual(news.notes, ['thought (3,550 tokens)']);
+  assert.deepEqual(news.notes, [{ text: 'thought', tokens: 3550 }]);
   assert.equal(news.now, null);
 });
 

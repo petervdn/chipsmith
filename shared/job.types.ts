@@ -13,9 +13,15 @@ export type JobPhase =
 export type JobNote = {
   at: string;
   text: string;
-  /** The job's output tokens when the note was written; null for a note from before they were kept. */
+  /**
+   * The output tokens Claude wrote in this step (estimated): a thought's, or a text's or tool call's
+   * from its length; null for a step of the app's own, or from before steps kept their tokens.
+   */
   tokens: number | null;
 };
+
+/** A note to add to a job: its text and its tokens, without the time it is added. */
+export type NewNote = Omit<JobNote, 'at'>;
 
 /** A song a job makes, from the moment its script built it. */
 export type JobSong = {

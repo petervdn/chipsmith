@@ -3,6 +3,7 @@
  * tools do become notes, what it is in the middle of (thinking, a line or a file being written) is
  * read as it happens, and its result ends the run. Knows nothing of how the run was started.
  */
+import type { NewNote } from '../shared/job.types.ts';
 import { closeSync, existsSync, openSync, readFileSync, readSync, statSync } from 'node:fs';
 import { relative, resolve } from 'node:path';
 
@@ -24,7 +25,7 @@ export type LogPlace = { position: number; progress: Progress };
  * to, and what Claude is doing now (null when the last note says it).
  */
 export type LogNews = LogPlace & {
-  notes: string[];
+  notes: NewNote[];
   result: RunResult | null;
   now: string | null;
   /** The output tokens (thinking included) of the messages Claude finished in what was read. */
@@ -81,7 +82,7 @@ export function readLogNews(logFile: string, place: LogPlace, projectFolder: str
   }
   const text = buffer.toString('utf8');
   const end = text.lastIndexOf('\n') + 1;
-  const notes: string[] = [];
+  const notes: NewNote[] = [];
   let result: RunResult | null = null;
   let progress = place.progress;
   let tokens = 0;
@@ -89,10 +90,14 @@ export function readLogNews(logFile: string, place: LogPlace, projectFolder: str
     const event = parseLine(line);
     if (!event || event['parent_tool_use_id']) continue;
     if (event['type'] === 'assistant') {
-      if (progress.kind === 'thinking') {
-        notes.push(`thought (${progress.tokens.toLocaleString('en')} tokens)`);
-      }
-      notes.push(...getAssistantNotes(event, projectFolder));
+      if (progress.kind === 'thinking') notes.push({ text: 'thought', tokens: progress.tokens });
+      const blockTokens = progress.kind === 'thinking' ? null : getProgressTokens(progress) || null;
+      notes.push(
+        ...getAssistantNotes(event, projectFolder).map((text, i) => ({
+          text,
+          tokens: i === 0 ? blockTokens : null,
+        })),
+      );
       progress = { kind: 'idle' };
     }
     if (event['type'] === 'system' && event['subtype'] === 'thinking_tokens') {
