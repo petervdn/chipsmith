@@ -16,7 +16,7 @@ import { getSongsUsingClip, openStore, saveClip, saveSong } from './store.ts';
 
 const FUR_FILE = buildFurFile({
   title: 'test',
-  chips: 'nes',
+  chips: ['nes'],
   bpm: 112,
   beatsPerBar: 4,
   patternLength: 16,

@@ -46,10 +46,12 @@ export default function makeSongs(): SongPlan[] {
 - **`title`**: short and telling, as the songs list shows it.
 - **`key`**: e.g. `"D minor"`, or null.
 - **`tags`**: from the list below, a style and what stands out (two to four).
-- **`furFile`**: from `buildFurFile` (`make/fur-file-builder.ts`): `chips` (`'nes'` or `'nes+scc'`),
-  `bpm`, `beatsPerBar`, `rowsPerBeat` (4: a row is a 16th), and `channels`: one list of rows per chip
-  channel for the whole song (NES: pulse 1, pulse 2, triangle, noise, DPCM; then SCC+ 1-5).
-  Repeated stretches are reused as patterns by the builder.
+- **`furFile`**: from `buildFurFile` (`make/fur-file-builder.ts`): `chips`, the chips the prompt
+  names (`['nes']`, `['scc']`, `['nes', 'scc']`; "for the NES and the SCC" is both), `bpm`,
+  `beatsPerBar`, `rowsPerBeat` (4: a row is a 16th), and `channels`: one list of rows per chip
+  channel for the whole song, NES first whatever order `chips` is in (NES: pulse 1, pulse 2,
+  triangle, noise, DPCM; SCC+: 1-5). `chipVolumes` follow the same order. Repeated stretches are
+  reused as patterns by the builder.
 - Rows (`fur/fur.types.ts`): `{ note, instrument, volume, effects }`, any left out. Notes from
   `getNoteValue('D-3')` (`fur/notes.ts`); `NOTE_OFF` ends one.
 - Imports are relative to the script's folder and name their file with its extension.
@@ -115,7 +117,8 @@ from that song's music and change what is asked; keep the rest as it is.
   and its tempo and chips) and `script.ts` (the script that wrote it). A song imported from the old
   project has its import script there, not a composition: work from its `source.fur`. An older script
   uses the old names: `buildModule` (`make/module-builder.ts`), `readModule` and the plan's `module`
-  are now `buildFurFile` (`make/fur-file-builder.ts`), `readFurFile` and `furFile`.
+  are now `buildFurFile` (`make/fur-file-builder.ts`), `readFurFile` and `furFile`; its `chips`
+  `'nes'` and `'nes+scc'` are now `['nes']` and `['nes', 'scc']`.
 - To start from an existing .fur file, read it in your script:
   `readFurFile(readFileSync('<data>/clips/<clip>/source.fur'))` (`fur/read.ts`; scripts run from the
   project folder), change its patterns, instruments or settings, and return it as the plan's

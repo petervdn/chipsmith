@@ -20,7 +20,7 @@ test('a draft becomes a .fur file with its tempo and meter, repeats reused', () 
   const silent: (Row | null)[] = [];
   const furFile = buildFurFile({
     title: 'test',
-    chips: 'nes',
+    chips: ['nes'],
     bpm: 132,
     beatsPerBar: 4,
     patternLength: 16,
@@ -38,11 +38,30 @@ test('a draft with the wrong number of channels is an error', () => {
   assert.throws(() =>
     buildFurFile({
       title: 't',
-      chips: 'nes+scc',
+      chips: ['nes', 'scc'],
       bpm: 120,
       beatsPerBar: 4,
       channels: [[]],
       instruments: [],
     }),
   );
+});
+
+test('the chips come NES first whatever their order, and a song can be SCC only', () => {
+  const draft = { title: 't', bpm: 120, beatsPerBar: 4, instruments: [] };
+  const both = buildFurFile({
+    ...draft,
+    chips: ['scc', 'nes'],
+    channels: Array.from({ length: 10 }, () => []),
+  });
+  assert.equal(both.song.systemName, 'NES + SCC+');
+  assert.deepEqual(both.song.chips, [0x06, 0xb4]);
+  const scc = buildFurFile({
+    ...draft,
+    chips: ['scc'],
+    channels: Array.from({ length: 5 }, () => []),
+  });
+  assert.equal(scc.song.systemName, 'SCC+');
+  assert.deepEqual(scc.song.chipFlags, [null]);
+  assert.throws(() => buildFurFile({ ...draft, chips: [], channels: [] }));
 });

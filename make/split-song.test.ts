@@ -26,7 +26,7 @@ test('a whole song becomes a track per channel of blocks of new clips', () => {
   mkdirSync(join(root, 'clips', 'c0001'), { recursive: true });
   const furFile = buildFurFile({
     title: 'test',
-    chips: 'nes',
+    chips: ['nes'],
     bpm: 120,
     beatsPerBar: 4,
     patternLength: 16,

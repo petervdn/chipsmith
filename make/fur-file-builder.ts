@@ -3,16 +3,16 @@
  * tempo and meter. Cuts the rows into patterns, reuses a pattern a channel repeats, and sets the
  * song's settings as the archive's songs had them (60 Hz, speed 6, a virtual tempo for the bpm).
  */
+import type { ChipName } from '../shared/chips.ts';
+import { CHIP_NAMES } from '../shared/chips.ts';
 import type { FurFile, FurSong, Row } from '../fur/fur.types.ts';
-
-/** The chips a song plays on. */
-export type ChipSet = 'nes' | 'nes+scc';
 
 /** What a script gives to make a .fur file. */
 export type FurFileDraft = {
   title: string;
   comment?: string;
-  chips: ChipSet;
+  /** The chips, each once; their channels come in the order of CHIP_NAMES (NES first). */
+  chips: ChipName[];
   bpm: number;
   beatsPerBar: number;
   /** Rows to a beat; 4 makes a row a 16th note. */
@@ -34,10 +34,19 @@ const TICK_RATE = 60;
 const SPEED = 6;
 /** The denominator of the virtual tempo; its numerator sets the bpm. */
 const TEMPO_BASE = 150;
-const NES = 0x06;
-const SCC_PLUS = 0xb4;
-const CHANNELS_OF_CHIP = 5;
-const NES_FLAGS = 'clockSel=0\ncustomClock=0\ndpcmMode=false\n';
+/** Each chip as Furnace has it: its id, its name in a system's name, its channels and its flags. */
+const FURNACE_CHIPS = {
+  nes: {
+    id: 0x06,
+    name: 'NES',
+    channelCount: 5,
+    flags: 'clockSel=0\ncustomClock=0\ndpcmMode=false\n',
+  },
+  scc: { id: 0xb4, name: 'SCC+', channelCount: 5, flags: null },
+} satisfies Record<
+  ChipName,
+  { id: number; name: string; channelCount: number; flags: string | null }
+>;
 
 /**
  * Builds the .fur file of a draft: cuts each channel's rows into patterns, reusing a pattern the
@@ -46,7 +55,7 @@ const NES_FLAGS = 'clockSel=0\ncustomClock=0\ndpcmMode=false\n';
  * @param draft - What the script wrote for the song.
  * @param draft.title - The song's name.
  * @param draft.comment - The song's comment; empty if left out.
- * @param draft.chips - The chips the song plays on.
+ * @param draft.chips - The chips the song plays on, each once, in any order.
  * @param draft.bpm - The song's tempo, in beats a minute.
  * @param draft.beatsPerBar - Beats to a bar.
  * @param draft.rowsPerBeat - Rows to a beat; 4 if left out, which makes a row a 16th note.
@@ -54,7 +63,7 @@ const NES_FLAGS = 'clockSel=0\ncustomClock=0\ndpcmMode=false\n';
  * @param draft.channels - One list of rows per chip channel; there must be as many as the chips have.
  * @param draft.instruments - The instruments, as Furnace's bytes.
  * @param draft.wavetables - The wavetables, as Furnace's bytes; none if left out.
- * @param draft.chipVolumes - Each chip's volume, NES first; 1 for each if left out.
+ * @param draft.chipVolumes - Each chip's volume, in the order of CHIP_NAMES; 1 for each if left out.
  * @returns The .fur file.
  */
 export function buildFurFile({
@@ -70,10 +79,14 @@ export function buildFurFile({
   wavetables = [],
   chipVolumes,
 }: FurFileDraft): FurFile {
-  const chipIds = chips === 'nes' ? [NES] : [NES, SCC_PLUS];
-  const channelCount = chipIds.length * CHANNELS_OF_CHIP;
+  const furnaceChips = CHIP_NAMES.filter((name) => chips.includes(name)).map(
+    (name) => FURNACE_CHIPS[name],
+  );
+  if (furnaceChips.length === 0) throw new Error('a song needs at least one chip');
+  const channelCount = furnaceChips.reduce((sum, chip) => sum + chip.channelCount, 0);
   if (channels.length !== channelCount) {
-    throw new Error(`${chips} has ${channelCount} channels; the draft has ${channels.length}`);
+    const names = furnaceChips.map((chip) => chip.name).join(' + ');
+    throw new Error(`${names} has ${channelCount} channels; the draft has ${channels.length}`);
   }
   const length = Math.max(...channels.map((rows) => rows.length));
   const orderCount = Math.ceil(length / patternLength);
@@ -99,11 +112,11 @@ export function buildFurFile({
   const song: FurSong = {
     name: title,
     author: '',
-    systemName: chips === 'nes' ? 'NES' : 'NES + SCC+',
+    systemName: furnaceChips.map((chip) => chip.name).join(' + '),
     comment,
-    chips: chipIds,
-    chipVolumes: chipVolumes ?? chipIds.map(() => 1),
-    chipFlags: chipIds.map((chip) => (chip === NES ? NES_FLAGS : null)),
+    chips: furnaceChips.map((chip) => chip.id),
+    chipVolumes: chipVolumes ?? furnaceChips.map(() => 1),
+    chipFlags: furnaceChips.map((chip) => chip.flags),
     channelCount,
     tickRate: TICK_RATE,
     speeds: [SPEED],

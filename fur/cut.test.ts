@@ -18,7 +18,7 @@ function getBar(note: string, effects?: Row['effects']): (Row | null)[] {
 
 const FUR_FILE = buildFurFile({
   title: 'test',
-  chips: 'nes',
+  chips: ['nes'],
   bpm: 120,
   beatsPerBar: 4,
   patternLength: 16,

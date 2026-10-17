@@ -148,7 +148,7 @@ export default function makeSongs(): SongPlan[] {
       tags: ['action', 'example'],
       furFile: buildFurFile({
         title: 'Example - D minor bounce',
-        chips: 'nes',
+        chips: ['nes'],
         bpm: 140,
         beatsPerBar: 4,
         channels: [getLead(), empty, getBass(), getDrums(), empty],

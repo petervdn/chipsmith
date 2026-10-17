@@ -5,11 +5,11 @@ description: Konami SCC / SCC+ wavetable instruments in Furnace for chipsmith so
 
 # Create an SCC instrument
 
-The Konami SCC+ in Furnace: chip `0xB4`, 5 independent wavetable channels, after the NES's in a song
-(`'nes+scc'`: channels 5-9). On the plain SCC (`0xA1`) channels 4 and 5 share a waveform; we write the
-SCC+. An instrument is `makeInstrument(name, 18, macros)` with a `wave` macro holding the wavetable's
-index; waves are `makeWavetable(samples)`, 32 samples 0-255. Macros in general: the
-**create-instrument** skill.
+The Konami SCC+ in Furnace: chip `0xB4`, 5 independent wavetable channels: `chips: ['scc']` alone
+(channels 0-4), or after the NES's with `['nes', 'scc']` (channels 5-9). On the plain SCC (`0xA1`)
+channels 4 and 5 share a waveform; we write the SCC+. An instrument is
+`makeInstrument(name, 18, macros)` with a `wave` macro holding the wavetable's index; waves are
+`makeWavetable(samples)`, 32 samples 0-255. Macros in general: the **create-instrument** skill.
 
 Chip-specific sound is where Claude is weakest: say what is new so the user can check it by ear.
 
