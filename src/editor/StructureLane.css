@@ -5,6 +5,12 @@
   height: 26px;
 }
 
+/* only looked at: no grab hand, as the tracks' lanes have */
+.structure-lane .structure-lane-lane,
+.structure-lane .structure-lane-lane:active {
+  cursor: default;
+}
+
 .structure-lane-label {
   padding-left: 10px;
   color: var(--muted);

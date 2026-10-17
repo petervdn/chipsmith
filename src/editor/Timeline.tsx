@@ -163,9 +163,7 @@ export function Timeline({
           )}
         </div>
       </div>
-      {structure && (
-        <StructureLane sections={structure} pixelsPerBar={pixelsPerBar} onPanStart={onPanStart} />
-      )}
+      {structure && <StructureLane sections={structure} pixelsPerBar={pixelsPerBar} />}
       {song.tracks.map((track, trackIndex) => {
         const isTrackSelected = selection?.kind === 'track' && selection.trackId === track.id;
         const rowStyle: CSSProperties & Record<'--track-color', string> = {

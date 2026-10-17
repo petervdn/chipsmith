@@ -1,17 +1,14 @@
 // The structure a song was asked for, as a thin row of tiles above its first track: each section
 // where its bars fall from the song's start, coloured by its letter. It is the structure as it was
-// sent with the prompt; it does not follow the blocks, and nothing is done with it.
-import type { CSSProperties, PointerEvent as ReactPointerEvent } from 'react';
+// sent with the prompt; it does not follow the blocks, and nothing is done with it: it is only looked
+// at, so it takes no presses.
+import type { CSSProperties } from 'react';
 import type { Section } from '../../shared/structure.types.ts';
 import { getStructureSpans } from './structure-lane.ts';
 import { getTrackColor } from './timeline.ts';
 import './StructureLane.css';
 
-type StructureLaneProps = {
-  sections: Section[];
-  pixelsPerBar: number;
-  onPanStart: (event: ReactPointerEvent) => void;
-};
+type StructureLaneProps = { sections: Section[]; pixelsPerBar: number };
 
 /**
  * Shows the structure a song was asked for above its tracks.
@@ -19,10 +16,9 @@ type StructureLaneProps = {
  * @param props - The component's props.
  * @param props.sections - The structure's sections, in order.
  * @param props.pixelsPerBar - How wide a bar is drawn.
- * @param props.onPanStart - Called on a press on the row, which may drag the timeline sideways.
  * @returns The row's element.
  */
-export function StructureLane({ sections, pixelsPerBar, onPanStart }: StructureLaneProps) {
+export function StructureLane({ sections, pixelsPerBar }: StructureLaneProps) {
   return (
     <div className="timeline-row structure-lane">
       <div
@@ -31,7 +27,7 @@ export function StructureLane({ sections, pixelsPerBar, onPanStart }: StructureL
       >
         structure
       </div>
-      <div className="timeline-lane" onPointerDown={onPanStart}>
+      <div className="timeline-lane structure-lane-lane">
         {getStructureSpans(sections).map((span, i) => {
           const style: CSSProperties & Record<'--tile-color', string> = {
             '--tile-color': getTrackColor(span.letterIndex),
