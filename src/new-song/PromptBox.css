@@ -31,7 +31,41 @@
   cursor: pointer;
 }
 
+.prompt-box-create {
+  display: flex;
+  gap: 8px;
+}
+
+.prompt-box-count {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 4px;
+}
+
+.prompt-box-count button {
+  min-width: var(--touch);
+  min-height: 48px;
+  border: var(--border-width) solid var(--line);
+  border-radius: var(--radius);
+  background: var(--raised);
+  cursor: pointer;
+}
+
+.prompt-box-count button:disabled {
+  color: var(--muted);
+  cursor: default;
+}
+
+.prompt-box-count-number {
+  min-width: 1.5em;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+
 .prompt-box-send {
+  flex: 1;
   min-height: 48px;
   border: 0;
   border-radius: var(--radius);

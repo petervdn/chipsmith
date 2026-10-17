@@ -27,6 +27,8 @@ export type Job = {
   guides: SentGuide[];
   /** The output tokens Claude used composing, thinking included: counted as it runs, exact at its end. */
   tokens: number | null;
+  /** How many songs to make, set beside the Create button; null for a job from before it was. */
+  songCount: number | null;
   /** The structure chosen with the prompt, copied when it was sent, or null. */
   structure: SentStructure | null;
   created: string;

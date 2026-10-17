@@ -11,6 +11,7 @@ back to its file (docs/adr/0006).
 - `examples.ts`: the example songs copied into an empty data folder
 - `guides.ts`: the style guides in memory and in guides/<id>/guide.json
 - `http.ts`: answering a request: JSON, a file with byte ranges, an error
+- `job-routes.ts`: `/api/jobs`: the jobs listed, a prompt sent as a job, a job cancelled or removed
 - `job-runner.ts`: a job's way from prompt to songs: compose, build, render
 - `jobs.ts`: the jobs in memory and in jobs/<id>/job.json
 - `json-checks.ts`: checks that a value read from JSON is what a type says

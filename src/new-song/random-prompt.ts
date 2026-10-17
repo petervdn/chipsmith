@@ -8,7 +8,6 @@
  * The parts, in the order a prompt joins them. The ideas are about the music, not its form: where
  * sections fall is the Structure panel's.
  */
-const COUNTS = ['One', 'Two', 'Three'];
 const MOODS = [
   'dark',
   'sunny',
@@ -121,7 +120,6 @@ const IDEAS = [
 
 /** The parts of a prompt, by name, each a value from its list. */
 export type PromptParts = {
-  count: string;
   mood: string;
   piece: string;
   chips: string;
@@ -134,7 +132,6 @@ export type PartName = keyof PromptParts;
 
 /** Each part's label and the values it is picked from, in the order the builder shows them. */
 export const PROMPT_PARTS: { name: PartName; label: string; values: string[] }[] = [
-  { name: 'count', label: 'Songs', values: COUNTS },
   { name: 'mood', label: 'Mood', values: MOODS },
   { name: 'piece', label: 'Piece', values: PIECES },
   { name: 'chips', label: 'Chips', values: CHIPS },
@@ -160,7 +157,6 @@ export function rollParts(
     return values[Math.floor(getRandom() * values.length)] ?? values[0] ?? '';
   }
   return {
-    count: pick('count', COUNTS),
     mood: pick('mood', MOODS),
     piece: pick('piece', PIECES),
     chips: pick('chips', CHIPS),
@@ -173,15 +169,13 @@ export function rollParts(
  * Returns the prompt its parts make: one sentence.
  *
  * @param parts - The parts.
- * @param parts.count - How many songs ("One", "Two", "Three").
  * @param parts.mood - The mood.
  * @param parts.piece - The kind of piece.
  * @param parts.chips - The chips, as "for the NES".
  * @param parts.rhythm - The meter or tempo.
  * @param parts.idea - One thing to build it around.
- * @returns The prompt, "song" for one song and "songs" for more.
+ * @returns The prompt, one sentence without a count: how many songs is set beside the Create button.
  */
-export function getPromptText({ count, mood, piece, chips, rhythm, idea }: PromptParts): string {
-  const song = count === 'One' ? 'song' : 'songs';
-  return `${count} ${mood} ${song}: ${piece} ${chips}, ${rhythm}, ${idea}.`;
+export function getPromptText({ mood, piece, chips, rhythm, idea }: PromptParts): string {
+  return `${mood.charAt(0).toUpperCase()}${mood.slice(1)} ${piece} ${chips}, ${rhythm}, ${idea}.`;
 }

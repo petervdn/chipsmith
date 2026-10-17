@@ -20,23 +20,16 @@ import type { Clip } from '../shared/clip.types.ts';
 import type { Song } from '../shared/song.types.ts';
 import { getSongSeconds } from '../shared/song-length.ts';
 import { sendError, sendFile, sendJson, readJsonBody } from './http.ts';
-import { getArray, getObject, getString, getStringOrNull } from './json-checks.ts';
-import { cancelJob, startJobRunner } from './job-runner.ts';
+import { getObject } from './json-checks.ts';
+import { startJobRunner } from './job-runner.ts';
 import type { JobStore } from './jobs.ts';
-import { createJob, listJobs, openJobs, removeJob } from './jobs.ts';
+import { openJobs } from './jobs.ts';
 import { copyExamplesIfEmpty } from './examples.ts';
 import { splitSong } from '../make/split-song.ts';
 import { isAudioMissing, renderMissingAudio } from './missing-audio.ts';
 import { checkGuideDraft, checkStatus, checkTags, checkTracks } from './model-checks.ts';
 import type { GuideStore } from './guides.ts';
-import {
-  createGuide,
-  deleteGuide,
-  getSentGuides,
-  listGuides,
-  openGuides,
-  updateGuide,
-} from './guides.ts';
+import { createGuide, deleteGuide, listGuides, openGuides, updateGuide } from './guides.ts';
 import type { Store } from './store.ts';
 import {
   getClipFolder,
@@ -46,8 +39,8 @@ import {
   saveClip,
   saveSong,
 } from './store.ts';
-import { checkSentStructure } from './structure-checks.ts';
 import { routeStructures } from './structure-routes.ts';
+import { routeJobs } from './job-routes.ts';
 import type { StructureStore } from './structures.ts';
 import { openStructures } from './structures.ts';
 import { fillClipChannels } from './clip-channels.ts';
@@ -176,28 +169,8 @@ async function route(
     return;
   }
   if (area !== 'api') return sendError(response, 404, 'not found');
-  if (kind === 'jobs' && !id && method === 'GET') return sendJson(response, listJobs(jobs));
-  if (kind === 'jobs' && id && file === 'cancel' && method === 'POST') {
-    if (!jobs.jobs.has(id)) return sendError(response, 404, `no job ${id}`);
-    cancelJob(jobs, id);
-    return sendJson(response, listJobs(jobs));
-  }
-  if (kind === 'jobs' && id && method === 'DELETE') {
-    if (!jobs.jobs.has(id)) return sendError(response, 404, `no job ${id}`);
-    removeJob(jobs, id);
-    return sendJson(response, listJobs(jobs));
-  }
-  if (kind === 'jobs' && !id && method === 'POST') {
-    const body = getObject(await readJsonBody(request), 'body');
-    const prompt = getString(body['prompt'], 'body.prompt').trim();
-    if (!prompt) return sendError(response, 400, 'the prompt is empty');
-    const fromSong = getStringOrNull(body['fromSong'] ?? null, 'body.fromSong');
-    const song = fromSong ? store.songs.get(fromSong) : null;
-    if (fromSong && !song) return sendError(response, 400, `no song ${fromSong}`);
-    const guideIds = getArray(body['guideIds'] ?? [], 'body.guideIds', getString);
-    const sent = getSentGuides(guides, guideIds);
-    const structure = checkSentStructure(body['structure'], 'body.structure');
-    return sendJson(response, createJob(jobs, prompt, sent, song ? song.id : null, structure));
+  if (kind === 'jobs') {
+    return routeJobs({ store, jobs, guides }, request, response, { id, file, method });
   }
   if (kind === 'guides') return routeGuides(guides, request, response, { id, method });
   if (kind === 'structures') {

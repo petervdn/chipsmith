@@ -39,6 +39,7 @@ export function openJobs(root: string): JobStore {
         now: job.now ?? null,
         structure: job.structure ?? null,
         tokens: job.tokens ?? null,
+        songCount: job.songCount ?? null,
       });
     } catch {
       /* a job.json that does not read is left; jobs are a log, not data */
@@ -66,6 +67,7 @@ export function getJobFolder(store: JobStore, jobId: string): string {
  * @param guides - Copies of the guides chosen with the prompt.
  * @param promptedFrom - The id of the song whose prompt was sent again, or null.
  * @param structure - The structure chosen with the prompt, copied, or null for none.
+ * @param songCount - How many songs to make, or null to leave it to the prompt.
  * @returns The job made.
  */
 export function createJob(
@@ -74,6 +76,7 @@ export function createJob(
   guides: SentGuide[],
   promptedFrom: string | null,
   structure: SentStructure | null = null,
+  songCount: number | null = null,
 ): Job {
   const id = claimId(store.root, JOB_IDS);
   const now = new Date().toISOString();
@@ -82,6 +85,7 @@ export function createJob(
     prompt,
     guides,
     structure,
+    songCount,
     tokens: null,
     created: now,
     phase: 'queued',

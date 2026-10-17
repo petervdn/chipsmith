@@ -76,7 +76,7 @@ export function useCancelJob() {
  *
  * @returns The mutation, called with the `prompt`, the song it is sent again from (`fromSong`, or
  * null), the ids of the style guides sent with it (`guideIds`) and the structure sent with it
- * (`structure`, or null).
+ * (`structure`, or null), and how many songs to make (`songCount`).
  */
 export function useSendPrompt() {
   return useMutation({
@@ -85,12 +85,14 @@ export function useSendPrompt() {
       fromSong,
       guideIds,
       structure,
+      songCount,
     }: {
       prompt: string;
       fromSong: string | null;
       guideIds: string[];
       structure: SentStructure | null;
-    }) => sendJson<Job>('/api/jobs', 'POST', { prompt, fromSong, guideIds, structure }),
+      songCount: number;
+    }) => sendJson<Job>('/api/jobs', 'POST', { prompt, fromSong, guideIds, structure, songCount }),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: getQueryKey({ type: 'jobs' }) }),
   });
 }

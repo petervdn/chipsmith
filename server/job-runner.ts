@@ -160,6 +160,9 @@ function startComposing(jobs: JobStore, job: Job): ClaudeWatch {
       `The data folder (songs/, clips/) is ${getProjectPath(jobs.root)}.`,
       `The script imports the project's modules from ${relative(folder, PROJECT_FOLDER)}/ (e.g. ${relative(folder, PROJECT_FOLDER)}/make/fur-file-builder.ts).`,
       '',
+      job.songCount
+        ? `Make ${job.songCount} ${job.songCount === 1 ? 'song' : 'songs'}: this count wins over any in the prompt.`
+        : '',
       "The user's prompt:",
       job.prompt,
       ...getGuideLines(job.guides),

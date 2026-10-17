@@ -16,6 +16,10 @@ import './PromptBox.css';
 /** The song a prompt is sent again from: its id, its title, and whether it changed after its prompt. */
 export type PromptSource = { songId: string; title: string; isChangedAfterPrompt: boolean };
 
+/** How many songs a prompt makes to start with, and the most it can. */
+const DEFAULT_SONGS = 1;
+const MOST_SONGS = 6;
+
 type PromptBoxProps = {
   initialText: string;
   source: PromptSource | null;
@@ -38,6 +42,7 @@ export function PromptBox({ initialText, source, onClearSource }: PromptBoxProps
   const [text, setText] = useState(initialText);
   const [isBuilding, setBuilding] = useState(false);
   const [usedText, setUsedText] = useState('');
+  const [songCount, setSongCount] = useState(DEFAULT_SONGS);
   const isFocusAtEnd = initialText.endsWith(': ');
   const { mutate: sendPrompt, isPending: isSending, error } = useSendPrompt();
   const { guides, chosenIds, toggleGuide, resetChoice } = useGuideChoice();
@@ -51,6 +56,7 @@ export function PromptBox({ initialText, source, onClearSource }: PromptBoxProps
         fromSong: source?.songId ?? null,
         guideIds: chosenIds,
         structure: structureChoice.sent,
+        songCount,
       },
       {
         onSuccess: () => {
@@ -128,9 +134,30 @@ export function PromptBox({ initialText, source, onClearSource }: PromptBoxProps
       )}
       <StructurePanel choice={structureChoice} />
       <GuideChips guides={guides} chosenIds={chosenIds} onToggle={toggleGuide} />
-      <button type="submit" className="prompt-box-send" disabled={!text.trim() || isSending}>
-        {isSending ? 'Sending…' : 'Create song'}
-      </button>
+      <div className="prompt-box-create">
+        <span className="prompt-box-count" aria-label="how many songs">
+          <button
+            type="button"
+            onClick={() => setSongCount(Math.max(1, songCount - 1))}
+            disabled={songCount <= 1}
+            title="one song fewer"
+          >
+            −
+          </button>
+          <span className="prompt-box-count-number">{songCount}</span>
+          <button
+            type="button"
+            onClick={() => setSongCount(Math.min(MOST_SONGS, songCount + 1))}
+            disabled={songCount >= MOST_SONGS}
+            title="one song more"
+          >
+            +
+          </button>
+        </span>
+        <button type="submit" className="prompt-box-send" disabled={!text.trim() || isSending}>
+          {isSending ? 'Sending…' : `Create ${songCount} ${songCount === 1 ? 'song' : 'songs'}`}
+        </button>
+      </div>
       {error && <p className="error">{error.message}</p>}
     </form>
   );
