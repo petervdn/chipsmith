@@ -238,7 +238,13 @@ export function JobCard({ job, onRemove }: JobCardProps) {
         )}
       </dl>
       {job.error && <p className="error">{job.error}</p>}
-      <JobSteps job={job} isRunning={isRunning} elapsed={elapsed} now={getNowText(job)} />
+      <JobSteps
+        job={job}
+        isRunning={isRunning}
+        elapsed={elapsed}
+        now={getNowText(job)}
+        totalTokens={totalTokens}
+      />
     </section>
   );
 }

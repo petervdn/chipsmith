@@ -1,5 +1,6 @@
 /* The look of JobSteps.tsx: the current step on one line with the toggle at its right; every step
-   in a grid of time, bar and text, the text wrapping beside its bar; nothing scrolls inside it. */
+   in a grid of time, bar, text and tokens, the text wrapping beside its bar; nothing scrolls
+   inside it. */
 
 .job-steps-current {
   display: flex;
@@ -58,15 +59,22 @@
 
 .job-steps-list li {
   display: grid;
-  grid-template-columns: 44px 64px minmax(0, 1fr);
+  grid-template-columns: 44px 64px minmax(0, 1fr) auto;
   align-items: start;
   gap: 8px;
   padding: 1px 0;
 }
 
-.job-steps-time {
+.job-steps-time,
+.job-steps-tokens {
   color: var(--muted);
   font-variant-numeric: tabular-nums;
+}
+
+.job-steps-tokens {
+  font-size: 0.75rem;
+  text-align: right;
+  white-space: nowrap;
 }
 
 .job-steps-length {

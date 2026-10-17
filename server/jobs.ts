@@ -41,6 +41,7 @@ export function openJobs(root: string): JobStore {
         tokens: job.tokens ?? null,
         nowTokens: job.nowTokens ?? null,
         songCount: job.songCount ?? null,
+        notes: job.notes.map((note) => ({ ...note, tokens: note.tokens ?? null })),
       });
     } catch {
       /* a job.json that does not read is left; jobs are a log, not data */
@@ -93,7 +94,7 @@ export function createJob(
     phase: 'queued',
     phaseStarted: now,
     finished: null,
-    notes: [{ at: now, text: 'prompt received' }],
+    notes: [{ at: now, text: 'prompt received', tokens: 0 }],
     now: null,
     songs: [],
     summary: null,
@@ -169,7 +170,7 @@ export function setPhase(store: JobStore, jobId: string, phase: JobPhase, note: 
 }
 
 /**
- * Adds notes to a job. Only the last 200 notes are kept.
+ * Adds notes to a job, each with the job's tokens so far. Only the last 200 notes are kept.
  *
  * @param store - The jobs in memory.
  * @param jobId - The job's id; an unknown id is an error.
@@ -180,7 +181,8 @@ export function addNotes(store: JobStore, jobId: string, texts: string[]): Job {
   const job = store.jobs.get(jobId);
   if (!job) throw new Error(`no job ${jobId}`);
   const at = new Date().toISOString();
-  const notes = [...job.notes, ...texts.map((text) => ({ at, text }))].slice(-MOST_NOTES);
+  const tokens = job.tokens ?? 0;
+  const notes = [...job.notes, ...texts.map((text) => ({ at, text, tokens }))].slice(-MOST_NOTES);
   return updateJob(store, jobId, { notes });
 }
 

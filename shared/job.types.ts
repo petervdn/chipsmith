@@ -10,7 +10,12 @@ export type JobPhase =
   'queued' | 'composing' | 'building' | 'rendering' | 'done' | 'failed' | 'cancelled';
 
 /** What happened in a job, as it happened: Claude's notes and the steps after it. */
-export type JobNote = { at: string; text: string };
+export type JobNote = {
+  at: string;
+  text: string;
+  /** The job's output tokens when the note was written; null for a note from before they were kept. */
+  tokens: number | null;
+};
 
 /** A song a job makes, from the moment its script built it. */
 export type JobSong = {
