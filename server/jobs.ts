@@ -153,7 +153,7 @@ export function updateJob(store: JobStore, jobId: string, change: Partial<Job>):
  */
 export function setPhase(store: JobStore, jobId: string, phase: JobPhase, note: string): Job {
   const now = new Date().toISOString();
-  const isEnd = phase === 'done' || phase === 'failed';
+  const isEnd = phase === 'done' || phase === 'failed' || phase === 'cancelled';
   const job = updateJob(store, jobId, {
     phase,
     phaseStarted: now,

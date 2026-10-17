@@ -14,7 +14,7 @@ import { makeSong } from '../make/make-song.ts';
 import { readFurFile } from '../fur/read.ts';
 import type { LogPlace } from './claude-log.ts';
 import { LOG_START, readLogNews, readRunTokens } from './claude-log.ts';
-import { isRunning, startClaude } from './claude-run.ts';
+import { isRunning, startClaude, stopClaude } from './claude-run.ts';
 import type { JobStore } from './jobs.ts';
 import { addNotes, getJobFolder, setPhase, updateJob } from './jobs.ts';
 import type { Store } from './store.ts';
@@ -107,7 +107,10 @@ export function startJobRunner(jobs: JobStore, store: Store, isResuming: boolean
   let watch: ClaudeWatch | null = null;
   let isBusy = false;
   for (const job of jobs.jobs.values()) {
-    if ((job.tokens ?? null) === null && (job.phase === 'done' || job.phase === 'failed')) {
+    if (
+      (job.tokens ?? null) === null &&
+      (job.phase === 'done' || job.phase === 'failed' || job.phase === 'cancelled')
+    ) {
       const tokens = readRunTokens(join(getJobFolder(jobs, job.id), 'claude.log'));
       if (tokens !== null) updateJob(jobs, job.id, { tokens });
     }
@@ -123,6 +126,8 @@ export function startJobRunner(jobs: JobStore, store: Store, isResuming: boolean
       if (resumed) {
         addNotes(jobs, resumed.id, ['the server restarted; going on where it stopped']);
         await buildAndRender(jobs, store, resumed.id);
+      } else if (watch && jobs.jobs.get(watch.jobId)?.phase === 'cancelled') {
+        watch = null;
       } else if (watch) {
         watch = await followClaude(jobs, store, watch);
       } else {
@@ -133,7 +138,9 @@ export function startJobRunner(jobs: JobStore, store: Store, isResuming: boolean
       }
     } catch (error) {
       const failedId = watch?.jobId ?? null;
-      if (failedId) failJob(jobs, failedId, error);
+      if (failedId && jobs.jobs.get(failedId)?.phase !== 'cancelled') {
+        failJob(jobs, failedId, error);
+      }
       watch = null;
     } finally {
       isBusy = false;
@@ -231,6 +238,7 @@ async function buildAndRender(jobs: JobStore, store: Store, jobId: string): Prom
   if (before?.phase !== 'rendering' || !existsSync(planFile)) {
     setPhase(jobs, jobId, 'building', 'running the script');
     await runBuild(scriptFile, buildFolder);
+    if (jobs.jobs.get(jobId)?.phase === 'cancelled') return;
   }
   const plans: BuiltPlan[] = JSON.parse(readFileSync(planFile, 'utf8'));
   let songs: JobSong[] = plans.map(({ title }, i) => {
@@ -248,6 +256,7 @@ async function buildAndRender(jobs: JobStore, store: Store, jobId: string): Prom
   );
   const job = jobs.jobs.get(jobId);
   for (const [i, plan] of plans.entries()) {
+    if (jobs.jobs.get(jobId)?.phase === 'cancelled') return;
     if (songs[i]?.state === 'done') continue;
     songs = songs.map((song, index) => (index === i ? { ...song, state: 'rendering' } : song));
     updateJob(jobs, jobId, { songs });
@@ -276,6 +285,7 @@ async function buildAndRender(jobs: JobStore, store: Store, jobId: string): Prom
     }
     updateJob(jobs, jobId, { songs });
   }
+  if (jobs.jobs.get(jobId)?.phase === 'cancelled') return;
   const failed = songs.filter((song) => song.state === 'failed').length;
   setPhase(
     jobs,
@@ -310,4 +320,25 @@ function failJob(jobs: JobStore, jobId: string, error: unknown): void {
 
 function getMessage(error: unknown): string {
   return error instanceof Error ? error.message : String(error);
+}
+
+/**
+ * Cancels a job on its way: one waiting or composing stops at once (Claude is stopped), one building
+ * or rendering stops after the song it is on. The songs made already stay.
+ *
+ * @param jobs - The jobs in memory.
+ * @param jobId - The job to cancel; one that is over is left as it is.
+ */
+export function cancelJob(jobs: JobStore, jobId: string): void {
+  const job = jobs.jobs.get(jobId);
+  if (!job || job.finished) return;
+  if (job.phase === 'composing' && job.claudePid) stopClaude(job.claudePid);
+  setPhase(
+    jobs,
+    jobId,
+    'cancelled',
+    job.phase === 'building' || job.phase === 'rendering'
+      ? 'cancelled; the song being made is finished, the rest are not'
+      : 'cancelled',
+  );
 }

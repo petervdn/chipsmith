@@ -21,7 +21,7 @@ import type { Song } from '../shared/song.types.ts';
 import { getSongSeconds } from '../shared/song-length.ts';
 import { sendError, sendFile, sendJson, readJsonBody } from './http.ts';
 import { getArray, getObject, getString, getStringOrNull } from './json-checks.ts';
-import { startJobRunner } from './job-runner.ts';
+import { cancelJob, startJobRunner } from './job-runner.ts';
 import type { JobStore } from './jobs.ts';
 import { createJob, listJobs, openJobs, removeJob } from './jobs.ts';
 import { copyExamplesIfEmpty } from './examples.ts';
@@ -173,6 +173,11 @@ async function route(
   }
   if (area !== 'api') return sendError(response, 404, 'not found');
   if (kind === 'jobs' && !id && method === 'GET') return sendJson(response, listJobs(jobs));
+  if (kind === 'jobs' && id && file === 'cancel' && method === 'POST') {
+    if (!jobs.jobs.has(id)) return sendError(response, 404, `no job ${id}`);
+    cancelJob(jobs, id);
+    return sendJson(response, listJobs(jobs));
+  }
   if (kind === 'jobs' && id && method === 'DELETE') {
     if (!jobs.jobs.has(id)) return sendError(response, 404, `no job ${id}`);
     removeJob(jobs, id);

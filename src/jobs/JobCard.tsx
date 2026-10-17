@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import type { Job, JobPhase, JobSong } from '../../shared/job.types.ts';
 import { formatSeconds, formatTokens } from '../format.ts';
 import { writeNotation } from '../../shared/structure-notation.ts';
-import { isJobRunning } from '../queries/jobs.ts';
+import { isJobRunning, useCancelJob } from '../queries/jobs.ts';
 import { JobSteps } from './JobSteps.tsx';
 import './jobs.css';
 import './JobCard.css';
@@ -18,7 +18,12 @@ const PHASE_NAMES = {
   rendering: 'Rendering',
   done: 'Done',
   failed: 'Failed',
+  cancelled: 'Cancelled',
 } satisfies Record<JobPhase, string>;
+
+/** What Cancel asks before it stops a job. */
+const CANCEL_QUESTION =
+  'Cancel this job? Claude stops; a song being rendered is finished, the rest are not made. Songs made already stay.';
 
 /** What a song of the job is doing, said beside its title. */
 const SONG_STATES = {
@@ -87,6 +92,7 @@ export function getNowText({ now, notes }: Job): string {
 export function JobCard({ job, onRemove }: JobCardProps) {
   const isRunning = isJobRunning(job);
   const [isOpen, setOpen] = useState(isRunning);
+  const { mutate: cancelJob } = useCancelJob();
   const elapsed = useElapsed(job);
   const tokens = (
     <span className="job-card-tokens" title="the tokens Claude wrote, thinking included">
@@ -123,9 +129,9 @@ export function JobCard({ job, onRemove }: JobCardProps) {
           <span className="jobs-time">{formatSeconds(elapsed)}</span>
           {tokens}
           <span className="job-card-outcome">
-            {job.phase === 'failed'
-              ? 'failed'
-              : `${madeCount} ${madeCount === 1 ? 'song' : 'songs'}`}
+            {job.phase === 'done'
+              ? `${madeCount} ${madeCount === 1 ? 'song' : 'songs'}`
+              : job.phase}
           </span>
           {removeButton}
         </header>
@@ -155,6 +161,18 @@ export function JobCard({ job, onRemove }: JobCardProps) {
         )}
         <span className="jobs-time">{formatSeconds(elapsed)}</span>
         {tokens}
+        {isRunning && (
+          <button
+            type="button"
+            className="job-card-cancel"
+            onClick={() => {
+              if (window.confirm(CANCEL_QUESTION)) cancelJob(job.id);
+            }}
+            title="stop this job"
+          >
+            Cancel
+          </button>
+        )}
         {removeButton}
       </header>
       <dl className="job-card-facts">

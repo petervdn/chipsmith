@@ -61,9 +61,26 @@ export function startClaude({
 }
 
 /**
- * Checks whether a process still runs.
+ * Stops a Claude run and what it started (its process group, as it runs detached).
  *
- * @param pid - The process id.
+ * @param pid - The process id of Claude.
+ */
+export function stopClaude(pid: number): void {
+  try {
+    process.kill(-pid, 'SIGTERM');
+  } catch {
+    try {
+      process.kill(pid, 'SIGTERM');
+    } catch {
+      /* it has stopped already */
+    }
+  }
+}
+
+/**
+ * Tells whether a process still runs.
+ *
+ * @param pid - The process's id.
  * @returns Whether it runs.
  */
 export function isRunning(pid: number): boolean {

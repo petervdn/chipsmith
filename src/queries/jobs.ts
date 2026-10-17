@@ -21,7 +21,7 @@ const IDLE_INTERVAL = 5000;
  * @returns True until it is done or has failed.
  */
 export function isJobRunning({ phase }: Job): boolean {
-  return phase !== 'done' && phase !== 'failed';
+  return phase !== 'done' && phase !== 'failed' && phase !== 'cancelled';
 }
 
 /**
@@ -54,6 +54,19 @@ export function useRemoveJob() {
   return useMutation({
     mutationFn: (jobId: string) =>
       sendJson<Job[]>(`/api/jobs/${encodeURIComponent(jobId)}`, 'DELETE', null),
+    onSuccess: (jobs) => queryClient.setQueryData(getQueryKey({ type: 'jobs' }), jobs),
+  });
+}
+
+/**
+ * Cancels a job on its way; the server's list becomes the cached one.
+ *
+ * @returns The mutation, called with the job's id.
+ */
+export function useCancelJob() {
+  return useMutation({
+    mutationFn: (jobId: string) =>
+      sendJson<Job[]>(`/api/jobs/${encodeURIComponent(jobId)}/cancel`, 'POST', {}),
     onSuccess: (jobs) => queryClient.setQueryData(getQueryKey({ type: 'jobs' }), jobs),
   });
 }

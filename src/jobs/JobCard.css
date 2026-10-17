@@ -163,6 +163,20 @@
   color: var(--reject);
 }
 
+.job-card.is-cancelled {
+  border-color: var(--line);
+}
+
+.job-card-cancel {
+  min-height: var(--touch);
+  padding: 0 12px;
+  border: var(--border-width) solid var(--line);
+  border-radius: var(--radius);
+  background: var(--raised);
+  color: var(--reject);
+  cursor: pointer;
+}
+
 .job-card.is-closed .jobs-time {
   width: 44px;
   margin-left: 8px;

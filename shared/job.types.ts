@@ -6,7 +6,8 @@ import type { SentGuide } from './guide.types.ts';
 import type { SentStructure } from './structure.types.ts';
 
 /** Where a job is. */
-export type JobPhase = 'queued' | 'composing' | 'building' | 'rendering' | 'done' | 'failed';
+export type JobPhase =
+  'queued' | 'composing' | 'building' | 'rendering' | 'done' | 'failed' | 'cancelled';
 
 /** What happened in a job, as it happened: Claude's notes and the steps after it. */
 export type JobNote = { at: string; text: string };
