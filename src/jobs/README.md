@@ -5,6 +5,7 @@ The jobs: their page, a job's card, and the line of a running one.
 - `job-steps.ts`: how long each step of a job took, and its share of the job
 - `JobCard.css`: the look of JobCard.tsx
 - `JobCard.tsx`: a job's card on the Jobs page
+- `job-totals.ts`: what jobs that are over came to: songs, time, tokens
 - `jobs.css`: what the jobs' parts share: the spinner and the time
 - `JobsPage.css`: the look of JobsPage.tsx
 - `JobsPage.tsx`: every prompt sent, as a card, newest first

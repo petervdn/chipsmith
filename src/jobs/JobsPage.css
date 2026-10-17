@@ -1,4 +1,5 @@
-/* The look of JobsPage.tsx. */
+/* The look of JobsPage.tsx: the Done heading holds the totals in the columns of a folded card below
+   (JobCard.css: its padding and border, time 44 px, tokens and songs 64 px, room for ✕). */
 
 .jobs-page-heading {
   margin: 20px 0 8px;
@@ -7,4 +8,46 @@
   text-transform: uppercase;
   letter-spacing: 0.03em;
   color: var(--muted);
+}
+
+.jobs-page-totals {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 0 calc(12px + var(--border-width));
+  font-variant-numeric: tabular-nums;
+}
+
+.jobs-page-totals-label {
+  flex: 1;
+}
+
+.jobs-page-totals-time {
+  width: 44px;
+  margin-left: 8px;
+  text-align: right;
+}
+
+.jobs-page-totals-tokens,
+.jobs-page-totals-songs {
+  width: 64px;
+  text-align: right;
+}
+
+.jobs-page-totals-time,
+.jobs-page-totals-tokens,
+.jobs-page-totals-songs {
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+  white-space: nowrap;
+}
+
+.jobs-page-totals-tokens {
+  font-size: 0.75rem;
+}
+
+.jobs-page-totals-songs {
+  /* a folded card's gap and ✕, less the 8 px the ✕ reaches out by */
+  margin-right: var(--touch);
 }

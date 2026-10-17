@@ -1,7 +1,10 @@
 // The Jobs page: every prompt sent, as a card, newest first: the ones on their way, then the ones
-// done or failed, each with ✕ to take it off the list. Sending a prompt on New leads here.
+// done or failed, each with ✕ to take it off the list, under a heading with their totals (songs,
+// time, tokens) in the columns the cards show them in. Sending a prompt on New leads here.
 import type { Job } from '../../shared/job.types.ts';
+import { formatSeconds, formatTokens } from '../format.ts';
 import { JobCard } from './JobCard.tsx';
+import { getJobTotals } from './job-totals.ts';
 import { isJobRunning, useRemoveJob } from '../queries/jobs.ts';
 import { usePageTitle } from '../use-page-title.ts';
 import { Breadcrumbs } from '../Breadcrumbs.tsx';
@@ -21,6 +24,7 @@ export function JobsPage({ jobs }: JobsPageProps) {
   const { mutate: removeJob } = useRemoveJob();
   const running = jobs.filter(isJobRunning);
   const finished = jobs.filter((job) => !isJobRunning(job));
+  const totals = getJobTotals(finished);
   return (
     <section className="jobs-page">
       <Breadcrumbs crumbs={[{ label: 'Jobs' }]} />
@@ -33,7 +37,20 @@ export function JobsPage({ jobs }: JobsPageProps) {
       {running.map((job) => (
         <JobCard key={job.id} job={job} />
       ))}
-      {finished.length > 0 && <h2 className="jobs-page-heading">Done</h2>}
+      {finished.length > 0 && (
+        <h2 className="jobs-page-heading jobs-page-totals">
+          <span className="jobs-page-totals-label">Done</span>
+          <span className="jobs-page-totals-time" title="the time the jobs took, added up">
+            {formatSeconds(totals.seconds)}
+          </span>
+          <span className="jobs-page-totals-tokens" title="the tokens Claude wrote, added up">
+            {totals.tokens ? formatTokens(totals.tokens) : ''}
+          </span>
+          <span className="jobs-page-totals-songs" title="the songs the jobs made, added up">
+            {totals.songCount} {totals.songCount === 1 ? 'song' : 'songs'}
+          </span>
+        </h2>
+      )}
       {finished.map((job) => (
         <JobCard key={job.id} job={job} onRemove={() => removeJob(job.id)} />
       ))}
