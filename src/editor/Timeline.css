@@ -155,6 +155,20 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* a lane's empty space and the room under the tracks: dragged with a mouse, the timeline scrolls */
+.timeline-lane {
+  cursor: grab;
+}
+
+.timeline-lane:active {
+  cursor: grabbing;
+}
+
+.timeline-room-row {
+  height: 32px;
+  border-bottom: 0;
+}
+
 /* the playhead: a line over the lanes, moved by its transform */
 .timeline-playhead {
   position: absolute;

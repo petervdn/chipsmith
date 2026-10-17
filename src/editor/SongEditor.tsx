@@ -32,6 +32,7 @@ import { useElementWidth } from './use-element-width.ts';
 import { useSongDraft } from './use-song-draft.ts';
 import { useHeardTracks } from './use-heard-tracks.ts';
 import { useSongTransport } from './use-song-transport.ts';
+import { useTimelinePan } from './use-timeline-pan.ts';
 import { useTrackMix } from './use-track-mix.ts';
 import { TRACK_NAME_WIDTH, useZoom } from './use-zoom.ts';
 import { useWheelZoom } from './use-wheel-zoom.ts';
@@ -83,6 +84,7 @@ export function SongEditor({ detail }: SongEditorProps) {
     ticksPerBar,
     onEdit: (edited) => draft.edit(() => edited),
   });
+  const pan = useTimelinePan(scrollRef);
   useEdgeScroll(scrollRef, {
     isDragging: drag.preview !== null || clipDrag.drag !== null,
     leftInset: TRACK_NAME_WIDTH,
@@ -234,10 +236,11 @@ export function SongEditor({ detail }: SongEditorProps) {
           onSelect={draft.select}
           onMoveTo={transport.moveTo}
           onPress={drag.startPress}
-          wasDragged={drag.wasDragged}
+          wasDragged={() => drag.wasDragged() || pan.wasPanned()}
           onToggleMute={toggleMute}
           onToggleSolo={toggleSolo}
           onAddTrack={() => draft.changeTracks(addTrack)}
+          onPanStart={pan.startPan}
           waitingClipIds={waitingClipIds}
         />
       </div>

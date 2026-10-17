@@ -40,6 +40,7 @@ type TimelineProps = {
   onToggleMute: (trackId: string) => void;
   onToggleSolo: (trackId: string) => void;
   onAddTrack: () => void;
+  onPanStart: (event: ReactPointerEvent) => void;
   wasDragged: () => boolean;
   waitingClipIds: string[];
 };
@@ -60,6 +61,8 @@ type TimelineProps = {
  * @param props.onToggleMute - Called with a track's id to mute or unmute it.
  * @param props.onToggleSolo - Called with a track's id to solo it or stop soloing it.
  * @param props.onAddTrack - Called to add an empty track at the bottom.
+ * @param props.onPanStart - Called on a press on empty space (a lane's, the room under the tracks),
+ *   which may drag the timeline sideways.
  * @param props.wasDragged - Tells whether a drag just ended, so its click selects nothing.
  * @param props.waitingClipIds - The clips whose audio is still being rendered.
  * @returns The timeline element.
@@ -77,6 +80,7 @@ export function Timeline({
   onToggleMute,
   onToggleSolo,
   onAddTrack,
+  onPanStart,
   wasDragged,
   waitingClipIds,
 }: TimelineProps) {
@@ -180,7 +184,10 @@ export function Timeline({
             <div
               className="timeline-lane"
               {...{ [LANE_TRACK_ATTRIBUTE]: track.id }}
-              onClick={() => onSelect(null)}
+              onPointerDown={onPanStart}
+              onClick={() => {
+                if (!wasDragged()) onSelect(null);
+              }}
             >
               {spans
                 .filter((span) => span.trackId === track.id)
@@ -209,6 +216,16 @@ export function Timeline({
           </div>
         );
       })}
+      <div className="timeline-row timeline-room-row">
+        <div className="timeline-corner" />
+        <div
+          className="timeline-lane"
+          onPointerDown={onPanStart}
+          onClick={() => {
+            if (!wasDragged()) onSelect(null);
+          }}
+        />
+      </div>
       <div className="timeline-playhead">
         <div ref={lineRef} className="timeline-playhead-line" />
         {scrub !== null && (
