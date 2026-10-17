@@ -1,0 +1,88 @@
+/* The look of PartRow.tsx: a small label above what is chosen, the die and the lock at its right,
+   faint until used; a menu in it fills its width. */
+
+.part-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 32px 32px;
+  grid-template-areas:
+    'label label label'
+    'value dice lock';
+  align-items: center;
+  gap: 2px 4px;
+}
+
+.part-row-label {
+  grid-area: label;
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+
+.part-row-value {
+  grid-area: value;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.part-row-value select {
+  flex: 1;
+  min-width: 0;
+  min-height: var(--touch);
+  padding: 0 8px;
+  border: var(--border-width) solid var(--line);
+  border-radius: var(--radius);
+  background: var(--bg);
+}
+
+.part-row-dice,
+.part-row-lock {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  min-height: 32px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius);
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.part-row-dice {
+  grid-area: dice;
+  opacity: 0.6;
+}
+
+.part-row-lock {
+  grid-area: lock;
+  opacity: 0.35;
+}
+
+.part-row-lock.is-on {
+  color: var(--fg);
+  opacity: 1;
+}
+
+@media (hover: hover) {
+  .part-row-dice:hover {
+    opacity: 1;
+  }
+  .part-row-lock:hover {
+    opacity: 0.8;
+  }
+}
+
+@media (pointer: coarse) {
+  .part-row {
+    grid-template-columns: minmax(0, 1fr) var(--touch) var(--touch);
+  }
+}
+
+.part-row-dice .lucide,
+.part-row-lock .lucide {
+  width: 14px;
+  height: 14px;
+}

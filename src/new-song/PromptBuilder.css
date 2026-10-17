@@ -1,6 +1,6 @@
 /* The look of PromptBuilder.tsx, in its panel (FoldPanel.css): the sentence large, Roll and Use at
-   its right, and the parts under it while open: per part a small label above its lock and menu, the
-   lock right of the menu, in two columns of equal width on a wide screen. */
+   its right, and the parts under it while open (PartRow.css), in two columns of equal width on a
+   wide screen. */
 
 .prompt-builder-rows {
   display: grid;
@@ -14,69 +14,15 @@
   }
 }
 
-.prompt-builder-row {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 32px 32px;
-  grid-template-areas:
-    'label label label'
-    'value dice lock';
-  align-items: center;
-  gap: 2px 4px;
-}
-
 /* the chips: a row across both columns, its switches where a menu would be */
-.prompt-builder-row.is-chips {
+.prompt-builder-rows > .part-row.is-chips {
   grid-column: 1 / -1;
   grid-template-columns: max-content 32px 32px;
 }
 
-.prompt-builder-chips {
-  grid-area: value;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-
-.prompt-builder-label {
-  grid-area: label;
-  color: var(--muted);
-  font-size: 0.75rem;
-}
-
-.prompt-builder-value {
-  grid-area: value;
-  min-width: 0;
-  min-height: var(--touch);
-  padding: 0 8px;
-  border: var(--border-width) solid var(--line);
-  border-radius: var(--radius);
-  background: var(--bg);
-}
-
-.prompt-builder-dice,
-.prompt-builder-lock {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 32px;
-  min-height: 32px;
-  padding: 0;
-  border: 0;
-  border-radius: var(--radius);
-  background: none;
-  color: var(--muted);
-  opacity: 0.35;
-  cursor: pointer;
-}
-
-.prompt-builder-lock.is-on {
-  color: var(--fg);
-  opacity: 1;
-}
-
-@media (hover: hover) {
-  .prompt-builder-lock:hover {
-    opacity: 0.8;
+@media (pointer: coarse) {
+  .prompt-builder-rows > .part-row.is-chips {
+    grid-template-columns: max-content var(--touch) var(--touch);
   }
 }
 
@@ -102,34 +48,4 @@
   background: var(--accent);
   color: var(--on-accent);
   font-weight: 600;
-}
-
-@media (pointer: coarse) {
-  .prompt-builder-row {
-    grid-template-columns: minmax(0, 1fr) var(--touch) var(--touch);
-  }
-  .prompt-builder-row.is-chips {
-    grid-template-columns: max-content var(--touch) var(--touch);
-  }
-}
-
-.prompt-builder-dice {
-  grid-area: dice;
-  opacity: 0.6;
-}
-
-@media (hover: hover) {
-  .prompt-builder-dice:hover {
-    opacity: 1;
-  }
-}
-
-.prompt-builder-lock {
-  grid-area: lock;
-}
-
-.prompt-builder-dice .lucide,
-.prompt-builder-lock .lucide {
-  width: 14px;
-  height: 14px;
 }

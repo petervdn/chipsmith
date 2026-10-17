@@ -8,6 +8,8 @@ The New page: a prompt written, or made up at random, and sent.
 - `FoldPanel.tsx`: a panel of New: its heading and what is chosen, ▸ opening what changes it
 - `NewPage.css`: the look of NewPage.tsx
 - `NewPage.tsx`: a prompt for Claude; sending it leads to Jobs
+- `PartRow.css`: the look of PartRow.tsx
+- `PartRow.tsx`: a row of a rolled panel: its label, what is chosen, a die and a lock
 - `PromptBox.css`: the look of PromptBox.tsx
 - `PromptBox.tsx`: the box where a prompt is written and sent
 - `PromptBuilder.css`: the look of PromptBuilder.tsx

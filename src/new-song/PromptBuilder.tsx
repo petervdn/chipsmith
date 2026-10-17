@@ -5,12 +5,12 @@
 // sentence in the box; the box is written to only by that button, so what is typed there afterwards
 // is the box's own.
 import { CHIP_NAMES, CHIPS } from '../../shared/chips.ts';
-import { ArrowUp, Dices, Lock, LockOpen } from 'lucide-react';
-import type { PartName } from './random-prompt.ts';
+import { ArrowUp, Dices } from 'lucide-react';
 import { getPartValues, PROMPT_PARTS } from './random-prompt.ts';
 import '../lists/lists.css';
 import { usePromptBuilder } from './use-prompt-builder.ts';
 import { FoldPanel } from './FoldPanel.tsx';
+import { PartRow } from './PartRow.tsx';
 import './PromptBuilder.css';
 
 type PromptBuilderProps = { isOpen: boolean; onToggle: () => void; onUse: (text: string) => void };
@@ -27,34 +27,6 @@ type PromptBuilderProps = { isOpen: boolean; onToggle: () => void; onUse: (text:
  */
 export function PromptBuilder({ isOpen, onToggle, onUse }: PromptBuilderProps) {
   const { parts, locked, text, roll, rollOne, pick, toggleChip, toggleLock } = usePromptBuilder();
-  function renderDice(name: PartName, label: string) {
-    return (
-      <button
-        type="button"
-        className="prompt-builder-dice"
-        onClick={() => rollOne(name)}
-        data-tooltip={`roll the ${label.toLowerCase()} again`}
-        aria-label={`roll the ${label.toLowerCase()} again`}
-      >
-        <Dices />
-      </button>
-    );
-  }
-  function renderLock(name: PartName) {
-    const isLocked = locked.includes(name);
-    return (
-      <button
-        type="button"
-        className={`prompt-builder-lock${isLocked ? ' is-on' : ''}`}
-        onClick={() => toggleLock(name)}
-        aria-pressed={isLocked}
-        data-tooltip={isLocked ? 'locked: Roll keeps it' : 'unlocked: Roll picks it again'}
-        aria-label={isLocked ? 'locked: Roll keeps it' : 'unlocked: Roll picks it again'}
-      >
-        {isLocked ? <Lock /> : <LockOpen />}
-      </button>
-    );
-  }
   return (
     <FoldPanel
       label="Build a prompt"
@@ -87,46 +59,49 @@ export function PromptBuilder({ isOpen, onToggle, onUse }: PromptBuilderProps) {
       }}
     >
       <div className="prompt-builder-rows">
-        <div className="prompt-builder-row is-chips">
-          <span className="prompt-builder-label">Chips</span>
-          <span className="prompt-builder-chips">
-            {CHIP_NAMES.map((chip) => (
-              <button
-                key={chip}
-                type="button"
-                className={`list-chip${parts.chips.includes(chip) ? ' is-on' : ''}`}
-                onClick={() => toggleChip(chip)}
-                aria-pressed={parts.chips.includes(chip)}
-                data-tooltip="switch this chip on or off (one stays on)"
-              >
-                {CHIPS[chip].label}
-              </button>
-            ))}
-          </span>
-          {renderDice('chips', 'Chips')}
-          {renderLock('chips')}
-        </div>
-        {PROMPT_PARTS.map(({ name, label }) => {
-          return (
-            <div key={name} className="prompt-builder-row">
-              <span className="prompt-builder-label">{label}</span>
-              <select
-                className="prompt-builder-value"
-                value={parts[name]}
-                onChange={(event) => pick(name, event.target.value)}
-                aria-label={label}
-              >
-                {getPartValues(name, parts).map((value) => (
-                  <option key={value} value={value}>
-                    {value}
-                  </option>
-                ))}
-              </select>
-              {renderDice(name, label)}
-              {renderLock(name)}
-            </div>
-          );
-        })}
+        <PartRow
+          label="Chips"
+          name="chips"
+          className="is-chips"
+          isLocked={locked.includes('chips')}
+          onRoll={() => rollOne('chips')}
+          onToggleLock={() => toggleLock('chips')}
+        >
+          {CHIP_NAMES.map((chip) => (
+            <button
+              key={chip}
+              type="button"
+              className={`list-chip${parts.chips.includes(chip) ? ' is-on' : ''}`}
+              onClick={() => toggleChip(chip)}
+              aria-pressed={parts.chips.includes(chip)}
+              data-tooltip="switch this chip on or off (one stays on)"
+            >
+              {CHIPS[chip].label}
+            </button>
+          ))}
+        </PartRow>
+        {PROMPT_PARTS.map(({ name, label }) => (
+          <PartRow
+            key={name}
+            label={label}
+            name={label.toLowerCase()}
+            isLocked={locked.includes(name)}
+            onRoll={() => rollOne(name)}
+            onToggleLock={() => toggleLock(name)}
+          >
+            <select
+              value={parts[name]}
+              onChange={(event) => pick(name, event.target.value)}
+              aria-label={label}
+            >
+              {getPartValues(name, parts).map((value) => (
+                <option key={value} value={value}>
+                  {value}
+                </option>
+              ))}
+            </select>
+          </PartRow>
+        ))}
       </div>
     </FoldPanel>
   );
