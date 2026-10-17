@@ -116,7 +116,31 @@ Where state lives, in this order (why: docs/adr/0017):
 
 ## Comments
 
-- **Every export has a `/** */` saying what it is**, the description alone: no `@param`, `@returns`.
+- **Every export has a `/** */` saying what it is**, in plain sentences.
+- **A function's comment is full JSDoc** (docs/adr/0021): a sentence saying what it does ("Returns
+  the tick at which a block's last repeat ends."), then a `@param` for every parameter and a
+  `@returns` for what it gives back, each with a description. No types in the tags: TypeScript has
+  them.
+  - A destructured parameter is named in the tags and each of its fields gets one:
+    `@param block - The block placed.` and `@param block.start - Where it starts, in ticks.`
+  - A component documents its props the same way (`@param props.song - …`) and returns "the …
+    element".
+  - A function that returns nothing, or a promise of nothing, has no `@returns`.
+  - `npm run lint` checks that every parameter and the return have their tag.
+
+```ts
+/**
+ * Returns the tick at which a block's last repeat ends.
+ *
+ * @param block - The block, with its start, trim and repeats.
+ * @param block.start - Where the block starts, in ticks.
+ * @param block.trim - The part of the clip it plays, or null for all of it.
+ * @param block.repeats - How many times it plays, back to back.
+ * @param clipSeconds - The length of the block's clip, in seconds.
+ * @param bpm - The song's tempo.
+ * @returns Where the last repeat ends, in ticks from the song's start.
+ */
+```
 - **A comment of more than one line is a block**; `//` only for one line.
 
 ## One of each

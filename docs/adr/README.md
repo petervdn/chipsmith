@@ -34,3 +34,4 @@ Consequences.
 | [0018](0018-what-is-made-is-not-in-git.md) | What is made is never in git; five examples are, and missing audio is rendered on start | accepted |
 | [0019](0019-style-guides-are-part-of-the-prompt.md) | Style guides are part of the prompt: chosen per prompt, copied into what it makes | accepted |
 | [0020](0020-the-page-is-grouped-by-area.md) | The page is grouped by area; a component's CSS is beside it; no barrel files | accepted |
+| [0021](0021-comments-are-full-jsdoc.md) | A function's comment is full JSDoc, checked by the linter | accepted |
