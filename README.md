@@ -1,9 +1,13 @@
 # chipsmith
 
-Chiptune songs made from prompts. You write what you want ("three dark NES funk grooves in odd
-meters"); Claude composes it as a script that writes [Furnace](https://github.com/tildearrow/furnace)
-modules for the NES and Konami SCC+; Furnace renders them; the songs show up in a web app you can
-listen to from your phone, keep, reject, prompt again or build on.
+Chiptune songs made from prompts, and remade a piece at a time. You write what you want; Claude
+composes it as [Furnace](https://github.com/tildearrow/furnace) modules; Furnace renders them; the
+songs show up in a web app you can listen to from your phone, keep, reject, prompt again or build on.
+
+**The main idea: a song breaks down into parts as fine as you want.** Each part is a clip: a stretch
+of bars, one track or several, with its own Furnace file, its own audio and the prompt that made it.
+So a song can be prompted again part by part: "make the bass in the second section busier" makes a
+new version of just that clip, and the rest of the song stays as it is.
 
 An unofficial tool: it uses Furnace's command line, and is not part of the Furnace project.
 
@@ -19,11 +23,18 @@ prompt (New page)
 ```
 
 - **A song** is an arrangement: tracks of blocks, each block playing a clip at a time.
-- **A clip** is one piece of audio with everything about it in its own folder: `clip.json` (its
-  prompt, slice, tags, status), `source.fur`, the script that wrote it, and `audio.flac`. Clips never
-  change; a change is a new clip.
+- **A clip** is one piece of audio, the whole song or a slice of it (bars × channels), with
+  everything about it in its own folder: `clip.json` (its prompt, slice, tags, status), its own
+  `source.fur`, the script that wrote it, and `audio.flac`. Clips never change: a change is a new
+  clip whose parent is the old one, so every part keeps its history of prompts.
+- **A new song starts as one whole clip** and is split into sections and tracks when you work on it,
+  as far as you want (docs/adr/0010).
 - **The files are the data**: `clips/` and `songs/` hold JSON the server reads into memory when it
   starts. There is no database.
+
+**Where it stands:** making songs from prompts, listening, keeping, rejecting, prompting again and
+building on a song work. Splitting a song into parts and prompting a part again come with the song
+editor, which is next.
 
 How it is built and why: [docs/architecture.md](docs/architecture.md), the decisions in
 [docs/adr/](docs/adr/README.md), the rules code is written by in
