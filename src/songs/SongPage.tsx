@@ -3,6 +3,7 @@ import { formatMeter } from '../format.ts';
 import { SongEditor } from '../editor/SongEditor.tsx';
 import { useSong } from '../queries/songs.ts';
 import { usePageTitle } from '../use-page-title.ts';
+import { Breadcrumbs } from '../Breadcrumbs.tsx';
 import './SongPage.css';
 
 type SongPageProps = { songId: string };
@@ -22,7 +23,7 @@ export function SongPage({ songId }: SongPageProps) {
   const { song } = detail;
   return (
     <section className="song-page">
-      <h1 className="song-page-title">{song.title}</h1>
+      <Breadcrumbs crumbs={[{ label: 'Songs', href: '/songs' }, { label: song.title }]} />
       <p className="song-page-facts">
         {Math.round(song.bpm)} bpm · {formatMeter(song.beats)} · {song.tracks.length}{' '}
         {song.tracks.length === 1 ? 'track' : 'tracks'}

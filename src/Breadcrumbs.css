@@ -1,0 +1,40 @@
+/* The look of Breadcrumbs.tsx: the outer crumbs small and muted, the page's own as its heading. */
+
+.breadcrumbs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 8px;
+  margin: 4px 0 12px;
+  min-width: 0;
+}
+
+.breadcrumbs-step {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.breadcrumbs-link {
+  color: var(--muted);
+  font-size: 1.125rem;
+  text-decoration: none;
+}
+
+a.breadcrumbs-link:hover {
+  color: var(--fg);
+  text-decoration: underline;
+}
+
+.breadcrumbs-mark {
+  color: var(--muted);
+  font-size: 1.125rem;
+}
+
+.breadcrumbs-current {
+  margin: 0;
+  overflow: hidden;
+  font-size: 1.375rem;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}

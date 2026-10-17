@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { GuideEditor } from './GuideEditor.tsx';
 import { useGuides } from '../queries/guides.ts';
 import { usePageTitle } from '../use-page-title.ts';
+import { Breadcrumbs } from '../Breadcrumbs.tsx';
 import '../lists/lists.css';
 import './guides.css';
 import './GuidesPage.css';
@@ -23,6 +24,7 @@ export function GuidesPage() {
   usePageTitle('Guides');
   return (
     <section className="guides-page">
+      <Breadcrumbs crumbs={[{ label: 'Guides' }]} />
       <p className="guides-page-intro">
         Style guides are sent along with a prompt when you choose them on New. What was sent is kept
         with the songs it made, so changing a guide changes only what comes after.

@@ -7,6 +7,7 @@ import type { PromptSource } from './PromptBox.tsx';
 import { PromptBox } from './PromptBox.tsx';
 import { useSongs } from '../queries/songs.ts';
 import { usePageTitle } from '../use-page-title.ts';
+import { Breadcrumbs } from '../Breadcrumbs.tsx';
 import './NewPage.css';
 
 /**
@@ -44,6 +45,7 @@ export function NewPage() {
 
   return (
     <section className="new-page">
+      <Breadcrumbs crumbs={[{ label: 'New song' }]} />
       {(fromSongId || baseSongId) && !listings ? (
         <p className="empty">Loading the prompt…</p>
       ) : (

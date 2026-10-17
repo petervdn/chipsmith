@@ -1,11 +1,10 @@
 // The bar at the top of every page: the logo (home), Songs, Clips, Guides and Jobs with how many each
-// holds (Jobs: how many are on their way; the one open marked, Jobs turning while one runs), in a song the song's title, a button for
-// a new song at the right, and the switch between light and dark.
+// holds (Jobs: how many are on their way; the one open marked, Jobs turning while one runs), a
+// button for a new song at the right, and the switch between light and dark.
 import type { Job } from '../../shared/job.types.ts';
 import { Logo } from './Logo.tsx';
 import { LookSwitcher } from './LookSwitcher.tsx';
 import { isJobRunning } from '../queries/jobs.ts';
-import { useSong } from '../queries/songs.ts';
 import { useTabCounts } from './use-tab-counts.ts';
 import type { Route } from '../router.ts';
 import '../jobs/jobs.css';
@@ -56,7 +55,6 @@ export function TopBar({ route, jobs }: TopBarProps) {
           Jobs <span className="top-bar-count">{getCountText(jobCount)}</span>
         </a>
       </nav>
-      {route.page === 'song' && <SongCrumb songId={route.songId} />}
       <a
         href="/new"
         className={`top-bar-new${route.page === 'new' ? ' is-on' : ''}`}
@@ -77,23 +75,4 @@ export function TopBar({ route, jobs }: TopBarProps) {
  */
 function getCountText(count: number | null): string {
   return count === null ? '' : `(${count})`;
-}
-
-type SongCrumbProps = { songId: string };
-
-/**
- * Shows "› title" of the song open, from the cache the song page reads too.
- *
- * @param props - The component's props.
- * @param props.songId - The id of the song open, shown until its title has been read.
- * @returns The crumb's element.
- */
-function SongCrumb({ songId }: SongCrumbProps) {
-  const { data: detail } = useSong(songId);
-  return (
-    <div className="top-bar-crumb">
-      <span className="top-bar-crumb-mark">›</span>
-      <span className="top-bar-crumb-title">{detail?.song.title ?? songId}</span>
-    </div>
-  );
 }

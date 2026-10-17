@@ -4,6 +4,7 @@ import type { Job } from '../../shared/job.types.ts';
 import { JobCard } from './JobCard.tsx';
 import { isJobRunning, useRemoveJob } from '../queries/jobs.ts';
 import { usePageTitle } from '../use-page-title.ts';
+import { Breadcrumbs } from '../Breadcrumbs.tsx';
 import './JobsPage.css';
 
 type JobsPageProps = { jobs: Job[] };
@@ -22,6 +23,7 @@ export function JobsPage({ jobs }: JobsPageProps) {
   const finished = jobs.filter((job) => !isJobRunning(job));
   return (
     <section className="jobs-page">
+      <Breadcrumbs crumbs={[{ label: 'Jobs' }]} />
       {jobs.length === 0 && (
         <p className="empty">
           No jobs yet. <a href="/new">+ New song</a> sends a prompt to Claude; its job shows here.

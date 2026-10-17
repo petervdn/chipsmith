@@ -17,6 +17,7 @@ import { SongRowDetails } from './SongRowDetails.tsx';
 import { StatusButtons } from '../lists/StatusButtons.tsx';
 import { UndoBar, useUndo } from '../lists/UndoBar.tsx';
 import { usePageTitle } from '../use-page-title.ts';
+import { Breadcrumbs } from '../Breadcrumbs.tsx';
 import '../lists/lists.css';
 import './SongsPage.css';
 
@@ -65,6 +66,7 @@ export function SongsPage({ jobs }: SongsPageProps) {
 
   return (
     <section className="list-page">
+      <Breadcrumbs crumbs={[{ label: 'Songs' }]} />
       {jobs.filter(isJobRunning).map((job) => (
         <JobStrip key={job.id} job={job} />
       ))}

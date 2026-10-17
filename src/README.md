@@ -5,6 +5,8 @@ each holds its components, their CSS, hooks, and the modules that know no page w
 At the top: the app's shell and what every area uses.
 
 - `App.tsx`: the top bar and the page the address is
+- `Breadcrumbs.css`: the look of Breadcrumbs.tsx
+- `Breadcrumbs.tsx`: the trail at the head of a page, its last crumb the page's heading
 - `clips/`: the clip pool
 - `copy-text.ts`: copying text, also where the clipboard API is missing (plain http)
 - `editor/`: the song editor: the timeline, playing from a cursor, the selected block

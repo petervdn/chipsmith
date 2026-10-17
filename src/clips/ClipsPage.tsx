@@ -10,6 +10,7 @@ import { useListFilter } from '../lists/use-list-filter.ts';
 import { StatusButtons } from '../lists/StatusButtons.tsx';
 import { UndoBar, useUndo } from '../lists/UndoBar.tsx';
 import { usePageTitle } from '../use-page-title.ts';
+import { Breadcrumbs } from '../Breadcrumbs.tsx';
 import '../lists/lists.css';
 
 /**
@@ -57,6 +58,7 @@ export function ClipsPage() {
 
   return (
     <section className="list-page">
+      <Breadcrumbs crumbs={[{ label: 'Clips' }]} />
       <FilterBar
         filter={filter}
         onChange={setFilter}
