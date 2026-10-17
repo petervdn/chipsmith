@@ -1,19 +1,14 @@
-// While the song plays and following is on, the timeline turns the page with the playhead: when it
-// nears the right edge of what is in view (or is out of view), the timeline scrolls to put it near
-// the left again.
+// While the song plays and following is on, the timeline keeps the playhead in the middle of what is
+// in view: it scrolls along with it every frame, except where the song's start or the timeline's end
+// leave no room to, so the playhead runs from the left to the middle and from the middle to the end.
 import { useEffect } from 'react';
 import type { RefObject } from 'react';
 import { getSongPosition } from '../playback/audio-engine.ts';
 import { usePlayerStore } from '../stores/player-store.ts';
 
-/** How near the right edge, in pixels, the playhead turns the page. */
-const AHEAD = 32;
-
-/** How far from the left edge, in pixels, the playhead is put when the page turns. */
-const BEHIND = 24;
-
 /**
- * Scrolls the timeline in `scrollRef` along with the playhead while the song plays.
+ * Scrolls the timeline in `scrollRef` along with the playhead while the song plays, keeping it in
+ * the middle of the view where it can.
  *
  * @param scrollRef - The element the timeline scrolls sideways in.
  * @param follow - What following needs.
@@ -41,11 +36,9 @@ export function useFollowPlayhead(
       frame = requestAnimationFrame(follow);
       const seconds = getSongPosition();
       if (seconds === null) return;
-      const x = seconds * pixelsPerSecond;
       const inView = scroller.clientWidth - leftInset;
-      if (x < scroller.scrollLeft || x > scroller.scrollLeft + inView - AHEAD) {
-        scroller.scrollLeft = x - BEHIND;
-      }
+      // the browser keeps scrollLeft between the start and the end, which is the "where it can"
+      scroller.scrollLeft = Math.round(seconds * pixelsPerSecond - inView / 2);
     });
     return () => cancelAnimationFrame(frame);
   }, [scrollRef, isOn, isPlaying, pixelsPerSecond, leftInset]);

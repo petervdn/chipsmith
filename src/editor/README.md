@@ -44,7 +44,7 @@ saved, playing from a cursor, the zoom, and the selected block's clip or track.
 - `use-edge-scroll.ts`: the timeline scrolled while a drag is near its left or right edge
 - `use-editor-keys.ts`: the editor's keys: Space, Delete, ⌘Z, ⇧⌘Z, ⌘S, Escape
 - `use-element-width.ts`: an element's width, kept current
-- `use-follow-playhead.ts`: the timeline turning the page with the playhead while the song plays
+- `use-follow-playhead.ts`: the timeline keeping the playhead in the middle of the view while the song plays
 - `use-heard-tracks.ts`: the player hearing only the tracks mute and solo leave, also while playing
 - `use-metronome.ts`: the metronome clicking while the song plays, when it is on
 - `use-playhead-line.ts`: the playhead moved every frame while the song plays
