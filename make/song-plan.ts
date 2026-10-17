@@ -11,7 +11,13 @@ export type SongPlan = { title: string; furFile: FurFile; tags: string[]; key: s
 /** What a job's script exports as its default. */
 export type SongScript = () => SongPlan[];
 
-/** The plans a script's default export gives, checked. */
+/**
+ * Returns the plans a script's default export gives, each checked.
+ *
+ * @param scriptExports - The script's module, as imported.
+ * @returns The plan of every song the script makes; an error is thrown when there is no default
+ * export function, it makes no songs, or a plan does not fit.
+ */
 export function getSongPlans(scriptExports: unknown): SongPlan[] {
   const makeSongs =
     typeof scriptExports === 'object' && scriptExports !== null && 'default' in scriptExports

@@ -12,7 +12,14 @@ import { getSongPlans } from './song-plan.ts';
 /** What plan.json holds of each song: the plan, with its .fur file beside it. */
 export type BuiltPlan = { title: string; tags: string[]; key: string | null; furFileName: string };
 
-/** Runs the script and writes its songs' .fur files and plan.json into `outFolder`. */
+/**
+ * Runs a job's script and writes each of its songs' .fur files, and plan.json listing them, into a
+ * folder.
+ *
+ * @param scriptFile - The path of the script to run.
+ * @param outFolder - The folder the .fur files and plan.json are written to, made if it is missing.
+ * @returns The plan of each song, with the name of its .fur file in the folder.
+ */
 export async function buildScript(scriptFile: string, outFolder: string): Promise<BuiltPlan[]> {
   const plans = getSongPlans(await import(pathToFileURL(resolve(scriptFile)).href));
   mkdirSync(outFolder, { recursive: true });

@@ -21,7 +21,15 @@ export const JOB_IDS: IdKind = { letter: 'j', folder: 'jobs' };
 export const GUIDE_IDS: IdKind = { letter: 'g', folder: 'guides' };
 const DIGITS = 4;
 
-/** Makes the folder of the next free id under `root` and gives the id. */
+/**
+ * Claims the next free id of a kind by making its folder.
+ *
+ * @param root - The data folder.
+ * @param kind - The kind of id.
+ * @param kind.letter - The letter the id starts with.
+ * @param kind.folder - The folder under the data folder that holds the ids' folders.
+ * @returns The id claimed.
+ */
 export function claimId(root: string, { letter, folder }: IdKind): string {
   const parent = join(root, folder);
   mkdirSync(parent, { recursive: true });

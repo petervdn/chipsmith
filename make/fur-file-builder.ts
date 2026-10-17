@@ -39,7 +39,24 @@ const SCC_PLUS = 0xb4;
 const CHANNELS_OF_CHIP = 5;
 const NES_FLAGS = 'clockSel=0\ncustomClock=0\ndpcmMode=false\n';
 
-/** The .fur file of a draft. */
+/**
+ * Builds the .fur file of a draft: cuts each channel's rows into patterns, reusing a pattern the
+ * channel repeats, and sets the song's settings.
+ *
+ * @param draft - What the script wrote for the song.
+ * @param draft.title - The song's name.
+ * @param draft.comment - The song's comment; empty if left out.
+ * @param draft.chips - The chips the song plays on.
+ * @param draft.bpm - The song's tempo, in beats a minute.
+ * @param draft.beatsPerBar - Beats to a bar.
+ * @param draft.rowsPerBeat - Rows to a beat; 4 if left out, which makes a row a 16th note.
+ * @param draft.patternLength - Rows to a pattern; 64 if left out.
+ * @param draft.channels - One list of rows per chip channel; there must be as many as the chips have.
+ * @param draft.instruments - The instruments, as Furnace's bytes.
+ * @param draft.wavetables - The wavetables, as Furnace's bytes; none if left out.
+ * @param draft.chipVolumes - Each chip's volume, NES first; 1 for each if left out.
+ * @returns The .fur file.
+ */
 export function buildFurFile({
   title,
   comment = '',

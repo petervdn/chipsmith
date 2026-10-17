@@ -19,17 +19,32 @@ const KICK = 2;
 const SNARE = 3;
 const HAT = 4;
 
-/** A note in a row: pulse notes are written an octave down (CLAUDE.md, "Pitch naming"). */
+/**
+ * Returns a row that plays a note. Pulse notes are written an octave down (CLAUDE.md, "Pitch naming").
+ *
+ * @param note - The note's name, such as `D-3`.
+ * @param instrument - The index of the instrument that plays it.
+ * @param volume - The row's volume, or undefined to leave the volume column empty.
+ * @returns The row.
+ */
 function getRow(note: string, instrument: number, volume?: number): Row {
   return { note: getNoteValue(note), instrument, ...(volume === undefined ? {} : { volume }) };
 }
 
-/** A whole song's empty rows. */
+/**
+ * Returns the empty rows of a whole song.
+ *
+ * @returns One empty row for every row of the song.
+ */
 function getEmpty(): (Row | null)[] {
   return Array.from({ length: BARS * ROWS_PER_BAR }, () => null);
 }
 
-/** The bass: 16ths with octave jumps and rests, on the triangle, following D - Bb - C - A. */
+/**
+ * Returns the bass part: 16ths with octave jumps and rests, on the triangle, following D - Bb - C - A.
+ *
+ * @returns The bass's rows for the whole song.
+ */
 function getBass(): (Row | null)[] {
   const rows = getEmpty();
   const roots = ['D-3', 'D-3', 'A#2', 'A#2', 'C-3', 'C-3', 'A-2', 'A-2'];
@@ -60,7 +75,11 @@ function getBass(): (Row | null)[] {
   return rows;
 }
 
-/** The lead: a dotted-8th + 16th pickup leaping to a held note, sequenced over the chords. */
+/**
+ * Returns the lead part: a dotted-8th + 16th pickup leaping to a held note, sequenced over the chords.
+ *
+ * @returns The lead's rows for the whole song.
+ */
 function getLead(): (Row | null)[] {
   const rows = getEmpty();
   const motifs = [
@@ -78,7 +97,11 @@ function getLead(): (Row | null)[] {
   return rows;
 }
 
-/** The drums on the noise channel: kick on 1 and 3, snare on 2 and 4, hats between. */
+/**
+ * Returns the drum part on the noise channel: kick on 1 and 3, snare on 2 and 4, hats between.
+ *
+ * @returns The drums' rows for the whole song.
+ */
 function getDrums(): (Row | null)[] {
   const rows = getEmpty();
   for (let bar = 0; bar < BARS; bar++) {
@@ -92,7 +115,11 @@ function getDrums(): (Row | null)[] {
   return rows;
 }
 
-/** The song. */
+/**
+ * Makes the example's one song.
+ *
+ * @returns The plan of the song, with its .fur file.
+ */
 export default function makeSongs(): SongPlan[] {
   const instruments = [
     makeInstrument('lead', NES_INSTRUMENT, [

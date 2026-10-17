@@ -39,7 +39,24 @@ export type NewSong = {
 /** The ids of what was made. */
 export type MadeSong = { songId: string; clipId: string };
 
-/** Makes the clip and the song, renders the clip's audio, and gives their ids. */
+/**
+ * Makes a new song from a .fur file: a whole clip, with its audio rendered, and a song of one track
+ * that plays it.
+ *
+ * @param newSong - What the song is made from.
+ * @param newSong.root - The data folder, holding clips/ and songs/.
+ * @param newSong.title - The song's title.
+ * @param newSong.furFile - The .fur file, written as the clip's source.fur.
+ * @param newSong.prompt - The prompt as written, or what the song was made from.
+ * @param newSong.guides - The style guides sent with the prompt, copied into the clip and the song.
+ * @param newSong.promptId - The id of the prompt, kept in the clip.
+ * @param newSong.scriptFile - The script that wrote the .fur file, copied into the clip.
+ * @param newSong.tags - The tags of the clip and the song.
+ * @param newSong.status - The status of the clip and the song.
+ * @param newSong.key - The music's key, or null.
+ * @param newSong.promptedFrom - The song whose prompt was sent again, or null.
+ * @returns The ids of the song and the clip made.
+ */
 export async function makeSong({
   root,
   title,
