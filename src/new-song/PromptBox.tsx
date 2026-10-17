@@ -1,5 +1,6 @@
 // The box on the New page where a prompt is written (or built from parts, PromptBuilder.tsx) and
-// sent, with the style guides chosen as chips; sending it leads to the Jobs page.
+// sent, with the structure, the harmony and the style guides chosen; sending it leads to the Jobs
+// page.
 // Opened from a song's "Prompt again", it starts with that song's prompt and notes the song, until
 // the note is cleared.
 import { X } from 'lucide-react';
@@ -7,7 +8,9 @@ import { useState } from 'react';
 import { GuideChips } from '../guides/GuideChips.tsx';
 import { CreatePanel } from './CreatePanel.tsx';
 import { PromptBuilder } from './PromptBuilder.tsx';
+import { HarmonyPanel } from './HarmonyPanel.tsx';
 import { StructurePanel } from './StructurePanel.tsx';
+import { useHarmonyChoice } from './use-harmony-choice.ts';
 import { useStructureChoice } from './use-structure-choice.ts';
 import { useSendPrompt } from '../queries/jobs.ts';
 import { navigate } from '../router.ts';
@@ -49,6 +52,7 @@ export function PromptBox({ initialText, source, onClearSource }: PromptBoxProps
   const { mutate: sendPrompt, isPending: isSending, error } = useSendPrompt();
   const { guides, chosenIds, toggleGuide, resetChoice } = useGuideChoice();
   const structureChoice = useStructureChoice();
+  const harmonyChoice = useHarmonyChoice(structureChoice.sent?.sections ?? null);
 
   function send(): void {
     if (!text.trim() || isSending) return;
@@ -58,6 +62,7 @@ export function PromptBox({ initialText, source, onClearSource }: PromptBoxProps
         fromSong: source?.songId ?? null,
         guideIds: chosenIds,
         structure: structureChoice.sent,
+        harmony: harmonyChoice.sent,
         songCount,
       },
       {
@@ -127,6 +132,7 @@ export function PromptBox({ initialText, source, onClearSource }: PromptBoxProps
             }}
           />
           <StructurePanel choice={structureChoice} />
+          <HarmonyPanel choice={harmonyChoice} />
           <GuideChips guides={guides} chosenIds={chosenIds} onToggle={toggleGuide} />
         </div>
         <CreatePanel

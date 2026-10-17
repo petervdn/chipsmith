@@ -4,6 +4,7 @@
  */
 import type { Status, Tag } from './catalogue.types.ts';
 import type { SentGuide } from './guide.types.ts';
+import type { SentHarmony } from './harmony.types.ts';
 import type { SentStructure } from './structure.types.ts';
 
 /** Ticks to a beat: a block's place and length are counted in them. */
@@ -41,6 +42,8 @@ export type Song = {
   guides: SentGuide[];
   /** The structure sent with the prompt, as it was then, or null. */
   structure: SentStructure | null;
+  /** The harmony sent with the prompt, as it was then, or null. */
+  harmony: SentHarmony | null;
   /** The song whose prompt was sent again to make this one, or null. */
   promptedFrom: string | null;
   tracks: Track[];

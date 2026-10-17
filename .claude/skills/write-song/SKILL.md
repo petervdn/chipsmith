@@ -31,6 +31,22 @@ A prompt may send a structure as a numbered line per section: its name, its bars
   else. Follow the bars exactly: the sections are cut by them later.
 - Without a structure, choose a form that fits the piece and the length.
 
+## The harmony
+
+A prompt may send a harmony: lines under "Harmony", for every song. What it leaves out is yours.
+- **Key** and mode; without them, choose. **Chords** says their kind, colour, how often they change,
+  the bass, the cadences and a key change.
+- **Progressions** are Roman numerals on the major scale of the key (in A minor, ♭VI is F), the
+  chord names after them, each chord's bars given. A part's progression repeats to fill its
+  section; where its bars do not divide by it, end the section on a cadence. "The whole song" is
+  for a song without a structure.
+- **Variations** (A′) say how they end against their part's progression.
+- **Follow it exactly**: play those chords, in that rhythm, in bass and harmony. **A starting
+  point**: keep its key and character, change chords where the melody asks for it.
+- Chords on a chip are implied (bass and arpeggios, a voice playing chord tones in turn); a
+  seventh or a ninth needs a voice free for it. The prompt's own words win where they name a key
+  or chords.
+
 ## What sections do
 
 - **intro**: sets key, tempo and colour; often a part of the main idea, thinner. Short.

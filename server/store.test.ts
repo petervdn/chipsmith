@@ -67,6 +67,7 @@ const SONG: Song = {
   prompt: '',
   guides: [],
   structure: null,
+  harmony: null,
   promptedFrom: null,
   tracks: [
     { id: 't1', name: 'Bass', blocks: [{ clip: 'c0001', start: 0, trim: null, repeats: 2 }] },

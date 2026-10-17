@@ -19,6 +19,7 @@ test('repeats follow each other and trims become offsets', () => {
     prompt: '',
     guides: [],
     structure: null,
+    harmony: null,
     promptedFrom: null,
     tracks: [
       {

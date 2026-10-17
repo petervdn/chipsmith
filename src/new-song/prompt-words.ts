@@ -1,9 +1,9 @@
 /**
- * The words a built prompt is made of, a list per part: moods, the key's note and mode, kinds of
- * piece (each one song, so said once: "a waltz"), rhythms, and ideas to build it around. What does
- * not go together is marked where it is said: a piece that has its own meter or pace, a rhythm's
- * meter and pace, an idea only one chip can play. The ideas are about the music, not its form:
- * where sections fall is the Structure panel's. Knows nothing of the page.
+ * The words a built prompt is made of, a list per part: moods, kinds of piece (each one song, so
+ * said once: "a waltz"), rhythms, and ideas to build it around; the key is the Harmony panel's
+ * (shared/modes.ts). What does not go together is marked where it is said: a piece that has its
+ * own meter or pace, a rhythm's meter and pace, an idea only one chip can play. The ideas are about
+ * the music, not its form: where sections fall is the Structure panel's. Knows nothing of the page.
  */
 import type { ChipName } from '../../shared/chips.ts';
 
@@ -46,22 +46,6 @@ export const MOODS = [
   'cheeky',
   'solemn',
   'restless',
-];
-
-/** The notes a key is on. */
-export const NOTES = ['C', 'C♯', 'D', 'E♭', 'E', 'F', 'F♯', 'G', 'A♭', 'A', 'B♭', 'B'];
-
-/** The modes and scales a key is in. */
-export const MODES = [
-  'major',
-  'minor',
-  'dorian',
-  'phrygian',
-  'lydian',
-  'mixolydian',
-  'harmonic minor',
-  'phrygian dominant',
-  'blues',
 ];
 
 /** The kinds of piece, each said as one. */

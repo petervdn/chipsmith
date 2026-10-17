@@ -1,7 +1,7 @@
 /**
- * A prompt built from parts, to start from on the New page: a mood, a key (its note and mode), a kind
- * of piece, the chips, a rhythm and one thing to build it around, said as one song ("A dark waltz
- * in C♯ phrygian for the NES, …"): how many songs is set beside the Create button. Each part is
+ * A prompt built from parts, to start from on the New page: a mood, a kind of piece, the chips, a
+ * rhythm and one thing to build it around, said as one song ("A dark waltz for the NES, …"; the
+ * key is the Harmony panel's): how many songs is set beside the Create button. Each part is
  * picked from its list (prompt-words.ts), at random or by hand, and a part can be kept while the
  * others are picked again; the chips are a set, usually one, sometimes two. Only what goes together
  * is picked: a rhythm the piece can take, an idea the chips can play. Knows nothing of the page.
@@ -9,7 +9,7 @@
 import type { ChipName } from '../../shared/chips.ts';
 import { CHIP_NAMES, CHIPS } from '../../shared/chips.ts';
 import type { Piece, Rhythm } from './prompt-words.ts';
-import { IDEAS, MODES, MOODS, NOTES, PIECES, RHYTHMS } from './prompt-words.ts';
+import { IDEAS, MOODS, PIECES, RHYTHMS } from './prompt-words.ts';
 
 /** How often a roll picks two chips instead of one. */
 const TWO_CHIPS_CHANCE = 1 / 3;
@@ -17,8 +17,6 @@ const TWO_CHIPS_CHANCE = 1 / 3;
 /** The parts of a prompt, by name, each a value from its list. */
 export type PromptParts = {
   mood: string;
-  note: string;
-  mode: string;
   piece: string;
   /** The chips, one or more, in the order of CHIP_NAMES. */
   chips: ChipName[];
@@ -36,8 +34,6 @@ export type ListPartName = Exclude<PartName, 'chips'>;
 export const PROMPT_PARTS: { name: ListPartName; label: string }[] = [
   { name: 'mood', label: 'Mood' },
   { name: 'piece', label: 'Piece' },
-  { name: 'note', label: 'Key' },
-  { name: 'mode', label: 'Mode' },
   { name: 'rhythm', label: 'Rhythm' },
   { name: 'idea', label: 'Idea' },
 ];
@@ -46,7 +42,7 @@ export const PROMPT_PARTS: { name: ListPartName; label: string }[] = [
 const FITTED_PARTS: ListPartName[] = ['rhythm', 'idea'];
 
 /** The order a roll picks the parts in, so each is picked to go with those before it. */
-const ROLL_ORDER: PartName[] = ['mood', 'note', 'mode', 'chips', 'piece', 'rhythm', 'idea'];
+const ROLL_ORDER: PartName[] = ['mood', 'chips', 'piece', 'rhythm', 'idea'];
 
 /**
  * Returns whether a piece can take a rhythm: its meter and pace, where both say one.
@@ -74,8 +70,6 @@ export function getPartValues(name: ListPartName, parts: PromptParts): string[] 
   const rhythm = RHYTHMS.find((candidate) => candidate.text === parts.rhythm);
   const values = {
     mood: () => MOODS,
-    note: () => NOTES,
-    mode: () => MODES,
     piece: () => PIECES.filter((candidate) => isFitting(candidate, rhythm)).map(({ text }) => text),
     rhythm: () =>
       RHYTHMS.filter((candidate) => isFitting(piece, candidate)).map(({ text }) => text),
@@ -109,8 +103,6 @@ export function rollParts(
   }
   let next: PromptParts = {
     mood: parts && isKept('mood') ? parts.mood : '',
-    note: parts && isKept('note') ? parts.note : '',
-    mode: parts && isKept('mode') ? parts.mode : '',
     piece: parts && isKept('piece') ? parts.piece : '',
     chips: parts && isKept('chips') ? parts.chips : [],
     rhythm: parts && isKept('rhythm') ? parts.rhythm : '',
@@ -202,23 +194,13 @@ export function getChipsText(chips: ChipName[]): string {
  *
  * @param parts - The parts.
  * @param parts.mood - The mood.
- * @param parts.note - The key's note.
- * @param parts.mode - The key's mode.
  * @param parts.piece - The kind of piece.
  * @param parts.chips - The chips.
  * @param parts.rhythm - The meter, tempo or feel.
  * @param parts.idea - One thing to build it around.
  * @returns The prompt, without a count: how many songs is set beside the Create button.
  */
-export function getPromptText({
-  mood,
-  note,
-  mode,
-  piece,
-  chips,
-  rhythm,
-  idea,
-}: PromptParts): string {
+export function getPromptText({ mood, piece, chips, rhythm, idea }: PromptParts): string {
   const article = /^[aeiou]/i.test(mood) ? 'An' : 'A';
-  return `${article} ${mood} ${piece} in ${note} ${mode} ${getChipsText(chips)}, ${rhythm}, ${idea}.`;
+  return `${article} ${mood} ${piece} ${getChipsText(chips)}, ${rhythm}, ${idea}.`;
 }

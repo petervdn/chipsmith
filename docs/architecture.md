@@ -84,8 +84,12 @@ page but Home starts with breadcrumbs, the last its heading (Songs › Seven Tee
   at random or picked, each with a lock, the sentence they make on top; "Use" fills the box, which is otherwise its own),
   the Structure panel (AABA chosen at first; none, a preset, a saved structure or your own: written short and as tiles
   as wide as their bars, a section edited when tapped, saved as new or over a saved one; 0023), and
-  the style guides as chips to send with it (their texts readable in place). Sending it leads to
-  Jobs.
+  the Harmony panel (everything Claude's choice at first: the key and mode, the kind and colour of
+  the chords, how often they change, the bass, the cadences, a key change, each a row with a die and
+  a lock; how strictly; a progression per part of the structure, or one for the whole song: a
+  preset of the mode, made up at random from the settings (`progression-generator.ts`), or your
+  own, as tiles of Roman numerals named in the key and written short, `i ♭VI V:½`), and the style
+  guides as chips to send with it (their texts readable in place). Sending it leads to Jobs.
 - **Jobs** (`/jobs`): every prompt sent, as a card, newest first; one that is over can be removed
   (✕; `removed` in its job.json, its files kept). The tab counts the jobs on their way.
 
@@ -154,7 +158,9 @@ to start with; nothing is carried over from another song), and becomes a job (`s
 `jobs/<id>/job.json`, out of git) the moment it arrives. The chosen guides (`server/guides.ts`) are
 copied into the job, given to Claude as part of the prompt, and copied into every song and clip it
 makes (`guides` beside `prompt`), so a later change to a guide does not change what they were made
-from (0019). Its card shows on the Jobs page; a running job also has one line above the songs list and on the
+from (0019); so are the structure and the harmony chosen with it (`structure`, `harmony`), which
+Claude gets as lines of its prompt (`shared/structure-prompt.ts`, `shared/harmony-prompt.ts`). Its
+card shows on the Jobs page; a running job also has one line above the songs list and on the
 home page, and the Jobs tab turns while one runs. The runner (`server/job-runner.ts`) takes one job at a time through its
 phases:
 1. **composing**: Claude Code runs headless (`server/claude-run.ts`: `claude -p`, detached, its

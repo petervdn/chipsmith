@@ -16,14 +16,14 @@ import {
 test('the first of every part', () => {
   assert.equal(
     getPromptText(rollParts(null, [], () => 0)),
-    'A dark funk groove in C major for the NES and the SCC, in 4/4, with a walking bass.',
+    'A dark funk groove for the NES and the SCC, in 4/4, with a walking bass.',
   );
 });
 
 test('the last of every part, never past it, and only what the chips can play', () => {
   assert.equal(
     getPromptText(rollParts(null, [], () => 0.9999)),
-    'A restless baroque dance in B blues for the SID, with a syncopated groove, with the melody doubled in octaves.',
+    'A restless baroque dance for the SID, with a syncopated groove, with the melody doubled in octaves.',
   );
 });
 
@@ -57,9 +57,9 @@ test('a piece takes only rhythms that go with it, an idea only chips that can pl
 
 test('one part picked again, the others kept', () => {
   const first = rollParts(null, [], () => 0);
-  const again = rollPart(first, 'mode', () => 0.9999);
-  assert.deepEqual({ ...again, mode: first.mode }, first);
-  assert.equal(again.mode, 'blues');
+  const again = rollPart(first, 'mood', () => 0.9999);
+  assert.deepEqual({ ...again, mood: first.mood }, first);
+  assert.equal(again.mood, 'restless');
 });
 
 test('a mood that starts with a vowel takes "an"', () => {

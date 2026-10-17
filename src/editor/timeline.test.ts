@@ -25,6 +25,7 @@ const SONG: Song = {
   prompt: '',
   guides: [],
   structure: null,
+  harmony: null,
   promptedFrom: null,
   tracks: [
     {

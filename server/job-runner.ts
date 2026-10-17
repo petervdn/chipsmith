@@ -19,6 +19,7 @@ import type { JobStore } from './jobs.ts';
 import { addNotes, getJobFolder, setPhase, updateJob } from './jobs.ts';
 import type { Store } from './store.ts';
 import { rescanStore } from './store.ts';
+import { getHarmonyLines } from '../shared/harmony-prompt.ts';
 import { getStructureLines } from '../shared/structure-prompt.ts';
 
 /** Milliseconds between looks at running jobs. */
@@ -169,6 +170,7 @@ function startComposing(jobs: JobStore, job: Job): ClaudeWatch {
       job.prompt,
       ...getGuideLines(job.guides),
       ...(job.structure ? getStructureLines(job.structure) : []),
+      ...(job.harmony ? getHarmonyLines(job.harmony) : []),
     ].join('\n'),
     systemPrompt: SYSTEM_PROMPT,
     allowedTools: getAllowedTools(folder),
@@ -277,6 +279,7 @@ async function buildAndRender(jobs: JobStore, store: Store, jobId: string): Prom
         prompt: job?.prompt ?? '',
         guides: job?.guides ?? [],
         structure: job?.structure ?? null,
+        harmony: job?.harmony ?? null,
         promptId: jobId,
         scriptFile,
         tags: plan.tags.map((name) => ({ name, by: 'claude' })),

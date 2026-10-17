@@ -11,6 +11,7 @@ import type { JobStore } from './jobs.ts';
 import { createJob, listJobs, removeJob } from './jobs.ts';
 import { getArray, getNumber, getObject, getString, getStringOrNull } from './json-checks.ts';
 import type { Store } from './store.ts';
+import { checkSentHarmony } from './harmony-checks.ts';
 import { checkSentStructure } from './structure-checks.ts';
 
 /** The most songs a prompt can ask for. */
@@ -48,10 +49,11 @@ export async function routeJobs(
     const guideIds = getArray(body['guideIds'] ?? [], 'body.guideIds', getString);
     const sent = getSentGuides(guides, guideIds);
     const structure = checkSentStructure(body['structure'], 'body.structure');
+    const harmony = checkSentHarmony(body['harmony'], 'body.harmony');
     const songCount = getSongCount(body['songCount']);
     return sendJson(
       response,
-      createJob(jobs, prompt, sent, song ? song.id : null, structure, songCount),
+      createJob(jobs, prompt, sent, song ? song.id : null, structure, songCount, harmony),
     );
   }
   if (!id) return sendError(response, 404, 'not found');

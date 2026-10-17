@@ -3,6 +3,7 @@
  * composes a script, the script builds a .fur file per song, each song is rendered; then done or failed.
  */
 import type { SentGuide } from './guide.types.ts';
+import type { SentHarmony } from './harmony.types.ts';
 import type { SentStructure } from './structure.types.ts';
 
 /** Where a job is. */
@@ -44,6 +45,8 @@ export type Job = {
   songCount: number | null;
   /** The structure chosen with the prompt, copied when it was sent, or null. */
   structure: SentStructure | null;
+  /** The harmony chosen with the prompt, copied when it was sent, or null. */
+  harmony: SentHarmony | null;
   created: string;
   phase: JobPhase;
   /** When the phase began. */

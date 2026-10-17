@@ -2,10 +2,16 @@
 
 The New page: a prompt written, or made up at random, and sent.
 
+- `ChordEditor.css`: the look of ChordEditor.tsx
+- `ChordEditor.tsx`: a progression's selected chord: its numeral, its length; moved, copied, removed
 - `CreatePanel.css`: the look of CreatePanel.tsx
 - `CreatePanel.tsx`: Create and the number of songs, at the right of the prompt, kept in view
 - `FoldPanel.css`: the look of FoldPanel.tsx
 - `FoldPanel.tsx`: a panel of New: its heading and what is chosen, ▸ opening what changes it
+- `HarmonyPanel.css`: the look of HarmonyPanel.tsx
+- `HarmonyPanel.tsx`: the Harmony panel: the key, the settings, how strictly, a progression per part
+- `HarmonyPart.css`: the look of HarmonyPart.tsx
+- `HarmonyPart.tsx`: a part's progression: its preset, its chords as tiles, written short, how its variations end
 - `NewPage.css`: the look of NewPage.tsx
 - `NewPage.tsx`: a prompt for Claude; sending it leads to Jobs
 - `PartRow.css`: the look of PartRow.tsx
@@ -14,12 +20,16 @@ The New page: a prompt written, or made up at random, and sent.
 - `PromptBox.tsx`: the box where a prompt is written and sent
 - `PromptBuilder.css`: the look of PromptBuilder.tsx
 - `PromptBuilder.tsx`: the prompt builder: the sentence on top with Roll and Use, a row per part with a lock
+- `progression-edits.ts`: a progression's chords changed, copied, moved and removed
+- `progression-generator.ts`: a progression made up from the mode and the settings, walked by what chords do
 - `prompt-words.ts`: the words a built prompt is made of, and what does not go together
+- `random-harmony.ts`: the harmony chosen: its parts from the structure, rolled, and what is sent
 - `random-prompt.ts`: a prompt built from parts: rolling the unlocked ones to go together, the sentence
 - `SectionEditor.css`: the look of SectionEditor.tsx
 - `SectionEditor.tsx`: a structure's selected section: its part, bars, role, energy, note
 - `structure-edits.ts`: a structure's sections added, copied, moved, removed and changed
 - `StructurePanel.css`: the look of StructurePanel.tsx
 - `StructurePanel.tsx`: the Structure panel: presets, saved and your own; notation, tiles, saving
+- `use-harmony-choice.ts`: the harmony chosen for a prompt, its locks, and what changes it
 - `use-prompt-builder.ts`: the builder's parts and locks
 - `use-structure-choice.ts`: the structure chosen for a prompt, edited, saved or deleted

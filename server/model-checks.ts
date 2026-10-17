@@ -16,6 +16,7 @@ import {
   getString,
   getStringOrNull,
 } from './json-checks.ts';
+import { checkSentHarmony } from './harmony-checks.ts';
 import { checkSentStructure } from './structure-checks.ts';
 
 const STATUSES: readonly Status[] = ['new', 'heard', 'keeper'];
@@ -152,6 +153,7 @@ export function checkSong(value: unknown, path: string): Song {
     prompt: getString(song['prompt'], `${path}.prompt`),
     guides: checkSentGuides(song['guides'], `${path}.guides`),
     structure: checkSentStructure(song['structure'], `${path}.structure`),
+    harmony: checkSentHarmony(song['harmony'], `${path}.harmony`),
     promptedFrom: getStringOrNull(song['promptedFrom'] ?? null, `${path}.promptedFrom`),
     tracks: getArray(song['tracks'], `${path}.tracks`, checkTrack),
   };

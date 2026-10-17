@@ -18,6 +18,7 @@ back to its file (docs/adr/0006).
 - `missing-audio.ts`: clips with a source and no audio, rendered when the server starts
 - `model-checks.ts`: a clip.json or song.json read from disk, checked field by field
 - `store.ts`: the clips and songs in memory, read from their folders and written back to them
+- `harmony-checks.ts`: a harmony checked where it comes in: its key, settings and progressions
 - `structure-checks.ts`: a structure checked where it comes in, section by section
 - `structure-routes.ts`: `/api/structures`: the saved structures listed, made, changed, deleted
 - `structures.ts`: the saved structures in memory and in structures/<id>/structure.json

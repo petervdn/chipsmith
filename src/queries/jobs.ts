@@ -7,6 +7,7 @@ import { useEffect } from 'react';
 import type { Job } from '../../shared/job.types.ts';
 import { getQueryKey, queryClient } from './client.ts';
 import { requestJson, sendJson } from './request.ts';
+import type { SentHarmony } from '../../shared/harmony.types.ts';
 import type { SentStructure } from '../../shared/structure.types.ts';
 
 /** Milliseconds between reads while a job runs, and while none does. */
@@ -96,8 +97,8 @@ export function useCancelJob() {
  * Sends a prompt to the server as a new job; the jobs are read again at once.
  *
  * @returns The mutation, called with the `prompt`, the song it is sent again from (`fromSong`, or
- * null), the ids of the style guides sent with it (`guideIds`) and the structure sent with it
- * (`structure`, or null), and how many songs to make (`songCount`).
+ * null), the ids of the style guides sent with it (`guideIds`), the structure and the harmony sent
+ * with it (`structure`, `harmony`, each or null), and how many songs to make (`songCount`).
  */
 export function useSendPrompt() {
   return useMutation({
@@ -106,14 +107,24 @@ export function useSendPrompt() {
       fromSong,
       guideIds,
       structure,
+      harmony,
       songCount,
     }: {
       prompt: string;
       fromSong: string | null;
       guideIds: string[];
       structure: SentStructure | null;
+      harmony: SentHarmony | null;
       songCount: number;
-    }) => sendJson<Job>('/api/jobs', 'POST', { prompt, fromSong, guideIds, structure, songCount }),
+    }) =>
+      sendJson<Job>('/api/jobs', 'POST', {
+        prompt,
+        fromSong,
+        guideIds,
+        structure,
+        harmony,
+        songCount,
+      }),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: getQueryKey({ type: 'jobs' }) }),
   });
 }

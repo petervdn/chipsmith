@@ -1,0 +1,75 @@
+/* The look of HarmonyPanel.tsx, in its panel (FoldPanel.css): the harmony in one line, Roll at its
+   right; while open, the rows (PartRow.css) in two columns on a wide screen, how strictly, and the
+   parts' progressions (HarmonyPart.css) under a heading. */
+
+.harmony-panel-summary {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.harmony-panel-none,
+.harmony-panel-help {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+
+.harmony-panel-button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: var(--touch);
+  padding: 0 14px;
+  border: var(--border-width) solid var(--line);
+  border-radius: var(--radius);
+  background: var(--raised);
+  cursor: pointer;
+}
+
+.harmony-panel-button .lucide {
+  width: 16px;
+  height: 16px;
+}
+
+.harmony-panel-rows {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 6px 24px;
+}
+
+@media (min-width: 720px) {
+  .harmony-panel-rows {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.harmony-panel-strictness {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.harmony-panel-label {
+  margin-right: 4px;
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+
+.harmony-panel-heading {
+  margin: 8px 0 0;
+  font-size: 0.9375rem;
+}
+
+.harmony-panel-heading span {
+  color: var(--muted);
+  font-weight: 400;
+  font-size: 0.8125rem;
+}
+
+.harmony-panel-end {
+  display: flex;
+  justify-content: flex-end;
+}
