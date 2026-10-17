@@ -1,12 +1,14 @@
 /**
  * Playing stretches of clips' audio with Web Audio, each scheduled on the audio clock so they stay
  * together. Audio is fetched and decoded once per clip, a few at a time; a load that hangs is given up
- * so the next play tries again. The preferences store's mute switch silences the speakers for testing
- * while everything else runs.
+ * so the next play tries again. Each track plays through a tap of its own (track-taps.ts), for its
+ * meter. The preferences store's mute switch silences the speakers for testing while everything else
+ * runs, the meters too.
  */
 import { getGain } from '../player/volume.ts';
 import { usePreferencesStore } from '../stores/preferences-store.ts';
 import type { Stretch } from './schedule.ts';
+import { clearTrackTaps, getTrackInput } from './track-taps.ts';
 
 /** Clips decoded at the same time; more stalls phone browsers. */
 const LOAD_SLOTS = 3;
@@ -83,7 +85,7 @@ export async function playStretches(
     if (!buffer || stretchEnd <= from) continue;
     const source = audio.createBufferSource();
     source.buffer = buffer;
-    source.connect(getOutput());
+    source.connect(getTrackInput(audio, stretch.trackId, getOutput()));
     const skip = Math.max(0, from - stretch.start);
     source.start(
       zero + stretch.start + skip,
@@ -116,6 +118,7 @@ export function stopPlaying(): void {
     }
   }
   sources = [];
+  clearTrackTaps();
   songZero = null;
 }
 

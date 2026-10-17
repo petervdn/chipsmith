@@ -1,0 +1,38 @@
+/* The look of TrackMeter.tsx: an upright bar at the right of a track's name, its level and peak mark
+   placed by `--level` and `--peak` (shares of its height) as use-track-meter.ts sets them. */
+
+.track-meter {
+  --level: 0;
+  --peak: 0;
+  position: absolute;
+  top: 6px;
+  right: 5px;
+  bottom: 6px;
+  width: 4px;
+  overflow: hidden;
+  border-radius: 2px;
+  background: var(--raised);
+}
+
+.track-meter-level {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    var(--accent) 0%,
+    var(--accent) 70%,
+    var(--keep) 88%,
+    var(--reject) 100%
+  );
+  clip-path: inset(calc((1 - var(--level)) * 100%) 0 0 0);
+}
+
+.track-meter-peak {
+  position: absolute;
+  right: 0;
+  bottom: calc(var(--peak) * (100% - 2px));
+  left: 0;
+  height: 2px;
+  background: var(--fg);
+  opacity: min(1, calc(var(--peak) * 40));
+}

@@ -16,6 +16,9 @@ saved, playing from a cursor, the zoom, and the selected block's clip or track.
 - `Timeline.tsx`: the ruler, a row per track with its blocks, the playhead
 - `TimelineBlock.css`: the look of TimelineBlock.tsx
 - `TimelineBlock.tsx`: a block and its repeats on the timeline, dragged and trimmed
+- `track-meter.ts`: how a track's level meter moves: up at once, eased down, its peak mark held
+- `TrackMeter.css`: the look of TrackMeter.tsx
+- `TrackMeter.tsx`: a track's level meter beside its name
 - `track-mix.ts`: which tracks are heard, by mute and solo
 - `TrackDetails.css`: the look of TrackDetails.tsx
 - `TrackDetails.tsx`: the selected track: its name, remove
@@ -26,6 +29,7 @@ saved, playing from a cursor, the zoom, and the selected block's clip or track.
 - `use-song-draft.ts`: the song being edited: a draft with undo and redo, the selection, save and revert
 - `use-song-transport.ts`: playing the song from its cursor, stopping, moving the cursor
 - `use-track-mix.ts`: the tracks muted and soloed while editing
+- `use-track-meter.ts`: a track's meter moved every frame while its song plays
 - `use-wheel-zoom.ts`: scrolling over the timeline zooms it, about the moment under the pointer
 - `use-zoom.ts`: the pixels to a bar: fitted, or zoomed in and out
 - `versions.ts`: a clip's line of versions, oldest first

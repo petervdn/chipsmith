@@ -1,5 +1,5 @@
-// The song's timeline: a ruler of bars, a row per track (its name, which selects it, and mute and
-// solo) with its blocks, and the playhead. A tap or drag on the ruler moves the play position; a tap
+// The song's timeline: a ruler of bars, a row per track (its name, which selects it, mute and solo,
+// and its level meter) with its blocks, and the playhead. A tap or drag on the ruler moves the play position; a tap
 // on a block selects it; blocks are dragged to move and trim them.
 import { useRef, useState } from 'react';
 import type { CSSProperties, PointerEvent as ReactPointerEvent } from 'react';
@@ -16,6 +16,7 @@ import {
   getTrackColor,
 } from './timeline.ts';
 import { TimelineBlock } from './TimelineBlock.tsx';
+import { TrackMeter } from './TrackMeter.tsx';
 import type { TrackMix } from './track-mix.ts';
 import { isHeard } from './track-mix.ts';
 import type { Selection } from './use-song-draft.ts';
@@ -160,6 +161,7 @@ export function Timeline({
                   S
                 </button>
               </span>
+              <TrackMeter songId={song.id} trackId={track.id} />
             </div>
             <div className="timeline-lane" onClick={() => onSelect(null)}>
               {spans
