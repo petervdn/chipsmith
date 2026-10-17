@@ -35,7 +35,16 @@ type Pointers = {
   directories: number[];
 };
 
-/** A .fur file's bytes, not yet compressed. */
+/**
+ * Lays out a .fur file's bytes, not yet compressed. Throws if the layout does not add up.
+ *
+ * @param furFile - The .fur file to write.
+ * @param furFile.song - The song's settings, written in INFO and a FLAG block per chip.
+ * @param furFile.instruments - The instrument blocks, as they are.
+ * @param furFile.wavetables - The wavetable blocks, as they are.
+ * @param furFile.patterns - The patterns, written by channel and then by number.
+ * @returns The file's uncompressed bytes.
+ */
 export function getUncompressedFurBytes({
   song,
   instruments,
@@ -92,7 +101,12 @@ export function getUncompressedFurBytes({
   return bytes;
 }
 
-/** A .fur file's bytes, compressed as Furnace writes them. */
+/**
+ * Returns a .fur file's bytes, compressed as Furnace writes them.
+ *
+ * @param furFile - The .fur file to write.
+ * @returns The file's compressed bytes.
+ */
 export function getFurFileBytes(furFile: FurFile): Uint8Array {
   return deflateSync(getUncompressedFurBytes(furFile));
 }
@@ -151,8 +165,11 @@ function makeInfo(song: FurSong, pointers: Pointers): Uint8Array {
 }
 
 /**
- * The patchbay: each chip's outputs 0 and 1 to the system's 0 and 1. Furnace builds it again anyway,
- * as the automatic patchbay is on.
+ * Returns the patchbay: each chip's outputs 0 and 1 to the system's 0 and 1. Furnace builds it
+ * again anyway, as the automatic patchbay is on.
+ *
+ * @param chipCount - How many chips the song has.
+ * @returns The connections, one number each, as INFO stores them.
  */
 function getConnections(chipCount: number): number[] {
   if (chipCount === 1) return [0x00000000, 0x00000001];

@@ -11,14 +11,26 @@ const MOST_SKIPPED = 129;
 /** The end of a pattern's rows. */
 const END = 0xff;
 
-/** A PATN block of the first subsong. */
+/**
+ * Makes a PATN block of the first subsong.
+ *
+ * @param channel - The channel the pattern is on.
+ * @param index - The pattern's number on its channel.
+ * @param rows - The pattern's rows, null for an empty one.
+ * @returns The PATN block's bytes.
+ */
 export function makePattern(channel: number, index: number, rows: (Row | null)[]): Uint8Array {
   const body = new ByteWriter().u8(0).u8(channel).u16(index).u8(0);
   body.add(packRows(rows));
   return makeBlock('PATN', body.getBytes());
 }
 
-/** Rows packed: a mask byte per row that holds something, empty rows skipped in runs. */
+/**
+ * Packs rows as Furnace does: a mask byte per row that holds something, empty rows skipped in runs.
+ *
+ * @param rows - The rows, null for an empty one.
+ * @returns The packed rows, ending in the end byte (0xFF).
+ */
 export function packRows(rows: (Row | null)[]): Uint8Array {
   const writer = new ByteWriter();
   let empty = 0;
@@ -46,7 +58,13 @@ export function packRows(rows: (Row | null)[]): Uint8Array {
   return writer.getBytes();
 }
 
-/** Rows unpacked from a reader at their start, `length` of them. */
+/**
+ * Unpacks `length` rows from a reader at their start.
+ *
+ * @param reader - The reader, at the first packed row; it is moved past the rows read.
+ * @param length - How many rows the pattern has.
+ * @returns The rows, null for an empty one.
+ */
 export function unpackRows(reader: ByteReader, length: number): (Row | null)[] {
   const rows: (Row | null)[] = Array.from({ length }, () => null);
   let index = 0;
@@ -112,7 +130,16 @@ function addRow(writer: ByteWriter, { note, instrument, volume, effects = [] }: 
   }
 }
 
-/** A row with nothing in it, which is written as an empty row. */
+/**
+ * Checks whether a row has nothing in it, so that it is written as an empty row.
+ *
+ * @param row - The row.
+ * @param row.note - Its note, if any.
+ * @param row.instrument - Its instrument, if any.
+ * @param row.volume - Its volume, if any.
+ * @param row.effects - Its effects, none if not given.
+ * @returns Whether the row has no note, instrument, volume or effect.
+ */
 function isEmptyRow({ note, instrument, volume, effects = [] }: Row): boolean {
   return note === undefined && instrument === undefined && volume === undefined && !effects.length;
 }

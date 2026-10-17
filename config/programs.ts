@@ -32,12 +32,22 @@ const PROGRAM_NAMES: ProgramName[] = ['furnace', 'ffmpeg', 'claude', 'node'];
 
 let furnaceVersion: Promise<string> | null = null;
 
-/** Checks every program the settings name. */
+/**
+ * Checks every program the settings name: whether it runs, and its version.
+ *
+ * @param settings - The settings, which name the path of each program.
+ * @returns A check per program, in the order furnace, ffmpeg, claude, node.
+ */
 export function checkPrograms(settings: Settings): Promise<ProgramCheck[]> {
   return Promise.all(PROGRAM_NAMES.map((name) => checkProgram(name, settings[name])));
 }
 
-/** The version of the Furnace that renders, read from it once. */
+/**
+ * Returns the version of the Furnace that renders, read from it once. A read that fails is not
+ * kept, so the next call asks again.
+ *
+ * @returns The version, such as "0.6.8.3"; rejects if it could not be read.
+ */
 export function getFurnaceVersion(): Promise<string> {
   furnaceVersion ??= checkProgram('furnace', getSettings().furnace).then(({ version, error }) => {
     if (version) return version;
@@ -47,7 +57,13 @@ export function getFurnaceVersion(): Promise<string> {
   return furnaceVersion;
 }
 
-/** The version a program's answer names, or null. */
+/**
+ * Reads the version a program's answer names.
+ *
+ * @param name - The program, which says how its answer names its version.
+ * @param answer - What the program printed when asked for its version.
+ * @returns The version, or null if the answer names none.
+ */
 export function readVersion(name: ProgramName, answer: string): string | null {
   return PROGRAMS[name].pattern.exec(answer)?.[1] ?? null;
 }
@@ -70,7 +86,14 @@ async function checkProgram(name: ProgramName, path: string): Promise<ProgramChe
   }
 }
 
-/** What a program prints (both streams), once it has exited. */
+/**
+ * Runs a program and returns what it prints (both streams), once it has exited. It is given
+ * `ANSWER_TIME` milliseconds to answer.
+ *
+ * @param path - The program's path.
+ * @param args - The arguments it is run with.
+ * @returns What it printed; rejects with "not found" if there is no such program.
+ */
 function runForAnswer(path: string, args: string[]): Promise<string> {
   return new Promise((resolve, reject) => {
     const program = spawn(path, args, { stdio: ['ignore', 'pipe', 'pipe'], timeout: ANSWER_TIME });

@@ -2,7 +2,12 @@
 import { spawn } from 'node:child_process';
 import { getSettings } from '../config/settings.ts';
 
-/** Writes a WAV's audio as a FLAC file; fails rather than replace one that is there. */
+/**
+ * Writes a WAV's audio as a FLAC file with ffmpeg. Fails rather than replace a file that is there.
+ *
+ * @param wavFile - The path of the WAV to read.
+ * @param flacFile - The path of the FLAC to write; it need not end in .flac.
+ */
 export function encodeFlac(wavFile: string, flacFile: string): Promise<void> {
   const args = [
     '-v',

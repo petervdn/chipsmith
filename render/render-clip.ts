@@ -14,7 +14,13 @@ import { getWavFacts } from './wav.ts';
 /** What rendering found out about the audio. */
 export type RenderedAudio = { seconds: number; furnace: string };
 
-/** Renders `<clipFolder>/source.fur` to `<clipFolder>/audio.flac`. */
+/**
+ * Renders `<clipFolder>/source.fur` to `<clipFolder>/audio.flac`. Throws if there is no source.fur
+ * or if audio.flac is there already.
+ *
+ * @param clipFolder - The clip's folder.
+ * @returns The audio's length in seconds and the version of Furnace that rendered it.
+ */
 export async function renderClipAudio(clipFolder: string): Promise<RenderedAudio> {
   const furFile = join(clipFolder, 'source.fur');
   const flacFile = join(clipFolder, 'audio.flac');

@@ -16,13 +16,25 @@ const CHANNELS_OF_CHIP = new Map([
 ]);
 const MAGIC = '-Furnace module-';
 
-/** A .fur file's bytes, uncompressed if they were compressed. */
+/**
+ * Returns a .fur file's bytes uncompressed: as they are when they start with the magic text,
+ * inflated otherwise.
+ *
+ * @param file - The .fur file's bytes, compressed or not.
+ * @returns The uncompressed bytes.
+ */
 export function getUncompressed(file: Uint8Array): Uint8Array {
   const start = String.fromCharCode(...file.subarray(0, MAGIC.length));
   return start === MAGIC ? file : new Uint8Array(inflateSync(file));
 }
 
-/** A .fur file read from its bytes. */
+/**
+ * Reads a .fur file from its bytes. Throws if it is not the old INFO layout, has a chip other than
+ * the NES, SCC or SCC+, or a pattern of a subsong other than the first.
+ *
+ * @param file - The .fur file's bytes, compressed or not.
+ * @returns The song's settings, the instrument and wavetable blocks, and the patterns.
+ */
 export function readFurFile(file: Uint8Array): FurFile {
   const bytes = getUncompressed(file);
   const reader = new ByteReader(bytes, MAGIC.length);
@@ -117,7 +129,13 @@ function getChannelsOfChip(chip: number): number {
   return channels;
 }
 
-/** A whole block (id, length, body) starting at a position. */
+/**
+ * Returns a whole block (id, length, body) starting at a position.
+ *
+ * @param bytes - The file's uncompressed bytes.
+ * @param position - Where the block starts.
+ * @returns A copy of the block's bytes.
+ */
 function getBlockAt(bytes: Uint8Array, position: number): Uint8Array {
   const size = new ByteReader(bytes, position + 4).u32();
   return bytes.slice(position, position + 8 + size);

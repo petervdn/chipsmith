@@ -2,12 +2,27 @@
 import type { Block, Song } from './song.types.ts';
 import { TICKS_PER_BEAT } from './song.types.ts';
 
-/** Ticks to a second at a tempo. */
+/**
+ * Returns the number of ticks to a second at a tempo.
+ *
+ * @param bpm - The tempo, in beats a minute.
+ * @returns The ticks in a second.
+ */
 export function getTicksPerSecond(bpm: number): number {
   return (bpm / 60) * TICKS_PER_BEAT;
 }
 
-/** Where a block's last repeat ends, in ticks; `clipSeconds` is how long its clip is. */
+/**
+ * Returns the tick at which a block's last repeat ends.
+ *
+ * @param block - The block, with its start, trim and repeats.
+ * @param block.start - Where the block starts, in ticks from the song's start.
+ * @param block.trim - The part of the clip it plays, or null for all of it.
+ * @param block.repeats - How many times it plays, back to back.
+ * @param clipSeconds - The length of the block's clip, in seconds.
+ * @param bpm - The song's tempo.
+ * @returns Where the last repeat ends, in ticks from the song's start.
+ */
 export function getBlockEnd(
   { start, trim, repeats }: Block,
   clipSeconds: number,
@@ -17,7 +32,14 @@ export function getBlockEnd(
   return start + length * repeats;
 }
 
-/** The song's length in seconds; a block whose clip is not known counts as empty. */
+/**
+ * Returns a song's length in seconds: where its last block ends.
+ *
+ * @param song - The song.
+ * @param getClipSeconds - Gives a clip's length in seconds by its id; for a clip that is not known
+ *   it gives 0, so that its block counts as empty.
+ * @returns The song's length, in seconds.
+ */
 export function getSongSeconds(song: Song, getClipSeconds: (clipId: string) => number): number {
   let end = 0;
   for (const track of song.tracks) {

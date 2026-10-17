@@ -32,7 +32,14 @@ const NO_POINT = 255;
 const BYTE_VALUES = 0x01;
 const WIDE_VALUES = 0xc1;
 
-/** An INS2 block: a name and its macros, in the order given. */
+/**
+ * Makes an INS2 block: a name and its macros, in the order given.
+ *
+ * @param name - The instrument's name.
+ * @param type - Furnace's instrument type, such as `NES_INSTRUMENT`.
+ * @param macros - The macros, written in this order; with none, the block has no macro feature.
+ * @returns The INS2 block's bytes.
+ */
 export function makeInstrument(name: string, type: number, macros: Macro[]): Uint8Array {
   const body = new ByteWriter().u16(FORMAT_VERSION).u16(type);
   const nameBytes = new ByteWriter().cString(name).getBytes();
@@ -48,7 +55,13 @@ export function makeInstrument(name: string, type: number, macros: Macro[]): Uin
   return makeBlock('INS2', body.getBytes());
 }
 
-/** A WAVE block: samples 0..255 (32 of them for the SCC), stored as Furnace does. */
+/**
+ * Makes a WAVE block, its samples stored as Furnace does. Throws if a sample is outside 0..255.
+ *
+ * @param samples - The samples, 0..255 each (32 of them for the SCC).
+ * @param name - The wavetable's name, empty if not given.
+ * @returns The WAVE block's bytes.
+ */
 export function makeWavetable(samples: number[], name = ''): Uint8Array {
   if (samples.some((sample) => sample < 0 || sample > 255)) {
     throw new Error('a wavetable sample is outside 0..255');

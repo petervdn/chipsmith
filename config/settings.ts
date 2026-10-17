@@ -34,7 +34,16 @@ const DEFAULT_DATA_FOLDER = 'data';
 const DEFAULT_PORT = 6502;
 const DEFAULT_FURNACE = '/Applications/Furnace.app/Contents/MacOS/Furnace';
 
-/** The settings from variables, each named `CHIPSMITH_<NAME>`, with the defaults for what is not set. */
+/**
+ * Reads the settings from variables, each named `CHIPSMITH_<NAME>`, with the defaults for what is
+ * not set. A variable that is empty or only spaces counts as not set. Throws if the port is not a
+ * positive whole number.
+ *
+ * @param variables - The variables, by name.
+ * @param projectFolder - The project folder, under which the data folder is by default.
+ * @param home - The user's home folder, where `.local/bin/claude` is looked for.
+ * @returns The settings.
+ */
 export function readSettings(
   variables: Record<string, string | undefined>,
   projectFolder: string,
@@ -61,13 +70,21 @@ export function readSettings(
 
 let settings: Settings | null = null;
 
-/** The app's settings: the environment over `.env` over the defaults, read once. */
+/**
+ * Returns the app's settings: the environment over `.env` over the defaults, read once.
+ *
+ * @returns The settings.
+ */
 export function getSettings(): Settings {
   settings ??= readSettings({ ...readEnvFile(), ...process.env }, PROJECT_FOLDER, homedir());
   return settings;
 }
 
-/** The variables of the project's `.env` file, or none. */
+/**
+ * Reads the variables of the project's `.env` file.
+ *
+ * @returns The variables by name; none if there is no `.env` file.
+ */
 function readEnvFile(): Record<string, string | undefined> {
   const file = join(PROJECT_FOLDER, '.env');
   return existsSync(file) ? parseEnv(readFileSync(file, 'utf8')) : {};

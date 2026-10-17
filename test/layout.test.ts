@@ -18,7 +18,12 @@ function getFolders(dir: string): string[] {
   return [dir, ...subs.flatMap((name) => getFolders(join(dir, name)))];
 }
 
-/** What a folder's README should name: its source files (not tests) and its folders. */
+/**
+ * Returns what a folder's README should name: its source files (not tests) and its folders.
+ *
+ * @param dir - The folder.
+ * @returns The source files' names, and each folder's name with a "/" after it.
+ */
 function getContents(dir: string): string[] {
   return readdirSync(dir).flatMap((name) => {
     if (statSync(join(dir, name)).isDirectory()) return [`${name}/`];
@@ -26,7 +31,12 @@ function getContents(dir: string): string[] {
   });
 }
 
-/** What a README names: the first `name` of each line that starts with "- ". */
+/**
+ * Returns what a README names: the first `name` of each line that starts with "- ".
+ *
+ * @param readme - The README's text.
+ * @returns The names, in order.
+ */
 function getNamed(readme: string): string[] {
   return readme.split('\n').flatMap((line) => /^- `([^`]+)`/.exec(line)?.[1] ?? []);
 }

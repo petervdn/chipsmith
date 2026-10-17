@@ -7,7 +7,12 @@ import { ByteReader } from '../fur/bytes.ts';
 /** A WAV's format and length. */
 export type WavFacts = { sampleRate: number; channels: number; bits: number; seconds: number };
 
-/** The highest sample of a 16-bit WAV, from 0 to 1 of full scale. */
+/**
+ * Returns the highest sample of a 16-bit WAV. Throws for any other bit depth.
+ *
+ * @param bytes - The whole WAV file.
+ * @returns The highest sample's size, from 0 to 1 of full scale.
+ */
 export function getWavPeak(bytes: Uint8Array): number {
   const { bits } = getWavFacts(bytes);
   if (bits !== 16) throw new Error(`peak of a ${bits}-bit WAV is not read`);
@@ -20,7 +25,13 @@ export function getWavPeak(bytes: Uint8Array): number {
   return peak / 32768;
 }
 
-/** The facts of a WAV from its bytes (at least up to its data chunk's header). */
+/**
+ * Reads the facts of a WAV from its header. Throws if the bytes are not a WAV, or have no data
+ * chunk or none after the format chunk.
+ *
+ * @param bytes - The WAV file, at least up to its data chunk's header.
+ * @returns Its sample rate, channels, bits and length in seconds.
+ */
 export function getWavFacts(bytes: Uint8Array): WavFacts {
   const reader = new ByteReader(bytes);
   if (reader.ascii(4) !== 'RIFF') throw new Error('not a WAV: no RIFF');
@@ -51,7 +62,13 @@ export function getWavFacts(bytes: Uint8Array): WavFacts {
   throw new Error('not a WAV: no data chunk');
 }
 
-/** Where a WAV's sample data starts: after the header of its data chunk. */
+/**
+ * Finds where a WAV's sample data starts: after the header of its data chunk. Throws if there is no
+ * data chunk.
+ *
+ * @param bytes - The whole WAV file.
+ * @returns The position of the first sample byte.
+ */
 function findDataStart(bytes: Uint8Array): number {
   const reader = new ByteReader(bytes, 12);
   while (reader.position + 8 <= bytes.length) {

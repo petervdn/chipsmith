@@ -22,7 +22,12 @@ const SEMITONES = new Map([
 ]);
 const NAMES = ['C-', 'C#', 'D-', 'D#', 'E-', 'F-', 'F#', 'G-', 'G#', 'A-', 'A#', 'B-'];
 
-/** The pattern value of a note name: "D-3", "C#5", "OFF". */
+/**
+ * Returns the pattern value of a note name. Throws if the name is not a note.
+ *
+ * @param name - The note's name: "D-3", "C#5", "OFF".
+ * @returns The pattern value, C-0 being 60.
+ */
 export function getNoteValue(name: string): number {
   if (name === 'OFF') return NOTE_OFF;
   const match = /^([A-G])([-#])(-?\d+)$/.exec(name);
@@ -32,7 +37,12 @@ export function getNoteValue(name: string): number {
   return 60 + Number(match[3]) * 12 + semitone + sharp;
 }
 
-/** The name of a pattern value, as the tracker shows it. */
+/**
+ * Returns the name of a pattern value, as the tracker shows it.
+ *
+ * @param value - The pattern value, C-0 being 60.
+ * @returns The note's name ("D-3", "C#5"), or "OFF", "===" (note release) or "REL" (macro release).
+ */
 export function getNoteName(value: number): string {
   if (value === NOTE_OFF) return 'OFF';
   if (value === NOTE_RELEASE) return '===';

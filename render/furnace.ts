@@ -14,7 +14,14 @@ const TRIES = 3;
 
 let queue: Promise<unknown> = Promise.resolve();
 
-/** Renders a .fur once through (no loop) to a WAV file; renders wait for each other. */
+/**
+ * Renders a .fur once through (no loop) to a WAV file. Renders wait for each other, and a failed
+ * one is tried again after a pause, up to three tries in all.
+ *
+ * @param furFile - The path of the .fur to render.
+ * @param wavFile - The path of the WAV to write.
+ * @returns A promise that settles once the WAV is written, or rejects once every try has failed.
+ */
 export function renderToWav(furFile: string, wavFile: string): Promise<void> {
   const render = queue.then(() => renderWithRetries(furFile, wavFile));
   queue = render.catch(() => undefined);

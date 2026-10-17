@@ -26,14 +26,24 @@ const MACRO_NAMES = new Map([
 /** The byte size of a macro value, by the top two bits of its flags. */
 const VALUE_SIZES = [1, 1, 2, 4];
 
-/** A byte as two hex digits, or ".." when there is none. */
+/**
+ * Formats a byte as two upper-case hex digits.
+ *
+ * @param value - The byte, or null or undefined when there is none.
+ * @returns The two digits, or ".." when there is no byte.
+ */
 function formatHex(value: number | null | undefined): string {
   return value === null || value === undefined
     ? '..'
     : value.toString(16).toUpperCase().padStart(2, '0');
 }
 
-/** A row as the tracker shows it: "D-3 00 0F 1202". */
+/**
+ * Formats a pattern row as the tracker shows it: "D-3 00 0F 1202".
+ *
+ * @param row - The row, or null for an empty one.
+ * @returns The note, instrument, volume and effects; "... .. .." for an empty row.
+ */
 export function formatRow(row: Row | null): string {
   if (!row) return '... .. ..';
   const note = row.note === undefined ? '...' : getNoteName(row.note);
@@ -43,7 +53,12 @@ export function formatRow(row: Row | null): string {
   return `${note} ${formatHex(row.instrument)} ${formatHex(row.volume)}${effects.join('')}`;
 }
 
-/** An instrument block's name and macros, as text. */
+/**
+ * Describes an instrument block's type, name and macros as text.
+ *
+ * @param block - The instrument's INS2 block, with its id and length.
+ * @returns The name, the type and each macro's values, two spaces apart.
+ */
 export function describeInstrument(block: Uint8Array): string {
   const reader = new ByteReader(block, 8);
   reader.u16();
@@ -61,7 +76,16 @@ export function describeInstrument(block: Uint8Array): string {
   return parts.join('  ');
 }
 
-/** The song's settings and the .fur file's counts, as text. */
+/**
+ * Describes the song's settings and the .fur file's counts as text.
+ *
+ * @param furFile - The .fur file read.
+ * @param furFile.song - The song's settings: name, author, system, chips, speeds, tempo, orders.
+ * @param furFile.instruments - The instrument blocks, counted.
+ * @param furFile.wavetables - The wavetable blocks, counted.
+ * @param furFile.patterns - The patterns, counted.
+ * @returns Three lines: the name and chips, the timing, and the counts.
+ */
 export function describeSong({ song, instruments, wavetables, patterns }: FurFile): string {
   const chips = song.chips.map((chip) => `0x${chip.toString(16)}`).join(', ');
   return [
