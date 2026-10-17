@@ -5,13 +5,13 @@
   margin: 0 auto;
 }
 
-.guides-intro {
+.guides-page-intro {
   color: var(--muted);
   font-size: 0.875rem;
 }
 
 /* a guide's row: its name, "default", and the start of its text on one line */
-.guide-row {
+.guides-page-row {
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
@@ -27,7 +27,7 @@
   cursor: pointer;
 }
 
-.guide-default {
+.guides-page-default {
   padding: 1px 6px;
   border-radius: var(--radius);
   background: var(--accent);
@@ -35,7 +35,7 @@
   font-size: 0.75rem;
 }
 
-.guide-preview {
+.guides-page-preview {
   flex: 1 1 100%;
   overflow: hidden;
   color: var(--muted);

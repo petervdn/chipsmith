@@ -1,7 +1,7 @@
 /* What the guides' parts share: the buttons to make and save a guide. */
 
-.guide-new,
-.guide-save {
+.guides-new,
+.guides-save {
   min-height: var(--touch);
   padding: 0 16px;
   border: 0;
@@ -12,6 +12,6 @@
   cursor: pointer;
 }
 
-.guide-new {
+.guides-new {
   margin: 4px 0 12px;
 }

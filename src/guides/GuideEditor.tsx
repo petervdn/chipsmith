@@ -20,19 +20,19 @@ export function GuideEditor({ guide, onDone }: GuideEditorProps) {
       }}
     >
       <input
-        className="guide-name"
+        className="guide-editor-name"
         placeholder="Name, e.g. Funk"
         value={draft.name}
         onChange={(event) => changeDraft({ name: event.target.value })}
         autoFocus={!guide}
       />
       <textarea
-        className="guide-text"
+        className="guide-editor-text"
         placeholder="What Claude should keep to in this style: harmony, rhythm, sounds, form, what to avoid…"
         value={draft.text}
         onChange={(event) => changeDraft({ text: event.target.value })}
       />
-      <label className="filter-switch">
+      <label className="list-switch">
         <input
           type="checkbox"
           checked={draft.isDefault}
@@ -40,15 +40,15 @@ export function GuideEditor({ guide, onDone }: GuideEditorProps) {
         />
         Chosen by default for a new prompt
       </label>
-      <div className="guide-actions">
-        <button type="submit" className="guide-save" disabled={!canSave}>
+      <div className="guide-editor-actions">
+        <button type="submit" className="guides-save" disabled={!canSave}>
           Save
         </button>
-        <button type="button" className="row-action" onClick={onDone}>
+        <button type="button" className="list-action" onClick={onDone}>
           Cancel
         </button>
         {guide && (
-          <button type="button" className="row-action guide-delete" onClick={remove}>
+          <button type="button" className="list-action guide-editor-delete" onClick={remove}>
             Delete
           </button>
         )}

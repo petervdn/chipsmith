@@ -31,67 +31,67 @@
   gap: 10px;
 }
 
-.guide-chip {
+.guide-chips-chip {
   min-height: var(--touch);
   padding: 0 16px;
 }
 
-.guide-chip.is-on {
+.guide-chips-chip.is-on {
   border-color: var(--fg);
   background: var(--fg);
   color: var(--bg);
 }
 
 /* the guides' texts, to read without leaving the prompt */
-.guide-texts {
+.guide-chips-texts {
   width: 100%;
 }
 
-.guide-texts > summary,
-.guide-read > summary {
+.guide-chips-texts > summary,
+.guide-chips-read > summary {
   display: flex;
   align-items: center;
   min-height: var(--touch);
   cursor: pointer;
 }
 
-.guide-texts > summary {
+.guide-chips-texts > summary {
   color: var(--muted);
   font-size: 0.875rem;
 }
 
-.guide-texts > summary::before,
-.guide-read > summary::before {
+.guide-chips-texts > summary::before,
+.guide-chips-read > summary::before {
   content: '▸';
   width: 1.2em;
   color: var(--muted);
 }
 
-.guide-texts[open] > summary::before,
-.guide-read[open] > summary::before {
+.guide-chips-texts[open] > summary::before,
+.guide-chips-read[open] > summary::before {
   content: '▾';
 }
 
-.guide-texts > summary::-webkit-details-marker,
-.guide-read > summary::-webkit-details-marker {
+.guide-chips-texts > summary::-webkit-details-marker,
+.guide-chips-read > summary::-webkit-details-marker {
   display: none;
 }
 
-.guide-texts > summary,
-.guide-read > summary {
+.guide-chips-texts > summary,
+.guide-chips-read > summary {
   list-style: none;
 }
 
-.guide-read {
+.guide-chips-read {
   margin-left: 1.2em;
   border-top: var(--border-width) solid var(--line);
 }
 
-.guide-read > summary {
+.guide-chips-read > summary {
   font-weight: 600;
 }
 
-.guide-read-chosen {
+.guide-chips-read-chosen {
   margin-left: 4px;
   padding: 1px 6px;
   border-radius: var(--radius);
@@ -101,7 +101,7 @@
   font-weight: 400;
 }
 
-.guide-read-text {
+.guide-chips-read-text {
   max-height: 40vh;
   overflow-y: auto;
   margin: 0 0 12px 1.2em;

@@ -1,21 +1,21 @@
 /* What the jobs' parts share: the spinner of a running job and the time it has been going. */
 
-.job-time {
+.jobs-time {
   margin-left: auto;
   color: var(--muted);
   font-variant-numeric: tabular-nums;
 }
 
-.job-spinner {
+.jobs-spinner {
   width: 12px;
   height: 12px;
   border: calc(var(--border-width) * 2) solid var(--line);
   border-top-color: var(--accent);
   border-radius: var(--round);
-  animation: job-spin 0.9s linear infinite;
+  animation: jobs-spin 0.9s linear infinite;
 }
 
-@keyframes job-spin {
+@keyframes jobs-spin {
   to {
     transform: rotate(360deg);
   }

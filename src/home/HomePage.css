@@ -1,7 +1,7 @@
 /* The look of HomePage.tsx. */
 
 /* the home page */
-.home-hero {
+.home-page-hero {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -9,18 +9,18 @@
   margin: 24px 0;
 }
 
-.home-name {
+.home-page-name {
   margin: 0;
   font-size: 2.25rem;
 }
 
-.home-line {
+.home-page-line {
   max-width: 34em;
   margin: 4px 0 0;
   color: var(--muted);
 }
 
-.home-new {
+.home-page-new {
   display: inline-flex;
   align-items: center;
   min-height: var(--touch);
@@ -33,16 +33,16 @@
   text-decoration: none;
 }
 
-.home-counts {
+.home-page-counts {
   color: var(--muted);
 }
 
-.home-heading {
+.home-page-heading {
   margin: 24px 0 8px;
   font-size: 1.125rem;
 }
 
-.home-all {
+.home-page-all {
   display: inline-flex;
   align-items: center;
   min-height: var(--touch);

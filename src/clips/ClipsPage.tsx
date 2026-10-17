@@ -58,17 +58,17 @@ export function ClipsPage() {
       {items.length > 0 && shown.length === 0 && (
         <p className="empty">No clips match this filter (a clip needs every chosen tag).</p>
       )}
-      <ul className="item-list">
+      <ul className="list">
         {shown.map(({ listing: { clip, usedBy } }) => (
           <li key={clip.id}>
-            <div className="item-row">
-              <span className="item-main">
-                <span className="item-title">
-                  {getClipLabel(clip)} <span className="item-id">{clip.id}</span>
+            <div className="list-row">
+              <span className="list-main">
+                <span className="list-title">
+                  {getClipLabel(clip)} <span className="list-id">{clip.id}</span>
                 </span>
-                <span className="item-prompt">{clip.prompt}</span>
+                <span className="list-prompt">{clip.prompt}</span>
               </span>
-              <span className="item-facts">
+              <span className="list-facts">
                 <span>{formatSeconds(clip.seconds)}</span>
                 <span>{Math.round(clip.bpm)} bpm</span>
                 <span>

@@ -22,37 +22,37 @@ export function TopBar({ route, jobs }: TopBarProps) {
   const { songCount, clipCount, guideCount, jobCount } = useTabCounts(jobs);
   return (
     <header className="top-bar">
-      <a href="/" className="top-logo" title="home">
+      <a href="/" className="top-bar-logo" title="home">
         <Logo size={LOGO_SIZE} />
-        <span className="top-logo-name">chipsmith</span>
+        <span className="top-bar-logo-name">chipsmith</span>
       </a>
-      <nav className="top-nav">
-        <a href="/songs" className={`top-link${isSongs ? ' is-on' : ''}`}>
-          Songs <span className="top-count">{getCountText(songCount)}</span>
+      <nav className="top-bar-nav">
+        <a href="/songs" className={`top-bar-link${isSongs ? ' is-on' : ''}`}>
+          Songs <span className="top-bar-count">{getCountText(songCount)}</span>
         </a>
-        <a href="/clips" className={`top-link${route.page === 'clips' ? ' is-on' : ''}`}>
-          Clips <span className="top-count">{getCountText(clipCount)}</span>
+        <a href="/clips" className={`top-bar-link${route.page === 'clips' ? ' is-on' : ''}`}>
+          Clips <span className="top-bar-count">{getCountText(clipCount)}</span>
         </a>
         <a
           href="/guides"
-          className={`top-link${route.page === 'guides' ? ' is-on' : ''}`}
+          className={`top-bar-link${route.page === 'guides' ? ' is-on' : ''}`}
           title="style guides, sent along with a prompt"
         >
-          Guides <span className="top-count">{getCountText(guideCount)}</span>
+          Guides <span className="top-bar-count">{getCountText(guideCount)}</span>
         </a>
         <a
           href="/jobs"
-          className={`top-link${route.page === 'jobs' ? ' is-on' : ''}`}
+          className={`top-bar-link${route.page === 'jobs' ? ' is-on' : ''}`}
           title={isAnyRunning ? 'a job is on its way' : 'every prompt sent, and what it made'}
         >
-          {isAnyRunning && <span className="job-spinner" aria-hidden="true" />}
-          Jobs <span className="top-count">{getCountText(jobCount)}</span>
+          {isAnyRunning && <span className="jobs-spinner" aria-hidden="true" />}
+          Jobs <span className="top-bar-count">{getCountText(jobCount)}</span>
         </a>
       </nav>
       {route.page === 'song' && <SongCrumb songId={route.songId} />}
       <a
         href="/new"
-        className={`top-new${route.page === 'new' ? ' is-on' : ''}`}
+        className={`top-bar-new${route.page === 'new' ? ' is-on' : ''}`}
         title="write a prompt for a new song"
       >
         + New song
@@ -73,9 +73,9 @@ type SongCrumbProps = { songId: string };
 function SongCrumb({ songId }: SongCrumbProps) {
   const { data: detail } = useSong(songId);
   return (
-    <div className="top-crumb">
-      <span className="top-crumb-mark">›</span>
-      <span className="top-crumb-title">{detail?.song.title ?? songId}</span>
+    <div className="top-bar-crumb">
+      <span className="top-bar-crumb-mark">›</span>
+      <span className="top-bar-crumb-title">{detail?.song.title ?? songId}</span>
     </div>
   );
 }

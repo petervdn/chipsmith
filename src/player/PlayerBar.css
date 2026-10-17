@@ -16,7 +16,7 @@
   border-top: var(--border-width) solid var(--line);
 }
 
-.player-play {
+.player-bar-play {
   width: 48px;
   height: 48px;
   border: 0;
@@ -28,17 +28,17 @@
   cursor: pointer;
 }
 
-.player-play.is-loading {
+.player-bar-play.is-loading {
   font-size: 0.75rem;
 }
 
-.player-middle {
+.player-bar-middle {
   display: flex;
   flex-direction: column;
   min-width: 0;
 }
 
-.player-title {
+.player-bar-title {
   font-weight: 600;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -46,19 +46,19 @@
   text-decoration: none;
 }
 
-.player-seek {
+.player-bar-seek {
   width: 100%;
   accent-color: var(--accent);
 }
 
-.player-time {
+.player-bar-time {
   color: var(--muted);
   font-size: 0.8125rem;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
 
-.player-mute {
+.player-bar-mute {
   width: var(--touch);
   height: var(--touch);
   border: 0;
@@ -67,7 +67,7 @@
   cursor: pointer;
 }
 
-.player-error {
+.player-bar-error {
   grid-column: 1 / -1;
   margin: 0;
   color: var(--reject);

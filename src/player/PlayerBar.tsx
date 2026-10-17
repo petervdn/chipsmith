@@ -37,7 +37,7 @@ export function PlayerBar() {
     <div className="player-bar">
       <button
         type="button"
-        className={`player-play${player.mode === 'loading' ? ' is-loading' : ''}`}
+        className={`player-bar-play${player.mode === 'loading' ? ' is-loading' : ''}`}
         onClick={togglePlay}
         title={player.mode === 'stopped' ? 'play' : 'stop'}
       >
@@ -47,12 +47,12 @@ export function PlayerBar() {
             ? '■'
             : '▶'}
       </button>
-      <div className="player-middle">
-        <a className="player-title" href={`/songs/${encodeURIComponent(song.song.id)}`}>
+      <div className="player-bar-middle">
+        <a className="player-bar-title" href={`/songs/${encodeURIComponent(song.song.id)}`}>
           {song.song.title}
         </a>
         <input
-          className="player-seek"
+          className="player-bar-seek"
           type="range"
           min={0}
           max={player.end || 1}
@@ -61,18 +61,18 @@ export function PlayerBar() {
           onChange={(event) => seekSong(Number(event.target.value))}
         />
       </div>
-      <span className="player-time">
+      <span className="player-bar-time">
         {formatSeconds(position)} / {formatSeconds(player.end)}
       </span>
       <button
         type="button"
-        className={`player-mute${isMuteOn ? ' is-on' : ''}`}
+        className={`player-bar-mute${isMuteOn ? ' is-on' : ''}`}
         onClick={() => setMuted(!isMuteOn)}
         title={isMuteOn ? 'muted (for testing); press to hear' : 'mute'}
       >
         {isMuteOn ? '🔇' : '🔊'}
       </button>
-      {player.error && <p className="player-error">{player.error}</p>}
+      {player.error && <p className="player-bar-error">{player.error}</p>}
     </div>
   );
 }

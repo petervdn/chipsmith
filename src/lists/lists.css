@@ -2,14 +2,14 @@
    with ▶ and ⌄ where they have them), the tag chip, the small row buttons and warnings. Imported by
    each component that shows them. */
 
-.filter-switch {
+.list-switch {
   display: inline-flex;
   align-items: center;
   gap: 6px;
   color: var(--muted);
 }
 
-.tag-chip {
+.list-chip {
   min-height: 32px;
   padding: 0 10px;
   border: var(--border-width) solid var(--line);
@@ -18,7 +18,7 @@
   cursor: pointer;
 }
 
-.tag-chip.is-on {
+.list-chip.is-on {
   border-color: var(--accent);
   background: var(--accent);
   color: var(--on-accent);
@@ -26,7 +26,7 @@
 
 /* a list of songs or clips: on a phone each row wraps, its facts under its title */
 /* rows on the page itself, a line between them */
-.item-list {
+.list {
   list-style: none;
   margin: 0;
   padding: 0;
@@ -34,11 +34,11 @@
   border-bottom: var(--border-width) solid var(--line);
 }
 
-.item-list > li + li {
+.list > li + li {
   border-top: var(--border-width) solid var(--line);
 }
 
-.item-row {
+.list-row {
   position: relative;
   display: grid;
   grid-template-columns: 1fr auto;
@@ -50,14 +50,14 @@
   padding: 10px 12px;
 }
 
-.item-main {
+.list-main {
   grid-area: main;
   display: flex;
   flex-direction: column;
   min-width: 0;
 }
 
-.item-title {
+.list-title {
   font-weight: 600;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -66,20 +66,20 @@
 }
 
 /* the title's link covers the whole row, under the status buttons */
-.item-link::after {
+.list-link::after {
   content: '';
   position: absolute;
   inset: 0;
 }
 
-.item-id {
+.list-id {
   font-weight: 400;
   color: var(--muted);
   font-size: 0.8125rem;
 }
 
-.item-tags,
-.item-prompt {
+.list-tags,
+.list-prompt {
   color: var(--muted);
   font-size: 0.8125rem;
   overflow: hidden;
@@ -87,7 +87,7 @@
   white-space: nowrap;
 }
 
-.item-facts {
+.list-facts {
   grid-area: facts;
   display: flex;
   flex-wrap: wrap;
@@ -99,21 +99,21 @@
 
 /* on a desktop a row is one line: title, facts, status */
 @media (min-width: 760px) {
-  .item-row {
+  .list-row {
     grid-template-columns: 1fr auto auto;
     grid-template-areas: 'main facts status';
   }
-  .item-facts {
+  .list-facts {
     flex-wrap: nowrap;
   }
-  .item-facts > span {
+  .list-facts > span {
     min-width: 56px;
     text-align: right;
   }
 }
 
 /* ⌄ opens a row's details (after ▶'s layout in player.css, so more specific than it) */
-.item-row.has-play.has-expand {
+.list-row.has-play.has-expand {
   grid-template-columns: auto 1fr auto auto;
   grid-template-areas:
     'play main status expand'
@@ -121,13 +121,13 @@
 }
 
 @media (min-width: 760px) {
-  .item-row.has-play.has-expand {
+  .list-row.has-play.has-expand {
     grid-template-columns: auto 1fr auto auto auto;
     grid-template-areas: 'play main facts status expand';
   }
 }
 
-.row-action {
+.list-action {
   display: inline-flex;
   align-items: center;
   min-height: 34px;
@@ -140,7 +140,7 @@
   cursor: pointer;
 }
 
-.row-warning {
+.list-warning {
   margin: 0 0 6px;
   color: var(--keep);
   font-size: 0.8125rem;
@@ -148,18 +148,18 @@
 
 /* a phone: tighter rows, so the title and the facts keep their room */
 @media (max-width: 759px) {
-  .item-row {
+  .list-row {
     column-gap: 8px;
     padding: 8px 10px;
   }
-  .item-facts {
+  .list-facts {
     gap: 0 8px;
   }
 }
 
 /* a phone: a song's title has the top line to itself; ▶, its tags and facts, ★ ✕ and ▾ below */
 @media (max-width: 759px) {
-  .item-row.has-play.has-expand {
+  .list-row.has-play.has-expand {
     grid-template-columns: auto 1fr auto auto;
     grid-template-areas:
       'title title title title'
@@ -167,45 +167,45 @@
       'play facts status expand';
     row-gap: 0;
   }
-  .item-row.has-expand .item-main {
+  .list-row.has-expand .list-main {
     display: contents;
   }
-  .item-row.has-expand .item-title {
+  .list-row.has-expand .list-title {
     grid-area: title;
     margin-bottom: 4px;
   }
-  .item-row.has-expand .item-tags {
+  .list-row.has-expand .list-tags {
     grid-area: tags;
   }
 }
 
 /* hover looks only where there is a mouse: a phone keeps a tapped element "hovered" */
 @media (hover: hover) {
-  .item-row:hover {
+  .list-row:hover {
     background: color-mix(in srgb, var(--raised) 60%, transparent);
   }
 }
 
-.item-row.has-play {
+.list-row.has-play {
   grid-template-columns: auto 1fr auto;
   grid-template-areas:
     'play main status'
     'play facts status';
 }
 
-.item-row.has-play .play-button {
+.list-row.has-play .play-button {
   grid-area: play;
 }
 
 @media (min-width: 760px) {
-  .item-row.has-play {
+  .list-row.has-play {
     grid-template-columns: auto 1fr auto auto;
     grid-template-areas: 'play main facts status';
   }
 }
 
 @media (max-width: 759px) {
-  .item-row .play-button {
+  .list-row .play-button {
     width: 36px;
     height: 36px;
   }

@@ -28,7 +28,7 @@ export function GuideChips({ guides, chosenIds, onToggle }: GuideChipsProps) {
             <button
               key={guide.id}
               type="button"
-              className={`tag-chip guide-chip${chosenIds.includes(guide.id) ? ' is-on' : ''}`}
+              className={`list-chip guide-chips-chip${chosenIds.includes(guide.id) ? ' is-on' : ''}`}
               onClick={() => onToggle(guide.id)}
               aria-pressed={chosenIds.includes(guide.id)}
               title={guide.text.slice(0, 200)}
@@ -39,17 +39,17 @@ export function GuideChips({ guides, chosenIds, onToggle }: GuideChipsProps) {
         </div>
       )}
       {guides.length > 0 && (
-        <details className="guide-texts">
+        <details className="guide-chips-texts">
           <summary>Read what the guides say</summary>
           {guides.map((guide) => (
-            <details key={guide.id} className="guide-read">
+            <details key={guide.id} className="guide-chips-read">
               <summary>
                 {guide.name}
                 {chosenIds.includes(guide.id) && (
-                  <span className="guide-read-chosen"> · goes along</span>
+                  <span className="guide-chips-read-chosen"> · goes along</span>
                 )}
               </summary>
-              <p className="guide-read-text">{guide.text}</p>
+              <p className="guide-chips-read-text">{guide.text}</p>
             </details>
           ))}
         </details>

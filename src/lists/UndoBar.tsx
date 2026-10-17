@@ -27,10 +27,10 @@ export function UndoBar({ offer, onClose }: UndoBarProps) {
   if (!offer) return null;
   return (
     <div className="undo-bar" role="status">
-      <span className="undo-text">{offer.text}</span>
+      <span className="undo-bar-text">{offer.text}</span>
       <button
         type="button"
-        className="undo-button"
+        className="undo-bar-button"
         onClick={() => {
           offer.undo();
           onClose();

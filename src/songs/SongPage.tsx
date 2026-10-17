@@ -19,23 +19,23 @@ export function SongPage({ songId }: SongPageProps) {
   const clipsById = new Map(clips.map((clip) => [clip.id, clip]));
   return (
     <section className="song-page">
-      <div className="song-head">
+      <div className="song-page-head">
         <PlayButton songId={song.id} isWaitingForAudio={isWaitingForAudio} />
-        <h1 className="song-title">{song.title}</h1>
+        <h1 className="song-page-title">{song.title}</h1>
       </div>
-      <p className="song-facts">
+      <p className="song-page-facts">
         {Math.round(song.bpm)} bpm · {formatMeter(song.beats)} · {song.tracks.length}{' '}
         {song.tracks.length === 1 ? 'track' : 'tracks'}
       </p>
-      <ul className="track-list">
+      <ul className="song-page-tracks">
         {song.tracks.map((track) => (
-          <li key={track.id} className="track-row">
-            <span className="track-name">{track.name}</span>
-            <span className="track-blocks">
+          <li key={track.id} className="song-page-track">
+            <span className="song-page-track-name">{track.name}</span>
+            <span className="song-page-blocks">
               {track.blocks.map((block) => {
                 const clip = clipsById.get(block.clip);
                 return (
-                  <span key={`${block.clip}-${block.start}`} className="block-chip">
+                  <span key={`${block.clip}-${block.start}`} className="song-page-block">
                     {clip ? getClipLabel(clip) : `missing ${block.clip}`}
                   </span>
                 );

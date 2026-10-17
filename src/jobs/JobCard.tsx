@@ -61,14 +61,14 @@ export function JobCard({ job, onRemove }: JobCardProps) {
 
   return (
     <section className={`job-card is-${job.phase}`}>
-      <header className="job-head">
-        {isRunning && <span className="job-spinner" aria-hidden="true" />}
-        <span className="job-phase">{phaseName}</span>
-        <span className="job-time">{formatSeconds(elapsed)}</span>
+      <header className="job-card-head">
+        {isRunning && <span className="jobs-spinner" aria-hidden="true" />}
+        <span className="job-card-phase">{phaseName}</span>
+        <span className="jobs-time">{formatSeconds(elapsed)}</span>
         {onRemove && (
           <button
             type="button"
-            className="job-remove"
+            className="job-card-remove"
             onClick={onRemove}
             title="remove this job from the list (its songs stay)"
           >
@@ -76,16 +76,16 @@ export function JobCard({ job, onRemove }: JobCardProps) {
           </button>
         )}
       </header>
-      <p className="job-prompt">{job.prompt}</p>
+      <p className="job-card-prompt">{job.prompt}</p>
       {job.guides.length > 0 && (
-        <p className="job-guides">with {job.guides.map((guide) => guide.name).join(', ')}</p>
+        <p className="job-card-guides">with {job.guides.map((guide) => guide.name).join(', ')}</p>
       )}
-      {isRunning && <p className="job-now">{now}</p>}
+      {isRunning && <p className="job-card-now">{now}</p>}
       {job.songs.length > 0 && (
-        <ul className="job-songs">
+        <ul className="job-card-songs">
           {job.songs.map((song) => (
-            <li key={song.title} className={`job-song is-${song.state}`}>
-              <span className="job-song-mark">{SONG_MARKS[song.state]}</span>
+            <li key={song.title} className={`job-card-song is-${song.state}`}>
+              <span className="job-card-song-mark">{SONG_MARKS[song.state]}</span>
               {song.songId ? (
                 <a href={`/songs/${encodeURIComponent(song.songId)}`}>{song.title}</a>
               ) : (
@@ -95,20 +95,20 @@ export function JobCard({ job, onRemove }: JobCardProps) {
           ))}
         </ul>
       )}
-      {job.summary && !isRunning && <p className="job-summary">{job.summary}</p>}
+      {job.summary && !isRunning && <p className="job-card-summary">{job.summary}</p>}
       {job.error && <p className="error">{job.error}</p>}
       <button
         type="button"
-        className="job-notes-toggle"
+        className="job-card-notes-toggle"
         onClick={() => setShowingNotes(!isShowingNotes)}
       >
         {isShowingNotes ? 'Hide steps' : `All steps (${job.notes.length})`}
       </button>
       {isShowingNotes && (
-        <ol className="job-notes">
+        <ol className="job-card-notes">
           {job.notes.map((note, i) => (
             <li key={`${note.at}-${i}`}>
-              <span className="job-note-time">
+              <span className="job-card-note-time">
                 {formatSeconds((Date.parse(note.at) - Date.parse(job.created)) / 1000)}
               </span>
               {note.text}

@@ -15,12 +15,12 @@
   border-bottom: var(--border-width) solid var(--line);
 }
 
-.top-nav {
+.top-bar-nav {
   display: flex;
   gap: 4px;
 }
 
-.top-link {
+.top-bar-link {
   display: inline-flex;
   align-items: center;
   min-height: var(--touch);
@@ -33,18 +33,18 @@
   white-space: nowrap;
 }
 
-.top-count {
+.top-bar-count {
   font-weight: 400;
   font-size: 0.8125rem;
 }
 
-.top-link.is-on {
+.top-bar-link.is-on {
   color: var(--fg);
   background: var(--raised);
 }
 
 /* the button for a new song, at the right: an action, not a section */
-.top-new {
+.top-bar-new {
   display: inline-flex;
   align-items: center;
   min-height: var(--touch);
@@ -58,23 +58,23 @@
   white-space: nowrap;
 }
 
-.top-new.is-on {
+.top-bar-new.is-on {
   outline: 2px solid var(--fg);
   outline-offset: 2px;
 }
 
-.top-crumb {
+.top-bar-crumb {
   display: flex;
   align-items: center;
   gap: 8px;
   min-width: 0;
 }
 
-.top-crumb-mark {
+.top-bar-crumb-mark {
   color: var(--muted);
 }
 
-.top-crumb-title {
+.top-bar-crumb-title {
   font-weight: 600;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -88,27 +88,27 @@
     padding-left: 10px;
     padding-right: 10px;
   }
-  .top-nav {
+  .top-bar-nav {
     order: 1;
     width: 100%;
     justify-content: space-between;
     gap: 0;
   }
-  .top-link {
+  .top-bar-link {
     flex-direction: column;
     justify-content: center;
     gap: 0;
     padding: 2px 8px;
     line-height: 1.15;
   }
-  .top-crumb {
+  .top-bar-crumb {
     order: 2;
     width: 100%;
   }
 }
 
 /* the logo in the top bar, with the name beside it on a wide screen */
-.top-logo {
+.top-bar-logo {
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -118,12 +118,12 @@
   font-weight: 700;
 }
 
-.top-logo-name {
+.top-bar-logo-name {
   display: none;
 }
 
 @media (min-width: 720px) {
-  .top-logo-name {
+  .top-bar-logo-name {
     display: inline;
   }
 }

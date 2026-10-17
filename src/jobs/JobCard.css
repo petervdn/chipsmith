@@ -16,17 +16,17 @@
   border-color: var(--reject);
 }
 
-.job-head {
+.job-card-head {
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
-.job-phase {
+.job-card-phase {
   font-weight: 600;
 }
 
-.job-remove {
+.job-card-remove {
   min-width: var(--touch);
   min-height: var(--touch);
   margin: -8px -8px -8px 0;
@@ -36,7 +36,7 @@
   cursor: pointer;
 }
 
-.job-prompt {
+.job-card-prompt {
   margin: 6px 0;
   color: var(--muted);
   display: -webkit-box;
@@ -45,17 +45,17 @@
   overflow: hidden;
 }
 
-.job-now {
+.job-card-now {
   margin: 6px 0;
   font-size: 0.875rem;
 }
 
-.job-summary {
+.job-card-summary {
   margin: 6px 0;
   font-size: 0.875rem;
 }
 
-.job-songs {
+.job-card-songs {
   list-style: none;
   margin: 8px 0;
   padding: 0;
@@ -64,27 +64,27 @@
   gap: 4px;
 }
 
-.job-song {
+.job-card-song {
   display: flex;
   gap: 8px;
   color: var(--muted);
 }
 
-.job-song.is-done,
-.job-song.is-rendering {
+.job-card-song.is-done,
+.job-card-song.is-rendering {
   color: var(--fg);
 }
 
-.job-song.is-failed {
+.job-card-song.is-failed {
   color: var(--reject);
 }
 
-.job-song-mark {
+.job-card-song-mark {
   width: 14px;
   text-align: center;
 }
 
-.job-notes-toggle {
+.job-card-notes-toggle {
   padding: 4px 0;
   border: 0;
   background: none;
@@ -94,7 +94,7 @@
   cursor: pointer;
 }
 
-.job-notes {
+.job-card-notes {
   margin: 4px 0 0;
   padding-left: 0;
   list-style: none;
@@ -103,14 +103,14 @@
   overflow-y: auto;
 }
 
-.job-note-time {
+.job-card-note-time {
   display: inline-block;
   width: 44px;
   color: var(--muted);
   font-variant-numeric: tabular-nums;
 }
 
-.job-guides {
+.job-card-guides {
   margin: 0;
   color: var(--muted);
   font-size: 0.8125rem;

@@ -7,7 +7,7 @@
   margin: 8px 0 12px;
 }
 
-.prompt-text {
+.prompt-box-text {
   min-height: 20vh;
   padding: 12px;
   font-size: 1rem;
@@ -17,12 +17,12 @@
   resize: vertical;
 }
 
-.prompt-tools {
+.prompt-box-tools {
   display: flex;
   justify-content: flex-end;
 }
 
-.prompt-random {
+.prompt-box-random {
   min-height: var(--touch);
   padding: 0 14px;
   border: var(--border-width) solid var(--line);
@@ -31,7 +31,7 @@
   cursor: pointer;
 }
 
-.prompt-send {
+.prompt-box-send {
   min-height: 48px;
   border: 0;
   border-radius: var(--radius);
@@ -41,7 +41,7 @@
   cursor: pointer;
 }
 
-.prompt-send:disabled {
+.prompt-box-send:disabled {
   background: var(--raised);
   color: var(--muted);
   cursor: default;
@@ -51,7 +51,7 @@
   padding: 0;
 }
 
-.prompt-source {
+.prompt-box-source {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -60,7 +60,7 @@
   font-size: 0.875rem;
 }
 
-.prompt-source-clear {
+.prompt-box-source-clear {
   border: 0;
   background: none;
   color: var(--muted);

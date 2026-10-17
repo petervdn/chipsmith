@@ -13,10 +13,10 @@ export function JobStrip({ job }: JobStripProps) {
   const elapsed = useElapsed(job);
   return (
     <a className="job-strip" href="/jobs">
-      <span className="job-spinner" aria-hidden="true" />
+      <span className="jobs-spinner" aria-hidden="true" />
       <span className="job-strip-phase">{getPhaseName(job)}</span>
       <span className="job-strip-now">{getNowText(job)}</span>
-      <span className="job-time">{formatSeconds(elapsed)}</span>
+      <span className="jobs-time">{formatSeconds(elapsed)}</span>
       <span className="job-strip-go" aria-hidden="true">
         ›
       </span>

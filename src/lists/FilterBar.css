@@ -9,7 +9,7 @@
   margin-bottom: 12px;
 }
 
-.filter-words {
+.filter-bar-words {
   flex: 1 1 240px;
   min-height: var(--touch);
   padding: 0 12px;
@@ -18,14 +18,14 @@
   background: var(--card);
 }
 
-.tag-row {
+.filter-bar-tags {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
   width: 100%;
 }
 
-.tag-count {
+.filter-bar-tag-count {
   color: var(--muted);
   font-size: 0.75rem;
 }

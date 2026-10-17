@@ -26,17 +26,17 @@ export function HomePage({ jobs }: HomePageProps) {
 
   return (
     <section className="home-page">
-      <div className="home-hero">
+      <div className="home-page-hero">
         <Logo size={LOGO_SIZE} />
         <div>
-          <h1 className="home-name">chipsmith</h1>
-          <p className="home-line">
+          <h1 className="home-page-name">chipsmith</h1>
+          <p className="home-page-line">
             Chiptune songs from prompts, for the NES and Konami's SCC: Claude writes them, Furnace
             plays them, you keep what you like.
           </p>
         </div>
       </div>
-      <a className="home-new" href="/new">
+      <a className="home-page-new" href="/new">
         + New song
       </a>
       {jobs.filter(isJobRunning).map((job) => (
@@ -44,30 +44,30 @@ export function HomePage({ jobs }: HomePageProps) {
       ))}
       {error && <p className="error">{error.message}</p>}
       {listings && (
-        <p className="home-counts">
+        <p className="home-page-counts">
           <a href="/songs">{songCount} songs</a> · {keeperCount} kept · {newCount} not heard yet
         </p>
       )}
       {latest.length > 0 && (
         <>
-          <h2 className="home-heading">Made last</h2>
-          <ul className="item-list">
+          <h2 className="home-page-heading">Made last</h2>
+          <ul className="list">
             {latest.map(({ song, seconds, isWaitingForAudio }) => (
               <li key={song.id}>
-                <div className="item-row has-play">
+                <div className="list-row has-play">
                   <PlayButton songId={song.id} isWaitingForAudio={isWaitingForAudio} />
-                  <span className="item-main">
+                  <span className="list-main">
                     <a
-                      className="item-title item-link"
+                      className="list-title list-link"
                       href={`/songs/${encodeURIComponent(song.id)}`}
                     >
                       {song.title}
                     </a>
-                    <span className="item-tags">
+                    <span className="list-tags">
                       {song.tags.map((tag) => tag.name).join(' · ')}
                     </span>
                   </span>
-                  <span className="item-facts">
+                  <span className="list-facts">
                     <span>{formatSeconds(seconds)}</span>
                     <span>{Math.round(song.bpm)} bpm</span>
                     <span>{formatMeter(song.beats)}</span>
@@ -76,7 +76,7 @@ export function HomePage({ jobs }: HomePageProps) {
               </li>
             ))}
           </ul>
-          <a className="home-all" href="/songs">
+          <a className="home-page-all" href="/songs">
             All songs →
           </a>
         </>

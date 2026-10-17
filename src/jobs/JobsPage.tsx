@@ -21,11 +21,11 @@ export function JobsPage({ jobs }: JobsPageProps) {
           No jobs yet. <a href="/new">+ New song</a> sends a prompt to Claude; its job shows here.
         </p>
       )}
-      {running.length > 0 && <h2 className="new-heading">On its way</h2>}
+      {running.length > 0 && <h2 className="jobs-page-heading">On its way</h2>}
       {running.map((job) => (
         <JobCard key={job.id} job={job} />
       ))}
-      {finished.length > 0 && <h2 className="new-heading">Done</h2>}
+      {finished.length > 0 && <h2 className="jobs-page-heading">Done</h2>}
       {finished.map((job) => (
         <JobCard key={job.id} job={job} onRemove={() => removeJob(job.id)} />
       ))}

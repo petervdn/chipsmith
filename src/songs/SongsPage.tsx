@@ -75,24 +75,24 @@ export function SongsPage({ jobs }: SongsPageProps) {
       {items.length > 0 && shown.length === 0 && (
         <p className="empty">No songs match this filter (a song needs every chosen tag).</p>
       )}
-      <ul className="item-list">
+      <ul className="list">
         {shown.map(({ listing }) => {
           const { song, seconds } = listing;
           const isOpen = openSongs.includes(song.id);
           return (
             <li key={song.id}>
-              <div className="item-row has-play has-expand">
+              <div className="list-row has-play has-expand">
                 <PlayButton songId={song.id} isWaitingForAudio={listing.isWaitingForAudio} />
-                <span className="item-main">
+                <span className="list-main">
                   <a
-                    className="item-title item-link"
+                    className="list-title list-link"
                     href={`/songs/${encodeURIComponent(song.id)}`}
                   >
                     {song.title}
                   </a>
-                  <span className="item-tags">{song.tags.map((tag) => tag.name).join(' · ')}</span>
+                  <span className="list-tags">{song.tags.map((tag) => tag.name).join(' · ')}</span>
                 </span>
-                <span className="item-facts">
+                <span className="list-facts">
                   <span>{formatSeconds(seconds)}</span>
                   <span>{Math.round(song.bpm)} bpm</span>
                   <span>{formatMeter(song.beats)}</span>
@@ -103,7 +103,7 @@ export function SongsPage({ jobs }: SongsPageProps) {
                 />
                 <button
                   type="button"
-                  className={`row-expand${isOpen ? ' is-open' : ''}`}
+                  className={`songs-page-expand${isOpen ? ' is-open' : ''}`}
                   onClick={() => toggleOpen(song.id)}
                   title={isOpen ? 'less' : 'more: the prompt, prompt again, details'}
                   aria-expanded={isOpen}

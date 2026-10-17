@@ -1,6 +1,6 @@
 /* The look of GuideEditor.tsx. */
 
-.guide-save:disabled {
+.guides-save:disabled {
   background: var(--raised);
   color: var(--muted);
   cursor: default;
@@ -13,8 +13,8 @@
   padding: 10px 0;
 }
 
-.guide-name,
-.guide-text {
+.guide-editor-name,
+.guide-editor-text {
   padding: 10px 12px;
   font-size: 1rem;
   border: var(--border-width) solid var(--line);
@@ -23,17 +23,17 @@
   color: inherit;
 }
 
-.guide-text {
+.guide-editor-text {
   min-height: 30vh;
   resize: vertical;
 }
 
-.guide-actions {
+.guide-editor-actions {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
 }
 
-.guide-delete {
+.guide-editor-delete {
   margin-left: auto;
 }

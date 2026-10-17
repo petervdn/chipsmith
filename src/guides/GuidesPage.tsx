@@ -19,14 +19,14 @@ export function GuidesPage() {
   usePageTitle('Guides');
   return (
     <section className="guides-page">
-      <p className="guides-intro">
+      <p className="guides-page-intro">
         Style guides are sent along with a prompt when you choose them on New. What was sent is kept
         with the songs it made, so changing a guide changes only what comes after.
       </p>
       {open === 'new' ? (
         <GuideEditor guide={null} onDone={() => setOpen(null)} />
       ) : (
-        <button type="button" className="guide-new" onClick={() => setOpen('new')}>
+        <button type="button" className="guides-new" onClick={() => setOpen('new')}>
           New style guide
         </button>
       )}
@@ -34,7 +34,7 @@ export function GuidesPage() {
       {guides && guides.length === 0 && open !== 'new' && (
         <p className="empty">No style guides yet.</p>
       )}
-      <ul className="item-list">
+      <ul className="list">
         {(guides ?? []).map((guide) => (
           <li key={guide.id}>
             {open !== 'new' && open?.guideId === guide.id ? (
@@ -42,13 +42,13 @@ export function GuidesPage() {
             ) : (
               <button
                 type="button"
-                className="guide-row"
+                className="guides-page-row"
                 onClick={() => setOpen({ guideId: guide.id })}
                 title="edit this style guide"
               >
-                <span className="item-title">{guide.name}</span>
-                {guide.isDefault && <span className="guide-default">default</span>}
-                <span className="guide-preview">{guide.text}</span>
+                <span className="list-title">{guide.name}</span>
+                {guide.isDefault && <span className="guides-page-default">default</span>}
+                <span className="guides-page-preview">{guide.text}</span>
               </button>
             )}
           </li>

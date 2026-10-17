@@ -32,18 +32,18 @@ export function SongRowDetails({ listing, titlesById }: SongRowDetailsProps) {
   ].filter(Boolean);
 
   return (
-    <div className="row-details">
-      <div className="row-prompt">
-        <p className="row-prompt-text">{song.prompt}</p>
+    <div className="song-row-details">
+      <div className="song-row-details-prompt">
+        <p className="song-row-details-prompt-text">{song.prompt}</p>
         {isChangedAfterPrompt && (
-          <p className="row-warning">
+          <p className="list-warning">
             ⚠ Changed after this prompt: some of its clips were made by later prompts.
           </p>
         )}
-        <div className="row-prompt-actions">
+        <div className="song-row-details-prompt-actions">
           <button
             type="button"
-            className="row-action"
+            className="list-action"
             onClick={() => void copyText(song.prompt).then(setCopyResult)}
             title="copy the prompt"
           >
@@ -54,14 +54,14 @@ export function SongRowDetails({ listing, titlesById }: SongRowDetailsProps) {
                 : 'Could not copy: select the text'}
           </button>
           <a
-            className="row-action"
+            className="list-action"
             href={`/new?from=${encodeURIComponent(song.id)}`}
             title="open New with this prompt, to send it again (the new songs note this one)"
           >
             Prompt again →
           </a>
           <a
-            className="row-action"
+            className="list-action"
             href={`/new?base=${encodeURIComponent(song.id)}`}
             title="open New with this song as the base: Claude starts from its music and changes what you ask"
           >
@@ -69,20 +69,24 @@ export function SongRowDetails({ listing, titlesById }: SongRowDetailsProps) {
           </a>
         </div>
       </div>
-      <p className="row-facts">{facts.join(' · ')}</p>
+      <p className="song-row-details-facts">{facts.join(' · ')}</p>
       {song.guides.length > 0 && (
-        <p className="row-facts">
+        <p className="song-row-details-facts">
           style guides: {song.guides.map((guide) => guide.name).join(', ')}
         </p>
       )}
       {song.tags.length > 0 && (
-        <p className="row-facts">tags: {song.tags.map((tag) => tag.name).join(', ')}</p>
+        <p className="song-row-details-facts">
+          tags: {song.tags.map((tag) => tag.name).join(', ')}
+        </p>
       )}
       {song.promptedFrom && (
-        <p className="row-facts">Prompted again from {getSongLink(song.promptedFrom)}</p>
+        <p className="song-row-details-facts">
+          Prompted again from {getSongLink(song.promptedFrom)}
+        </p>
       )}
       {promptedAgainAs.length > 0 && (
-        <p className="row-facts">
+        <p className="song-row-details-facts">
           Prompted again as{' '}
           {promptedAgainAs.map((songId, i) => (
             <span key={songId}>

@@ -23,12 +23,12 @@ export function FilterBar({ filter, onChange, tagCounts, placeholder }: FilterBa
     <div className="filter-bar">
       <input
         type="search"
-        className="filter-words"
+        className="filter-bar-words"
         placeholder={placeholder}
         value={filter.words}
         onChange={(event) => onChange({ ...filter, words: event.target.value })}
       />
-      <label className="filter-switch">
+      <label className="list-switch">
         <input
           type="checkbox"
           checked={filter.isShowingRejected}
@@ -37,15 +37,15 @@ export function FilterBar({ filter, onChange, tagCounts, placeholder }: FilterBa
         rejected
       </label>
       {tagCounts.length > 0 && (
-        <div className="tag-row">
+        <div className="filter-bar-tags">
           {tagCounts.map(({ name, count }) => (
             <button
               key={name}
               type="button"
-              className={`tag-chip${filter.tags.includes(name) ? ' is-on' : ''}`}
+              className={`list-chip${filter.tags.includes(name) ? ' is-on' : ''}`}
               onClick={() => toggleTag(name)}
             >
-              {name} <span className="tag-count">{count}</span>
+              {name} <span className="filter-bar-tag-count">{count}</span>
             </button>
           ))}
         </div>

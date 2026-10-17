@@ -51,12 +51,12 @@ export function PromptBox({ initialText, source, onClearSource }: PromptBoxProps
       }}
     >
       {source && (
-        <p className="prompt-source">
+        <p className="prompt-box-source">
           Prompting again from{' '}
           <a href={`/songs/${encodeURIComponent(source.songId)}`}>{source.title}</a>
           <button
             type="button"
-            className="prompt-source-clear"
+            className="prompt-box-source-clear"
             onClick={onClearSource}
             title="send it as a new prompt, not linked to that song"
           >
@@ -65,7 +65,7 @@ export function PromptBox({ initialText, source, onClearSource }: PromptBoxProps
         </p>
       )}
       {source?.isChangedAfterPrompt && (
-        <p className="row-warning">
+        <p className="list-warning">
           ⚠ That song changed after this prompt; sending it again makes it as it first was asked.
         </p>
       )}
@@ -74,7 +74,7 @@ export function PromptBox({ initialText, source, onClearSource }: PromptBoxProps
         onFocus={(event) => {
           if (isFocusAtEnd) event.target.setSelectionRange(text.length, text.length);
         }}
-        className="prompt-text"
+        className="prompt-box-text"
         placeholder="What should Claude make? (e.g. three dark NES funk grooves in odd meters)"
         value={text}
         onChange={(event) => setText(event.target.value)}
@@ -82,10 +82,10 @@ export function PromptBox({ initialText, source, onClearSource }: PromptBoxProps
           if (event.key === 'Enter' && (event.metaKey || event.ctrlKey)) send();
         }}
       />
-      <div className="prompt-tools">
+      <div className="prompt-box-tools">
         <button
           type="button"
-          className="prompt-random"
+          className="prompt-box-random"
           onClick={() => setText(getRandomPrompt(Math.random))}
           title="fill the box with a prompt made up at random (nothing is sent)"
         >
@@ -93,7 +93,7 @@ export function PromptBox({ initialText, source, onClearSource }: PromptBoxProps
         </button>
       </div>
       <GuideChips guides={guides} chosenIds={chosenIds} onToggle={toggleGuide} />
-      <button type="submit" className="prompt-send" disabled={!text.trim() || isSending}>
+      <button type="submit" className="prompt-box-send" disabled={!text.trim() || isSending}>
         {isSending ? 'Sending…' : 'Create song'}
       </button>
       {error && <p className="error">{error.message}</p>}
