@@ -1,0 +1,144 @@
+/* The look of StructurePanel.tsx: tiles as wide as their bars (flex-grow), coloured by part; a
+   variation striped, a repeat faint. */
+
+.structure-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 12px 0;
+  padding: 16px;
+  border: var(--border-width) solid var(--line);
+  border-radius: var(--radius);
+  background: var(--card);
+}
+
+.structure-panel-label {
+  padding: 0 6px;
+  font-weight: 600;
+}
+
+.structure-panel-help,
+.structure-panel-total {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+
+.structure-panel-choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.structure-panel-choices .list-chip {
+  min-height: var(--touch);
+  padding: 0 14px;
+}
+
+.structure-panel-choices .list-chip.is-saved {
+  border-style: dashed;
+}
+
+.structure-panel-notation {
+  min-height: var(--touch);
+  padding: 0 10px;
+  border: var(--border-width) solid var(--line);
+  border-radius: var(--radius);
+  background: var(--bg);
+  font-family: ui-monospace, monospace;
+  font-size: 0.9375rem;
+}
+
+.structure-panel-tiles {
+  display: flex;
+  gap: 4px;
+  min-height: 52px;
+}
+
+.structure-panel-tile {
+  display: flex;
+  flex-basis: 0;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 34px;
+  padding: 2px 6px;
+  overflow: hidden;
+  border: var(--border-width) solid color-mix(in srgb, var(--tile-color) 70%, #000);
+  border-radius: calc(var(--radius) * 0.5);
+  background: var(--tile-color);
+  color: var(--on-accent);
+  text-align: left;
+  cursor: pointer;
+}
+
+.structure-panel-tile.is-variation {
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--tile-color) 0 6px,
+    color-mix(in srgb, var(--tile-color) 70%, var(--card)) 6px 12px
+  );
+}
+
+.structure-panel-tile.is-repeat {
+  opacity: 0.6;
+}
+
+.structure-panel-tile.is-selected {
+  box-shadow: 0 0 0 2px var(--fg);
+  opacity: 1;
+}
+
+.structure-panel-tile-name {
+  font-weight: 700;
+}
+
+.structure-panel-tile-bars {
+  overflow: hidden;
+  font-size: 0.75rem;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.structure-panel-add {
+  flex: none;
+  min-width: var(--touch);
+  border: var(--border-width) dashed var(--line);
+  border-radius: calc(var(--radius) * 0.5);
+  background: none;
+  color: var(--muted);
+  font-size: 1.25rem;
+  cursor: pointer;
+}
+
+.structure-panel-save {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.structure-panel-save button,
+.structure-panel-name {
+  min-height: var(--touch);
+  padding: 0 12px;
+  border: var(--border-width) solid var(--line);
+  border-radius: var(--radius);
+  background: var(--raised);
+}
+
+.structure-panel-save button {
+  cursor: pointer;
+}
+
+.structure-panel-save button:disabled {
+  color: var(--muted);
+  cursor: default;
+}
+
+.structure-panel-name {
+  background: var(--bg);
+}
+
+.structure-panel-save .structure-panel-delete {
+  margin-left: auto;
+  color: var(--reject);
+}

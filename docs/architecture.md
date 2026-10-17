@@ -75,8 +75,10 @@ page but Home starts with breadcrumbs, the last its heading (Songs › Seven Tee
 - **Guides** (`/guides`): the style guides, made, edited and deleted.
 - **New** (`/new`): a prompt for Claude in a box, a prompt builder under it (a part per row, rolled
   at random or picked, each with a lock; "Use as prompt" fills the box, which is otherwise its own),
-  and the style guides as chips to send with it (their texts readable in place). Sending it leads
-  to Jobs.
+  the Structure panel (none, a preset, a saved structure or your own: written short and as tiles
+  as wide as their bars, a section edited when tapped, saved as new or over a saved one; 0023), and
+  the style guides as chips to send with it (their texts readable in place). Sending it leads to
+  Jobs.
 - **Jobs** (`/jobs`): every prompt sent, as a card, newest first; one that is over can be removed
   (✕; `removed` in its job.json, its files kept). The tab counts the jobs on their way.
 

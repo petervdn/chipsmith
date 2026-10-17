@@ -1,0 +1,60 @@
+/* The look of SectionEditor.tsx: its fields wrap, a label above each. */
+
+.section-editor {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 8px 12px;
+  margin-top: 10px;
+}
+
+.section-editor-field {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  color: var(--muted);
+  font-size: 0.8125rem;
+}
+
+.section-editor-field select,
+.section-editor-field input {
+  min-height: var(--touch);
+  padding: 0 8px;
+  border: var(--border-width) solid var(--line);
+  border-radius: var(--radius);
+  background: var(--bg);
+  color: var(--fg);
+  font-size: 0.9375rem;
+}
+
+.section-editor-field input[type='number'] {
+  width: 5em;
+}
+
+.section-editor-note {
+  flex: 1 1 200px;
+}
+
+.section-editor-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.section-editor-actions button {
+  min-width: var(--touch);
+  min-height: var(--touch);
+  padding: 0 10px;
+  border: var(--border-width) solid var(--line);
+  border-radius: var(--radius);
+  background: var(--raised);
+  cursor: pointer;
+}
+
+.section-editor-actions button:disabled {
+  color: var(--muted);
+  cursor: default;
+}
+
+.section-editor-actions .section-editor-remove {
+  color: var(--reject);
+}

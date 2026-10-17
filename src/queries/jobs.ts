@@ -7,6 +7,7 @@ import { useEffect } from 'react';
 import type { Job } from '../../shared/job.types.ts';
 import { getQueryKey, queryClient } from './client.ts';
 import { requestJson, sendJson } from './request.ts';
+import type { SentStructure } from '../../shared/structure.types.ts';
 
 /** Milliseconds between reads while a job runs, and while none does. */
 const RUNNING_INTERVAL = 1000;
@@ -61,7 +62,8 @@ export function useRemoveJob() {
  * Sends a prompt to the server as a new job; the jobs are read again at once.
  *
  * @returns The mutation, called with the `prompt`, the song it is sent again from (`fromSong`, or
- * null) and the ids of the style guides sent with it (`guideIds`).
+ * null), the ids of the style guides sent with it (`guideIds`) and the structure sent with it
+ * (`structure`, or null).
  */
 export function useSendPrompt() {
   return useMutation({
@@ -69,11 +71,13 @@ export function useSendPrompt() {
       prompt,
       fromSong,
       guideIds,
+      structure,
     }: {
       prompt: string;
       fromSong: string | null;
       guideIds: string[];
-    }) => sendJson<Job>('/api/jobs', 'POST', { prompt, fromSong, guideIds }),
+      structure: SentStructure | null;
+    }) => sendJson<Job>('/api/jobs', 'POST', { prompt, fromSong, guideIds, structure }),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: getQueryKey({ type: 'jobs' }) }),
   });
 }

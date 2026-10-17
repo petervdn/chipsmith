@@ -5,6 +5,8 @@
 import { useState } from 'react';
 import { GuideChips } from '../guides/GuideChips.tsx';
 import { PromptBuilder } from './PromptBuilder.tsx';
+import { StructurePanel } from './StructurePanel.tsx';
+import { useStructureChoice } from './use-structure-choice.ts';
 import { useSendPrompt } from '../queries/jobs.ts';
 import { navigate } from '../router.ts';
 import { useGuideChoice } from '../guides/use-guide-choice.ts';
@@ -39,11 +41,17 @@ export function PromptBox({ initialText, source, onClearSource }: PromptBoxProps
   const isFocusAtEnd = initialText.endsWith(': ');
   const { mutate: sendPrompt, isPending: isSending, error } = useSendPrompt();
   const { guides, chosenIds, toggleGuide, resetChoice } = useGuideChoice();
+  const structureChoice = useStructureChoice();
 
   function send(): void {
     if (!text.trim() || isSending) return;
     sendPrompt(
-      { prompt: text, fromSong: source?.songId ?? null, guideIds: chosenIds },
+      {
+        prompt: text,
+        fromSong: source?.songId ?? null,
+        guideIds: chosenIds,
+        structure: structureChoice.sent,
+      },
       {
         onSuccess: () => {
           setText('');
@@ -118,6 +126,7 @@ export function PromptBox({ initialText, source, onClearSource }: PromptBoxProps
           }}
         />
       )}
+      <StructurePanel choice={structureChoice} />
       <GuideChips guides={guides} chosenIds={chosenIds} onToggle={toggleGuide} />
       <button type="submit" className="prompt-box-send" disabled={!text.trim() || isSending}>
         {isSending ? 'Sending…' : 'Create song'}
