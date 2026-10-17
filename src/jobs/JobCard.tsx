@@ -12,6 +12,7 @@ import './jobs.css';
 import './JobCard.css';
 import { askToConfirm } from '../stores/confirm-store.ts';
 import { getStepText } from './job-steps.ts';
+import { TrashIcon } from './TrashIcon.tsx';
 
 const PHASE_NAMES = {
   queued: 'Waiting for the job before it',
@@ -87,8 +88,8 @@ export function getNowText({ now, notes }: Job): string {
  *
  * @param props - The component's props.
  * @param props.job - The job shown.
- * @param props.onRemove - Called when ✕ is pressed to remove the job, given only for a job that
- *   is over; without it there is no ✕.
+ * @param props.onRemove - Called when the trash can is pressed to remove the job, given only for a
+ *   job that is over; without it there is no trash can.
  * @returns The card's section element.
  */
 export function JobCard({ job, onRemove }: JobCardProps) {
@@ -111,8 +112,9 @@ export function JobCard({ job, onRemove }: JobCardProps) {
       className="job-card-remove"
       onClick={onRemove}
       data-tooltip="remove this job from the list (its songs stay)"
+      aria-label="remove this job from the list"
     >
-      ✕
+      <TrashIcon />
     </button>
   );
   if (!isRunning && !isOpen) {

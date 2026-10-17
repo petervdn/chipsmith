@@ -1,6 +1,6 @@
 // The Jobs page: every prompt sent, as a card, newest first: the ones on their way, then the ones
-// done or failed, each with ✕ to take it off the list, under a heading with their totals (songs,
-// time, tokens) in the columns the cards show them in and Clear to take them all off. Sending a
+// done or failed, each with a trash can to take it off the list, under a heading with their totals
+// (songs, time, tokens) in the columns the cards show them in and a trash can to take them all off. Sending a
 // prompt on New leads here.
 import type { Job } from '../../shared/job.types.ts';
 import { formatSeconds, formatTokens } from '../format.ts';
@@ -11,11 +11,12 @@ import { usePageTitle } from '../use-page-title.ts';
 import { Breadcrumbs } from '../Breadcrumbs.tsx';
 import './JobsPage.css';
 import { askToConfirm } from '../stores/confirm-store.ts';
+import { TrashIcon } from './TrashIcon.tsx';
 
 type JobsPageProps = { jobs: Job[] };
 
 /**
- * Shows the Jobs page: the jobs on their way, then those done or failed, each with ✕.
+ * Shows the Jobs page: the jobs on their way, then those done or failed, each with a trash can.
  *
  * @param props - The component's props.
  * @param props.jobs - Every job, newest first.
@@ -66,8 +67,9 @@ export function JobsPage({ jobs }: JobsPageProps) {
             }}
             disabled={isClearing}
             data-tooltip="remove every job that is over from the list (their songs stay)"
+            aria-label="remove every job that is over from the list"
           >
-            Clear
+            <TrashIcon />
           </button>
         </h2>
       )}
@@ -79,7 +81,7 @@ export function JobsPage({ jobs }: JobsPageProps) {
 }
 
 /**
- * Returns what Clear asks before it removes the jobs that are over.
+ * Returns what the trash can over the jobs asks before it removes the jobs that are over.
  *
  * @param count - How many jobs are over.
  * @returns The question.

@@ -35,6 +35,9 @@
 }
 
 .job-card-remove {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   min-width: var(--touch);
   min-height: var(--touch);
   margin: -8px -8px -8px 0;
@@ -186,4 +189,8 @@
 .job-card.is-closed .job-card-tokens {
   width: 64px;
   text-align: right;
+}
+
+.job-card-remove:hover {
+  color: var(--reject);
 }
