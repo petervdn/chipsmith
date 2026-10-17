@@ -75,9 +75,7 @@ export function ClipsPage() {
           <li key={clip.id}>
             <div className="list-row">
               <span className="list-main">
-                <span className="list-title">
-                  {getClipLabel(clip)} <span className="list-id">{clip.id}</span>
-                </span>
+                <span className="list-title">{getClipLabel(clip)}</span>
                 <span className="list-prompt">{clip.prompt}</span>
               </span>
               <span className="list-facts">

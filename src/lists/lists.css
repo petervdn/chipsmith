@@ -72,12 +72,6 @@
   inset: 0;
 }
 
-.list-id {
-  font-weight: 400;
-  color: var(--muted);
-  font-size: 0.8125rem;
-}
-
 .list-tags,
 .list-prompt {
   color: var(--muted);

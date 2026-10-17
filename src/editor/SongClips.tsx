@@ -91,9 +91,7 @@ export function SongClips({
                 onPointerDown={(event) => onPress(event, clip.id)}
                 onClick={() => onSelect(clip.id)}
               >
-                <span className="song-clips-name">
-                  {getClipLabel(clip)} <span className="song-clips-id">{clip.id}</span>
-                </span>
+                <span className="song-clips-name">{getClipLabel(clip)}</span>
                 <span className="song-clips-facts">
                   {formatSeconds(clip.seconds)} · {getChannelsText(clip)} ·{' '}
                   {waitingClipIds.includes(clip.id) ? 'rendering…' : getBlockCountText(blockCount)}
