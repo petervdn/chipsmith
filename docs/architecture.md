@@ -65,7 +65,7 @@ page but Home starts with breadcrumbs, the last its heading (Songs › Seven Tee
   there are (kept, not heard yet) and the five made last with ▶.
 - **Songs** (`/songs`): every song, with the filter bar (words, tags), its facts, ▶, ★, a trash can
   (asked first), and ⌄ to open the row: its prompt (copy, prompt again), its facts and its prompt links.
-- **Song** (`/songs/<id>`): under its title and facts the prompt it was made from (three lines until
+- **Song** (`/songs/<id>`): ★ beside its title to keep it; under its title and facts the prompt it was made from (three lines until
   opened), then the song opened in the editor (`src/editor/`): a timeline of its tracks
   (a ruler of bars; under it, switched in the editor bar, the structure the song was asked for as
   tiles from bar 1, as it was sent and never following edits (0030); each block drawn as the slice

@@ -1,8 +1,9 @@
-// One song, opened: its title and facts, the prompt it was made from, and the editor
-// (editor/SongEditor.tsx).
+// One song, opened: its title with ★ to keep it, its facts, the prompt it was made from, and the
+// editor (editor/SongEditor.tsx).
 import { formatMeter } from '../format.ts';
 import { SongEditor } from '../editor/SongEditor.tsx';
-import { useSong } from '../queries/songs.ts';
+import { StatusButtons } from '../lists/StatusButtons.tsx';
+import { useSetSongStatus, useSong } from '../queries/songs.ts';
 import { usePageTitle } from '../use-page-title.ts';
 import { Breadcrumbs } from '../Breadcrumbs.tsx';
 import { SongPrompt } from './SongPrompt.tsx';
@@ -11,7 +12,7 @@ import './SongPage.css';
 type SongPageProps = { songId: string };
 
 /**
- * Shows the song page: the song's title and facts, its prompt, and the editor.
+ * Shows the song page: the song's title with ★, its facts, its prompt, and the editor.
  *
  * @param props - The component's props.
  * @param props.songId - The id of the song opened.
@@ -19,19 +20,27 @@ type SongPageProps = { songId: string };
  */
 export function SongPage({ songId }: SongPageProps) {
   const { data: detail, error } = useSong(songId);
+  const { mutate: setStatus } = useSetSongStatus();
   usePageTitle(detail?.song.title ?? songId);
   if (error) return <p className="error">{error.message}</p>;
   if (!detail) return <p className="empty">Loading…</p>;
   const { song } = detail;
   return (
     <section className="song-page">
-      <Breadcrumbs crumbs={[{ label: 'Songs', href: '/songs' }, { label: song.title }]} />
+      <div className="song-page-head">
+        <Breadcrumbs crumbs={[{ label: 'Songs', href: '/songs' }, { label: song.title }]} />
+        <StatusButtons
+          status={song.status}
+          onChange={(status) => setStatus({ songId: song.id, status })}
+        />
+      </div>
       <p className="song-page-facts">
         {Math.round(song.bpm)} bpm · {formatMeter(song.beats)} · {song.tracks.length}{' '}
         {song.tracks.length === 1 ? 'track' : 'tracks'}
       </p>
       <SongPrompt prompt={song.prompt} />
-      <SongEditor key={song.updated} detail={detail} />
+      {/* a new arrangement from the server (saved, split) starts a fresh draft; ★ or a tag does not */}
+      <SongEditor key={JSON.stringify(song.tracks)} detail={detail} />
     </section>
   );
 }

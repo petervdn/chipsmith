@@ -1,4 +1,10 @@
-/* The look of SongPage.tsx. */
+/* The look of SongPage.tsx: ★ beside the title. */
+
+.song-page-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+}
 
 .song-page-facts {
   margin: 0 0 12px;
