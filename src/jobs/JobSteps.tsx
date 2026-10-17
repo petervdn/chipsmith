@@ -22,7 +22,8 @@ type JobStepsProps = {
  * @param props.job - The job.
  * @param props.isRunning - Whether it is still on its way.
  * @param props.elapsed - How long it has been going, or went, in seconds.
- * @param props.now - What it is doing now: Claude's live line, else its last step.
+ * @param props.now - What it is doing now: Claude's live line, else its last step; empty before its
+ *   first step, when no current step is shown.
  * @param props.totalTokens - The tokens Claude wrote so far, what it is in the middle of included.
  * @returns The steps' element.
  */
@@ -37,7 +38,7 @@ export function JobSteps({ job, isRunning, elapsed, now, totalTokens }: JobSteps
   return (
     <div className="job-steps">
       <div className="job-steps-current">
-        {isRunning && (
+        {isRunning && now && (
           <>
             <span className="job-steps-label">Current step</span>
             <span className="jobs-spinner" aria-hidden="true" />

@@ -6,7 +6,7 @@ import { getStepLengths, getStepTokens } from './job-steps.ts';
 
 test('each step until the next, the last until the end', () => {
   const notes = [
-    { at: '2026-10-17T10:00:00Z', text: 'prompt received', tokens: null },
+    { at: '2026-10-17T10:00:00Z', text: 'Claude starts composing', tokens: null },
     { at: '2026-10-17T10:00:10Z', text: 'reading', tokens: null },
     { at: '2026-10-17T10:01:10Z', text: 'writing', tokens: null },
   ];
@@ -19,7 +19,7 @@ test('each step until the next, the last until the end', () => {
 
 test('the tokens of a step: from its note to the next, the last to the count now', () => {
   const notes = [
-    { at: '2026-10-17T10:00:00Z', text: 'prompt received', tokens: 0 },
+    { at: '2026-10-17T10:00:00Z', text: 'Claude starts composing', tokens: 0 },
     { at: '2026-10-17T10:00:10Z', text: 'reading', tokens: 0 },
     { at: '2026-10-17T10:01:10Z', text: 'writing', tokens: 1200 },
   ];

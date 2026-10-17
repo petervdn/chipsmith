@@ -94,7 +94,7 @@ export function createJob(
     phase: 'queued',
     phaseStarted: now,
     finished: null,
-    notes: [{ at: now, text: 'prompt received', tokens: 0 }],
+    notes: [],
     now: null,
     songs: [],
     summary: null,
