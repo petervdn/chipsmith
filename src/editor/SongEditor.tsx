@@ -26,7 +26,8 @@ import { useElementWidth } from './use-element-width.ts';
 import { useSongDraft } from './use-song-draft.ts';
 import { useSongTransport } from './use-song-transport.ts';
 import { useTrackMix } from './use-track-mix.ts';
-import { useZoom } from './use-zoom.ts';
+import { TRACK_NAME_WIDTH, useZoom } from './use-zoom.ts';
+import { useWheelZoom } from './use-wheel-zoom.ts';
 import { getVersions } from './versions.ts';
 import './SongEditor.css';
 
@@ -49,7 +50,8 @@ export function SongEditor({ detail }: SongEditorProps) {
   const heardSong = { ...song, tracks: getHeardTracks(draft.tracks, mix) };
   const transport = useSongTransport({ ...detail, song: heardSong });
   const width = useElementWidth(scrollRef);
-  const { pixelsPerBar, zoomIn, zoomOut, fit } = useZoom({ song: draftSong, clips, width });
+  const { pixelsPerBar, zoomIn, zoomOut, fit, zoomTo } = useZoom({ song: draftSong, clips, width });
+  useWheelZoom(scrollRef, { pixelsPerBar, trackNameWidth: TRACK_NAME_WIDTH, zoomTo });
   const ticksPerBar = getTicksPerBar(song);
   function getPlaceTicks(place: BlockPlace): number {
     return getClipTicks(clips, getBlock(draft.tracks, place)?.clip ?? '', song.bpm);

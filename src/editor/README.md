@@ -26,6 +26,7 @@ saved, playing from a cursor, the zoom, and the selected block's clip or track.
 - `use-song-draft.ts`: the song being edited: a draft with undo and redo, the selection, save and revert
 - `use-song-transport.ts`: playing the song from its cursor, stopping, moving the cursor
 - `use-track-mix.ts`: the tracks muted and soloed while editing
+- `use-wheel-zoom.ts`: scrolling over the timeline zooms it, about the moment under the pointer
 - `use-zoom.ts`: the pixels to a bar: fitted, or zoomed in and out
 - `versions.ts`: a clip's line of versions, oldest first
 - `Waveform.css`: the look of Waveform.tsx
