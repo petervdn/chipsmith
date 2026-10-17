@@ -97,6 +97,33 @@ textarea {
   color: inherit;
 }
 
+/* an icon (Lucide's) is sized by the text around it and sits on its line; in a button or link beside
+   words, a small gap between them (no specificity, so a component's own layout wins) */
+.lucide {
+  flex: none;
+  width: 1.15em;
+  height: 1.15em;
+  vertical-align: -0.2em;
+}
+
+:where(button, a):where(:has(> .lucide)) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4em;
+}
+
+/* an icon that turns while something loads */
+.icon-spin {
+  animation: icon-spin 0.9s linear infinite;
+}
+
+@keyframes icon-spin {
+  to {
+    rotate: 360deg;
+  }
+}
+
 /* a menu draws its own arrow, with room on its right, the same in every browser (its padding on the
    right outranks a component's padding) */
 select:not([multiple]) {

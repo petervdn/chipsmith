@@ -12,7 +12,7 @@ import './jobs.css';
 import './JobCard.css';
 import { askToConfirm } from '../stores/confirm-store.ts';
 import { getStepText } from './job-steps.ts';
-import { Trash2 } from 'lucide-react';
+import { ChevronDown, ChevronRight, Trash2 } from 'lucide-react';
 
 /** How large the trash can is drawn, in pixels. */
 const TRASH_SIZE = 16;
@@ -133,7 +133,7 @@ export function JobCard({ job, onRemove }: JobCardProps) {
             data-tooltip="show the job"
           >
             <span className="job-card-mark" aria-hidden="true">
-              ▸
+              <ChevronRight />
             </span>
             <span className="job-card-title">{job.prompt.split('\n')[0]}</span>
           </button>
@@ -165,7 +165,7 @@ export function JobCard({ job, onRemove }: JobCardProps) {
             data-tooltip="fold the job to one line"
           >
             <span className="job-card-mark" aria-hidden="true">
-              ▾
+              <ChevronDown />
             </span>
             <span className="job-card-phase">{getPhaseName(job)}</span>
           </button>

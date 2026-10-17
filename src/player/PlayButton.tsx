@@ -1,6 +1,7 @@
 // ▶ for one song in a list or on its page: loads the song when pressed and plays it from the start,
 // or stops it when it is the one playing. Filled orange while its song plays; … and not pressable
 // while the server renders its audio.
+import { LoaderCircle, Play, Square } from 'lucide-react';
 import { getSongPosition } from '../playback/audio-engine.ts';
 import { fetchSong } from '../queries/songs.ts';
 import { usePlayerStore } from '../stores/player-store.ts';
@@ -45,8 +46,9 @@ export function PlayButton({ songId, isWaitingForAudio }: PlayButtonProps) {
         className="play-button"
         disabled
         data-tooltip="its audio is being rendered"
+        aria-label="its audio is being rendered"
       >
-        …
+        <LoaderCircle className="icon-spin" />
       </button>
     );
   }
@@ -56,8 +58,15 @@ export function PlayButton({ songId, isWaitingForAudio }: PlayButtonProps) {
       className={`play-button${isThisSong ? ' is-playing' : ''}`}
       onClick={() => void toggle()}
       data-tooltip={isThisSong ? 'stop' : 'play'}
+      aria-label={isThisSong ? 'stop' : 'play'}
     >
-      {loadedPercent !== null ? `${loadedPercent}%` : isThisSong ? '■' : '▶'}
+      {loadedPercent !== null ? (
+        `${loadedPercent}%`
+      ) : isThisSong ? (
+        <Square fill="currentColor" />
+      ) : (
+        <Play fill="currentColor" />
+      )}
     </button>
   );
 }

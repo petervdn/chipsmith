@@ -1,5 +1,6 @@
 // The bar at the bottom of every page while a song is in the player: ▶ / ■ (the share loaded while it
 // loads), the song's title, where it is, a slider to move in it, and the mute switch for testing.
+import { Play, Square } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { formatSeconds } from '../format.ts';
 import { getSongPosition } from '../playback/audio-engine.ts';
@@ -50,12 +51,15 @@ export function PlayerBar() {
         className={`player-bar-play${player.mode === 'loading' ? ' is-loading' : ''}`}
         onClick={togglePlay}
         data-tooltip={player.mode === 'stopped' ? 'play' : 'stop'}
+        aria-label={player.mode === 'stopped' ? 'play' : 'stop'}
       >
-        {player.mode === 'loading'
-          ? `${Math.round(player.loaded * 100)}%`
-          : player.mode === 'playing'
-            ? '■'
-            : '▶'}
+        {player.mode === 'loading' ? (
+          `${Math.round(player.loaded * 100)}%`
+        ) : player.mode === 'playing' ? (
+          <Square fill="currentColor" />
+        ) : (
+          <Play fill="currentColor" />
+        )}
       </button>
       <div className="player-bar-middle">
         <a className="player-bar-title" href={`/songs/${encodeURIComponent(song.song.id)}`}>

@@ -3,6 +3,7 @@
 // on a track (a chip of it follows the pointer). « folds the column to a strip and » opens it again;
 // on a phone it starts folded, and open it lies over the timeline and steps aside while a clip is
 // dragged. It knows nothing of how a drop is placed.
+import { ChevronsLeft, ChevronsRight } from 'lucide-react';
 import { useState } from 'react';
 import type { PointerEvent as ReactPointerEvent } from 'react';
 import type { Clip } from '../../shared/clip.types.ts';
@@ -58,7 +59,7 @@ export function SongClips({
           aria-label="show the song's clips"
           data-tooltip="show the song's clips"
         >
-          »
+          <ChevronsRight />
         </button>
         <span className="song-clips-strip-label">clips</span>
       </aside>
@@ -77,7 +78,7 @@ export function SongClips({
             aria-label="fold the clips away"
             data-tooltip="fold the clips away"
           >
-            «
+            <ChevronsLeft />
           </button>
         </header>
         <p className="song-clips-hint">Drag one onto a track to place it.</p>

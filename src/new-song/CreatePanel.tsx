@@ -1,5 +1,6 @@
 // Create on the New page, with how many songs under it, small: the column at the right of the
 // prompt, staying in view as the page scrolls.
+import { Minus, Plus } from 'lucide-react';
 import './CreatePanel.css';
 
 /** The most songs a prompt can make. */
@@ -39,8 +40,9 @@ export function CreatePanel({
           onClick={() => onSongCountChange(Math.max(1, songCount - 1))}
           disabled={songCount <= 1}
           data-tooltip="one song fewer"
+          aria-label="one song fewer"
         >
-          −
+          <Minus />
         </button>
         <span className="create-panel-count-number">{songCount}</span>
         <button
@@ -48,8 +50,9 @@ export function CreatePanel({
           onClick={() => onSongCountChange(Math.min(MOST_SONGS, songCount + 1))}
           disabled={songCount >= MOST_SONGS}
           data-tooltip="one song more"
+          aria-label="one song more"
         >
-          +
+          <Plus />
         </button>
       </span>
     </div>

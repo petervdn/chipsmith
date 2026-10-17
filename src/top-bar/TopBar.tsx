@@ -1,6 +1,7 @@
 // The bar at the top of every page: the logo (home), Songs, Clips, Guides and Jobs with how many each
 // holds (Jobs: how many are on their way; the one open marked, Jobs turning while one runs), a
 // button for a new song at the right, and the switch between light and dark.
+import { Plus } from 'lucide-react';
 import { useRef } from 'react';
 import type { Job } from '../../shared/job.types.ts';
 import { Logo } from './Logo.tsx';
@@ -52,7 +53,7 @@ export function TopBar({ route, jobs }: TopBarProps) {
         </a>
       </nav>
       <a href="/new" className="top-bar-new">
-        + New song
+        <Plus /> New song
       </a>
       <LookSwitcher />
     </header>

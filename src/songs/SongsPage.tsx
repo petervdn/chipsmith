@@ -1,6 +1,7 @@
 // The songs list: every song with its length, tempo, meter, tags and status, the
 // filter bar above it, ▶, ★ / ✕ and ⌄ (more) on each row, and a line for each job on its way. A
 // row's title opens the song.
+import { ChevronDown } from 'lucide-react';
 import { useState } from 'react';
 import type { Job } from '../../shared/job.types.ts';
 import { JobStrip } from '../jobs/JobStrip.tsx';
@@ -131,9 +132,10 @@ export function SongsPage({ jobs }: SongsPageProps) {
                     className={`songs-page-expand${isOpen ? ' is-open' : ''}`}
                     onClick={() => toggleOpen(song.id)}
                     data-tooltip={isOpen ? 'less' : 'more: the prompt, prompt again, details'}
+                    aria-label={isOpen ? 'less' : 'more: the prompt, prompt again, details'}
                     aria-expanded={isOpen}
                   >
-                    ⌄
+                    <ChevronDown />
                   </button>
                 </div>
                 {isOpen && <SongRowDetails listing={listing} titlesById={titlesById} />}

@@ -1,6 +1,7 @@
 // The editor's ■ and ▶ / ❚❚: stop (back to the cursor), only while playing or paused; play or
 // pause on one button; and follow, switching whether the timeline scrolls with the playhead. It
 // knows nothing of how the song is played.
+import { LoaderCircle, Pause, Play, Square } from 'lucide-react';
 import { ControlGroup } from './ControlGroup.tsx';
 import type { PlayerMode } from '../stores/player-store.ts';
 import './TransportButtons.css';
@@ -45,8 +46,9 @@ export function TransportButtons({
         onClick={onStop}
         disabled={mode === 'stopped' && !isPaused}
         data-tooltip="stop, back to the cursor"
+        aria-label="stop, back to the cursor"
       >
-        ■
+        <Square fill="currentColor" />
       </button>
       <button
         type="button"
@@ -54,8 +56,9 @@ export function TransportButtons({
         onClick={onTogglePlaying}
         disabled={isWaitingForAudio}
         data-tooltip={getPlayTooltip({ mode, isPaused })}
+        aria-label={getPlayTooltip({ mode, isPaused })}
       >
-        {getPlaySymbol(mode)}
+        {getPlayIcon(mode)}
       </button>
       <button
         type="button"
@@ -75,13 +78,14 @@ export function TransportButtons({
 }
 
 /**
- * Returns the symbol on the play button: ▶ to play, … while loading, ❚❚ to pause.
+ * Returns the icon on the play button: ▶ to play, a turning circle while loading, ❚❚ to pause.
  *
  * @param mode - The song's mode.
- * @returns The symbol.
+ * @returns The icon's element.
  */
-function getPlaySymbol(mode: PlayerMode): string {
-  return { stopped: '▶', loading: '…', playing: '❚❚' }[mode];
+function getPlayIcon(mode: PlayerMode) {
+  if (mode === 'loading') return <LoaderCircle className="icon-spin" />;
+  return mode === 'playing' ? <Pause fill="currentColor" /> : <Play fill="currentColor" />;
 }
 
 /**

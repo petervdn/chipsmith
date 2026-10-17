@@ -5,7 +5,7 @@
 // sentence in the box; the box is written to only by that button, so what is typed there afterwards
 // is the box's own.
 import { CHIP_NAMES, CHIPS } from '../../shared/chips.ts';
-import { Lock, LockOpen } from 'lucide-react';
+import { ArrowUp, ChevronRight, Dices, Lock, LockOpen } from 'lucide-react';
 import type { PartName } from './random-prompt.ts';
 import { PROMPT_PARTS } from './random-prompt.ts';
 import '../lists/lists.css';
@@ -38,6 +38,7 @@ export function PromptBuilder({ isOpen, onToggle, onUse }: PromptBuilderProps) {
         onClick={() => toggleLock(name)}
         aria-pressed={isLocked}
         data-tooltip={isLocked ? 'locked: Roll keeps it' : 'unlocked: Roll picks it again'}
+        aria-label={isLocked ? 'locked: Roll keeps it' : 'unlocked: Roll picks it again'}
       >
         {isLocked ? <Lock size={ICON_SIZE} /> : <LockOpen size={ICON_SIZE} />}
       </button>
@@ -47,12 +48,14 @@ export function PromptBuilder({ isOpen, onToggle, onUse }: PromptBuilderProps) {
     <section className={`prompt-builder${isOpen ? ' is-open' : ''}`}>
       <div className="prompt-builder-result">
         <div className="prompt-builder-sentence">
-          <span className="prompt-builder-heading">🎲 build a prompt</span>
+          <span className="prompt-builder-heading">
+            <Dices /> build a prompt
+          </span>
           <p className="prompt-builder-text">{text}</p>
         </div>
         <div className="prompt-builder-actions">
           <button type="button" onClick={roll} data-tooltip="pick the unlocked parts again">
-            🎲 Roll
+            <Dices /> Roll
           </button>
           <button
             type="button"
@@ -60,7 +63,7 @@ export function PromptBuilder({ isOpen, onToggle, onUse }: PromptBuilderProps) {
             onClick={() => onUse(text)}
             data-tooltip="use as the prompt: put this sentence in the box above"
           >
-            Use ↑
+            Use <ArrowUp />
           </button>
           <button
             type="button"
@@ -72,7 +75,7 @@ export function PromptBuilder({ isOpen, onToggle, onUse }: PromptBuilderProps) {
               isOpen ? 'hide the parts' : 'show the parts: pick each, or lock it from Roll'
             }
           >
-            ▸
+            <ChevronRight />
           </button>
         </div>
       </div>

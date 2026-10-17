@@ -1,6 +1,7 @@
 // The Structure panel on New: none, a preset, a saved structure or your own, as chips; the chosen
 // one written short (editable) and as tiles as wide as their bars, coloured by part; the selected
 // section's editor; and saving it, as new or over the saved one, or deleting a saved one.
+import { Plus } from 'lucide-react';
 import { useState } from 'react';
 import type { CSSProperties } from 'react';
 import {
@@ -82,7 +83,7 @@ export function StructurePanel({ choice }: StructurePanelProps) {
           className={`list-chip${isChosen('own', null) ? ' is-on' : ''}`}
           onClick={() => choice.choose({ kind: 'own' })}
         >
-          + Your own
+          <Plus /> Your own
         </button>
       </div>
       {source.kind !== 'none' && (
@@ -138,8 +139,9 @@ export function StructurePanel({ choice }: StructurePanelProps) {
               className="structure-panel-add"
               onClick={() => choice.edit(addSection)}
               data-tooltip="add a new part at the end"
+              aria-label="add a new part at the end"
             >
-              +
+              <Plus />
             </button>
           </div>
           <p className="structure-panel-total">

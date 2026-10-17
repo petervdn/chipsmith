@@ -1,5 +1,6 @@
 // The selected block's details: where it plays, its clip (what it is, its facts, the prompt and
 // guides it was made with) and the versions of the clip; ▶ plays the song from the block.
+import { Minus, Play, Plus } from 'lucide-react';
 import type { Clip } from '../../shared/clip.types.ts';
 import { getTicksPerSecond } from '../../shared/song-length.ts';
 import type { Song } from '../../shared/song.types.ts';
@@ -70,7 +71,7 @@ export function BlockDetails({
           onClick={() => onPlayFrom(startSeconds)}
           data-tooltip="play the song from this block"
         >
-          ▶ from here
+          <Play fill="currentColor" /> from here
         </button>
       </header>
       <div className="block-details-actions">
@@ -80,16 +81,18 @@ export function BlockDetails({
             onClick={() => onRepeats(span.repeats - 1)}
             disabled={span.repeats <= 1}
             data-tooltip="play it one time fewer"
+            aria-label="play it one time fewer"
           >
-            −
+            <Minus />
           </button>
           <span>×{span.repeats}</span>
           <button
             type="button"
             onClick={() => onRepeats(span.repeats + 1)}
             data-tooltip="play it once more"
+            aria-label="play it once more"
           >
-            +
+            <Plus />
           </button>
         </span>
         <button type="button" onClick={onDuplicate} data-tooltip="place a copy right after it">

@@ -1,6 +1,7 @@
 // The selected section of a structure, to change: which part it is (any part or variant in the
 // structure, the next variation of one, or a new part), its bars, role, energy and note; and to move,
 // copy or remove it.
+import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { getSectionName } from '../../shared/structure-notation.ts';
 import type { Section } from '../../shared/structure.types.ts';
 import { SECTION_ROLES, getPartChoices } from './structure-edits.ts';
@@ -123,16 +124,18 @@ export function SectionEditor({
           onClick={() => onMove(-1)}
           disabled={index === 0}
           data-tooltip="move earlier"
+          aria-label="move earlier"
         >
-          ←
+          <ArrowLeft />
         </button>
         <button
           type="button"
           onClick={() => onMove(1)}
           disabled={index === sections.length - 1}
           data-tooltip="move later"
+          aria-label="move later"
         >
-          →
+          <ArrowRight />
         </button>
         <button type="button" onClick={onCopy} data-tooltip="the same part again, right after">
           Copy

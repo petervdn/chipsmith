@@ -2,6 +2,7 @@
 // sent, with the style guides chosen as chips; sending it leads to the Jobs page.
 // Opened from a song's "Prompt again", it starts with that song's prompt and notes the song, until
 // the note is cleared.
+import { X } from 'lucide-react';
 import { useState } from 'react';
 import { GuideChips } from '../guides/GuideChips.tsx';
 import { CreatePanel } from './CreatePanel.tsx';
@@ -87,8 +88,9 @@ export function PromptBox({ initialText, source, onClearSource }: PromptBoxProps
             className="prompt-box-source-clear"
             onClick={onClearSource}
             data-tooltip="send it as a new prompt, not linked to that song"
+            aria-label="send it as a new prompt, not linked to that song"
           >
-            ✕
+            <X />
           </button>
         </p>
       )}

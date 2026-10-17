@@ -1,6 +1,7 @@
 // The editor's bar of controls above the timeline, in groups: play (stop, play or pause), edit (undo,
 // redo), snap, tracks (split, when the song can be), zoom, and the song (revert, save). It wraps on
 // a phone. It knows nothing of what the controls do: it is given the values and handlers.
+import { Minus, Plus, Redo2, Undo2 } from 'lucide-react';
 import type { useSongDraft } from './use-song-draft.ts';
 import type { useSongTransport } from './use-song-transport.ts';
 import { ControlGroup } from './ControlGroup.tsx';
@@ -67,16 +68,18 @@ export function EditorBar({
           onClick={draft.undo}
           disabled={!draft.canUndo}
           data-tooltip="undo (⌘Z)"
+          aria-label="undo (⌘Z)"
         >
-          ↶
+          <Undo2 />
         </button>
         <button
           type="button"
           onClick={draft.redo}
           disabled={!draft.canRedo}
           data-tooltip="redo (⇧⌘Z)"
+          aria-label="redo (⇧⌘Z)"
         >
-          ↷
+          <Redo2 />
         </button>
       </ControlGroup>
       <ControlGroup label="snap">
@@ -113,14 +116,14 @@ export function EditorBar({
         </ControlGroup>
       )}
       <ControlGroup label="zoom">
-        <button type="button" onClick={zoom.zoomOut} data-tooltip="zoom out">
-          −
+        <button type="button" onClick={zoom.zoomOut} data-tooltip="zoom out" aria-label="zoom out">
+          <Minus />
         </button>
         <button type="button" onClick={zoom.fit} data-tooltip="fit the song to the screen">
           fit
         </button>
-        <button type="button" onClick={zoom.zoomIn} data-tooltip="zoom in">
-          +
+        <button type="button" onClick={zoom.zoomIn} data-tooltip="zoom in" aria-label="zoom in">
+          <Plus />
         </button>
       </ControlGroup>
       <ControlGroup label="song" isAtEnd>

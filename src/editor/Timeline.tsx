@@ -1,6 +1,7 @@
 // The song's timeline: a ruler of bars, a row per track (its name, which selects it, mute and solo,
 // and its level meter) with its blocks, and the playhead. A tap or drag on the ruler moves the play position; a tap
 // on a block selects it; blocks are dragged to move and trim them.
+import { Plus } from 'lucide-react';
 import { useRef, useState } from 'react';
 import type { CSSProperties, PointerEvent as ReactPointerEvent } from 'react';
 import type { Clip } from '../../shared/clip.types.ts';
@@ -110,7 +111,7 @@ export function Timeline({
             data-tooltip="add a track"
             aria-label="add a track"
           >
-            +
+            <Plus />
           </button>
         </div>
         <div
