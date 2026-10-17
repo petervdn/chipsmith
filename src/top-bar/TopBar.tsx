@@ -32,7 +32,7 @@ export function TopBar({ route, jobs }: TopBarProps) {
   useTopBarHeight(barRef);
   return (
     <header ref={barRef} className="top-bar">
-      <a href="/" className="top-bar-logo" data-tooltip="home">
+      <a href="/" className="top-bar-logo">
         <Logo size={LOGO_SIZE} />
         <span className="top-bar-logo-name">chipsmith</span>
       </a>
@@ -43,25 +43,15 @@ export function TopBar({ route, jobs }: TopBarProps) {
         <a href="/clips" className={`top-bar-link${route.page === 'clips' ? ' is-on' : ''}`}>
           Clips <span className="top-bar-count">{getCountText(clipCount)}</span>
         </a>
-        <a
-          href="/guides"
-          className={`top-bar-link${route.page === 'guides' ? ' is-on' : ''}`}
-          data-tooltip="style guides, sent along with a prompt"
-        >
+        <a href="/guides" className={`top-bar-link${route.page === 'guides' ? ' is-on' : ''}`}>
           Guides <span className="top-bar-count">{getCountText(guideCount)}</span>
         </a>
-        <a
-          href="/jobs"
-          className={`top-bar-link${route.page === 'jobs' ? ' is-on' : ''}`}
-          data-tooltip={
-            isAnyRunning ? 'a job is on its way' : 'every prompt sent, and what it made'
-          }
-        >
+        <a href="/jobs" className={`top-bar-link${route.page === 'jobs' ? ' is-on' : ''}`}>
           {isAnyRunning && <span className="jobs-spinner" aria-hidden="true" />}
           Jobs <span className="top-bar-count">{getCountText(jobCount)}</span>
         </a>
       </nav>
-      <a href="/new" className="top-bar-new" data-tooltip="write a prompt for a new song">
+      <a href="/new" className="top-bar-new">
         + New song
       </a>
       <LookSwitcher />
