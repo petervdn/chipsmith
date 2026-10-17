@@ -1,7 +1,8 @@
 // Dragging a block with the pointer: its body moves it (to another track too), its edges trim it.
 // The press becomes a drag as use-press-drag.ts says (a mouse at once, a finger after holding
 // still). Alt drags without the grid. While dragging, the tracks as the drag would leave them are
-// given to draw; letting go makes it an edit.
+// given to draw; letting go makes it an edit. Where the block goes is read from the lanes, so it
+// follows the timeline when it scrolls during the drag.
 import { useState } from 'react';
 import type { PointerEvent as ReactPointerEvent } from 'react';
 import type { Track } from '../../shared/song.types.ts';
@@ -9,11 +10,12 @@ import type { DragMode } from './block-drag.ts';
 import { getDraggedTracks } from './block-drag.ts';
 import type { GridStep } from './grid.ts';
 import type { BlockPlace, Edited } from './song-edits.ts';
+import { getLaneTicks } from './lane-position.ts';
 import type { PressOrigin } from './use-press-drag.ts';
 import { usePressDrag } from './use-press-drag.ts';
 
 /** What a press on a block is on: the block, and whether it moves it or trims it. */
-type Pressed = { place: BlockPlace; mode: DragMode };
+type Pressed = { place: BlockPlace; mode: DragMode; pressTicks: number };
 
 /**
  * Lets blocks be dragged.
@@ -27,7 +29,8 @@ type Pressed = { place: BlockPlace; mode: DragMode };
  * @param timeline.getClipTicks - Gives how long a clip is, in ticks.
  * @param timeline.onEdit - Called with the tracks a finished drag leaves.
  * @returns `startPress` for a block's pointerdown, the tracks to draw while dragging (null when
- *   not), and `wasDragged`, true just after a drag so the click it ends with can be ignored.
+ *   not), `redrag` for when the timeline scrolled under the pointer, and `wasDragged`, true just
+ *   after a drag so the click it ends with can be ignored.
  */
 export function useBlockDrag({
   tracks,
@@ -53,7 +56,8 @@ export function useBlockDrag({
       {
         mode: pressed.mode,
         place: pressed.place,
-        ticks: (event.clientX - origin.x) / pixelsPerTick,
+        ticks:
+          (getLaneTicks(event.clientX, pixelsPerTick) ?? pressed.pressTicks) - pressed.pressTicks,
         rows: Math.round((event.clientY - origin.y) / rowHeight),
         isFree: event.altKey,
       },
@@ -75,7 +79,8 @@ export function useBlockDrag({
    * @param mode - Whether the press moves the block or trims it from its start or end.
    */
   function startPress(event: ReactPointerEvent, place: BlockPlace, mode: DragMode): void {
-    press.startPress(event, { place, mode });
+    const pressTicks = getLaneTicks(event.clientX, pixelsPerTick) ?? 0;
+    press.startPress(event, { place, mode, pressTicks });
   }
-  return { startPress, preview, wasDragged: press.wasDragged };
+  return { startPress, preview, redrag: press.redrag, wasDragged: press.wasDragged };
 }

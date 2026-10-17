@@ -1,6 +1,8 @@
 // A press that becomes a drag: with a mouse after a few pixels; on a touch screen after the finger
 // holds still for a moment, so a swipe still scrolls. While dragging, each move is passed on; letting
-// go is the drop. What is pressed (a block, a clip) is the caller's; this knows only the pointer.
+// go is the drop; `redrag` passes the last move on again, for when what is under the pointer moved
+// (the timeline scrolled). What is pressed (a block, a clip) is the caller's; this knows only the
+// pointer.
 import { useEffect, useRef } from 'react';
 import type { PointerEvent as ReactPointerEvent } from 'react';
 
@@ -17,7 +19,13 @@ const HOLD_BUZZ = 12;
 export type PressOrigin = { x: number; y: number };
 
 /** A press, before and while it is a drag. */
-type Press<Pressed> = PressOrigin & { pressed: Pressed; isTouch: boolean; isDragging: boolean };
+type Press<Pressed> = PressOrigin & {
+  pressed: Pressed;
+  isTouch: boolean;
+  isDragging: boolean;
+  /** The last move while dragging, passed on again by `redrag`. */
+  lastMove: PointerEvent | null;
+};
 
 /** What a drag does: as it moves, when it is let go, and when it is over either way. */
 export type PressDragHandlers<Pressed> = {
@@ -33,8 +41,8 @@ export type PressDragHandlers<Pressed> = {
  * @param handlers.onDrag - Called on each move while dragging.
  * @param handlers.onDrop - Called when a drag is let go.
  * @param handlers.onEnd - Called when a press is over: dropped, cancelled or never a drag.
- * @returns `startPress` for a pointerdown, with what was pressed, and `wasDragged`, true just after
- *   a drag so the click it ends with can be ignored.
+ * @returns `startPress` for a pointerdown, with what was pressed; `redrag`, which passes the last
+ *   move on again; and `wasDragged`, true just after a drag so the click it ends with can be ignored.
  */
 export function usePressDrag<Pressed>({ onDrag, onDrop, onEnd }: PressDragHandlers<Pressed>) {
   const pressRef = useRef<Press<Pressed> | null>(null);
@@ -58,6 +66,7 @@ export function usePressDrag<Pressed>({ onDrag, onDrop, onEnd }: PressDragHandle
         if (distance < MOUSE_SLOP) return;
         press.isDragging = true;
       }
+      press.lastMove = event;
       latest.current.onDrag(event, press.pressed, press);
     }
     function onUp(event: PointerEvent): void {
@@ -106,6 +115,7 @@ export function usePressDrag<Pressed>({ onDrag, onDrop, onEnd }: PressDragHandle
       y: event.clientY,
       isTouch: event.pointerType === 'touch',
       isDragging: false,
+      lastMove: null,
     };
     if (event.pointerType === 'touch') {
       holdTimerRef.current = setTimeout(() => {
@@ -116,5 +126,12 @@ export function usePressDrag<Pressed>({ onDrag, onDrop, onEnd }: PressDragHandle
       }, HOLD_TIME);
     }
   }
-  return { startPress, wasDragged: () => draggedRef.current };
+  /** Passes the last move of the drag going on to `onDrag` again, if there is one. */
+  function redrag(): void {
+    const press = pressRef.current;
+    if (press?.isDragging && press.lastMove) {
+      latest.current.onDrag(press.lastMove, press.pressed, press);
+    }
+  }
+  return { startPress, redrag, wasDragged: () => draggedRef.current };
 }

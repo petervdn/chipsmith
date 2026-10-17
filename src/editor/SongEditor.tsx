@@ -26,6 +26,7 @@ import { TrackDetails } from './TrackDetails.tsx';
 import { TransportButtons } from './TransportButtons.tsx';
 import { useBlockDrag } from './use-block-drag.ts';
 import { useClipDrag } from './use-clip-drag.ts';
+import { useEdgeScroll } from './use-edge-scroll.ts';
 import { useEditorKeys } from './use-editor-keys.ts';
 import { useElementWidth } from './use-element-width.ts';
 import { useSongDraft } from './use-song-draft.ts';
@@ -81,6 +82,14 @@ export function SongEditor({ detail }: SongEditorProps) {
     step,
     ticksPerBar,
     onEdit: (edited) => draft.edit(() => edited),
+  });
+  useEdgeScroll(scrollRef, {
+    isDragging: drag.preview !== null || clipDrag.drag !== null,
+    leftInset: TRACK_NAME_WIDTH,
+    onScroll: () => {
+      drag.redrag();
+      clipDrag.redrag();
+    },
   });
   const { data: pool } = useClips();
   const selection = draft.selection;

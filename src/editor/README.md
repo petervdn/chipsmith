@@ -10,6 +10,7 @@ saved, playing from a cursor, the zoom, and the selected block's clip or track.
 - `ControlGroup.css`: the look of ControlGroup.tsx
 - `ControlGroup.tsx`: controls grouped under a very small label over a line
 - `grid.ts`: the snap grid: its steps, and a time snapped to one
+- `lane-position.ts`: the track's lane under a point, and the tick a point is at, read from the page
 - `song-edits.ts`: the edits of the arrangement: move, trim, repeat, duplicate, remove a block; tracks
 - `song-clips.ts`: the song's clips in the order it plays them, their blocks counted; a clip's first block
 - `SongClips.css`: the look of SongClips.tsx
@@ -31,6 +32,7 @@ saved, playing from a cursor, the zoom, and the selected block's clip or track.
 - `TransportButtons.tsx`: ■ stop, and ▶ / ❚❚ play or pause on one button
 - `use-block-drag.ts`: dragging blocks: moving and trimming them
 - `use-clip-drag.ts`: dragging a clip onto a track's lane, as a new block
+- `use-edge-scroll.ts`: the timeline scrolled while a drag is near its left or right edge
 - `use-editor-keys.ts`: the editor's keys: Space, Delete, ⌘Z, ⇧⌘Z, ⌘S, Escape
 - `use-element-width.ts`: an element's width, kept current
 - `use-heard-tracks.ts`: the player hearing only the tracks mute and solo leave, also while playing

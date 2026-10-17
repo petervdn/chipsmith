@@ -7,10 +7,8 @@ import type { Track } from '../../shared/song.types.ts';
 import { getDroppedTracks } from './block-drag.ts';
 import type { GridStep } from './grid.ts';
 import type { Edited } from './song-edits.ts';
+import { getLaneAt } from './lane-position.ts';
 import { usePressDrag } from './use-press-drag.ts';
-
-/** The attribute on a track's lane that names its track, where a clip can be dropped. */
-export const LANE_TRACK_ATTRIBUTE = 'data-track-id';
 
 /** A clip being dragged: which, where the pointer is, and the tracks a drop there would leave. */
 export type ClipDrag = { clipId: string; x: number; y: number; preview: Edited | null };
@@ -25,7 +23,8 @@ export type ClipDrag = { clipId: string; x: number; y: number; preview: Edited |
  * @param timeline.ticksPerBar - The song's ticks to a bar.
  * @param timeline.onEdit - Called with the tracks a drop leaves.
  * @returns `startPress` for a clip's pointerdown, with the clip's id; the drag going on (null
- *   when none); and `wasDragged`, true just after a drag so the click it ends with can be ignored.
+ *   when none); `redrag` for when the timeline scrolled under the pointer; and `wasDragged`, true
+ *   just after a drag so the click it ends with can be ignored.
  */
 export function useClipDrag({
   tracks,
@@ -42,15 +41,12 @@ export function useClipDrag({
 }) {
   const [drag, setDrag] = useState<ClipDrag | null>(null);
   function getDropped(event: PointerEvent, clipId: string): Edited | null {
-    const lane = document
-      .elementFromPoint(event.clientX, event.clientY)
-      ?.closest(`[${LANE_TRACK_ATTRIBUTE}]`);
-    const trackId = lane?.getAttribute(LANE_TRACK_ATTRIBUTE);
-    if (!lane || !trackId) return null;
-    const ticks = (event.clientX - lane.getBoundingClientRect().left) / pixelsPerTick;
+    const lane = getLaneAt(event.clientX, event.clientY);
+    if (!lane) return null;
+    const ticks = (event.clientX - lane.left) / pixelsPerTick;
     return getDroppedTracks(
       tracks,
-      { clipId, trackId, ticks, isFree: event.altKey },
+      { clipId, trackId: lane.trackId, ticks, isFree: event.altKey },
       { step, ticksPerBar },
     );
   }
@@ -63,5 +59,5 @@ export function useClipDrag({
     },
     onEnd: () => setDrag(null),
   });
-  return { startPress: press.startPress, drag, wasDragged: press.wasDragged };
+  return { startPress: press.startPress, drag, redrag: press.redrag, wasDragged: press.wasDragged };
 }
