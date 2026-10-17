@@ -127,6 +127,20 @@ export function rollParts(
 }
 
 /**
+ * Picks one part again at random, to go with the others, which keep their values (a rhythm or idea
+ * that then no longer goes with it is picked again too).
+ *
+ * @param parts - The parts now.
+ * @param name - The part picked again.
+ * @param getRandom - Gives numbers from 0 up to 1, as Math.random does.
+ * @returns The parts, that one picked again.
+ */
+export function rollPart(parts: PromptParts, name: PartName, getRandom: () => number): PromptParts {
+  const others = ROLL_ORDER.filter((other) => other !== name);
+  return fitParts(rollParts(parts, others, getRandom), getRandom);
+}
+
+/**
  * Picks again, at random, a rhythm the piece cannot take and an idea the chips cannot play: after a
  * part is picked by hand or a chip switched.
  *

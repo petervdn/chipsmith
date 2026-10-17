@@ -16,10 +16,10 @@
 
 .prompt-builder-row {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 32px;
+  grid-template-columns: minmax(0, 1fr) 32px 32px;
   grid-template-areas:
-    'label label'
-    'value lock';
+    'label label label'
+    'value dice lock';
   align-items: center;
   gap: 2px 4px;
 }
@@ -27,7 +27,7 @@
 /* the chips: a row across both columns, its switches where a menu would be */
 .prompt-builder-row.is-chips {
   grid-column: 1 / -1;
-  grid-template-columns: max-content 32px;
+  grid-template-columns: max-content 32px 32px;
 }
 
 .prompt-builder-chips {
@@ -53,8 +53,8 @@
   background: var(--bg);
 }
 
+.prompt-builder-dice,
 .prompt-builder-lock {
-  grid-area: lock;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -106,13 +106,29 @@
 
 @media (pointer: coarse) {
   .prompt-builder-row {
-    grid-template-columns: minmax(0, 1fr) var(--touch);
+    grid-template-columns: minmax(0, 1fr) var(--touch) var(--touch);
   }
   .prompt-builder-row.is-chips {
-    grid-template-columns: max-content var(--touch);
+    grid-template-columns: max-content var(--touch) var(--touch);
   }
 }
 
+.prompt-builder-dice {
+  grid-area: dice;
+  opacity: 0.6;
+}
+
+@media (hover: hover) {
+  .prompt-builder-dice:hover {
+    opacity: 1;
+  }
+}
+
+.prompt-builder-lock {
+  grid-area: lock;
+}
+
+.prompt-builder-dice .lucide,
 .prompt-builder-lock .lucide {
   width: 14px;
   height: 14px;

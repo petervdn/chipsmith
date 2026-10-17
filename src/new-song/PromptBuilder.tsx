@@ -26,7 +26,20 @@ type PromptBuilderProps = { isOpen: boolean; onToggle: () => void; onUse: (text:
  * @returns The builder's panel.
  */
 export function PromptBuilder({ isOpen, onToggle, onUse }: PromptBuilderProps) {
-  const { parts, locked, text, roll, pick, toggleChip, toggleLock } = usePromptBuilder();
+  const { parts, locked, text, roll, rollOne, pick, toggleChip, toggleLock } = usePromptBuilder();
+  function renderDice(name: PartName, label: string) {
+    return (
+      <button
+        type="button"
+        className="prompt-builder-dice"
+        onClick={() => rollOne(name)}
+        data-tooltip={`roll the ${label.toLowerCase()} again`}
+        aria-label={`roll the ${label.toLowerCase()} again`}
+      >
+        <Dices />
+      </button>
+    );
+  }
   function renderLock(name: PartName) {
     const isLocked = locked.includes(name);
     return (
@@ -94,6 +107,7 @@ export function PromptBuilder({ isOpen, onToggle, onUse }: PromptBuilderProps) {
               </button>
             ))}
           </span>
+          {renderDice('chips', 'Chips')}
           {renderLock('chips')}
         </div>
         {PROMPT_PARTS.map(({ name, label }) => {
@@ -112,6 +126,7 @@ export function PromptBuilder({ isOpen, onToggle, onUse }: PromptBuilderProps) {
                   </option>
                 ))}
               </select>
+              {renderDice(name, label)}
               {renderLock(name)}
             </div>
           );

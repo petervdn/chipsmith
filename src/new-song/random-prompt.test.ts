@@ -9,6 +9,7 @@ import {
   getPartValues,
   getPromptText,
   rollChips,
+  rollPart,
   rollParts,
 } from './random-prompt.ts';
 
@@ -52,6 +53,13 @@ test('a piece takes only rhythms that go with it, an idea only chips that can pl
   assert.ok(!getPartValues('idea', waltz).includes('where the triangle carries the melody'));
   const fitted = fitParts({ ...waltz, idea: 'where the triangle carries the melody' }, () => 0);
   assert.deepEqual([fitted.rhythm, fitted.idea], ['at a relaxed 90 bpm', 'with a walking bass']);
+});
+
+test('one part picked again, the others kept', () => {
+  const first = rollParts(null, [], () => 0);
+  const again = rollPart(first, 'mode', () => 0.9999);
+  assert.deepEqual({ ...again, mode: first.mode }, first);
+  assert.equal(again.mode, 'blues');
 });
 
 test('a mood that starts with a vowel takes "an"', () => {
