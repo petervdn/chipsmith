@@ -1,6 +1,6 @@
 /**
  * The chips a reference song may play on, by the names Furnace's text export gives them: the NES
- * with its Famicom expansions, the SID and the SCC (with the AY-3-8910 an MSX has beside it), and a
+ * with its Famicom expansions, the SID and the SCC (with the PSG, the AY-3-8910 an MSX has beside it), and a
  * plain PCM DAC. For each: a short label, its channels' names in Furnace's order, and which of the
  * app's chips it belongs with. Knows nothing of files.
  */
@@ -48,7 +48,7 @@ const DEMO_CHIPS = {
   },
   'Konami SCC': { label: 'SCC', family: 'scc', channels: getNumbered('SCC', 5) },
   'Konami SCC+': { label: 'SCC+', family: 'scc', channels: getNumbered('SCC+', 5) },
-  'AY-3-8910': { label: 'AY-3-8910', family: null, channels: getNumbered('AY', 3) },
+  'AY-3-8910': { label: 'PSG', family: null, channels: getNumbered('PSG', 3) },
   'Generic PCM DAC': { label: 'PCM DAC', family: null, channels: ['PCM'] },
 } satisfies Record<string, DemoChip>;
 

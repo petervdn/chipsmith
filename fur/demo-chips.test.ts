@@ -32,11 +32,7 @@ test('a chip not known names no channels', () => {
 });
 
 test('labels, and the first of NES, SID and SCC a reference plays on', () => {
-  assert.deepEqual(getChipLabels(['AY-3-8910', 'Konami SCC+', 'SNES']), [
-    'AY-3-8910',
-    'SCC+',
-    'SNES',
-  ]);
+  assert.deepEqual(getChipLabels(['AY-3-8910', 'Konami SCC+', 'SNES']), ['PSG', 'SCC+', 'SNES']);
   assert.equal(getChipFamily(['AY-3-8910', 'Konami SCC']), 'scc');
   assert.equal(getChipFamily(['NES (Ricoh 2A03)', 'Konami VRC6']), 'nes');
   assert.equal(getChipFamily(['AY-3-8910']), null);
