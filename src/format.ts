@@ -21,23 +21,28 @@ export function formatMeter(beats: number): string {
   return `${beats}/4`;
 }
 
+/** The least a count of some tokens shows, in thousands: a few tokens are never "0k". */
+const MIN_THOUSANDS = 0.1;
+
 /**
- * Returns a number of tokens as a short count: in thousands from a thousand on.
+ * Returns a number of tokens as a short count, always in thousands: with a decimal below ten
+ * thousand, and never less than 0.1k for some.
  *
  * @param tokens - The tokens.
- * @returns "850", "15k" or "1.2k".
+ * @returns "0.9k", "1.2k" or "15k"; "0k" for none.
  */
 export function formatTokenCount(tokens: number): string {
-  if (tokens < 1000) return `${tokens}`;
+  if (tokens <= 0) return '0k';
   const thousands = tokens / 1000;
-  return `${thousands < 10 ? Math.round(thousands * 10) / 10 : Math.round(thousands)}k`;
+  if (thousands >= 10) return `${Math.round(thousands)}k`;
+  return `${Math.max(MIN_THOUSANDS, Math.round(thousands * 10) / 10)}k`;
 }
 
 /**
  * Returns a number of tokens as it is shown: its short count and the word.
  *
  * @param tokens - The tokens.
- * @returns "850 tokens", "15k tokens" or "1.2k tokens".
+ * @returns "0.9k tokens", "1.2k tokens" or "15k tokens".
  */
 export function formatTokens(tokens: number): string {
   return `${formatTokenCount(tokens)} tokens`;

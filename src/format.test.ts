@@ -1,16 +1,25 @@
-// Tokens are shown in thousands from a thousand on, with a decimal below ten thousand.
+// Tokens are shown in thousands, with a decimal below ten thousand and at least 0.1k for some.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { formatTokenCount, formatTokens } from './format.ts';
 
-test('tokens in thousands from a thousand on', () => {
+test('tokens in thousands', () => {
   assert.deepEqual([850, 1234, 14951].map(formatTokens), [
-    '850 tokens',
+    '0.9k tokens',
     '1.2k tokens',
     '15k tokens',
   ]);
 });
 
-test('a token count is the number alone', () => {
-  assert.deepEqual([850, 1234, 14951].map(formatTokenCount), ['850', '1.2k', '15k']);
+test('a token count is the number alone, at least 0.1k for some', () => {
+  assert.deepEqual([0, 30, 86, 203, 850, 1234, 9960, 14951].map(formatTokenCount), [
+    '0k',
+    '0.1k',
+    '0.1k',
+    '0.2k',
+    '0.9k',
+    '1.2k',
+    '10k',
+    '15k',
+  ]);
 });
