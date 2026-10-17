@@ -18,6 +18,8 @@
   --reject: #dc2f4b;
   color-scheme: light;
   --touch: 40px;
+  /* the widest the page's content gets, centred beyond that; the top bar's content keeps to it */
+  --page-width: 1100px;
   /* the tracks' colours on the timeline, bright in light and dark alike, with --on-accent on them */
   --track-1: #a6f23a;
   --track-2: #2ee6ff;
@@ -95,7 +97,7 @@ textarea {
 
 /* a page */
 .page {
-  max-width: 1100px;
+  max-width: var(--page-width);
   margin: 0 auto;
   padding: 12px 16px 40px;
 }
