@@ -10,6 +10,7 @@ import { ControlGroup } from './ControlGroup.tsx';
 import type { GridStep } from './grid.ts';
 import { BAR_STEP, GRID_STEPS } from './grid.ts';
 import { MetronomeControls } from './MetronomeControls.tsx';
+import { ToggleButton } from './ToggleButton.tsx';
 import { TransportButtons } from './TransportButtons.tsx';
 import { usePreferencesStore } from '../stores/preferences-store.ts';
 import { LEAST_TRACK_HEIGHT, MOST_TRACK_HEIGHT } from './track-height.ts';
@@ -158,19 +159,12 @@ export function EditorBar({
       </ControlGroup>
       {hasStructure && (
         <ControlGroup label="view">
-          <button
-            type="button"
-            className={`editor-bar-button editor-bar-switch${isStructureShown ? ' is-on' : ''}`}
-            onClick={() => setStructureShown(!isStructureShown)}
-            aria-pressed={isStructureShown}
-            data-tooltip={
-              isStructureShown
-                ? 'showing the structure the song was asked for, above its tracks'
-                : 'show the structure the song was asked for, above its tracks'
-            }
-          >
-            structure
-          </button>
+          <ToggleButton
+            label="structure"
+            isOn={isStructureShown}
+            onToggle={() => setStructureShown(!isStructureShown)}
+            tooltip="show the structure the song was asked for, above its tracks"
+          />
         </ControlGroup>
       )}
       <ControlGroup label="song" isAtEnd>

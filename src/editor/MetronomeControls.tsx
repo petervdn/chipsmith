@@ -1,9 +1,9 @@
 // The editor bar's metronome: a switch that clicks the beats while the song plays (the first of a
 // bar higher), and a small slider for how loud (up to well above the music), beside it. Both are kept in the preferences.
-import { Metronome } from 'lucide-react';
 import { METRONOME_LOUDEST_DB, QUIETEST_DB, formatVolume } from '../player/volume.ts';
 import { usePreferencesStore } from '../stores/preferences-store.ts';
 import { ControlGroup } from './ControlGroup.tsx';
+import { ToggleButton } from './ToggleButton.tsx';
 import './MetronomeControls.css';
 
 /**
@@ -16,19 +16,14 @@ export function MetronomeControls() {
   const setOn = usePreferencesStore((state) => state.setMetronomeOn);
   const volume = usePreferencesStore((state) => state.metronomeVolume);
   const setVolume = usePreferencesStore((state) => state.setMetronomeVolume);
-  const label = isOn ? 'metronome on: clicks the beats while playing' : 'metronome off';
   return (
     <ControlGroup label="metronome">
-      <button
-        type="button"
-        className={`metronome-controls-switch${isOn ? ' is-on' : ''}`}
-        onClick={() => setOn(!isOn)}
-        aria-pressed={isOn}
-        aria-label={label}
-        data-tooltip={label}
-      >
-        <Metronome />
-      </button>
+      <ToggleButton
+        label="on"
+        isOn={isOn}
+        onToggle={() => setOn(!isOn)}
+        tooltip="click the beats while playing, the first of a bar higher"
+      />
       <input
         type="range"
         className="metronome-controls-volume"

@@ -1,8 +1,9 @@
 // The editor's ■ and ▶ / ❚❚: stop (back to the cursor), only while playing or paused; play or
 // pause on one button; follow, switching whether the timeline scrolls with the playhead; and loop,
 // switching whether it plays round its loop. It knows nothing of how the song is played.
-import { LoaderCircle, Pause, Play, Repeat, Square } from 'lucide-react';
+import { LoaderCircle, Pause, Play, Square } from 'lucide-react';
 import { ControlGroup } from './ControlGroup.tsx';
+import { ToggleButton } from './ToggleButton.tsx';
 import type { PlayerMode } from '../stores/player-store.ts';
 import './TransportButtons.css';
 
@@ -64,33 +65,18 @@ export function TransportButtons({
       >
         {getPlayIcon(mode)}
       </button>
-      <button
-        type="button"
-        className={`transport-buttons-follow${isFollowing ? ' is-on' : ''}`}
-        onClick={onToggleFollowing}
-        aria-pressed={isFollowing}
-        data-tooltip={
-          isFollowing
-            ? 'following the playhead: the timeline scrolls with it'
-            : 'follow the playhead: scroll the timeline with it'
-        }
-      >
-        follow
-      </button>
-      <button
-        type="button"
-        className={`transport-buttons-loop${isLooping ? ' is-on' : ''}`}
-        onClick={onToggleLooping}
-        aria-pressed={isLooping}
-        aria-label={isLooping ? 'looping' : 'loop'}
-        data-tooltip={
-          isLooping
-            ? 'looping: plays round the loop under the ruler'
-            : 'loop: play round the whole song, or a loop drawn under the ruler'
-        }
-      >
-        <Repeat />
-      </button>
+      <ToggleButton
+        label="follow"
+        isOn={isFollowing}
+        onToggle={onToggleFollowing}
+        tooltip="keep the playhead in the middle of the view while playing"
+      />
+      <ToggleButton
+        label="loop"
+        isOn={isLooping}
+        onToggle={onToggleLooping}
+        tooltip="play round the whole song, or a loop drawn in the row under the ruler"
+      />
     </ControlGroup>
   );
 }

@@ -1,0 +1,35 @@
+/* The look of ToggleButton.tsx: a button like the bar's others, a small box left of its label,
+   filled with the accent and ticked while it is on. */
+
+.editor-bar .toggle-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 10px 0 8px;
+  font-size: 0.8125rem;
+}
+
+.toggle-button-box {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 14px;
+  height: 14px;
+  box-sizing: border-box;
+  border: 1.5px solid var(--muted);
+  border-radius: 3px;
+  background: var(--card);
+}
+
+.toggle-button.is-on .toggle-button-box {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+.toggle-button-box .lucide {
+  width: 12px;
+  height: 12px;
+  stroke-width: 3;
+}
