@@ -5,7 +5,7 @@
  */
 import type { NewNote } from '../shared/job.types.ts';
 import { closeSync, existsSync, openSync, readFileSync, readSync, statSync } from 'node:fs';
-import { relative, resolve } from 'node:path';
+import { describeThought, describeTool, shorten } from './claude-words.ts';
 
 /**
  * What Claude is in the middle of, as far as the log has gone: nothing that shows, thinking (with
@@ -44,9 +44,6 @@ export type RunResult = {
   /** The run's output tokens, thinking included, as its result reports them; null if it does not. */
   tokens: number | null;
 };
-
-/** The longest note kept from a line of Claude's. */
-const NOTE_LENGTH = 200;
 
 /** Bytes to a KB, for the size of a file being written. */
 const KB = 1024;
@@ -90,7 +87,9 @@ export function readLogNews(logFile: string, place: LogPlace, projectFolder: str
     const event = parseLine(line);
     if (!event || event['parent_tool_use_id']) continue;
     if (event['type'] === 'assistant') {
-      if (progress.kind === 'thinking') notes.push({ text: 'thought', tokens: progress.tokens });
+      if (progress.kind === 'thinking') {
+        notes.push({ text: describeThought(getThinking(event)), tokens: progress.tokens });
+      }
       const blockTokens = progress.kind === 'thinking' ? null : getProgressTokens(progress) || null;
       notes.push(
         ...getAssistantNotes(event, projectFolder).map((text, i) => ({
@@ -230,7 +229,9 @@ function describeProgress(progress: Progress, projectFolder: string): string | n
   if (progress.kind === 'text') return progress.text.trim() ? shorten(progress.text.trim()) : null;
   if (progress.kind !== 'tool') return null;
   const path = /"file_path"\s*:\s*"([^"]*)"/.exec(progress.input)?.[1];
-  const action = describeTool(progress.name, path ? { file_path: path } : {}, projectFolder);
+  const skill = /"skill"\s*:\s*"([^"]*)"/.exec(progress.input)?.[1];
+  const known = { ...(path ? { file_path: path } : {}), ...(skill ? { skill } : {}) };
+  const action = describeTool(progress.name, known, projectFolder);
   const size = Math.round(progress.input.length / KB);
   return size > 0 ? `${action} (${size} KB so far)` : `${action}…`;
 }
@@ -244,6 +245,29 @@ function parseLine(line: string): Record<string, unknown> | null {
   } catch {
     return null;
   }
+}
+
+/**
+ * Returns the text of the thinking in an assistant message.
+ *
+ * @param event - The assistant event.
+ * @returns The thinking's text, or an empty string when it has none (the log often leaves it out).
+ */
+function getThinking(event: Record<string, unknown>): string {
+  const message = event['message'];
+  const content =
+    typeof message === 'object' && message !== null && 'content' in message ? message.content : [];
+  if (!Array.isArray(content)) return '';
+  return content
+    .map((part: unknown) =>
+      typeof part === 'object' &&
+      part !== null &&
+      'thinking' in part &&
+      typeof part.thinking === 'string'
+        ? part.thinking
+        : '',
+    )
+    .join(' ');
 }
 
 function getAssistantNotes(event: Record<string, unknown>, projectFolder: string): string[] {
@@ -268,47 +292,4 @@ function getAssistantNotes(event: Record<string, unknown>, projectFolder: string
     }
     return [];
   });
-}
-
-/**
- * Describes what a tool call does in a few words.
- *
- * @param name - The tool's name.
- * @param input - The tool call's input.
- * @param projectFolder - The project's folder, which file paths are shown relative to.
- * @returns The words.
- */
-function describeTool(name: string, input: Record<string, unknown>, projectFolder: string): string {
-  /**
-   * Returns a path in the input, relative to the project folder.
-   *
-   * @param key - The input's field that holds the path.
-   * @returns The path, or an empty string when the field is not a string.
-   */
-  function getPath(key: string): string {
-    const value = input[key];
-    return typeof value === 'string' ? relative(projectFolder, resolve(projectFolder, value)) : '';
-  }
-  /**
-   * Returns a text in the input.
-   *
-   * @param key - The input's field that holds the text.
-   * @returns The text, or an empty string when the field is not a string.
-   */
-  function getText(key: string): string {
-    const value = input[key];
-    return typeof value === 'string' ? value : '';
-  }
-  if (name === 'Read') return `reading ${getPath('file_path')}`;
-  if (name === 'Write') return `writing ${getPath('file_path')}`;
-  if (name === 'Edit') return `editing ${getPath('file_path')}`;
-  if (name === 'Grep' || name === 'Glob') return `searching ${shorten(getText('pattern'))}`;
-  if (name === 'Bash') return shorten(getText('description') || getText('command'));
-  if (name === 'TodoWrite') return 'planning';
-  return name;
-}
-
-function shorten(text: string): string {
-  const line = text.replace(/\s+/g, ' ');
-  return line.length > NOTE_LENGTH ? `${line.slice(0, NOTE_LENGTH - 1)}…` : line;
 }

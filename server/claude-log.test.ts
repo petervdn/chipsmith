@@ -37,18 +37,22 @@ test('thinking, a file being written, then the note of the write', () => {
     }),
   ]);
   const writing = readLogNews(logFile, thinking, PROJECT);
-  assert.equal(writing.now, 'writing data/jobs/j0001/script.ts (3 KB so far)');
+  assert.equal(writing.now, 'writing the script (3 KB so far)');
   assert.deepEqual(writing.notes, []);
 
   addLines(logFile, [
     {
       type: 'assistant',
-      message: { content: [{ type: 'tool_use', name: 'Write', input: { file_path: SCRIPT } }] },
+      message: {
+        content: [
+          { type: 'tool_use', name: 'Write', input: { file_path: SCRIPT, content: 'a\nb\nc' } },
+        ],
+      },
     },
   ]);
   const written = readLogNews(logFile, writing, PROJECT);
   assert.equal(written.notes.length, 1);
-  assert.equal(written.notes[0]?.text, 'writing data/jobs/j0001/script.ts');
+  assert.equal(written.notes[0]?.text, 'writing the script (3 lines)');
   assert.ok((written.notes[0]?.tokens ?? 0) > 750, 'the tool call has the tokens of its input');
   assert.equal(written.now, null);
 });
@@ -70,8 +74,19 @@ test('a stretch of thinking becomes a note once it ends, its tokens beside its t
     { type: 'assistant', message: { content: [{ type: 'thinking', thinking: '' }] } },
   ]);
   const news = readLogNews(logFile, LOG_START, PROJECT);
-  assert.deepEqual(news.notes, [{ text: 'thought', tokens: 3550 }]);
+  assert.deepEqual(news.notes, [{ text: 'thinking it over', tokens: 3550 }]);
   assert.equal(news.now, null);
+});
+
+test('thinking whose text the log has is its first sentence', () => {
+  const logFile = join(mkdtempSync(join(tmpdir(), 'chiptune-log-')), 'claude.log');
+  const thinking = 'The bass should walk in fifths. Then the lead answers it.';
+  addLines(logFile, [
+    { type: 'system', subtype: 'thinking_tokens', estimated_tokens: 120 },
+    { type: 'assistant', message: { content: [{ type: 'thinking', thinking }] } },
+  ]);
+  const news = readLogNews(logFile, LOG_START, PROJECT);
+  assert.deepEqual(news.notes, [{ text: 'The bass should walk in fifths.', tokens: 120 }]);
 });
 
 test("a run's tokens add up from its messages, and its result gives the exact total", () => {
