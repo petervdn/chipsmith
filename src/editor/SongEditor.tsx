@@ -219,7 +219,6 @@ export function SongEditor({ detail }: SongEditorProps) {
               wasDragged={() => drag.wasDragged() || pan.wasPanned()}
               onToggleMute={toggleMute}
               onToggleSolo={toggleSolo}
-              onVolume={setVolume}
               onAddTrack={() => draft.changeTracks(addTrack)}
               onPanStart={pan.startPan}
               waitingClipIds={waitingClipIds}

@@ -73,7 +73,6 @@ export function Mixer({
             volume={volume}
             onChange={setVolume}
             label="master (the player's volume)"
-            isUpright
             loudest={LOUDEST_DB}
           />
         </div>

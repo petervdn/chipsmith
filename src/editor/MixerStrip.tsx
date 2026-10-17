@@ -1,6 +1,6 @@
 // A track's strip in the mixer: a cap in its colour, its name (which selects it), its fader standing
-// beside its meter, its level, and its M and S. The same track's row on the timeline shows the same
-// values; changing either changes both.
+// beside its meter, its level, and its M and S. Its M and S are the same as its row's on the
+// timeline; changing either changes both.
 import type { CSSProperties } from 'react';
 import type { Track } from '../../shared/song.types.ts';
 import { formatVolume } from '../player/volume.ts';
@@ -68,7 +68,7 @@ export function MixerStrip({
         {track.name}
       </button>
       <div className="mixer-strip-levels">
-        <Fader volume={track.volume} onChange={onVolume} label={track.name} isUpright />
+        <Fader volume={track.volume} onChange={onVolume} label={track.name} />
         <TrackMeter songId={songId} trackId={track.id} />
       </div>
       <span className="mixer-strip-value">{formatVolume(track.volume)}</span>

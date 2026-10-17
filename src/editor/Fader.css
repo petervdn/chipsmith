@@ -1,12 +1,8 @@
-/* The look of Fader.tsx: the page's slider in the accent; standing, it is turned upright, its top
-   the loudest. */
+/* The look of Fader.tsx: the page's slider in the accent, turned upright, its top the loudest. */
 
 .fader {
   margin: 0;
-  accent-color: var(--accent);
-}
-
-.fader.is-upright {
   writing-mode: vertical-lr;
   direction: rtl;
+  accent-color: var(--accent);
 }

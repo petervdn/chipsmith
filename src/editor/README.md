@@ -14,7 +14,7 @@ saved, playing from a cursor, the zoom, and the selected block's clip or track.
 - `EditorBar.css`: the look of EditorBar.tsx
 - `EditorBar.tsx`: the bar of controls above the timeline, in groups
 - `Fader.css`: the look of Fader.tsx
-- `Fader.tsx`: a level's fader in decibels, lying in a track's row or standing in the mixer
+- `Fader.tsx`: a level's fader in decibels, standing in the mixer
 - `grid.ts`: the snap grid: its steps, and a time snapped to one
 - `lane-position.ts`: the track's lane under a point, and the tick a point is at, read from the page
 - `song-edits.ts`: the edits of the arrangement: move, trim, repeat, duplicate, remove a block; tracks
@@ -45,7 +45,7 @@ saved, playing from a cursor, the zoom, and the selected block's clip or track.
 - `TrackMixButtons.tsx`: a track's M and S, in its row and in the mixer
 - `TrackMeter.css`: the look of TrackMeter.tsx
 - `TrackMeter.tsx`: a track's level meter, beside its name and in the mixer
-- `track-height.ts`: how tall the track rows are drawn: where they start, the slider's bounds, room for a fader
+- `track-height.ts`: how tall the track rows are drawn: where they start, the slider's bounds
 - `track-mix.ts`: which tracks are heard, by mute and solo
 - `track-name-width.ts`: how wide the track names are drawn, and the bounds of dragging them
 - `ToggleButton.css`: the look of ToggleButton.tsx

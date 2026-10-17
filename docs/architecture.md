@@ -83,10 +83,10 @@ page but Home starts with breadcrumbs, the last its heading (Songs › Seven Tee
   and under it), and the selected block's
   clip with its prompt and versions, and its .fur to look at (open in Furnace, download, view as
   text). Editing (0022): drag a block to move it (to another track too),
-  its edges to trim it, drag a clip from the song's clips onto a track as a new block, snapped to a grid; repeat, duplicate, untrim, remove; add, rename and remove tracks; a fader per
-  track (saved, heard in playback only; one undo step per move); mute and solo (not saved); a mixer
-  under the timeline, switched in the editor bar: a strip per track (its fader, meter, M and S, the
-  same values as its row) and the master (the player's volume); undo and redo; Save or Revert. Split into channels (a song that is one whole clip
+  its edges to trim it, drag a clip from the song's clips onto a track as a new block, snapped to a grid; repeat, duplicate, untrim, remove; add, rename and remove tracks; mute and solo
+  (not saved); a mixer under the timeline, switched in the editor bar: a strip per track (its fader,
+  saved and heard in playback only, one undo step per move; its meter, M and S, the same values as
+  its row) and the master (the player's volume); undo and redo; Save or Revert. Split into channels (a song that is one whole clip
   of more than one channel; what cutting does to the sound: docs/splitting.md): a track per channel
   that plays, each one block of a new clip, the whole song on that channel alone, rendered in the
   background and shown striped until its audio is in (`fur/cut.ts`, `make/split-song.ts`,

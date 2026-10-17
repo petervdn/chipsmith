@@ -1,6 +1,6 @@
 // The song's timeline: a ruler of bars, the loop (while looping), the structure the song was asked
-// for (when shown), a row per track (its name, which selects it, mute and solo, its fader where the
-// row has room, and its level meter; the names' right edge drags them wider) with its blocks, and
+// for (when shown), a row per track (its name, which selects it, mute and solo, and its level
+// meter; the names' right edge drags them wider) with its blocks, and
 // the playhead. A tap or drag on the ruler moves the play position; a tap on a block selects it;
 // blocks are dragged to move and trim them.
 import { Plus } from 'lucide-react';
@@ -22,8 +22,6 @@ import {
 import { LoopLane } from './LoopLane.tsx';
 import type { LoopRange } from './loop-range.ts';
 import { StructureLane } from './StructureLane.tsx';
-import { Fader } from './Fader.tsx';
-import { FADER_LEAST_TRACK_HEIGHT } from './track-height.ts';
 import { TimelineBlock } from './TimelineBlock.tsx';
 import { TrackMeter } from './TrackMeter.tsx';
 import { TrackMixButtons } from './TrackMixButtons.tsx';
@@ -60,7 +58,6 @@ type TimelineProps = {
   onPress: (event: ReactPointerEvent, place: BlockPlace, mode: DragMode) => void;
   onToggleMute: (trackId: string) => void;
   onToggleSolo: (trackId: string) => void;
-  onVolume: (trackId: string, volume: number) => void;
   onAddTrack: () => void;
   onPanStart: (event: ReactPointerEvent) => void;
   wasDragged: () => boolean;
@@ -88,7 +85,6 @@ type TimelineProps = {
  * @param props.onPress - Called on a press on a block or one of its edges.
  * @param props.onToggleMute - Called with a track's id to mute or unmute it.
  * @param props.onToggleSolo - Called with a track's id to solo it or stop soloing it.
- * @param props.onVolume - Called with a track's id and the level its fader is moved to.
  * @param props.onAddTrack - Called to add an empty track at the bottom.
  * @param props.onPanStart - Called on a press on empty space (a lane's, the room under the tracks),
  *   which may drag the timeline sideways.
@@ -113,7 +109,6 @@ export function Timeline({
   onPress,
   onToggleMute,
   onToggleSolo,
-  onVolume,
   onAddTrack,
   onPanStart,
   wasDragged,
@@ -221,13 +216,6 @@ export function Timeline({
                 onToggleMute={() => onToggleMute(track.id)}
                 onToggleSolo={() => onToggleSolo(track.id)}
               />
-              {trackHeight >= FADER_LEAST_TRACK_HEIGHT && (
-                <Fader
-                  volume={track.volume}
-                  onChange={(volume) => onVolume(track.id, volume)}
-                  label={track.name}
-                />
-              )}
               <TrackMeter songId={song.id} trackId={track.id} />
               {nameEdge}
             </div>
