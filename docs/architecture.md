@@ -76,7 +76,7 @@ page but Home starts with breadcrumbs, the last its heading (Songs › Seven Tee
   `POST /api/songs/<id>/split`). To come: a prompt on the selection.
 - **Clips** (`/clips`): the pool, with the same filter bar.
 - **Guides** (`/guides`): the style guides, made, edited and deleted.
-- **New** (`/new`): a prompt for Claude in a box, a prompt builder under it (a part per row, rolled
+- **New** (`/new`): a prompt for Claude in a box, a prompt builder under it (the chips as switches, one or more; a part per row, rolled
   at random or picked, each with a lock, the sentence they make on top; "Use" fills the box, which is otherwise its own),
   the Structure panel (none, a preset, a saved structure or your own: written short and as tiles
   as wide as their bars, a section edited when tapped, saved as new or over a saved one; 0023), and

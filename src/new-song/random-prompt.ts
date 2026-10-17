@@ -1,8 +1,11 @@
 /**
  * A prompt built from parts, to start from on the New page: how many songs, a mood, a kind of piece,
  * the chips, a rhythm and one thing to build it around. Each part is picked from its list, at random
- * or by hand, and a part can be kept while the others are picked again. Knows nothing of the page.
+ * or by hand, and a part can be kept while the others are picked again; the chips are a set, usually
+ * one, sometimes two. Knows nothing of the page.
  */
+import type { ChipName } from '../../shared/chips.ts';
+import { CHIP_LABELS, CHIP_NAMES } from '../../shared/chips.ts';
 
 /**
  * The parts, in the order a prompt joins them. The ideas are about the music, not its form: where
@@ -67,7 +70,8 @@ const PIECES = [
   'synth-pop songs',
   'baroque dances',
 ];
-const CHIPS = ['for the NES', 'for the NES with the SCC'];
+/** How often a roll picks two chips instead of one. */
+const TWO_CHIPS_CHANCE = 1 / 3;
 const RHYTHMS = [
   'in 4/4',
   'in a straight 4/4 at 120 bpm',
@@ -122,7 +126,8 @@ const IDEAS = [
 export type PromptParts = {
   mood: string;
   piece: string;
-  chips: string;
+  /** The chips, one or more, in the order of CHIP_NAMES. */
+  chips: ChipName[];
   rhythm: string;
   idea: string;
 };
@@ -130,11 +135,13 @@ export type PromptParts = {
 /** A part's name. */
 export type PartName = keyof PromptParts;
 
-/** Each part's label and the values it is picked from, in the order the builder shows them. */
-export const PROMPT_PARTS: { name: PartName; label: string; values: string[] }[] = [
+/** The name of a part picked from a list of words: every part but the chips. */
+export type ListPartName = Exclude<PartName, 'chips'>;
+
+/** Each list part's label and the values it is picked from, in the order the builder shows them. */
+export const PROMPT_PARTS: { name: ListPartName; label: string; values: string[] }[] = [
   { name: 'mood', label: 'Mood', values: MOODS },
   { name: 'piece', label: 'Piece', values: PIECES },
-  { name: 'chips', label: 'Chips', values: CHIPS },
   { name: 'rhythm', label: 'Rhythm', values: RHYTHMS },
   { name: 'idea', label: 'Idea', values: IDEAS },
 ];
@@ -152,17 +159,46 @@ export function rollParts(
   kept: PartName[],
   getRandom: () => number,
 ): PromptParts {
-  function pick(name: PartName, values: string[]): string {
+  function pick(name: ListPartName, values: string[]): string {
     if (parts && kept.includes(name)) return parts[name];
     return values[Math.floor(getRandom() * values.length)] ?? values[0] ?? '';
   }
   return {
     mood: pick('mood', MOODS),
     piece: pick('piece', PIECES),
-    chips: pick('chips', CHIPS),
+    chips: parts && kept.includes('chips') ? parts.chips : rollChips(getRandom),
     rhythm: pick('rhythm', RHYTHMS),
     idea: pick('idea', IDEAS),
   };
+}
+
+/**
+ * Picks chips at random: one, or now and then two, never the same twice.
+ *
+ * @param getRandom - Gives numbers from 0 up to 1, as Math.random does.
+ * @returns The chips, in the order of CHIP_NAMES.
+ */
+export function rollChips(getRandom: () => number): ChipName[] {
+  const count = getRandom() < TWO_CHIPS_CHANCE ? 2 : 1;
+  const left: ChipName[] = [...CHIP_NAMES];
+  const picked: ChipName[] = [];
+  while (picked.length < count && left.length > 0) {
+    const [chip] = left.splice(Math.floor(getRandom() * left.length), 1);
+    if (chip) picked.push(chip);
+  }
+  return CHIP_NAMES.filter((chip) => picked.includes(chip));
+}
+
+/**
+ * Returns the chips in words, as the prompt says them.
+ *
+ * @param chips - The chips.
+ * @returns "for the NES", "for the NES and the SCC", "for the NES, the SCC and the SID".
+ */
+export function getChipsText(chips: ChipName[]): string {
+  const names = chips.map((chip) => `the ${CHIP_LABELS[chip]}`);
+  const last = names.pop() ?? '';
+  return `for ${names.length > 0 ? `${names.join(', ')} and ${last}` : last}`;
 }
 
 /**
@@ -171,11 +207,12 @@ export function rollParts(
  * @param parts - The parts.
  * @param parts.mood - The mood.
  * @param parts.piece - The kind of piece.
- * @param parts.chips - The chips, as "for the NES".
+ * @param parts.chips - The chips.
  * @param parts.rhythm - The meter or tempo.
  * @param parts.idea - One thing to build it around.
  * @returns The prompt, one sentence without a count: how many songs is set beside the Create button.
  */
 export function getPromptText({ mood, piece, chips, rhythm, idea }: PromptParts): string {
-  return `${mood.charAt(0).toUpperCase()}${mood.slice(1)} ${piece} ${chips}, ${rhythm}, ${idea}.`;
+  const chipsText = getChipsText(chips);
+  return `${mood.charAt(0).toUpperCase()}${mood.slice(1)} ${piece} ${chipsText}, ${rhythm}, ${idea}.`;
 }

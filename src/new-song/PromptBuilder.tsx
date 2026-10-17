@@ -1,10 +1,14 @@
 // The prompt builder under the prompt box: a bar the width of the box that opens and closes it, and
 // in it the sentence the parts make, large at the top, with 🎲 Roll for the unlocked parts and Use ↑
 // at its right (beside it, so they stay put as it changes length), and under it a row per part of a
-// prompt (its value to pick, a lock). Use puts the sentence in the box; the box is written to only
-// by that button, so what is typed there afterwards is the box's own.
+// prompt (its value to pick, a lock), the chips first as switches, one or more on. Use puts the
+// sentence in the box; the box is written to only by that button, so what is typed there afterwards
+// is the box's own.
+import { CHIP_LABELS, CHIP_NAMES } from '../../shared/chips.ts';
 import { LockIcon } from './LockIcon.tsx';
+import type { PartName } from './random-prompt.ts';
 import { PROMPT_PARTS } from './random-prompt.ts';
+import '../lists/lists.css';
 import { usePromptBuilder } from './use-prompt-builder.ts';
 import './PromptBuilder.css';
 
@@ -21,7 +25,21 @@ type PromptBuilderProps = { isOpen: boolean; onToggle: () => void; onUse: (text:
  * @returns The builder's section element.
  */
 export function PromptBuilder({ isOpen, onToggle, onUse }: PromptBuilderProps) {
-  const { parts, locked, text, roll, pick, toggleLock } = usePromptBuilder();
+  const { parts, locked, text, roll, pick, toggleChip, toggleLock } = usePromptBuilder();
+  function renderLock(name: PartName) {
+    const isLocked = locked.includes(name);
+    return (
+      <button
+        type="button"
+        className={`prompt-builder-lock${isLocked ? ' is-on' : ''}`}
+        onClick={() => toggleLock(name)}
+        aria-pressed={isLocked}
+        title={isLocked ? 'locked: Roll keeps it' : 'unlocked: Roll picks it again'}
+      >
+        <LockIcon isLocked={isLocked} />
+      </button>
+    );
+  }
   return (
     <section className={`prompt-builder${isOpen ? ' is-open' : ''}`}>
       <button
@@ -56,8 +74,25 @@ export function PromptBuilder({ isOpen, onToggle, onUse }: PromptBuilderProps) {
             </div>
           </div>
           <div className="prompt-builder-rows">
+            <div className="prompt-builder-row is-chips">
+              <span className="prompt-builder-label">Chips</span>
+              <span className="prompt-builder-chips">
+                {CHIP_NAMES.map((chip) => (
+                  <button
+                    key={chip}
+                    type="button"
+                    className={`list-chip${parts.chips.includes(chip) ? ' is-on' : ''}`}
+                    onClick={() => toggleChip(chip)}
+                    aria-pressed={parts.chips.includes(chip)}
+                    title="switch this chip on or off (one stays on)"
+                  >
+                    {CHIP_LABELS[chip]}
+                  </button>
+                ))}
+              </span>
+              {renderLock('chips')}
+            </div>
             {PROMPT_PARTS.map(({ name, label, values }) => {
-              const isLocked = locked.includes(name);
               return (
                 <div key={name} className="prompt-builder-row">
                   <span className="prompt-builder-label">{label}</span>
@@ -73,15 +108,7 @@ export function PromptBuilder({ isOpen, onToggle, onUse }: PromptBuilderProps) {
                       </option>
                     ))}
                   </select>
-                  <button
-                    type="button"
-                    className={`prompt-builder-lock${isLocked ? ' is-on' : ''}`}
-                    onClick={() => toggleLock(name)}
-                    aria-pressed={isLocked}
-                    title={isLocked ? 'locked: Roll keeps it' : 'unlocked: Roll picks it again'}
-                  >
-                    <LockIcon isLocked={isLocked} />
-                  </button>
+                  {renderLock(name)}
                 </div>
               );
             })}

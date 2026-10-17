@@ -84,6 +84,24 @@
   gap: 2px 4px;
 }
 
+/* the chips: a row across both columns, its switches where a menu would be */
+.prompt-builder-row.is-chips {
+  grid-column: 1 / -1;
+  grid-template-columns: max-content 32px;
+}
+
+.prompt-builder-chips {
+  grid-area: value;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.prompt-builder-chips .list-chip {
+  min-height: var(--touch);
+  padding: 0 16px;
+}
+
 .prompt-builder-label {
   grid-area: label;
   color: var(--muted);
@@ -172,5 +190,8 @@
 @media (pointer: coarse) {
   .prompt-builder-row {
     grid-template-columns: minmax(0, 1fr) var(--touch);
+  }
+  .prompt-builder-row.is-chips {
+    grid-template-columns: max-content var(--touch);
   }
 }
