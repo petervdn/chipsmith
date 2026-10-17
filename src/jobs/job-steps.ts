@@ -1,6 +1,6 @@
 /**
- * A job's steps as the page shows them: each as a sentence (a capital first, a full stop last,
- * whatever the server wrote), and how long each took, with its share of the job: a step lasts from
+ * A job's steps as the page shows them: each alike, a capital first and no full stop last, whatever
+ * the server wrote; and how long each took, with its share of the job: a step lasts from
  * its note to the next one, the last until the job finished (or now, while it runs). Knows nothing
  * of the page.
  */
@@ -33,19 +33,16 @@ export function getStepLengths(
   });
 }
 
-/** What a sentence may already end with, so no full stop is added. */
-const SENTENCE_END = /[.!?…:]$/;
+/** Full stops at the end of a step's words, taken off (… stays). */
+const FULL_STOPS = /(?<!\.)\.+$/;
 
 /**
- * Returns a step's words as a sentence: a capital first, and a full stop last unless it ends in one
- * already (or in ! ? … :).
+ * Returns a step's words as the list shows them: a capital first, and no full stop last.
  *
  * @param text - The step's words, as the server wrote them.
- * @returns The sentence; an empty string for no words.
+ * @returns The words; an empty string for none.
  */
-export function getStepSentence(text: string): string {
-  const words = text.trim();
-  if (!words) return '';
-  const capitalized = words.charAt(0).toUpperCase() + words.slice(1);
-  return SENTENCE_END.test(capitalized) ? capitalized : `${capitalized}.`;
+export function getStepText(text: string): string {
+  const words = text.trim().replace(FULL_STOPS, '');
+  return words.charAt(0).toUpperCase() + words.slice(1);
 }

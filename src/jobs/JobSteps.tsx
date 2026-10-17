@@ -4,7 +4,7 @@
 import { useState } from 'react';
 import type { Job } from '../../shared/job.types.ts';
 import { formatSeconds, formatTokenCount, formatTokens } from '../format.ts';
-import { getStepLengths, getStepSentence } from './job-steps.ts';
+import { getStepLengths, getStepText } from './job-steps.ts';
 import './JobSteps.css';
 
 type JobStepsProps = {
@@ -82,7 +82,7 @@ export function JobSteps({ job, isRunning, elapsed, now }: JobStepsProps) {
                 </span>
                 <span className="job-steps-text">
                   {isCurrent && <span className="jobs-spinner" aria-label="in progress" />}
-                  <span className="job-steps-words">{getStepSentence(note.text)}</span>
+                  <span className="job-steps-words">{getStepText(note.text)}</span>
                 </span>
               </li>
             );

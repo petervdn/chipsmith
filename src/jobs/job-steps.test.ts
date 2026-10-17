@@ -1,7 +1,7 @@
 // A step lasts until the next one, the last until the job's end; its share is of the whole job.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { getStepLengths, getStepSentence } from './job-steps.ts';
+import { getStepLengths, getStepText } from './job-steps.ts';
 
 test('each step until the next, the last until the end', () => {
   const notes = [
@@ -16,13 +16,10 @@ test('each step until the next, the last until the end', () => {
   ]);
 });
 
-test('a step is a sentence: a capital first, one full stop last', () => {
-  assert.equal(getStepSentence('rendering 1 song'), 'Rendering 1 song.');
-  assert.equal(getStepSentence('Reading the write-song skill.'), 'Reading the write-song skill.');
-  assert.equal(getStepSentence('writing the script…'), 'Writing the script…');
-  assert.equal(
-    getStepSentence('writing the script (3 KB so far)'),
-    'Writing the script (3 KB so far).',
-  );
-  assert.equal(getStepSentence('  '), '');
+test('a step starts with a capital and ends with no full stop', () => {
+  assert.equal(getStepText('rendering 1 song'), 'Rendering 1 song');
+  assert.equal(getStepText('Reading the write-song skill.'), 'Reading the write-song skill');
+  assert.equal(getStepText('writing the script…'), 'Writing the script…');
+  assert.equal(getStepText('It is in 9/8. A riff sinks.'), 'It is in 9/8. A riff sinks');
+  assert.equal(getStepText('  '), '');
 });
