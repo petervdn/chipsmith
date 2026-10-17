@@ -2,6 +2,7 @@
 
 The New page: a prompt written, or made up at random, and sent.
 
+- `LockIcon.tsx`: a small padlock in the text colour, shut or open
 - `NewPage.css`: the look of NewPage.tsx
 - `NewPage.tsx`: a prompt for Claude; sending it leads to Jobs
 - `PromptBox.css`: the look of PromptBox.tsx

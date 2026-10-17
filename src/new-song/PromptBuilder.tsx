@@ -2,6 +2,7 @@
 // 🎲 Roll for the unlocked parts and "Use as prompt" (above the sentence, so they stay put as it
 // changes length), and the sentence they make. "Use as prompt" puts the sentence in the box; the box
 // is written to only by that button, so what is typed there afterwards is the box's own.
+import { LockIcon } from './LockIcon.tsx';
 import { PROMPT_PARTS } from './random-prompt.ts';
 import { usePromptBuilder } from './use-prompt-builder.ts';
 import './PromptBuilder.css';
@@ -44,7 +45,7 @@ export function PromptBuilder({ onUse }: PromptBuilderProps) {
                 aria-pressed={isLocked}
                 title={isLocked ? 'locked: Roll keeps it' : 'unlocked: Roll picks it again'}
               >
-                {isLocked ? '🔒' : '🔓'}
+                <LockIcon isLocked={isLocked} />
               </button>
             </div>
           );
