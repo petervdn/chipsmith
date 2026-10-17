@@ -1,7 +1,8 @@
 /* The look of SongEditor.tsx: the timeline and what is under it as wide as the page's content, as
-   the top bar's is; the song's clips in a column at its left, out in the page's margin where there
-   is room for it (so it moves nothing), else inside beside the timeline. The timeline scrolls
-   sideways inside its box, never the page. */
+   the top bar's is; the song's clips in a column at its left and the selected block's or track's
+   details at its right, out in the page's margins where there is room (so they move nothing), else
+   the clips inside beside the timeline and the details under it. The timeline scrolls sideways
+   inside its box, never the page. */
 
 .song-editor-body {
   position: relative;
@@ -25,7 +26,8 @@
   }
 }
 
-/* room in the margin for the open column too */
+/* room in the margins for the open column too, and for the selected block's or track's details as
+   wide at the right */
 @media (min-width: 1604px) {
   .song-editor-body {
     grid-template-columns: minmax(0, 1fr);
@@ -35,6 +37,15 @@
     position: absolute;
     top: 0;
     right: calc(100% + 12px);
+  }
+
+  .song-editor-main > .block-details,
+  .song-editor-main > .track-details {
+    position: absolute;
+    top: 0;
+    left: calc(100% + 12px);
+    width: 240px;
+    margin-top: 0;
   }
 }
 

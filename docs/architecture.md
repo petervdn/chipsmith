@@ -72,8 +72,9 @@ page but Home starts with breadcrumbs, the last its heading (Songs › Seven Tee
   volume; the first beat of a bar higher, `src/playback/metronome.ts`), zoom, the song's clips in a
   column at its left (each with its blocks counted; tapped, its first block is selected; folded to a
   strip, and on a phone folded at first and laid over the timeline when open), the timeline as wide
-  as the page's content (as the top bar's), the clips' column out in the margin left of it where
-  there is room, and the selected block's
+  as the page's content (as the top bar's), the clips' column out in the margin left of it and
+  the selected block's or track's details in the margin right of it where there is room (else beside
+  and under it), and the selected block's
   clip with its prompt and versions. Editing (0022): drag a block to move it (to another track too),
   its edges to trim it, drag a clip from the song's clips onto a track as a new block, snapped to a grid; repeat, duplicate, untrim, remove; add, rename and remove tracks; mute
   and solo (not saved); undo and redo; Save or Revert. Split into channels (a song that is one whole clip
