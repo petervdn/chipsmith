@@ -1,26 +1,26 @@
 // The bar at the top of every page: Songs, Clips and New (with how many jobs are on their way), the
 // one open marked, and in a song the song's title.
 import type { Job } from '../shared/job.types.ts';
-import { isJobRunning } from './jobs-data.ts';
+import { isJobRunning } from './queries/jobs.ts';
+import { useSong } from './queries/songs.ts';
 import type { Route } from './router.ts';
-import { getListAddress } from './use-list-filter.ts';
+import { useListAddress } from './use-list-filter.ts';
 
-type TopBarProps = { route: Route; songTitle: string | null; jobs: Job[] };
+type TopBarProps = { route: Route; jobs: Job[] };
 
 /** The top bar. */
-export function TopBar({ route, songTitle, jobs }: TopBarProps) {
+export function TopBar({ route, jobs }: TopBarProps) {
   const isSongs = route.page === 'songs' || route.page === 'song';
   const runningCount = jobs.filter(isJobRunning).length;
+  const songsAddress = useListAddress('/');
+  const clipsAddress = useListAddress('/clips');
   return (
     <header className="top-bar">
       <nav className="top-nav">
-        <a href={getListAddress('/')} className={`top-link${isSongs ? ' is-on' : ''}`}>
+        <a href={songsAddress} className={`top-link${isSongs ? ' is-on' : ''}`}>
           Songs
         </a>
-        <a
-          href={getListAddress('/clips')}
-          className={`top-link${route.page === 'clips' ? ' is-on' : ''}`}
-        >
+        <a href={clipsAddress} className={`top-link${route.page === 'clips' ? ' is-on' : ''}`}>
           Clips
         </a>
         <a
@@ -32,12 +32,20 @@ export function TopBar({ route, songTitle, jobs }: TopBarProps) {
           {runningCount > 0 && <span className="top-badge">{runningCount}</span>}
         </a>
       </nav>
-      {route.page === 'song' && (
-        <div className="top-crumb">
-          <span className="top-crumb-mark">›</span>
-          <span className="top-crumb-title">{songTitle ?? route.songId}</span>
-        </div>
-      )}
+      {route.page === 'song' && <SongCrumb songId={route.songId} />}
     </header>
+  );
+}
+
+type SongCrumbProps = { songId: string };
+
+/** "› title" of the song open, from the cache the song page reads too. */
+function SongCrumb({ songId }: SongCrumbProps) {
+  const { data: detail } = useSong(songId);
+  return (
+    <div className="top-crumb">
+      <span className="top-crumb-mark">›</span>
+      <span className="top-crumb-title">{detail?.song.title ?? songId}</span>
+    </div>
   );
 }

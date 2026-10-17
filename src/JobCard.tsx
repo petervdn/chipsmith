@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import type { Job, JobPhase, JobSong } from '../shared/job.types.ts';
 import { formatSeconds } from './format.ts';
-import { isJobRunning } from './jobs-data.ts';
+import { isJobRunning } from './queries/jobs.ts';
 
 const PHASE_NAMES = {
   queued: 'Waiting for the job before it',

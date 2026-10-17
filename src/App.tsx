@@ -1,29 +1,25 @@
-// The app: the top bar and the page the address is.
-import { useState } from 'react';
-import { useJobs } from './jobs-data.ts';
+// The app: the top bar, the page the address is, and the player bar.
 import { ClipsPage } from './pages/ClipsPage.tsx';
 import { NewPage } from './pages/NewPage.tsx';
 import { SongPage } from './pages/SongPage.tsx';
 import { SongsPage } from './pages/SongsPage.tsx';
-import { useRoute } from './router.ts';
 import { PlayerBar } from './PlayerBar.tsx';
+import { useJobs } from './queries/jobs.ts';
+import { useRoute } from './router.ts';
 import { TopBar } from './TopBar.tsx';
 
 /** The whole page. */
 export function App() {
   const route = useRoute();
-  const [songTitle, setSongTitle] = useState<string | null>(null);
-  const { jobs, refresh } = useJobs();
+  const jobs = useJobs();
   return (
     <div className="app">
-      <TopBar route={route} songTitle={route.page === 'song' ? songTitle : null} jobs={jobs} />
+      <TopBar route={route} jobs={jobs} />
       <main className="page">
         {route.page === 'songs' && <SongsPage jobs={jobs} />}
-        {route.page === 'new' && <NewPage jobs={jobs} onPromptSent={refresh} />}
         {route.page === 'clips' && <ClipsPage />}
-        {route.page === 'song' && (
-          <SongPage key={route.songId} songId={route.songId} onTitle={setSongTitle} />
-        )}
+        {route.page === 'new' && <NewPage jobs={jobs} />}
+        {route.page === 'song' && <SongPage key={route.songId} songId={route.songId} />}
       </main>
       <PlayerBar />
     </div>

@@ -1,0 +1,37 @@
+/**
+ * Asking the app's server (server/api.ts): a route read as JSON, or a change sent, with the server's
+ * `{ error }` as the error. Used by the queries and mutations beside it; knows nothing of React.
+ */
+
+/** Reads a route, or sends to it, and gives the server's answer. */
+export async function requestJson<Answer>(path: string, init?: RequestInit): Promise<Answer> {
+  const response = await fetch(path, init);
+  const answer: unknown = await response.json();
+  if (!response.ok) {
+    const message =
+      typeof answer === 'object' && answer !== null && 'error' in answer
+        ? String(answer.error)
+        : response.statusText;
+    throw new Error(message);
+  }
+  return asAnswer<Answer>(answer);
+}
+
+/** Sends JSON to a route with a method. */
+export function sendJson<Answer>(
+  path: string,
+  method: 'POST' | 'PATCH',
+  body: unknown,
+): Promise<Answer> {
+  return requestJson<Answer>(path, {
+    method,
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+}
+
+/** The server's answer is the route's type by contract (shared/api.types.ts). */
+function asAnswer<Answer>(answer: unknown): Answer {
+  // eslint-disable-next-line typescript/consistent-type-assertions -- the server's routes are typed by shared/api.types.ts; checking each answer again would repeat server/model-checks.ts
+  return answer as Answer;
+}

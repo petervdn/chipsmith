@@ -46,7 +46,8 @@ Where state lives, in this order (why: docs/adr/0017):
 5. **The address** only where navigation matters (a list's filter).
 
 - **The server's data is TanStack Query** (queries and mutations, `src/queries/`); never copied into a
-  store.
+  store. Every key comes from `getQueryKey({ type: … })` (`src/queries/client.ts`), one object
+  parameter typed as a union over `type`; a new kind of read is a new case there.
 - **Components never touch storage**: what survives a reload is a store with `persist`
   (`partialize` what survives, `version` its shape).
 

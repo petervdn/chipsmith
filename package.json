@@ -13,8 +13,10 @@
     "format:check": "prettier --check --log-level warn \"src/**/*.{ts,tsx,css}\" \"server/**/*.ts\" \"shared/**/*.ts\" \"fur/**/*.ts\" \"render/**/*.ts\" \"make/**/*.ts\" \"test/**/*.ts\" vite.config.ts"
   },
   "dependencies": {
+    "@tanstack/react-query": "5.104.1",
     "react": "19.2.8",
-    "react-dom": "19.2.8"
+    "react-dom": "19.2.8",
+    "zustand": "5.0.15"
   },
   "devDependencies": {
     "@types/node": "26.6.4",

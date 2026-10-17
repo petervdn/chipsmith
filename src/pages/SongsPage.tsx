@@ -1,18 +1,17 @@
 // The songs list, the start page: every song with its length, tempo, meter, tags and status, the
 // filter bar above it, ▶, ★ / ✕ and ⌄ (more) on each row, and a line for each job on its way. A
 // row's title opens the song.
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import type { Job } from '../../shared/job.types.ts';
 import { JobStrip } from '../JobStrip.tsx';
-import { isJobRunning } from '../jobs-data.ts';
+import { isJobRunning } from '../queries/jobs.ts';
 import type { Status } from '../../shared/catalogue.types.ts';
-import type { SongListing } from '../../shared/api.types.ts';
 import type { Song } from '../../shared/song.types.ts';
 import { FilterBar } from '../FilterBar.tsx';
 import { PlayButton } from '../PlayButton.tsx';
 import { formatMeter, formatSeconds } from '../format.ts';
 import { getTagCounts, isShown } from '../list-filter.ts';
-import { sendChange, useServerData } from '../server-api.ts';
+import { useSetSongStatus, useSongs } from '../queries/songs.ts';
 import { useListFilter } from '../use-list-filter.ts';
 import { SongRowDetails } from '../SongRowDetails.tsx';
 import { StatusButtons } from '../StatusButtons.tsx';
@@ -22,9 +21,8 @@ type SongsPageProps = { jobs: Job[] };
 
 /** The songs list, with a line for each job on its way above it. */
 export function SongsPage({ jobs }: SongsPageProps) {
-  const { data: listings, error, reload } = useServerData<SongListing[]>('/api/songs');
-  const madeCount = jobs.flatMap((job) => job.songs).filter((song) => song.songId).length;
-  useEffect(() => reload(), [madeCount, reload]);
+  const { data: listings, error } = useSongs();
+  const { mutateAsync: sendStatus } = useSetSongStatus();
   const [filter, setFilter] = useListFilter();
   const [undoOffer, setUndoOffer] = useUndo();
   const [openSongs, setOpenSongs] = useState<string[]>([]);
@@ -46,8 +44,7 @@ export function SongsPage({ jobs }: SongsPageProps) {
     .sort((first, second) => second.listing.song.updated.localeCompare(first.listing.song.updated));
 
   async function setStatus(song: Song, status: Status): Promise<void> {
-    await sendChange(`/api/songs/${encodeURIComponent(song.id)}`, { status });
-    reload();
+    await sendStatus({ songId: song.id, status });
     if (status === 'rejected' && !filter.isShowingRejected) {
       setUndoOffer({
         text: `Rejected "${song.title}"; it is hidden now.`,
@@ -67,7 +64,7 @@ export function SongsPage({ jobs }: SongsPageProps) {
         tagCounts={getTagCounts(items)}
         placeholder={`Search ${items.length} songs…`}
       />
-      {error && <p className="error">{error}</p>}
+      {error && <p className="error">{error.message}</p>}
       {listings && items.length === 0 && (
         <p className="empty">No songs yet. A song appears here as soon as Claude makes one.</p>
       )}

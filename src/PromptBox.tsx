@@ -2,7 +2,7 @@
 // Opened from a song's "Prompt again", it starts with that song's prompt and notes the song, until
 // the note is cleared.
 import { useState } from 'react';
-import { sendPrompt } from './jobs-data.ts';
+import { useSendPrompt } from './queries/jobs.ts';
 
 /** The song a prompt is sent again from: its id, its title, and whether it changed after its prompt. */
 export type PromptSource = { songId: string; title: string; isChangedAfterPrompt: boolean };
@@ -11,30 +11,25 @@ type PromptBoxProps = {
   initialText: string;
   source: PromptSource | null;
   onClearSource: () => void;
-  onSent: () => void;
 };
 
 /** The prompt box. */
-export function PromptBox({ initialText, source, onClearSource, onSent }: PromptBoxProps) {
+export function PromptBox({ initialText, source, onClearSource }: PromptBoxProps) {
   const [text, setText] = useState(initialText);
   const isFocusAtEnd = initialText.endsWith(': ');
-  const [isSending, setSending] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const { mutate: sendPrompt, isPending: isSending, error } = useSendPrompt();
 
-  async function send(): Promise<void> {
+  function send(): void {
     if (!text.trim() || isSending) return;
-    setSending(true);
-    setError(null);
-    try {
-      await sendPrompt(text, source?.songId ?? null);
-      setText('');
-      onClearSource();
-      onSent();
-    } catch (failure) {
-      setError(failure instanceof Error ? failure.message : String(failure));
-    } finally {
-      setSending(false);
-    }
+    sendPrompt(
+      { prompt: text, fromSong: source?.songId ?? null },
+      {
+        onSuccess: () => {
+          setText('');
+          onClearSource();
+        },
+      },
+    );
   }
 
   return (
@@ -42,7 +37,7 @@ export function PromptBox({ initialText, source, onClearSource, onSent }: Prompt
       className="prompt-box"
       onSubmit={(event) => {
         event.preventDefault();
-        void send();
+        send();
       }}
     >
       {source && (
@@ -74,13 +69,13 @@ export function PromptBox({ initialText, source, onClearSource, onSent }: Prompt
         value={text}
         onChange={(event) => setText(event.target.value)}
         onKeyDown={(event) => {
-          if (event.key === 'Enter' && (event.metaKey || event.ctrlKey)) void send();
+          if (event.key === 'Enter' && (event.metaKey || event.ctrlKey)) send();
         }}
       />
       <button type="submit" className="prompt-send" disabled={!text.trim() || isSending}>
         {isSending ? 'Sending…' : 'Make'}
       </button>
-      {error && <p className="error">{error}</p>}
+      {error && <p className="error">{error.message}</p>}
     </form>
   );
 }

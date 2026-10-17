@@ -1,9 +1,10 @@
 /**
  * Playing stretches of clips' audio with Web Audio, each scheduled on the audio clock so they stay
  * together. Audio is fetched and decoded once per clip, a few at a time; a load that hangs is given up
- * so the next play tries again. A mute switch (localStorage `chiptune.mute`) silences the speakers
- * for testing while everything else runs.
+ * so the next play tries again. The preferences store's mute switch silences the speakers for testing
+ * while everything else runs.
  */
+import { usePreferencesStore } from '../stores/preferences-store.ts';
 import type { Stretch } from './schedule.ts';
 
 /** Clips decoded at the same time; more stalls phone browsers. */
@@ -12,7 +13,6 @@ const LOAD_SLOTS = 3;
 const LOAD_TIMEOUT = 20000;
 /** Seconds between asking to play and the first sound, for the scheduling to be ready. */
 const START_DELAY = 0.06;
-const MUTE_KEY = 'chiptune.mute';
 
 let context: AudioContext | null = null;
 let output: GainNode | null = null;
@@ -25,25 +25,6 @@ let songZero: number | null = null;
 let endTimer: ReturnType<typeof setTimeout> | null = null;
 /** Counts plays, so a play that is still loading knows when it was stopped or replaced. */
 let playCount = 0;
-
-/** Whether the speakers are muted (for testing). */
-export function isMuted(): boolean {
-  try {
-    return localStorage.getItem(MUTE_KEY) === '1';
-  } catch {
-    return false;
-  }
-}
-
-/** Mutes or unmutes the speakers. */
-export function setMuted(isOn: boolean): void {
-  try {
-    localStorage.setItem(MUTE_KEY, isOn ? '1' : '0');
-  } catch {
-    /* storage may be blocked; the switch then lasts until the page reloads */
-  }
-  if (output) output.gain.value = isOn ? 0 : 1;
-}
 
 /** Wakes the audio; called from a tap, as phone browsers only start audio from one. */
 export async function unlockAudio(): Promise<void> {
@@ -139,7 +120,11 @@ function getContext(): AudioContext {
 function getOutput(): GainNode {
   if (!output) {
     output = getContext().createGain();
-    output.gain.value = isMuted() ? 0 : 1;
+    const gain = output.gain;
+    gain.value = usePreferencesStore.getState().isMuted ? 0 : 1;
+    usePreferencesStore.subscribe(({ isMuted }) => {
+      gain.value = isMuted ? 0 : 1;
+    });
     output.connect(getContext().destination);
   }
   return output;

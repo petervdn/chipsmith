@@ -2,14 +2,17 @@
 // loads), the song's title, where it is, a slider to move in it, and the mute switch for testing.
 import { useEffect, useState } from 'react';
 import { formatSeconds } from './format.ts';
-import { getSongPosition, isMuted, setMuted } from './playback/audio-engine.ts';
-import { playSong, seekSong, stopSong, usePlayer } from './playback/player.ts';
+import { getSongPosition } from './playback/audio-engine.ts';
+import { usePlayerStore } from './stores/player-store.ts';
+import { usePreferencesStore } from './stores/preferences-store.ts';
 
 /** The player bar. */
 export function PlayerBar() {
-  const player = usePlayer();
+  const player = usePlayerStore();
+  const { playSong, seekSong, stopSong } = player;
+  const isMuteOn = usePreferencesStore((preferences) => preferences.isMuted);
+  const setMuted = usePreferencesStore((preferences) => preferences.setMuted);
   const [livePosition, setLivePosition] = useState<number | null>(null);
-  const [isMuteOn, setMuteOn] = useState(isMuted);
   useEffect(() => {
     if (player.mode !== 'playing') return;
     let frame = requestAnimationFrame(follow);
@@ -63,10 +66,7 @@ export function PlayerBar() {
       <button
         type="button"
         className={`player-mute${isMuteOn ? ' is-on' : ''}`}
-        onClick={() => {
-          setMuted(!isMuteOn);
-          setMuteOn(!isMuteOn);
-        }}
+        onClick={() => setMuted(!isMuteOn)}
         title={isMuteOn ? 'muted (for testing); press to hear' : 'mute'}
       >
         {isMuteOn ? '🔇' : '🔊'}

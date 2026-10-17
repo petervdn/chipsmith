@@ -3,25 +3,24 @@
 // `/new?from=<song>` starts with that song's prompt, to send it again; `/new?base=<song>` starts with
 // "Based on <song> [<id>]: ", for a prompt that changes that song (notes/making-songs.md).
 import { useState } from 'react';
-import type { SongListing } from '../../shared/api.types.ts';
 import type { Job } from '../../shared/job.types.ts';
 import { JobCard } from '../JobCard.tsx';
-import { isJobRunning } from '../jobs-data.ts';
 import type { PromptSource } from '../PromptBox.tsx';
 import { PromptBox } from '../PromptBox.tsx';
-import { useServerData } from '../server-api.ts';
+import { isJobRunning } from '../queries/jobs.ts';
+import { useSongs } from '../queries/songs.ts';
+import { usePreferencesStore } from '../stores/preferences-store.ts';
 
-const HIDDEN_JOBS_KEY = 'chiptune.hiddenJobs';
-
-type NewPageProps = { jobs: Job[]; onPromptSent: () => void };
+type NewPageProps = { jobs: Job[] };
 
 /** The New page. */
-export function NewPage({ jobs, onPromptSent }: NewPageProps) {
-  const [hiddenJobs, setHiddenJobs] = useState<string[]>(readHiddenJobs);
+export function NewPage({ jobs }: NewPageProps) {
+  const hiddenJobs = usePreferencesStore((preferences) => preferences.hiddenJobIds);
+  const hideJob = usePreferencesStore((preferences) => preferences.hideJob);
   const [fromSongId] = useState(() => new URLSearchParams(window.location.search).get('from'));
   const [baseSongId] = useState(() => new URLSearchParams(window.location.search).get('base'));
   const [isSourceCleared, setSourceCleared] = useState(false);
-  const { data: listings } = useServerData<SongListing[]>('/api/songs');
+  const { data: listings } = useSongs();
   const from = fromSongId ? listings?.find(({ song }) => song.id === fromSongId) : undefined;
   const base = baseSongId ? listings?.find(({ song }) => song.id === baseSongId) : undefined;
   const initialText = from
@@ -46,16 +45,6 @@ export function NewPage({ jobs, onPromptSent }: NewPageProps) {
   const running = shown.filter(isJobRunning);
   const finished = shown.filter((job) => !isJobRunning(job));
 
-  function hideJob(jobId: string): void {
-    const next = [...hiddenJobs, jobId];
-    setHiddenJobs(next);
-    try {
-      localStorage.setItem(HIDDEN_JOBS_KEY, JSON.stringify(next));
-    } catch {
-      /* hidden until the page reloads */
-    }
-  }
-
   return (
     <section className="new-page">
       {(fromSongId || baseSongId) && !listings ? (
@@ -66,7 +55,6 @@ export function NewPage({ jobs, onPromptSent }: NewPageProps) {
           initialText={initialText}
           source={source}
           onClearSource={clearSource}
-          onSent={onPromptSent}
         />
       )}
       {running.length > 0 && <h2 className="new-heading">On its way</h2>}
@@ -79,14 +67,4 @@ export function NewPage({ jobs, onPromptSent }: NewPageProps) {
       ))}
     </section>
   );
-}
-
-/** The jobs whose cards were hidden, as this browser remembers them. */
-function readHiddenJobs(): string[] {
-  try {
-    const value: unknown = JSON.parse(localStorage.getItem(HIDDEN_JOBS_KEY) ?? '[]');
-    return Array.isArray(value) ? value.filter((id) => typeof id === 'string') : [];
-  } catch {
-    return [];
-  }
 }

@@ -58,6 +58,15 @@ What they answer is typed in `shared/api.types.ts`.
 The page is laid out for a phone first (one column, rows that wrap, 40 px touch targets) and a
 desktop (rows on one line), in `src/style.css`.
 
+## State in the page
+
+Where state lives follows 0017: local first, lifted, context for a subtree, a Zustand store when it is
+the app's. Everything from the server is TanStack Query (`src/queries/`: songs, a song, clips, jobs
+polled while one runs, and the mutations), its keys from `getQueryKey({ type })`. The stores
+(`src/stores/`): the player (not persisted), preferences (mute, hidden job cards; localStorage) and the
+lists' last filters (sessionStorage), all through Zustand's persist; no component touches storage. A
+list's filter itself is in the address.
+
 ## Tooling
 
 - Vite + TypeScript, strict (0012). `npm run dev` serves on port 8780, on the local network too. The
@@ -90,10 +99,11 @@ Python writer made (1,534 in the archive) is read and written again, byte for by
 ## Playback
 
 `src/playback/`: `schedule.ts` turns a song's blocks into stretches of clips' audio in seconds;
-`audio-engine.ts` plays them with Web Audio, each on the audio clock, loading a few clips at a time;
-`player.ts` is the one player all pages share. The player bar (`src/PlayerBar.tsx`) sits at the
-bottom of every page: ▶ / ■ (the share loaded while loading), the title, a slider to move in the song,
-and a mute switch for testing (localStorage `chiptune.mute`). Every song row and song page has ▶.
+`audio-engine.ts` plays them with Web Audio, each on the audio clock, loading a few clips at a time.
+The player's state is a Zustand store (`src/stores/player-store.ts`). The player bar
+(`src/PlayerBar.tsx`) sits at the bottom of every page: ▶ / ■ (the share loaded while loading), the
+title, a slider to move in the song, and a mute switch for testing (the preferences store). Every song
+row and song page has ▶.
 
 ## Prompts and jobs
 

@@ -1,22 +1,16 @@
 // One song, opened: for now its facts and its tracks with the clips each block plays. The editor
 // (timeline, playback, prompts) is built on this page next.
-import { useEffect } from 'react';
-import type { SongDetail } from '../../shared/api.types.ts';
 import { formatMeter } from '../format.ts';
 import { PlayButton } from '../PlayButton.tsx';
-import { useServerData } from '../server-api.ts';
+import { useSong } from '../queries/songs.ts';
 import { getClipLabel } from './ClipsPage.tsx';
 
-type SongPageProps = { songId: string; onTitle: (title: string | null) => void };
+type SongPageProps = { songId: string };
 
 /** The song page. */
-export function SongPage({ songId, onTitle }: SongPageProps) {
-  const { data: detail, error } = useServerData<SongDetail>(
-    `/api/songs/${encodeURIComponent(songId)}`,
-  );
-  const title = detail?.song.title ?? null;
-  useEffect(() => onTitle(title), [title, onTitle]);
-  if (error) return <p className="error">{error}</p>;
+export function SongPage({ songId }: SongPageProps) {
+  const { data: detail, error } = useSong(songId);
+  if (error) return <p className="error">{error.message}</p>;
   if (!detail) return <p className="empty">Loading…</p>;
   const { song, clips } = detail;
   const clipsById = new Map(clips.map((clip) => [clip.id, clip]));

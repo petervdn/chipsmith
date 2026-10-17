@@ -1,12 +1,11 @@
 // The clip pool: every clip with its name, its prompt, its length and the songs that use it, the
 // filter bar above it, and ★ / ✕ on each row.
-import type { ClipListing } from '../../shared/api.types.ts';
 import type { Status } from '../../shared/catalogue.types.ts';
 import type { Clip } from '../../shared/clip.types.ts';
 import { FilterBar } from '../FilterBar.tsx';
 import { formatSeconds } from '../format.ts';
 import { getTagCounts, isShown } from '../list-filter.ts';
-import { sendChange, useServerData } from '../server-api.ts';
+import { useClips, useSetClipStatus } from '../queries/clips.ts';
 import { useListFilter } from '../use-list-filter.ts';
 import { StatusButtons } from '../StatusButtons.tsx';
 import { UndoBar, useUndo } from '../UndoBar.tsx';
@@ -19,7 +18,8 @@ export function getClipLabel({ name }: Clip): string {
 
 /** The clips list. */
 export function ClipsPage() {
-  const { data: listings, error, reload } = useServerData<ClipListing[]>('/api/clips');
+  const { data: listings, error } = useClips();
+  const { mutateAsync: sendStatus } = useSetClipStatus();
   const [filter, setFilter] = useListFilter();
   const [undoOffer, setUndoOffer] = useUndo();
   const items = (listings ?? []).map((listing) => ({
@@ -33,8 +33,7 @@ export function ClipsPage() {
     .sort((first, second) => second.listing.clip.created.localeCompare(first.listing.clip.created));
 
   async function setStatus(clip: Clip, status: Status): Promise<void> {
-    await sendChange(`/api/clips/${encodeURIComponent(clip.id)}`, { status });
-    reload();
+    await sendStatus({ clipId: clip.id, status });
     if (status === 'rejected' && !filter.isShowingRejected) {
       setUndoOffer({
         text: `Rejected clip ${clip.id}; it is hidden now.`,
@@ -51,7 +50,7 @@ export function ClipsPage() {
         tagCounts={getTagCounts(items)}
         placeholder={`Search ${items.length} clips…`}
       />
-      {error && <p className="error">{error}</p>}
+      {error && <p className="error">{error.message}</p>}
       {listings && items.length === 0 && <p className="empty">No clips yet.</p>}
       {items.length > 0 && shown.length === 0 && (
         <p className="empty">No clips match this filter (a clip needs every chosen tag).</p>
