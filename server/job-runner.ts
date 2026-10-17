@@ -11,6 +11,7 @@ import type { SentGuide } from '../shared/guide.types.ts';
 import type { Job, JobSong } from '../shared/job.types.ts';
 import type { BuiltPlan } from '../make/build-script.ts';
 import { makeSong } from '../make/make-song.ts';
+import { getTitleWordCounts } from '../make/song-titles.ts';
 import { readFurFile } from '../fur/read.ts';
 import type { LogPlace } from './claude-log.ts';
 import { LOG_START, getLaterStep, readLogNews, readRunTokens } from './claude-log.ts';
@@ -165,6 +166,9 @@ function startComposing(jobs: JobStore, job: Job): ClaudeWatch {
       '',
       job.songCount
         ? `Make ${job.songCount} ${job.songCount === 1 ? 'song' : 'songs'}: this count wins over any in the prompt.`
+        : '',
+      job.songCount
+        ? `Title the songs in this many words, in order: ${getTitleWordCounts(job.songCount).join(', ')}.`
         : '',
       "The user's prompt:",
       job.prompt,

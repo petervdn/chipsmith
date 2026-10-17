@@ -186,7 +186,9 @@ phases:
 1. **composing**: Claude Code runs headless (`server/claude-run.ts`: `claude -p`, detached, its
    stream written to `jobs/<id>/claude.log`). It follows the write-song skill (`.claude/skills/`) and writes
    `jobs/<id>/script.ts`, whose default export gives a plan per song (`make/song-plan.ts`), its music
-   made with `make/fur-file-builder.ts`; it checks them with `make/check-script.ts`. Its lines and what
+   made with `make/fur-file-builder.ts`, each title in the number of words the prompt gives (2 to 6,
+   chosen at random; `make/song-titles.ts`); it checks them with `make/check-script.ts`, which fails
+   on a title another song has (0032). Its lines and what
    its tools do are read from the log every second (`server/claude-log.ts`) and become the job's
    notes; what it is in the middle of (thinking, a line or a file being written, from the streamed
    partial messages) is the card's "now" line.

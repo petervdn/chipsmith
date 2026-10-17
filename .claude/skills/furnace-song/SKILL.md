@@ -37,7 +37,11 @@ export default function makeSongs(): SongPlan[] {
 }
 ```
 
-- **`title`**: short and telling, as the songs list shows it.
+- **`title`**: as the songs list shows it, in exactly the number of words the job gives for that
+  song ("Title the songs in this many words, in order: …"; a word is what spaces part). Telling of
+  the song's own image or mood, not the key, mode or chip the prompt names. No other song may have
+  it: the check fails on a title taken (by a song made before, or another of the script); then
+  choose another in the same number of words.
 - **`key`**: e.g. `"D minor"`, or null.
 - **`tags`**: from the list below, a style and what stands out (two to four).
 - **`furFile`**: from `buildFurFile` (`make/fur-file-builder.ts`): `chips`, the chips the prompt

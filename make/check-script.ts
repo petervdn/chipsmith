@@ -1,6 +1,7 @@
 /**
- * The quick check of a job's script, for Claude while composing: builds it, renders every song once,
- * and prints its length, its peak and the gain that brings the peak to 0.75 of full scale.
+ * The quick check of a job's script, for Claude while composing: builds it, fails on a title another
+ * song has (made before, or in the same script), renders every song once, and prints its length,
+ * its peak and the gain that brings the peak to 0.75 of full scale.
  * Run: `node make/check-script.ts <script.ts>`.
  */
 import { mkdtempSync, readFileSync, rmSync } from 'node:fs';
@@ -8,7 +9,9 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { renderToWav } from '../render/furnace.ts';
 import { getWavFacts, getWavPeak } from '../render/wav.ts';
+import { getSettings } from '../config/settings.ts';
 import { buildScript } from './build-script.ts';
+import { getTakenTitles, readSongTitles } from './song-titles.ts';
 
 /** The peak a mix is brought to. */
 const TARGET_PEAK = 0.75;
@@ -17,6 +20,16 @@ async function checkScript(scriptFile: string): Promise<void> {
   const folder = mkdtempSync(join(tmpdir(), 'chiptune-check-'));
   try {
     const plans = await buildScript(scriptFile, folder);
+    const songsFolder = join(getSettings().dataFolder, 'songs');
+    const takenTitles = getTakenTitles(
+      plans.map((plan) => plan.title),
+      readSongTitles(songsFolder),
+    );
+    if (takenTitles.length > 0) {
+      throw new Error(
+        `${takenTitles.join('; ')}. Choose another title, in the same number of words.`,
+      );
+    }
     for (const { title, furFileName } of plans) {
       const wavFile = join(folder, furFileName.replace(/\.fur$/, '.wav'));
       await renderToWav(join(folder, furFileName), wavFile);
