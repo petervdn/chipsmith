@@ -16,7 +16,7 @@
 }
 
 .timeline-ruler-row {
-  height: 28px;
+  height: var(--touch);
 }
 
 .timeline-corner,
@@ -118,7 +118,6 @@
 }
 
 .timeline-ruler {
-  cursor: ew-resize;
   touch-action: none;
   user-select: none;
   -webkit-user-select: none;
@@ -126,7 +125,8 @@
 
 .timeline-bar-number {
   position: absolute;
-  top: 6px;
+  top: 50%;
+  translate: 0 -50%;
   padding-left: 4px;
   color: var(--muted);
   font-size: 0.6875rem;
