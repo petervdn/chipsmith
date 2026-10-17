@@ -1,8 +1,8 @@
 /**
  * What this browser keeps of the page's settings, in localStorage (Zustand's persist; components
  * never touch storage, docs/adr/0017): the mute switch for testing, the look the page is in
- * (looks.ts), the player's volume, whether the editor follows the playhead, and how wide its track
- * names are.
+ * (looks.ts), the player's volume, whether the editor follows the playhead, how wide its track
+ * names are, and its metronome (on or off, and its volume).
  */
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
@@ -21,12 +21,21 @@ type PreferencesStore = {
   isFollowingPlayhead: boolean;
   /** How wide the editor's track names are drawn, in pixels (editor/track-name-width.ts). */
   trackNameWidth: number;
+  /** Whether the editor's metronome clicks while its song plays. */
+  isMetronomeOn: boolean;
+  /** The metronome's volume, in decibels (player/volume.ts), under the player's volume. */
+  metronomeVolume: number;
   setMuted: (isMuted: boolean) => void;
   setLookId: (lookId: string) => void;
   setVolume: (volume: number) => void;
   setFollowingPlayhead: (isFollowingPlayhead: boolean) => void;
   setTrackNameWidth: (trackNameWidth: number) => void;
+  setMetronomeOn: (isMetronomeOn: boolean) => void;
+  setMetronomeVolume: (metronomeVolume: number) => void;
 };
+
+/** The metronome's volume to start with, in decibels: under the music. */
+const METRONOME_DB = -12;
 
 /**
  * Returns the look the system is set to, which the page is in until the top bar's switch chooses.
@@ -51,17 +60,31 @@ export const usePreferencesStore = create<PreferencesStore>()(
       setFollowingPlayhead: (isFollowingPlayhead) => set({ isFollowingPlayhead }),
       trackNameWidth: TRACK_NAME_WIDTH,
       setTrackNameWidth: (trackNameWidth) => set({ trackNameWidth }),
+      isMetronomeOn: false,
+      setMetronomeOn: (isMetronomeOn) => set({ isMetronomeOn }),
+      metronomeVolume: METRONOME_DB,
+      setMetronomeVolume: (metronomeVolume) => set({ metronomeVolume }),
     }),
     {
       name: 'chiptune.preferences',
       version: 1,
       storage: createJSONStorage(() => localStorage),
-      partialize: ({ isMuted, lookId, volume, isFollowingPlayhead, trackNameWidth }) => ({
+      partialize: ({
         isMuted,
         lookId,
         volume,
         isFollowingPlayhead,
         trackNameWidth,
+        isMetronomeOn,
+        metronomeVolume,
+      }) => ({
+        isMuted,
+        lookId,
+        volume,
+        isFollowingPlayhead,
+        trackNameWidth,
+        isMetronomeOn,
+        metronomeVolume,
       }),
     },
   ),

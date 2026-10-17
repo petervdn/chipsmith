@@ -1,0 +1,17 @@
+/* The look of MetronomeControls.tsx: the switch outlined while it is on, as follow is; the slider
+   small beside it. */
+
+.editor-bar .metronome-controls-switch.is-on {
+  border-color: var(--fg);
+  box-shadow: inset 0 0 0 1px var(--fg);
+}
+
+.metronome-controls-switch .lucide {
+  width: 16px;
+  height: 16px;
+}
+
+.metronome-controls-volume {
+  width: 64px;
+  accent-color: var(--accent);
+}

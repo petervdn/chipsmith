@@ -17,6 +17,8 @@ saved, playing from a cursor, the zoom, and the selected block's clip or track.
 - `song-clips.ts`: the song's clips in the order it plays them, their blocks counted; a clip's first block
 - `SongClips.css`: the look of SongClips.tsx
 - `SongClips.tsx`: the song's clips in a column left of the timeline, to select and drag onto a track
+- `MetronomeControls.css`: the look of MetronomeControls.tsx
+- `MetronomeControls.tsx`: the metronome's switch and its volume slider, in the editor bar
 - `SongEditor.css`: the look of SongEditor.tsx
 - `SongEditor.tsx`: the editor: its bar of controls, the timeline, the song's clips, the selected block's or track's details
 - `Timeline.css`: the look of Timeline.tsx
@@ -40,6 +42,7 @@ saved, playing from a cursor, the zoom, and the selected block's clip or track.
 - `use-element-width.ts`: an element's width, kept current
 - `use-follow-playhead.ts`: the timeline turning the page with the playhead while the song plays
 - `use-heard-tracks.ts`: the player hearing only the tracks mute and solo leave, also while playing
+- `use-metronome.ts`: the metronome clicking while the song plays, when it is on
 - `use-playhead-line.ts`: the playhead moved every frame while the song plays
 - `use-press-drag.ts`: a press that becomes a drag: a mouse at once, a finger after holding still
 - `use-song-draft.ts`: the song being edited: a draft with undo and redo, the selection, save and revert

@@ -132,12 +132,33 @@ export function getSongPosition(): number | null {
   return Math.max(0, context.currentTime - songZero);
 }
 
-function getContext(): AudioContext {
+/**
+ * Returns when the song now playing started, on the audio clock.
+ *
+ * @returns The audio clock's time of the song's second 0 (it may lie before the second played
+ *   from), or null when nothing plays.
+ */
+export function getSongZero(): number | null {
+  return songZero;
+}
+
+/**
+ * Returns the page's audio context, made the first time it is asked for.
+ *
+ * @returns The audio context.
+ */
+export function getContext(): AudioContext {
   context ??= new AudioContext();
   return context;
 }
 
-function getOutput(): GainNode {
+/**
+ * Returns where everything the page plays goes: through the player's volume and the mute switch to
+ * the speakers.
+ *
+ * @returns The output's gain node.
+ */
+export function getOutput(): GainNode {
   if (!output) {
     output = getContext().createGain();
     const gain = output.gain;

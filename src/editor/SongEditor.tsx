@@ -32,6 +32,7 @@ import { useElementWidth } from './use-element-width.ts';
 import { useSongDraft } from './use-song-draft.ts';
 import { useHeardTracks } from './use-heard-tracks.ts';
 import { useSongTransport } from './use-song-transport.ts';
+import { useMetronome } from './use-metronome.ts';
 import { useTimelinePan } from './use-timeline-pan.ts';
 import { useTrackMix } from './use-track-mix.ts';
 import { useTrackNameResize } from './use-track-name-resize.ts';
@@ -64,6 +65,7 @@ export function SongEditor({ detail }: SongEditorProps) {
   const draftSong = { ...song, tracks: draft.tracks };
   useHeardTracks(draft.tracks, mix);
   const transport = useSongTransport({ ...detail, song: draftSong });
+  useMetronome(transport.mode === 'playing', song);
   const width = useElementWidth(scrollRef);
   const { trackNameWidth, resizeHandlers } = useTrackNameResize();
   const { pixelsPerBar, zoomIn, zoomOut, fit, zoomTo } = useZoom({

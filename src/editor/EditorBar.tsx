@@ -1,4 +1,5 @@
-// The editor's bar of controls above the timeline, in groups: play (stop, play or pause), edit (undo,
+// The editor's bar of controls above the timeline, in groups: play (stop, play or pause), the
+// metronome, edit (undo,
 // redo), snap, tracks (split, when the song can be), zoom, and the song (revert, save). It wraps on
 // a phone. It knows nothing of what the controls do: it is given the values and handlers.
 import { Minus, Plus, Redo2, Undo2 } from 'lucide-react';
@@ -7,6 +8,7 @@ import type { useSongTransport } from './use-song-transport.ts';
 import { ControlGroup } from './ControlGroup.tsx';
 import type { GridStep } from './grid.ts';
 import { BAR_STEP, GRID_STEPS } from './grid.ts';
+import { MetronomeControls } from './MetronomeControls.tsx';
 import { TransportButtons } from './TransportButtons.tsx';
 import { usePreferencesStore } from '../stores/preferences-store.ts';
 import './EditorBar.css';
@@ -62,6 +64,7 @@ export function EditorBar({
         isFollowing={isFollowing}
         onToggleFollowing={() => setFollowing(!isFollowing)}
       />
+      <MetronomeControls />
       <ControlGroup label="edit">
         <button
           type="button"
