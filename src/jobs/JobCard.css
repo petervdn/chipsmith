@@ -104,7 +104,7 @@
 }
 
 .job-card-note-time {
-  display: inline-block;
+  display: block;
   width: 44px;
   color: var(--muted);
   font-variant-numeric: tabular-nums;
@@ -151,10 +151,62 @@
 
 .job-card-outcome {
   flex: none;
+  width: 64px;
   color: var(--muted);
   font-size: 0.8125rem;
+  text-align: right;
 }
 
 .job-card.is-failed .job-card-outcome {
   color: var(--reject);
+}
+
+/* a step's share of the job's time, as a bar between its time and its text */
+.job-card-notes li {
+  display: grid;
+  grid-template-columns: 44px 64px minmax(0, 1fr);
+  align-items: start;
+  gap: 8px;
+}
+
+.job-card-note-length {
+  margin-top: calc((1lh - 6px) / 2);
+  width: 64px;
+  height: 6px;
+  overflow: hidden;
+  border-radius: 3px;
+  background: var(--raised);
+}
+
+.job-card-note-length > span {
+  display: block;
+  min-width: 2px;
+  height: 100%;
+  background: var(--accent);
+}
+
+.job-card-note-text {
+  min-width: 0;
+}
+
+/* the step in progress: a spinner, and its text shimmering softly */
+.job-card-notes li.is-current .jobs-spinner {
+  display: inline-block;
+  margin-right: 6px;
+  vertical-align: -1px;
+}
+
+.job-card-notes li.is-current .job-card-note-words {
+  background: linear-gradient(90deg, var(--fg) 0%, var(--muted) 50%, var(--fg) 100%);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: job-card-note-shimmer 2.4s linear infinite;
+}
+
+@keyframes job-card-note-shimmer {
+  to {
+    background-position: -200% 0;
+  }
 }

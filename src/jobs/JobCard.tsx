@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import type { Job, JobPhase, JobSong } from '../../shared/job.types.ts';
 import { formatSeconds } from '../format.ts';
 import { isJobRunning } from '../queries/jobs.ts';
+import { getStepLengths } from './job-steps.ts';
 import './jobs.css';
 import './JobCard.css';
 
@@ -88,6 +89,11 @@ export function JobCard({ job, onRemove }: JobCardProps) {
   const elapsed = useElapsed(job);
   const phaseName = getPhaseName(job);
   const now = getNowText(job);
+  const lengths = getStepLengths(
+    job.notes,
+    job.created,
+    job.finished ?? Date.parse(job.created) + elapsed * 1000,
+  );
 
   const removeButton = onRemove && (
     <button
@@ -115,13 +121,13 @@ export function JobCard({ job, onRemove }: JobCardProps) {
               ▸
             </span>
             <span className="job-card-title">{job.prompt.split('\n')[0]}</span>
-            <span className="job-card-outcome">
-              {job.phase === 'failed'
-                ? 'failed'
-                : `${madeCount} ${madeCount === 1 ? 'song' : 'songs'}`}
-            </span>
           </button>
           <span className="jobs-time">{formatSeconds(elapsed)}</span>
+          <span className="job-card-outcome">
+            {job.phase === 'failed'
+              ? 'failed'
+              : `${madeCount} ${madeCount === 1 ? 'song' : 'songs'}`}
+          </span>
           {removeButton}
         </header>
       </section>
@@ -181,14 +187,31 @@ export function JobCard({ job, onRemove }: JobCardProps) {
       </button>
       {isShowingNotes && (
         <ol className="job-card-notes">
-          {job.notes.map((note, i) => (
-            <li key={`${note.at}-${i}`}>
-              <span className="job-card-note-time">
-                {formatSeconds((Date.parse(note.at) - Date.parse(job.created)) / 1000)}
-              </span>
-              {note.text}
-            </li>
-          ))}
+          {job.notes.map((note, i) => {
+            const length = lengths[i];
+            const isCurrent = isRunning && i === job.notes.length - 1;
+            return (
+              <li key={`${note.at}-${i}`} className={isCurrent ? 'is-current' : ''}>
+                <span className="job-card-note-time">
+                  {formatSeconds((Date.parse(note.at) - Date.parse(job.created)) / 1000)}
+                </span>
+                <span
+                  className="job-card-note-length"
+                  title={
+                    length
+                      ? `${formatSeconds(length.seconds)}, ${Math.round(length.share * 100)}% of the job`
+                      : ''
+                  }
+                >
+                  <span style={{ width: `${(length?.share ?? 0) * 100}%` }} />
+                </span>
+                <span className="job-card-note-text">
+                  {isCurrent && <span className="jobs-spinner" aria-label="in progress" />}
+                  <span className="job-card-note-words">{note.text}</span>
+                </span>
+              </li>
+            );
+          })}
         </ol>
       )}
     </section>
