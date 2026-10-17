@@ -1,0 +1,86 @@
+/* The look of PromptBuilder.tsx: a row per part, label, value and lock on one line; on a phone the
+   label goes above. */
+
+.prompt-builder {
+  padding: 12px;
+  border: var(--border-width) solid var(--line);
+  border-radius: var(--radius);
+  background: var(--card);
+}
+
+.prompt-builder-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.prompt-builder-row {
+  display: grid;
+  grid-template-columns: 70px minmax(0, 1fr) var(--touch);
+  align-items: center;
+  gap: 8px;
+}
+
+.prompt-builder-label {
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+
+.prompt-builder-value {
+  min-width: 0;
+  min-height: var(--touch);
+  padding: 0 8px;
+  border: var(--border-width) solid var(--line);
+  border-radius: var(--radius);
+  background: var(--bg);
+}
+
+.prompt-builder-lock {
+  min-width: var(--touch);
+  min-height: var(--touch);
+  border: var(--border-width) solid var(--line);
+  border-radius: var(--radius);
+  background: var(--raised);
+  cursor: pointer;
+}
+
+.prompt-builder-lock.is-on {
+  border-color: var(--accent);
+  background: var(--accent);
+}
+
+.prompt-builder-text {
+  margin: 12px 0;
+  font-style: italic;
+}
+
+.prompt-builder-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.prompt-builder-actions button {
+  min-height: var(--touch);
+  padding: 0 14px;
+  border: var(--border-width) solid var(--line);
+  border-radius: var(--radius);
+  background: var(--raised);
+  cursor: pointer;
+}
+
+.prompt-builder-actions .is-primary {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--on-accent);
+  font-weight: 600;
+}
+
+@media (max-width: 480px) {
+  .prompt-builder-row {
+    grid-template-columns: minmax(0, 1fr) var(--touch);
+  }
+  .prompt-builder-label {
+    grid-column: 1 / -1;
+  }
+}

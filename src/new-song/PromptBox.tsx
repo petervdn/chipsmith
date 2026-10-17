@@ -1,10 +1,10 @@
-// The box on the New page where a prompt is written (or made up at random) and sent, with the style
-// guides chosen as chips; sending it leads to the Jobs page.
+// The box on the New page where a prompt is written (or built from parts, PromptBuilder.tsx) and
+// sent, with the style guides chosen as chips; sending it leads to the Jobs page.
 // Opened from a song's "Prompt again", it starts with that song's prompt and notes the song, until
 // the note is cleared.
 import { useState } from 'react';
 import { GuideChips } from '../guides/GuideChips.tsx';
-import { getRandomPrompt } from './random-prompt.ts';
+import { PromptBuilder } from './PromptBuilder.tsx';
 import { useSendPrompt } from '../queries/jobs.ts';
 import { navigate } from '../router.ts';
 import { useGuideChoice } from '../guides/use-guide-choice.ts';
@@ -34,6 +34,8 @@ type PromptBoxProps = {
  */
 export function PromptBox({ initialText, source, onClearSource }: PromptBoxProps) {
   const [text, setText] = useState(initialText);
+  const [isBuilding, setBuilding] = useState(false);
+  const [usedText, setUsedText] = useState('');
   const isFocusAtEnd = initialText.endsWith(': ');
   const { mutate: sendPrompt, isPending: isSending, error } = useSendPrompt();
   const { guides, chosenIds, toggleGuide, resetChoice } = useGuideChoice();
@@ -96,13 +98,26 @@ export function PromptBox({ initialText, source, onClearSource }: PromptBoxProps
       <div className="prompt-box-tools">
         <button
           type="button"
-          className="prompt-box-random"
-          onClick={() => setText(getRandomPrompt(Math.random))}
-          title="fill the box with a prompt made up at random (nothing is sent)"
+          className={`prompt-box-random${isBuilding ? ' is-on' : ''}`}
+          onClick={() => setBuilding(!isBuilding)}
+          aria-expanded={isBuilding}
+          title="build a prompt from parts, rolled at random or picked (nothing is sent)"
         >
-          🎲 Random prompt
+          🎲 Build a prompt
         </button>
       </div>
+      {isBuilding && (
+        <PromptBuilder
+          onUse={(built) => {
+            const isOwnText = text.trim() !== '' && text !== usedText;
+            if (isOwnText && !window.confirm('Replace what is in the box with this prompt?')) {
+              return;
+            }
+            setText(built);
+            setUsedText(built);
+          }}
+        />
+      )}
       <GuideChips guides={guides} chosenIds={chosenIds} onToggle={toggleGuide} />
       <button type="submit" className="prompt-box-send" disabled={!text.trim() || isSending}>
         {isSending ? 'Sending…' : 'Create song'}

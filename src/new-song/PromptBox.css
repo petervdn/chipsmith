@@ -66,3 +66,7 @@
   color: var(--muted);
   cursor: pointer;
 }
+
+.prompt-box-random.is-on {
+  border-color: var(--fg);
+}

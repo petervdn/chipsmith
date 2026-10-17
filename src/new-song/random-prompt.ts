@@ -1,6 +1,7 @@
 /**
- * A prompt made up from parts at random, to start from on the New page: how many songs, a mood, a
- * kind of piece, the chips, a rhythm and one thing to build it around. Knows nothing of the page.
+ * A prompt built from parts, to start from on the New page: how many songs, a mood, a kind of piece,
+ * the chips, a rhythm and one thing to build it around. Each part is picked from its list, at random
+ * or by hand, and a part can be kept while the others are picked again. Knows nothing of the page.
  */
 
 /** The parts, in the order a prompt joins them. */
@@ -115,18 +116,69 @@ const IDEAS = [
   'with the melody doubled in octaves',
 ];
 
+/** The parts of a prompt, by name, each a value from its list. */
+export type PromptParts = {
+  count: string;
+  mood: string;
+  piece: string;
+  chips: string;
+  rhythm: string;
+  idea: string;
+};
+
+/** A part's name. */
+export type PartName = keyof PromptParts;
+
+/** Each part's label and the values it is picked from, in the order the builder shows them. */
+export const PROMPT_PARTS: { name: PartName; label: string; values: string[] }[] = [
+  { name: 'count', label: 'Songs', values: COUNTS },
+  { name: 'mood', label: 'Mood', values: MOODS },
+  { name: 'piece', label: 'Piece', values: PIECES },
+  { name: 'chips', label: 'Chips', values: CHIPS },
+  { name: 'rhythm', label: 'Rhythm', values: RHYTHMS },
+  { name: 'idea', label: 'Idea', values: IDEAS },
+];
+
 /**
- * Makes up a prompt at random from its parts: how many songs, a mood, a kind of piece, the chips, a
- * rhythm and one thing to build it around.
+ * Picks every part again at random, except the kept ones.
  *
+ * @param parts - The parts now, or null to pick them all.
+ * @param kept - The parts that keep their value.
  * @param getRandom - Gives numbers from 0 up to 1, as Math.random does.
- * @returns The prompt, one sentence.
+ * @returns The parts, the kept ones as they were.
  */
-export function getRandomPrompt(getRandom: () => number): string {
-  function pick(parts: string[]): string {
-    return parts[Math.floor(getRandom() * parts.length)] ?? parts[0] ?? '';
+export function rollParts(
+  parts: PromptParts | null,
+  kept: PartName[],
+  getRandom: () => number,
+): PromptParts {
+  function pick(name: PartName, values: string[]): string {
+    if (parts && kept.includes(name)) return parts[name];
+    return values[Math.floor(getRandom() * values.length)] ?? values[0] ?? '';
   }
-  const count = pick(COUNTS);
+  return {
+    count: pick('count', COUNTS),
+    mood: pick('mood', MOODS),
+    piece: pick('piece', PIECES),
+    chips: pick('chips', CHIPS),
+    rhythm: pick('rhythm', RHYTHMS),
+    idea: pick('idea', IDEAS),
+  };
+}
+
+/**
+ * Returns the prompt its parts make: one sentence.
+ *
+ * @param parts - The parts.
+ * @param parts.count - How many songs ("One", "Two", "Three").
+ * @param parts.mood - The mood.
+ * @param parts.piece - The kind of piece.
+ * @param parts.chips - The chips, as "for the NES".
+ * @param parts.rhythm - The meter or tempo.
+ * @param parts.idea - One thing to build it around.
+ * @returns The prompt, "song" for one song and "songs" for more.
+ */
+export function getPromptText({ count, mood, piece, chips, rhythm, idea }: PromptParts): string {
   const song = count === 'One' ? 'song' : 'songs';
-  return `${count} ${pick(MOODS)} ${song}: ${pick(PIECES)} ${pick(CHIPS)}, ${pick(RHYTHMS)}, ${pick(IDEAS)}.`;
+  return `${count} ${mood} ${song}: ${piece} ${chips}, ${rhythm}, ${idea}.`;
 }
