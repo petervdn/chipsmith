@@ -47,6 +47,7 @@ export function readNotation(text: string): ReadNotation {
       role: role.trim() || null,
       energy: null,
       note: '',
+      leadIn: [],
     });
   }
   return { sections, error: null };
@@ -98,17 +99,23 @@ export function getSectionName({ letter, variant }: { letter: string; variant: n
 }
 
 /**
- * Takes the energy and notes of the sections before a new reading, where a section is in the same
+ * Takes the energy, notes and lead-ins of the sections before a new reading, where a section is in the same
  * place with the same letter and variant.
  *
  * @param read - The sections just read from the notation.
  * @param before - The sections before.
- * @returns The sections read, with the energy and note kept where they still apply.
+ * @returns The sections read, with the energy, note and lead-in kept where they still apply.
  */
 export function keepDetails(read: Section[], before: Section[]): Section[] {
   return read.map((section, i) => {
     const old = before[i];
     if (!old || old.letter !== section.letter || old.variant !== section.variant) return section;
-    return { ...section, energy: old.energy, note: old.note, role: section.role ?? old.role };
+    return {
+      ...section,
+      energy: old.energy,
+      note: old.note,
+      role: section.role ?? old.role,
+      leadIn: old.leadIn,
+    };
   });
 }

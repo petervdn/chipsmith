@@ -1,0 +1,69 @@
+/* The look of LeadInEditor.tsx: a head with the gap's name and the die, then a row per voice, its
+   label at the left and its switches wrapping. */
+
+.lead-in-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 12px;
+  border: var(--border-width) solid var(--line);
+  border-radius: var(--radius);
+  background: var(--bg);
+}
+
+.lead-in-editor-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 10px;
+}
+
+.lead-in-editor-name {
+  font-weight: 600;
+}
+
+.lead-in-editor-hint {
+  color: var(--muted);
+  font-size: 0.8125rem;
+}
+
+.lead-in-editor-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--touch);
+  min-height: var(--touch);
+  padding: 0 10px;
+  border: var(--border-width) solid var(--line);
+  border-radius: var(--radius);
+  background: var(--raised);
+  cursor: pointer;
+}
+
+.lead-in-editor-head .lead-in-editor-button:first-of-type {
+  margin-left: auto;
+}
+
+.lead-in-editor-button .lucide {
+  width: 16px;
+  height: 16px;
+}
+
+.lead-in-editor-row {
+  display: grid;
+  grid-template-columns: 4.5em minmax(0, 1fr);
+  align-items: start;
+  gap: 8px;
+}
+
+.lead-in-editor-label {
+  padding-top: 6px;
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+
+.lead-in-editor-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}

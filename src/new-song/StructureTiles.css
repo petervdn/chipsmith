@@ -1,0 +1,128 @@
+/* The look of StructureTiles.tsx: tiles as wide as their bars (flex-grow on each tile with the gap
+   before it), coloured by part, a variation striped, a repeat faint; a gap narrow and dashed while it
+   is Claude's choice, a small pill with the lead-ins chosen (their count on a phone). */
+
+.structure-tiles {
+  display: flex;
+  gap: 4px;
+  min-height: 40px;
+}
+
+.structure-tiles-tile {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 34px;
+  padding: 1px 6px;
+  overflow: hidden;
+  border: var(--border-width) solid color-mix(in srgb, var(--tile-color) 70%, #000);
+  border-radius: calc(var(--radius) * 0.5);
+  background: var(--tile-color);
+  color: var(--on-accent);
+  text-align: left;
+  cursor: pointer;
+}
+
+.structure-tiles-tile.is-variation {
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--tile-color) 0 6px,
+    color-mix(in srgb, var(--tile-color) 70%, var(--card)) 6px 12px
+  );
+}
+
+.structure-tiles-tile.is-repeat {
+  opacity: 0.6;
+}
+
+.structure-tiles-tile.is-selected {
+  box-shadow: 0 0 0 2px var(--fg);
+  opacity: 1;
+}
+
+.structure-tiles-name {
+  font-size: 0.875rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.structure-tiles-bars {
+  overflow: hidden;
+  font-size: 0.6875rem;
+  line-height: 1.2;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.structure-tiles-add {
+  flex: none;
+  min-width: var(--touch);
+  border: var(--border-width) dashed var(--line);
+  border-radius: calc(var(--radius) * 0.5);
+  background: none;
+  color: var(--muted);
+  font-size: 1.25rem;
+  cursor: pointer;
+}
+
+.structure-tiles-pair {
+  display: flex;
+  flex-basis: 0;
+  gap: 4px;
+  min-width: 0;
+}
+
+.structure-tiles-gap {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  padding: 0;
+  border: var(--border-width) dashed var(--line);
+  border-radius: calc(var(--radius) * 0.5);
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.structure-tiles-gap .lucide {
+  width: 12px;
+  height: 12px;
+}
+
+.structure-tiles-gap.is-set {
+  width: auto;
+  max-width: 84px;
+  padding: 0 6px;
+  border-style: solid;
+  border-color: var(--accent);
+  color: var(--fg);
+  font-size: 0.6875rem;
+}
+
+.structure-tiles-gap.is-selected {
+  box-shadow: 0 0 0 2px var(--fg);
+}
+
+.structure-tiles-gap-labels {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.structure-tiles-gap-count {
+  display: none;
+  font-weight: 700;
+}
+
+@media (max-width: 719px) {
+  .structure-tiles-gap-labels {
+    display: none;
+  }
+
+  .structure-tiles-gap-count {
+    display: inline;
+  }
+}

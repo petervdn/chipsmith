@@ -29,6 +29,10 @@ A prompt may send a structure as a numbered line per section: its name, its bars
   recognisably A. **A again** is A as it was; small fills at its edges are fine.
 - **Role** says what the section is for, **energy** (1-5) how much is going on, a **note** anything
   else. Follow the bars exactly: the sections are cut by them later.
+- **Led into … with** says how the section before leads into this one (a drum fill, the bass
+  walking in, a borrowed chord, a pickup…): play it at the end of the section before, in its last
+  bar or less, so it stays with that section when the song is cut. Where none is said, it is yours
+  to choose, and a plain cut is fine.
 - Without a structure, choose a form that fits the piece and the length.
 
 ## The harmony

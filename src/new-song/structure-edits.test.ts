@@ -10,6 +10,8 @@ import {
   getPartChoices,
   moveSection,
   removeSection,
+  rollLeadIn,
+  toggleLeadIn,
 } from './structure-edits.ts';
 
 const SECTIONS = readNotation("A8 A'8 B4").sections ?? [];
@@ -31,4 +33,19 @@ test('a section can be any part, the next variation of one, or a new part', () =
     getPartChoices(SECTIONS).map(({ letter, variant }) => letter + "'".repeat(variant)),
     ['A', "A'", "A''", 'B', "B'", 'C'],
   );
+});
+
+test('a lead-in switched on and off, kept in the order offered', () => {
+  assert.deepEqual(toggleLeadIn(['walk-in'], 'bar-fill'), ['bar-fill', 'walk-in']);
+  assert.deepEqual(toggleLeadIn(['bar-fill', 'walk-in'], 'bar-fill'), ['walk-in']);
+});
+
+test('a lead-in picked at random: one, or two by different voices', () => {
+  assert.deepEqual(
+    rollLeadIn(() => 0.9),
+    ['thin'],
+  );
+  const twice = [0.1, 0, 0];
+  const two = rollLeadIn(() => twice.shift() ?? 0);
+  assert.deepEqual(two, ['short-fill', 'walk-in']);
 });

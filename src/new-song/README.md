@@ -12,6 +12,8 @@ The New page: a prompt written, or made up at random, and sent.
 - `HarmonyPanel.tsx`: the Harmony panel: the key, the settings, how strictly, a progression per part
 - `HarmonyPart.css`: the look of HarmonyPart.tsx
 - `HarmonyPart.tsx`: a part's progression: its preset, its chords as tiles, written short, how its variations end
+- `LeadInEditor.css`: the look of LeadInEditor.tsx
+- `LeadInEditor.tsx`: a gap between two sections: how one leads into the next, by voice
 - `NewPage.css`: the look of NewPage.tsx
 - `NewPage.tsx`: a prompt for Claude; sending it leads to Jobs
 - `PartRow.css`: the look of PartRow.tsx
@@ -28,6 +30,8 @@ The New page: a prompt written, or made up at random, and sent.
 - `SectionEditor.css`: the look of SectionEditor.tsx
 - `SectionEditor.tsx`: a structure's selected section: its part, bars, role, energy, note
 - `structure-edits.ts`: a structure's sections added, copied, moved, removed and changed
+- `StructureTiles.css`: the look of StructureTiles.tsx
+- `StructureTiles.tsx`: a structure's tiles as wide as their bars, and the gaps between them
 - `StructurePanel.css`: the look of StructurePanel.tsx
 - `StructurePanel.tsx`: the Structure panel: presets, saved and your own; notation, tiles, saving
 - `use-harmony-choice.ts`: the harmony chosen for a prompt, its locks, and what changes it

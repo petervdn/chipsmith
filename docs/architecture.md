@@ -87,7 +87,9 @@ page but Home starts with breadcrumbs, the last its heading (Songs › Seven Tee
 - **New** (`/new`): a prompt for Claude in a box, a prompt builder under it (the chips as switches, one or more; a part per row, rolled
   at random or picked, each with a lock, the sentence they make on top; "Use" fills the box, which is otherwise its own),
   the Structure panel (AABA chosen at first; none, a preset, a saved structure or your own: written short and as tiles
-  as wide as their bars, a section edited when tapped, saved as new or over a saved one; 0023), and
+  as wide as their bars, a section edited when tapped; between two tiles the gap, how one section
+  leads into the next (drums, bass, harmony, lead, all together; `shared/lead-ins.ts`), picked or
+  rolled; saved as new or over a saved one; 0023), and
   the Harmony panel (everything Claude's choice at first: the key and mode, the kind and colour of
   the chords, how often they change, the bass, the cadences, a key change, each a row with a die and
   a lock; how strictly; a progression per part of the structure, or one for the whole song: a

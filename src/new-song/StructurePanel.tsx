@@ -1,19 +1,17 @@
-// The Structure panel on New: always the chosen structure, as tiles as wide as their bars,
-// coloured by part, with ▸ at its right; ▸ (or a tap on a tile) opens under them the choices (none,
-// a preset, a saved structure or your own, as chips), the structure written short (editable), the
-// selected section's editor, and saving it, as new or over the saved one, or deleting a saved one;
+// The Structure panel on New: always the chosen structure, as tiles as wide as their bars with the
+// gaps between them (StructureTiles.tsx), with ▸ at its right; ▸ (or a tap on a tile or a gap) opens
+// under them the choices (none, a preset, a saved structure or your own, as chips), the structure
+// written short (editable), the selected section's editor or the selected gap's lead-ins, and
+// saving it, as new or over the saved one, or deleting a saved one;
 // the tiles stay where they are.
 import { Plus } from 'lucide-react';
 import { useState } from 'react';
-import type { CSSProperties } from 'react';
 import {
-  getRelation,
   getSectionName,
   keepDetails,
   readNotation,
   writeNotation,
 } from '../../shared/structure-notation.ts';
-import { getTrackColor } from '../editor/timeline.ts';
 import { SectionEditor } from './SectionEditor.tsx';
 import {
   addSection,
@@ -21,7 +19,11 @@ import {
   duplicateSection,
   moveSection,
   removeSection,
+  rollLeadIn,
+  toggleLeadIn,
 } from './structure-edits.ts';
+import { LeadInEditor } from './LeadInEditor.tsx';
+import { StructureTiles } from './StructureTiles.tsx';
 import type { useStructureChoice } from './use-structure-choice.ts';
 import './StructurePanel.css';
 import { FoldPanel } from './FoldPanel.tsx';
@@ -40,7 +42,10 @@ export function StructurePanel({ choice }: StructurePanelProps) {
   const [notationError, setNotationError] = useState<string | null>(null);
   const [newName, setNewName] = useState('');
   const [isOpen, setOpen] = useState(false);
+  const [selectedGap, setSelectedGap] = useState<number | null>(null);
   const { source, sections, selected, saved, presets } = choice;
+  const gapSection = selectedGap === null ? undefined : sections[selectedGap];
+  const gapBefore = selectedGap === null ? undefined : sections[selectedGap - 1];
   function isChosen(kind: string, id: string | null): boolean {
     return source.kind === kind && (id === null || ('id' in source && source.id === id));
   }
@@ -51,45 +56,23 @@ export function StructurePanel({ choice }: StructurePanelProps) {
         source.kind === 'none' ? (
           <p className="structure-panel-none">None: Claude chooses the form.</p>
         ) : (
-          <div className="structure-panel-tiles">
-            {sections.map((section, i) => {
-              const relation = getRelation(sections, i);
-              const style: CSSProperties & Record<'--tile-color', string> = {
-                flexGrow: section.bars,
-                '--tile-color': getTrackColor(section.letter.charCodeAt(0) - 65),
-              };
-              return (
-                <button
-                  key={i}
-                  type="button"
-                  className={`structure-panel-tile is-${relation}${selected === i ? ' is-selected' : ''}`}
-                  style={style}
-                  onClick={() => {
-                    choice.select(selected === i ? null : i);
-                    setOpen(true);
-                  }}
-                  data-tooltip={`${getSectionName(section)}: ${relation}, ${section.bars} bars`}
-                >
-                  <span className="structure-panel-tile-name">{getSectionName(section)}</span>
-                  <span className="structure-panel-tile-bars">
-                    {section.bars}
-                    {section.role ? ` · ${section.role}` : ''}
-                  </span>
-                </button>
-              );
-            })}
-            {isOpen && (
-              <button
-                type="button"
-                className="structure-panel-add"
-                onClick={() => choice.edit(addSection)}
-                data-tooltip="add a new part at the end"
-                aria-label="add a new part at the end"
-              >
-                <Plus />
-              </button>
-            )}
-          </div>
+          <StructureTiles
+            sections={sections}
+            selection={
+              selectedGap !== null
+                ? { kind: 'gap', index: selectedGap }
+                : selected !== null
+                  ? { kind: 'section', index: selected }
+                  : null
+            }
+            isOpen={isOpen}
+            onSelect={(next) => {
+              choice.select(next?.kind === 'section' ? next.index : null);
+              setSelectedGap(next?.kind === 'gap' ? next.index : null);
+              setOpen(true);
+            }}
+            onAdd={() => choice.edit(addSection)}
+          />
         )
       }
       isOpen={isOpen}
@@ -165,6 +148,27 @@ export function StructurePanel({ choice }: StructurePanelProps) {
             }}
           />
           {notationError && <p className="error">{notationError}</p>}
+          {selectedGap !== null && gapSection && gapBefore && (
+            <LeadInEditor
+              name={`${getSectionName(gapBefore)} → ${getSectionName(gapSection)}`}
+              leadIn={gapSection.leadIn}
+              onToggle={(value) =>
+                choice.edit((current) =>
+                  changeSection(current, selectedGap, {
+                    leadIn: toggleLeadIn(current[selectedGap]?.leadIn ?? [], value),
+                  }),
+                )
+              }
+              onRoll={() =>
+                choice.edit((current) =>
+                  changeSection(current, selectedGap, { leadIn: rollLeadIn(Math.random) }),
+                )
+              }
+              onClear={() =>
+                choice.edit((current) => changeSection(current, selectedGap, { leadIn: [] }))
+              }
+            />
+          )}
           {selected !== null && (
             <SectionEditor
               sections={sections}

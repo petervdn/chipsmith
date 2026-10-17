@@ -1,6 +1,5 @@
-/* The look of StructurePanel.tsx, in its panel (FoldPanel.css): tiles as wide as their bars
-   (flex-grow), coloured by part, a variation striped, a repeat faint; what changes them under them
-   while open. */
+/* The look of StructurePanel.tsx, in its panel (FoldPanel.css): the tiles (StructureTiles.css), and
+   what changes them under them while open. */
 
 .structure-panel-none {
   margin: 0;
@@ -33,70 +32,6 @@
   background: var(--bg);
   font-family: ui-monospace, monospace;
   font-size: 0.9375rem;
-}
-
-.structure-panel-tiles {
-  display: flex;
-  gap: 4px;
-  min-height: 40px;
-}
-
-.structure-panel-tile {
-  display: flex;
-  flex-basis: 0;
-  flex-direction: column;
-  justify-content: center;
-  min-width: 34px;
-  padding: 1px 6px;
-  overflow: hidden;
-  border: var(--border-width) solid color-mix(in srgb, var(--tile-color) 70%, #000);
-  border-radius: calc(var(--radius) * 0.5);
-  background: var(--tile-color);
-  color: var(--on-accent);
-  text-align: left;
-  cursor: pointer;
-}
-
-.structure-panel-tile.is-variation {
-  background: repeating-linear-gradient(
-    -45deg,
-    var(--tile-color) 0 6px,
-    color-mix(in srgb, var(--tile-color) 70%, var(--card)) 6px 12px
-  );
-}
-
-.structure-panel-tile.is-repeat {
-  opacity: 0.6;
-}
-
-.structure-panel-tile.is-selected {
-  box-shadow: 0 0 0 2px var(--fg);
-  opacity: 1;
-}
-
-.structure-panel-tile-name {
-  font-size: 0.875rem;
-  font-weight: 700;
-  line-height: 1.2;
-}
-
-.structure-panel-tile-bars {
-  overflow: hidden;
-  font-size: 0.6875rem;
-  line-height: 1.2;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-}
-
-.structure-panel-add {
-  flex: none;
-  min-width: var(--touch);
-  border: var(--border-width) dashed var(--line);
-  border-radius: calc(var(--radius) * 0.5);
-  background: none;
-  color: var(--muted);
-  font-size: 1.25rem;
-  cursor: pointer;
 }
 
 .structure-panel-save {

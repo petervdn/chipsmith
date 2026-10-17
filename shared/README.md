@@ -14,6 +14,7 @@ Nothing here reads files or touches the page.
 - `harmony-settings.ts`: a harmony's settings (chords, colour, changes, bass, cadences, key change) and their options
 - `harmony.types.ts`: a song's harmony as a prompt asks for it: key, settings, a progression per part
 - `job.types.ts`: a job: a prompt on its way to songs, its phases and notes
+- `lead-ins.ts`: how one section can lead into the next (drums, bass, harmony, lead, all), and how a prompt asks for each
 - `modes.ts`: the notes and modes a key can be in, and each mode's own chords
 - `progression-notation.ts`: a progression written short (i ♭VI V:½), read and written
 - `progression-presets.ts`: the progressions a part can start from, by the modes they fit

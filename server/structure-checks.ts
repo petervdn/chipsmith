@@ -8,6 +8,7 @@ import type {
   Structure,
   StructureDraft,
 } from '../shared/structure.types.ts';
+import { getLeadIn } from '../shared/lead-ins.ts';
 import { getArray, getNumber, getObject, getString, getStringOrNull } from './json-checks.ts';
 
 /** The letters a section can have. */
@@ -67,7 +68,7 @@ export function checkSentStructure(value: unknown, path: string): SentStructure 
 
 /**
  * Checks a list of sections: a letter A to Z, a variant 0 to 9, bars 1 to 256, a role or null, an
- * energy 1 to 5 or null, and a note.
+ * energy 1 to 5 or null, a note, and its lead-ins (none when left out).
  *
  * @param value - The value parsed from JSON.
  * @param path - Where the value is, named in an error.
@@ -86,10 +87,24 @@ function checkSections(value: unknown, path: string): Section[] {
       role: getStringOrNull(section['role'] ?? null, `${itemPath}.role`),
       energy: energy === null ? null : getWhole(energy, `${itemPath}.energy`, 1, MOST_ENERGY),
       note: getString(section['note'] ?? '', `${itemPath}.note`),
+      leadIn: getArray(section['leadIn'] ?? [], `${itemPath}.leadIn`, checkLeadIn),
     };
   });
   if (sections.length === 0) throw new Error(`${path} has no sections`);
   return sections;
+}
+
+/**
+ * Checks a lead-in: one of those there are.
+ *
+ * @param value - The value parsed from JSON.
+ * @param path - Where the value is, named in an error.
+ * @returns The lead-in's value.
+ */
+function checkLeadIn(value: unknown, path: string): string {
+  const leadIn = getString(value, path);
+  if (!getLeadIn(leadIn)) throw new Error(`${path} is not a lead-in`);
+  return leadIn;
 }
 
 /**

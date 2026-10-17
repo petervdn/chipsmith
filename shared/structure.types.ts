@@ -19,6 +19,11 @@ export type Section = {
   energy: number | null;
   /** Anything more asked of it, or an empty string. */
   note: string;
+  /**
+   * How the section before leads into it (shared/lead-ins.ts values), played at the end of that
+   * section; none for Claude's choice. The first section's is not used.
+   */
+  leadIn: string[];
 };
 
 /** How a section stands to those before it: a new part, a variation of one, or one again. */

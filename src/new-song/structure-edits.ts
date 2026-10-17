@@ -1,9 +1,11 @@
 /**
  * The edits of a structure in the Structure panel: a section added as a new part, copied after
- * itself, moved, removed, or changed (its part, variant, bars, role, energy, note). Each takes the
+ * itself, moved, removed, or changed (its part, variant, bars, role, energy, note, lead-in); a
+ * lead-in picked at random. Each takes the
  * sections and gives new ones. Knows nothing of the page.
  */
 import { DEFAULT_BARS } from '../../shared/structure-notation.ts';
+import { LEAD_INS } from '../../shared/lead-ins.ts';
 import type { Section } from '../../shared/structure.types.ts';
 
 /** The roles offered for a section, besides none. */
@@ -19,6 +21,9 @@ export const SECTION_ROLES = [
   'climax',
   'outro',
 ];
+
+/** How often a lead-in picked at random has two parts instead of one. */
+const TWO_LEAD_INS_CHANCE = 0.5;
 
 /** The letters a part can have. */
 const LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -45,7 +50,7 @@ export function addSection(sections: Section[]): Section[] {
   const letter = getNextLetter(sections);
   return [
     ...sections,
-    { letter, variant: 0, bars: DEFAULT_BARS, role: null, energy: null, note: '' },
+    { letter, variant: 0, bars: DEFAULT_BARS, role: null, energy: null, note: '', leadIn: [] },
   ];
 }
 
@@ -124,4 +129,39 @@ export function getPartChoices(sections: Section[]): { letter: string; variant: 
     (first, second) => first.letter.localeCompare(second.letter) || first.variant - second.variant,
   );
   return [...choices, { letter: getNextLetter(sections), variant: 0 }];
+}
+
+/**
+ * Switches a lead-in of a section on or off.
+ *
+ * @param leadIn - The section's lead-ins.
+ * @param value - The lead-in switched.
+ * @returns The lead-ins, with it added or taken out, in the order they are offered.
+ */
+export function toggleLeadIn(leadIn: string[], value: string): string[] {
+  const isOn = leadIn.includes(value);
+  return LEAD_INS.map((candidate) => candidate.value).filter((candidate) =>
+    candidate === value ? !isOn : leadIn.includes(candidate),
+  );
+}
+
+/**
+ * Picks a lead-in at random: one part, or now and then two, played by different voices.
+ *
+ * @param getRandom - Gives numbers from 0 up to 1, as Math.random does.
+ * @returns The lead-ins' values, in the order they are offered.
+ */
+export function rollLeadIn(getRandom: () => number): string[] {
+  const count = getRandom() < TWO_LEAD_INS_CHANCE ? 2 : 1;
+  const picked: string[] = [];
+  while (picked.length < count) {
+    const free = LEAD_INS.filter(
+      ({ group }) =>
+        !picked.some((value) => LEAD_INS.find((leadIn) => leadIn.value === value)?.group === group),
+    );
+    const leadIn = free[Math.floor(getRandom() * free.length)];
+    if (!leadIn) break;
+    picked.push(leadIn.value);
+  }
+  return LEAD_INS.map((leadIn) => leadIn.value).filter((value) => picked.includes(value));
 }
