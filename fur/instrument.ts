@@ -10,7 +10,9 @@ import { FORMAT_VERSION, makeBlock } from './block.ts';
  * The macros an instrument may have, by Furnace's code for each. From `filterMode` on they are the
  * SID's, under Furnace's names ex1, ex2, alg and ex4, as the C64 demos use them: the filter mode
  * (bits low 1, band 2, high 4), the resonance, the cutoff, and `special` (bits: gate 1, sync 2,
- * ring 4, test 8).
+ * ring 4, test 8). The PSG's come after, by Furnace's own names as its MSX demos use them: `ex2`
+ * (the hardware envelope's shape), `ex3` and `alg` (the auto-envelope's numerator and denominator),
+ * and `phaseReset`.
  */
 const MACRO_CODES = {
   vol: 0,
@@ -22,6 +24,10 @@ const MACRO_CODES = {
   resonance: 6,
   cutoff: 8,
   special: 15,
+  ex2: 6,
+  ex3: 7,
+  alg: 8,
+  phaseReset: 14,
 } satisfies Record<string, number>;
 
 /** The kind of a macro. */
@@ -40,6 +46,8 @@ export type Macro = {
 export const ARP_FIXED = 0x40000000;
 /** Furnace's instrument type for the NES. */
 export const NES_INSTRUMENT = 34;
+/** The instrument type of the PSG (AY-3-8910) in Furnace. */
+export const PSG_INSTRUMENT = 6;
 /** The size of a macro's header in bytes. */
 const MACRO_HEADER_SIZE = 8;
 /** "None" for a macro's loop and release. */

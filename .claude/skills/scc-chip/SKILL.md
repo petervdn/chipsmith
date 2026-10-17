@@ -13,6 +13,9 @@ share a waveform; we write the SCC+. An instrument is `makeInstrument(name, 18, 
 `wave` macro holding the wavetable's index; waves are `makeWavetable(samples)`, 32 samples 0-255,
 given to `buildFurFile` in `wavetables`. Macros and effects in general: **furnace-song**.
 
+On an MSX the SCC sits beside the PSG (**psg-chip**), which Konami gave the drums: `['psg', 'scc']`
+puts the PSG's 3 channels first.
+
 Chip-specific sound is where Claude is weakest: say what is new so the user can check it by ear.
 
 ## Idioms

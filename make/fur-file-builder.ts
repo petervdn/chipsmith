@@ -24,7 +24,7 @@ export type FurFileDraft = {
   patternLength?: number;
   /**
    * One list of rows per chip channel, all as long as the song, chip by chip in the order of
-   * CHIP_NAMES (NES: pulse 1, pulse 2, triangle, noise, DPCM; SCC+: 5; SID: 3), a chip that comes
+   * CHIP_NAMES (NES: pulse 1, pulse 2, triangle, noise, DPCM; PSG: 3; SCC+: 5; SID: 3), a chip that comes
    * twice twice over. `null` is an empty row.
    */
   channels: (Row | null)[][];
@@ -44,11 +44,13 @@ const SPEED = 6;
 /** The denominator of the virtual tempo; its numerator sets the bpm. */
 const TEMPO_BASE = 150;
 /**
- * The flags each chip is written with: the NES and the SID as the demos have them (the SID's clock
- * PAL, as the European C64 most of its music was written for), the SCC+ with none.
+ * The flags each chip is written with: the NES, the PSG and the SID as the demos have them (the PSG
+ * as Furnace's MSX demos all set it, the SID's clock PAL, as the European C64 most of its music was
+ * written for), the SCC+ with none.
  */
 const CHIP_FLAGS = {
   nes: 'clockSel=0\ncustomClock=0\ndpcmMode=false\n',
+  psg: 'chipType=1\nclockSel=0\nstereoSep=0\n',
   scc: null,
   sid: 'clockSel=1\n',
 } satisfies Record<ChipName, string | null>;

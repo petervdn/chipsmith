@@ -1,7 +1,7 @@
 # fur/
 
 Furnace files (.fur), written and read, as this project writes them (format version 223, old INFO
-layout, one subsong, NES / SCC / SCC+ / SID). The port of the old project's Python tools
+layout, one subsong, NES / PSG / SCC / SCC+ / SID). The port of the old project's Python tools
 (docs/adr/0002); `round-trip.test.ts` holds it to the .fur files they wrote. Any other .fur (the
 references) is read through Furnace's own text export.
 

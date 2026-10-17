@@ -80,3 +80,17 @@ test('a chip can come twice, its channels after the first', () => {
   assert.equal(twice.song.channelCount, 13);
   assert.deepEqual(twice.song.chipFlags, [null, null, 'clockSel=1\n']);
 });
+
+test('the PSG comes after the NES and before the SCC, with the MSX settings', () => {
+  const msx = buildFurFile({
+    title: 't',
+    bpm: 120,
+    beatsPerBar: 4,
+    instruments: [],
+    chips: ['scc', 'psg'],
+    channels: Array.from({ length: 8 }, () => []),
+  });
+  assert.equal(msx.song.systemName, 'PSG + SCC+');
+  assert.deepEqual(msx.song.chips, [0x80, 0xb4]);
+  assert.deepEqual(msx.song.chipFlags, ['chipType=1\nclockSel=0\nstereoSep=0\n', null]);
+});

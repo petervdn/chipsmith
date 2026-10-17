@@ -25,7 +25,7 @@ export function getUncompressed(file: Uint8Array): Uint8Array {
 
 /**
  * Reads a .fur file from its bytes. Throws if it is not the old INFO layout, has a chip other than
- * the NES, SCC or SCC+, or a pattern of a subsong other than the first.
+ * those of shared/chips.ts (NES, PSG, SCC, SCC+, SID), or a pattern of a subsong other than the first.
  *
  * @param file - The .fur file's bytes, compressed or not.
  * @returns The song's settings, the instrument and wavetable blocks, and the patterns.

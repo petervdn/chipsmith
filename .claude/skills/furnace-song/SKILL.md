@@ -6,7 +6,7 @@ description: Write a chipsmith song down as a Furnace .fur file - the job's scri
 # Write a song down in Furnace
 
 The music comes from **write-song**; each chip's channels, instruments and idioms from its skill
-(**nes-chip**, **scc-chip**, **sid-chip**). This is how it all becomes a .fur file.
+(**nes-chip**, **psg-chip**, **scc-chip**, **sid-chip**). This is how it all becomes a .fur file.
 
 ## The job
 
