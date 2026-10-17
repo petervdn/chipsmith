@@ -13,4 +13,3 @@ The jobs: their page, a job's card, and the line of a running one.
 - `JobSteps.tsx`: a job's current step, and all its steps with their share of the time
 - `JobStrip.css`: the look of JobStrip.tsx
 - `JobStrip.tsx`: one line for a running job, above the songs list
-- `TrashIcon.tsx`: a small trash can, for removing jobs from the list

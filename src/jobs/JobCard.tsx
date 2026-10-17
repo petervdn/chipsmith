@@ -12,7 +12,10 @@ import './jobs.css';
 import './JobCard.css';
 import { askToConfirm } from '../stores/confirm-store.ts';
 import { getStepText } from './job-steps.ts';
-import { TrashIcon } from './TrashIcon.tsx';
+import { Trash2 } from 'lucide-react';
+
+/** How large the trash can is drawn, in pixels. */
+const TRASH_SIZE = 16;
 
 const PHASE_NAMES = {
   queued: 'Waiting for the job before it',
@@ -114,7 +117,7 @@ export function JobCard({ job, onRemove }: JobCardProps) {
       data-tooltip="remove this job from the list (its songs stay)"
       aria-label="remove this job from the list"
     >
-      <TrashIcon />
+      <Trash2 size={TRASH_SIZE} />
     </button>
   );
   if (!isRunning && !isOpen) {

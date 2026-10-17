@@ -11,7 +11,10 @@ import { usePageTitle } from '../use-page-title.ts';
 import { Breadcrumbs } from '../Breadcrumbs.tsx';
 import './JobsPage.css';
 import { askToConfirm } from '../stores/confirm-store.ts';
-import { TrashIcon } from './TrashIcon.tsx';
+import { Trash2 } from 'lucide-react';
+
+/** How large the trash can is drawn, in pixels. */
+const TRASH_SIZE = 16;
 
 type JobsPageProps = { jobs: Job[] };
 
@@ -69,7 +72,7 @@ export function JobsPage({ jobs }: JobsPageProps) {
             data-tooltip="remove every job that is over from the list (their songs stay)"
             aria-label="remove every job that is over from the list"
           >
-            <TrashIcon />
+            <Trash2 size={TRASH_SIZE} />
           </button>
         </h2>
       )}

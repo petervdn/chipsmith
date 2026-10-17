@@ -5,12 +5,15 @@
 // sentence in the box; the box is written to only by that button, so what is typed there afterwards
 // is the box's own.
 import { CHIP_NAMES, CHIPS } from '../../shared/chips.ts';
-import { LockIcon } from './LockIcon.tsx';
+import { Lock, LockOpen } from 'lucide-react';
 import type { PartName } from './random-prompt.ts';
 import { PROMPT_PARTS } from './random-prompt.ts';
 import '../lists/lists.css';
 import { usePromptBuilder } from './use-prompt-builder.ts';
 import './PromptBuilder.css';
+
+/** How large the locks are drawn, in pixels. */
+const ICON_SIZE = 14;
 
 type PromptBuilderProps = { isOpen: boolean; onToggle: () => void; onUse: (text: string) => void };
 
@@ -36,7 +39,7 @@ export function PromptBuilder({ isOpen, onToggle, onUse }: PromptBuilderProps) {
         aria-pressed={isLocked}
         data-tooltip={isLocked ? 'locked: Roll keeps it' : 'unlocked: Roll picks it again'}
       >
-        <LockIcon isLocked={isLocked} />
+        {isLocked ? <Lock size={ICON_SIZE} /> : <LockOpen size={ICON_SIZE} />}
       </button>
     );
   }
