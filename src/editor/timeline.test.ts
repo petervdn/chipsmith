@@ -10,6 +10,7 @@ import {
   getTicksPerBar,
   getTimelineBars,
   getTrackColor,
+  isOneWholeClip,
 } from './timeline.ts';
 
 const SONG: Song = {
@@ -89,4 +90,16 @@ test('the tracks take the colours in turn', () => {
     'var(--track-8)',
     'var(--track-1)',
   ]);
+});
+
+test('a song of one untrimmed block of a whole clip can be split; another cannot', () => {
+  const whole: Song = {
+    ...SONG,
+    tracks: [
+      { id: 't1', name: 'Whole', blocks: [{ clip: 'c0001', start: 0, trim: null, repeats: 1 }] },
+    ],
+  };
+  assert.equal(isOneWholeClip(whole, [CLIP]), true);
+  assert.equal(isOneWholeClip(SONG, [CLIP]), false);
+  assert.equal(isOneWholeClip(whole, [{ ...CLIP, channels: [2] }]), false);
 });

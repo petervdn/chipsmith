@@ -33,25 +33,32 @@ export function getClipsMissingAudio(store: Store): string[] {
 
 /**
  * Renders every clip whose audio is missing, one after another, and says in the server's log what it
- * did. A clip that fails is reported and left; it is tried again when the server next starts.
+ * did; clips that go missing meanwhile (a song split) are rendered too, before it ends. A clip that
+ * fails is reported and left; it is tried again when the server next starts.
  *
  * @param store - The clips and songs in memory.
  */
 export async function renderMissingAudio(store: Store): Promise<void> {
-  const clipIds = getClipsMissingAudio(store);
-  if (clipIds.length === 0) return;
-  console.log(`rendering the missing audio of ${clipIds.length} clips`);
-  for (const clipId of clipIds) {
-    if (!isAudioMissing(store, clipId)) continue;
-    try {
-      const { furnace } = await renderClipAudio(getClipFolder(store, clipId));
-      const recorded = store.clips.get(clipId)?.furnace;
-      if (recorded && recorded !== furnace) {
-        console.warn(`${clipId} rendered with Furnace ${furnace}; it was made with ${recorded}`);
+  const failed = new Set<string>();
+  let isFirst = true;
+  for (;;) {
+    const clipIds = getClipsMissingAudio(store).filter((clipId) => !failed.has(clipId));
+    if (clipIds.length === 0) break;
+    if (isFirst) console.log(`rendering the missing audio of ${clipIds.length} clips`);
+    isFirst = false;
+    for (const clipId of clipIds) {
+      if (!isAudioMissing(store, clipId)) continue;
+      try {
+        const { furnace } = await renderClipAudio(getClipFolder(store, clipId));
+        const recorded = store.clips.get(clipId)?.furnace;
+        if (recorded && recorded !== furnace) {
+          console.warn(`${clipId} rendered with Furnace ${furnace}; it was made with ${recorded}`);
+        }
+      } catch (error) {
+        failed.add(clipId);
+        console.warn(`${clipId}: ${error instanceof Error ? error.message : String(error)}`);
       }
-    } catch (error) {
-      console.warn(`${clipId}: ${error instanceof Error ? error.message : String(error)}`);
     }
   }
-  console.log('missing audio rendered');
+  if (!isFirst) console.log('missing audio rendered');
 }

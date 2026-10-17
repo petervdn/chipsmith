@@ -95,6 +95,28 @@ export function useSaveTracks() {
   });
 }
 
+/**
+ * Splits a song that is one whole clip into tracks of blocks on the server; its new clips render in
+ * the background. The server's answer becomes the cached song; the songs list and the clip pool are
+ * read again.
+ *
+ * @returns The mutation, called with the song's id.
+ */
+export function useSplitSong() {
+  return useMutation({
+    mutationFn: (songId: string) =>
+      sendJson<SongDetail>(`/api/songs/${encodeURIComponent(songId)}/split`, 'POST', {}),
+    onSuccess: (detail) => {
+      queryClient.setQueryData(getQueryKey({ type: 'song', songId: detail.song.id }), detail);
+      void queryClient.invalidateQueries({ queryKey: getQueryKey({ type: 'clips' }) });
+      return queryClient.invalidateQueries({
+        queryKey: getQueryKey({ type: 'songs' }),
+        exact: true,
+      });
+    },
+  });
+}
+
 function readSong(songId: string): Promise<SongDetail> {
   return requestJson<SongDetail>(`/api/songs/${encodeURIComponent(songId)}`);
 }

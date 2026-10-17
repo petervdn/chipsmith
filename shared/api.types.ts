@@ -19,8 +19,16 @@ export type SongListing = {
   promptedAgainAs: string[];
 };
 
-/** A song opened, with the clips its blocks play, and whether one of them has no audio yet. */
-export type SongDetail = { song: Song; clips: Clip[]; isWaitingForAudio: boolean };
+/**
+ * A song opened, with the clips its blocks play, whether one of them has no audio yet, and which
+ * (being rendered, as after a split).
+ */
+export type SongDetail = {
+  song: Song;
+  clips: Clip[];
+  isWaitingForAudio: boolean;
+  waitingClipIds: string[];
+};
 
 /** A clip in the clips list, with the songs that use it. */
 export type ClipListing = { clip: Clip; usedBy: string[] };

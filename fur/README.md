@@ -6,6 +6,7 @@ layout, one subsong, NES / SCC / SCC+). The port of the old project's Python too
 
 - `block.ts`: a block of a .fur file, and the format version written
 - `bytes.ts`: little-endian bytes, written and read
+- `cut.ts`: a .fur cut along its channels and order rows: its pieces, and a piece's own .fur
 - `dump.ts`: a .fur file as text, to see what is in it (`node fur/dump.ts file.fur`)
 - `fur.types.ts`: what a .fur file holds, in memory (`FurFile`)
 - `instrument.ts`: an instrument (INS2) and a wavetable (WAVE)

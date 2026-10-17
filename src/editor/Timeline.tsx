@@ -36,6 +36,7 @@ type TimelineProps = {
   onMoveTo: (seconds: number) => void;
   onPress: (event: ReactPointerEvent, place: BlockPlace, mode: DragMode) => void;
   wasDragged: () => boolean;
+  waitingClipIds: string[];
 };
 
 /**
@@ -52,6 +53,7 @@ type TimelineProps = {
  * @param props.onMoveTo - Called with the second a tap on the ruler points at.
  * @param props.onPress - Called on a press on a block or one of its edges.
  * @param props.wasDragged - Tells whether a drag just ended, so its click selects nothing.
+ * @param props.waitingClipIds - The clips whose audio is still being rendered.
  * @returns The timeline element.
  */
 export function Timeline({
@@ -65,6 +67,7 @@ export function Timeline({
   onMoveTo,
   onPress,
   wasDragged,
+  waitingClipIds,
 }: TimelineProps) {
   const lineRef = useRef<HTMLDivElement>(null);
   const ticksPerBar = getTicksPerBar(song);
@@ -136,6 +139,7 @@ export function Timeline({
                       span={span}
                       clip={clipsById.get(span.clipId)}
                       pixelsPerTick={pixelsPerTick}
+                      isRendering={waitingClipIds.includes(span.clipId)}
                       isSelected={
                         selection?.kind === 'block' &&
                         selection.place.trackId === track.id &&

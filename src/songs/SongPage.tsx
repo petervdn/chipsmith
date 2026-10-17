@@ -27,7 +27,7 @@ export function SongPage({ songId }: SongPageProps) {
         {Math.round(song.bpm)} bpm · {formatMeter(song.beats)} · {song.tracks.length}{' '}
         {song.tracks.length === 1 ? 'track' : 'tracks'}
       </p>
-      <SongEditor detail={detail} />
+      <SongEditor key={song.updated} detail={detail} />
     </section>
   );
 }

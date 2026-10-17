@@ -13,6 +13,7 @@ type TimelineBlockProps = {
   clip: Clip | undefined;
   pixelsPerTick: number;
   isSelected: boolean;
+  isRendering: boolean;
   onPress: (event: ReactPointerEvent, mode: DragMode) => void;
   onSelect: () => void;
 };
@@ -25,6 +26,7 @@ type TimelineBlockProps = {
  * @param props.clip - The block's clip, or undefined when it is not known.
  * @param props.pixelsPerTick - How wide a tick is drawn.
  * @param props.isSelected - Whether the block is the one selected.
+ * @param props.isRendering - Whether its clip's audio is still being rendered: no waveform yet.
  * @param props.onPress - Called on a press on the block (to move it) or an edge (to trim it).
  * @param props.onSelect - Called when the block is tapped.
  * @returns The block's buttons, one per repeat.
@@ -34,12 +36,13 @@ export function TimelineBlock({
   clip,
   pixelsPerTick,
   isSelected,
+  isRendering,
   onPress,
   onSelect,
 }: TimelineBlockProps) {
   const width = span.length * pixelsPerTick;
   const label = clip ? getClipLabel(clip) : `missing ${span.clipId}`;
-  const states = `${isSelected ? ' is-selected' : ''}${clip ? '' : ' is-missing'}`;
+  const states = `${isSelected ? ' is-selected' : ''}${clip ? '' : ' is-missing'}${isRendering ? ' is-rendering' : ''}`;
   return (
     <>
       {Array.from({ length: span.repeats }, (_unused, repeat) => (
@@ -56,7 +59,7 @@ export function TimelineBlock({
           }}
           title={`${label} · ${span.clipId}${span.repeats > 1 ? ` · ×${span.repeats}` : ''}`}
         >
-          {span.slice && (
+          {span.slice && !isRendering && (
             <Waveform
               clipId={span.clipId}
               offset={span.slice.offset}

@@ -3,6 +3,7 @@
 import { useRef, useState } from 'react';
 import type { SongDetail } from '../../shared/api.types.ts';
 import { useClips } from '../queries/clips.ts';
+import { useSplitSong } from '../queries/songs.ts';
 import { BlockDetails } from './BlockDetails.tsx';
 import { BAR_STEP, GRID_STEPS } from './grid.ts';
 import {
@@ -17,7 +18,7 @@ import {
 } from './song-edits.ts';
 import type { BlockPlace } from './song-edits.ts';
 import { ROW_HEIGHT, Timeline } from './Timeline.tsx';
-import { getBlockSpans, getClipTicks, getTicksPerBar } from './timeline.ts';
+import { getBlockSpans, getClipTicks, getTicksPerBar, isOneWholeClip } from './timeline.ts';
 import { getHeardTracks } from './track-mix.ts';
 import { TrackDetails } from './TrackDetails.tsx';
 import { useBlockDrag } from './use-block-drag.ts';
@@ -29,7 +30,12 @@ import { useTrackMix } from './use-track-mix.ts';
 import { TRACK_NAME_WIDTH, useZoom } from './use-zoom.ts';
 import { useWheelZoom } from './use-wheel-zoom.ts';
 import { getVersions } from './versions.ts';
+import '../jobs/jobs.css';
 import './SongEditor.css';
+
+/** What Split asks before it cuts. */
+const SPLIT_QUESTION =
+  'Split this song into a track per channel and a block per pattern row? Its layout is replaced; the whole clip stays in the pool.';
 
 type SongEditorProps = { detail: SongDetail };
 
@@ -43,7 +49,9 @@ type SongEditorProps = { detail: SongDetail };
 export function SongEditor({ detail }: SongEditorProps) {
   const [step, setStep] = useState(BAR_STEP);
   const scrollRef = useRef<HTMLDivElement>(null);
-  const { song, clips, isWaitingForAudio } = detail;
+  const { song, clips, isWaitingForAudio, waitingClipIds } = detail;
+  const { mutate: splitSong, isPending: isSplitting, error: splitError } = useSplitSong();
+  const canSplit = isOneWholeClip(song, clips);
   const draft = useSongDraft(detail);
   const { mix, toggleMute, toggleSolo } = useTrackMix();
   const draftSong = { ...song, tracks: draft.tracks };
@@ -131,6 +139,23 @@ export function SongEditor({ detail }: SongEditorProps) {
         >
           + Track
         </button>
+        {canSplit && (
+          <button
+            type="button"
+            className="song-editor-button"
+            onClick={() => {
+              if (window.confirm(SPLIT_QUESTION)) splitSong(song.id);
+            }}
+            disabled={draft.hasChanges || isSplitting}
+            title={
+              draft.hasChanges
+                ? 'save or revert the changes first'
+                : 'cut the song into a track per channel and a block per pattern row'
+            }
+          >
+            {isSplitting ? 'Splitting…' : 'Split'}
+          </button>
+        )}
         <span className="song-editor-group">
           <button type="button" onClick={zoomOut} title="zoom out">
             −
@@ -161,6 +186,14 @@ export function SongEditor({ detail }: SongEditorProps) {
         </span>
       </div>
       {draft.saveError && <p className="error">{draft.saveError.message}</p>}
+      {splitError && <p className="error">{splitError.message}</p>}
+      {waitingClipIds.length > 0 && (
+        <p className="song-editor-progress">
+          <span className="jobs-spinner" aria-hidden="true" />
+          Rendering the pieces: {clips.length - waitingClipIds.length} of {clips.length} done. They
+          play once all are rendered.
+        </p>
+      )}
       <div ref={scrollRef} className="song-editor-scroll">
         <Timeline
           song={shownSong}
@@ -173,6 +206,7 @@ export function SongEditor({ detail }: SongEditorProps) {
           onMoveTo={transport.moveTo}
           onPress={drag.startPress}
           wasDragged={drag.wasDragged}
+          waitingClipIds={waitingClipIds}
         />
       </div>
       {place && span && (

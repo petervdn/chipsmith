@@ -25,6 +25,7 @@ import { startJobRunner } from './job-runner.ts';
 import type { JobStore } from './jobs.ts';
 import { createJob, listJobs, openJobs, removeJob } from './jobs.ts';
 import { copyExamplesIfEmpty } from './examples.ts';
+import { splitSong } from '../make/split-song.ts';
 import { isAudioMissing, renderMissingAudio } from './missing-audio.ts';
 import { checkGuideDraft, checkStatus, checkTags, checkTracks } from './model-checks.ts';
 import type { GuideStore } from './guides.ts';
@@ -189,6 +190,17 @@ async function route(
     saveSong(store, { ...song, tracks, updated: new Date().toISOString() });
     return sendJson(response, getSongDetail(store, id));
   }
+  if (kind === 'songs' && id && file === 'split' && method === 'POST') {
+    const song = store.songs.get(id);
+    if (!song) return sendError(response, 404, `no song ${id}`);
+    const whole = getWholeClip(store, song);
+    if (!whole) return sendError(response, 400, 'only a song that is one whole clip can be split');
+    const { tracks } = splitSong(store.root, song, whole);
+    rescanStore(store);
+    saveSong(store, { ...song, tracks, updated: new Date().toISOString() });
+    startRenderingMissingAudio(store);
+    return sendJson(response, getSongDetail(store, id));
+  }
   if (kind === 'clips' && id && method === 'PATCH') {
     const clip = store.clips.get(id);
     if (!clip) return sendError(response, 404, `no clip ${id}`);
@@ -282,7 +294,28 @@ function getSongDetail(store: Store, songId: string): SongDetail {
     const clip = store.clips.get(clipId);
     return clip ? [clip] : [];
   });
-  return { song, clips, isWaitingForAudio: clips.some((clip) => isAudioMissing(store, clip.id)) };
+  const waitingClipIds = clips
+    .filter((clip) => isAudioMissing(store, clip.id))
+    .map((clip) => clip.id);
+  return { song, clips, isWaitingForAudio: waitingClipIds.length > 0, waitingClipIds };
+}
+
+/**
+ * Returns the clip a song plays when it is one whole clip: one track, one block, from the start,
+ * untrimmed and played once, its clip every channel of all its bars, with its source.
+ *
+ * @param store - The clips and songs in memory.
+ * @param song - The song.
+ * @returns The whole clip, or null when the song is not one.
+ */
+function getWholeClip(store: Store, song: Song): Clip | null {
+  const [track, ...otherTracks] = song.tracks;
+  const [block, ...otherBlocks] = track?.blocks ?? [];
+  if (!block || otherTracks.length > 0 || otherBlocks.length > 0) return null;
+  if (block.start !== 0 || block.trim !== null || block.repeats !== 1) return null;
+  const clip = store.clips.get(block.clip);
+  if (!clip || clip.channels !== null || clip.bars !== null) return null;
+  return existsSync(join(getClipFolder(store, clip.id), 'source.fur')) ? clip : null;
 }
 
 function checkCatalogueChange(body: unknown): CatalogueChange {
