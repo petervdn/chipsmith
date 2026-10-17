@@ -1,0 +1,59 @@
+/* The look of the References pages (ReferencesPage.tsx, ReferencePage.tsx): a column as wide as the
+   guides', the intro and facts in muted text, the notes box under the facts, the audio's rows. */
+
+.references-page {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.references-intro,
+.references-facts,
+.references-file {
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+
+.references-file {
+  font-size: 0.75rem;
+  overflow-wrap: anywhere;
+}
+
+/* the mark of a reference with notes, in its row's facts */
+.references-noted {
+  display: inline-flex;
+  align-items: center;
+}
+
+.references-noted svg {
+  width: 14px;
+  height: 14px;
+}
+
+.references-notes {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 12px 0 16px;
+}
+
+.references-notes-head {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-weight: 600;
+}
+
+.references-notes-state {
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 400;
+}
+
+.references-notes textarea {
+  width: 100%;
+  resize: vertical;
+}
+
+.references-audio {
+  margin-bottom: 12px;
+}

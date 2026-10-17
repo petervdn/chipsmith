@@ -1,5 +1,6 @@
-// The bar at the bottom of every page while a song is in the player: ▶ / ■ (the share loaded while it
-// loads), the song's title, where it is, a slider to move in it, and the mute switch for testing.
+// The bar at the bottom of every page while a song (or a reference's audio) is in the player: ▶ / ■
+// (the share loaded while it loads), its title, where it is, a slider to move in it, and the mute
+// switch for testing.
 import { Play, Square } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { formatSeconds } from '../format.ts';
@@ -11,15 +12,15 @@ import { useMarkHeard } from './use-mark-heard.ts';
 import './PlayerBar.css';
 
 /**
- * Shows the player bar while a song is in the player: ▶ / ■, the song's title, where it is, a
- * slider to move in it, and the mute switch.
+ * Shows the player bar while a song or a reference's audio is in the player: ▶ / ■, its title, where
+ * it is, a slider to move in it, and the mute switch.
  *
- * @returns The bar's element, or null when no song is in the player.
+ * @returns The bar's element, or null when nothing is in the player.
  */
 export function PlayerBar() {
   const player = usePlayerStore();
   useMarkHeard();
-  const { playSong, seekSong, stopSong } = player;
+  const { playSong, playReference, seekSong, stopSong } = player;
   const isMuteOn = usePreferencesStore((preferences) => preferences.isMuted);
   const setMuted = usePreferencesStore((preferences) => preferences.setMuted);
   const volume = usePreferencesStore((preferences) => preferences.volume);
@@ -35,13 +36,21 @@ export function PlayerBar() {
     return () => cancelAnimationFrame(frame);
   }, [player.mode]);
   const position = player.mode === 'playing' ? (livePosition ?? player.from) : player.from;
-  const { song } = player;
-  if (!song) return null;
+  const { song, reference } = player;
+  const playing = song
+    ? { title: song.song.title, href: `/songs/${encodeURIComponent(song.song.id)}` }
+    : reference
+      ? {
+          title: reference.title,
+          href: `/references/${encodeURIComponent(reference.referenceId)}`,
+        }
+      : null;
+  if (!playing) return null;
 
   function togglePlay(): void {
-    if (!song) return;
-    if (player.mode === 'stopped') void playSong(song, position);
-    else stopSong(getSongPosition() ?? position);
+    if (player.mode !== 'stopped') stopSong(getSongPosition() ?? position);
+    else if (song) void playSong(song, position);
+    else if (reference) void playReference(reference, position);
   }
 
   return (
@@ -61,8 +70,8 @@ export function PlayerBar() {
         )}
       </button>
       <div className="player-bar-middle">
-        <a className="player-bar-title" href={`/songs/${encodeURIComponent(song.song.id)}`}>
-          {song.song.title}
+        <a className="player-bar-title" href={playing.href}>
+          {playing.title}
         </a>
         <input
           className="player-bar-seek"

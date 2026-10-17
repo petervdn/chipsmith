@@ -18,6 +18,8 @@ back to its file (docs/adr/0006).
 - `json-checks.ts`: checks that a value read from JSON is what a type says
 - `missing-audio.ts`: clips with a source and no audio, rendered when the server starts
 - `model-checks.ts`: a clip.json or song.json read from disk, checked field by field
+- `reference-routes.ts`: `/api/references` (listed, notes written) and a reference's audio in `/media/`
+- `references.ts`: the references in memory, their facts read from their files, in references/<id>/
 - `store.ts`: the clips and songs in memory, read from their folders and written back to them
 - `harmony-checks.ts`: a harmony checked where it comes in: its key, settings and progressions
 - `structure-checks.ts`: a structure checked where it comes in, section by section

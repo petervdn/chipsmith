@@ -35,6 +35,9 @@ clips/<id>/script.ts      its own copy of the script that wrote it
 songs/<id>/song.json      a song's arrangement (shared/song.types.ts)
 guides/<id>/guide.json    a style guide (shared/guide.types.ts), sent with a prompt when chosen
 structures/<id>/structure.json  a song structure (shared/structure.types.ts), sent with a prompt when chosen
+references/<id>/          a Furnace demo to learn from (0033): reference.json (shared/reference.types.ts,
+                          its origin and the user's notes), source.fur, source.txt (Furnace's text
+                          export, its facts read from it), audio.flac and channels/<nn>.flac
 ```
 
 The files are the data (0006). Ids are a letter and a number: `c0001` for clips, `s0001` for songs.
@@ -55,12 +58,14 @@ Routes: `GET /api/songs`, `GET /api/songs/<id>`, `PATCH /api/songs/<id>` (status
 arrangement, saved from the editor), `POST /api/songs/<id>/split`, `GET /api/clips`, `PATCH /api/clips/<id>`, and `GET /media/clips/<id>/audio.flac` with byte ranges, `GET /media/clips/<id>/source.fur` (a
 download) and `source.txt` (the .fur as tracker text, `fur/tracker-text.ts`), and
 `POST /api/clips/<id>/open` (a copy in the system's temporary folder opened in Furnace,
-`server/clip-files.ts`, so the clip never changes).
+`server/clip-files.ts`, so the clip never changes). The references: `GET /api/references`,
+`PATCH /api/references/<id>` (its notes), `GET /media/references/<id>/audio.flac` and
+`channels/<nn>.flac` (`server/reference-routes.ts`).
 What they answer is typed in `shared/api.types.ts`.
 
 ## The pages
 
-`src/`, React (0013), a folder per area (a page, the top bar, the player, the lists; 0020). One top bar on every page: the logo (home), Songs | Guides | Jobs (Jobs with how many
+`src/`, React (0013), a folder per area (a page, the top bar, the player, the lists; 0020). One top bar on every page: the logo (home), Songs | Guides | References | Jobs (Jobs with how many
 are on their way, turning while one runs), and at the right + New song (an action, not a section). Every
 page but Home starts with breadcrumbs, the last its heading (Songs › Seven Teeth).
 
@@ -107,6 +112,11 @@ page but Home starts with breadcrumbs, the last its heading (Songs › Seven Tee
   guides as chips to send with it (their texts readable in place). Sending it leads to Jobs.
 - **Jobs** (`/jobs`): every prompt sent, as a card, newest first; one that is over can be removed
   (✕; `removed` in its job.json, its files kept). The tab counts the jobs on their way.
+- **References** (`/references`, 0033): Furnace's demo songs, under NES, SID and SCC, each with ▶
+  for its mix; one opened (`/references/<id>`) has its facts, a box for the user's notes (written
+  as they type, `src/references/use-reference-notes.ts`), and ▶ for its mix and each channel alone,
+  played by the one player (`playReference` in the player store). Imported with
+  `npm run import-references` (`make/import-references.ts`).
 
 The page is light or dark: as the system is set, until the top bar's ☾ / ☀ switches it (`src/top-bar/looks.ts`,
 the colours in `src/style.css`), kept in the preferences. The accent is a bright lime.

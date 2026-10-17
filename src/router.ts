@@ -1,7 +1,7 @@
 /**
  * Which page the address is, and moving between them without reloading. Pages: `/` home,
  * `/songs` the songs list, `/songs/<id>` one song, `/clips` the clip pool, `/guides` the style guides, `/new` a prompt, `/jobs`
- * every prompt sent. Knows nothing of what a page shows.
+ * every prompt sent, `/references` the demo songs to learn from, `/references/<id>` one of them. Knows nothing of what a page shows.
  */
 import { useEffect, useState } from 'react';
 
@@ -13,7 +13,9 @@ export type Route =
   | { page: 'clips' }
   | { page: 'guides' }
   | { page: 'new' }
-  | { page: 'jobs' };
+  | { page: 'jobs' }
+  | { page: 'references' }
+  | { page: 'reference'; referenceId: string };
 
 /**
  * Returns the route of an address's path; a query after the path is not part of the route.
@@ -26,6 +28,9 @@ export function getRoute(address: string): Route {
   const song = /^\/songs\/([^/]+)\/?$/.exec(path);
   if (song?.[1]) return { page: 'song', songId: decodeURIComponent(song[1]) };
   if (/^\/songs\/?$/.test(path)) return { page: 'songs' };
+  const reference = /^\/references\/([^/]+)\/?$/.exec(path);
+  if (reference?.[1]) return { page: 'reference', referenceId: decodeURIComponent(reference[1]) };
+  if (/^\/references\/?$/.test(path)) return { page: 'references' };
   if (/^\/clips\/?$/.test(path)) return { page: 'clips' };
   if (/^\/guides\/?$/.test(path)) return { page: 'guides' };
   if (/^\/new\/?$/.test(path)) return { page: 'new' };

@@ -6,6 +6,8 @@ import { GuidesPage } from './guides/GuidesPage.tsx';
 import { HomePage } from './home/HomePage.tsx';
 import { JobsPage } from './jobs/JobsPage.tsx';
 import { NewPage } from './new-song/NewPage.tsx';
+import { ReferencePage } from './references/ReferencePage.tsx';
+import { ReferencesPage } from './references/ReferencesPage.tsx';
 import { SongPage } from './songs/SongPage.tsx';
 import { SongsPage } from './songs/SongsPage.tsx';
 import { PlayerBar } from './player/PlayerBar.tsx';
@@ -36,6 +38,10 @@ export function App() {
         {route.page === 'new' && <NewPage />}
         {route.page === 'jobs' && <JobsPage jobs={jobs} />}
         {route.page === 'song' && <SongPage key={route.songId} songId={route.songId} />}
+        {route.page === 'references' && <ReferencesPage />}
+        {route.page === 'reference' && (
+          <ReferencePage key={route.referenceId} referenceId={route.referenceId} />
+        )}
       </main>
       <PlayerBar />
       <ConfirmDialog />

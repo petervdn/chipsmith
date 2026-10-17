@@ -1,6 +1,7 @@
 /** What the server's routes answer with and take (server/api.ts), so the page reads them typed. */
 import type { Status, Tag } from './catalogue.types.ts';
 import type { Clip } from './clip.types.ts';
+import type { ChipFamily, Reference } from './reference.types.ts';
 import type { Song } from './song.types.ts';
 
 /** A song in the songs list, with what the list shows of it. */
@@ -55,3 +56,22 @@ export type ProgramCheck = {
 
 /** What `POST /api/clips/<id>/open` answers: the copy of the clip's .fur file Furnace opened. */
 export type ClipOpened = { file: string };
+
+/** A reference as `/api/references` lists it: its record and the facts read from its files. */
+export type ReferenceListing = {
+  reference: Reference;
+  name: string;
+  author: string;
+  album: string;
+  /** Its chips' short labels (`NES`, `VRC6`), in order. */
+  chips: string[];
+  family: ChipFamily | null;
+  /** Its channels' names, in order: channel 1 first. */
+  channels: string[];
+  subsongCount: number;
+  /** The length of its audio, or null while it has none. */
+  seconds: number | null;
+};
+
+/** A change to a reference: what the user writes of it. */
+export type ReferenceChange = { notes: string };

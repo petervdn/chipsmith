@@ -19,6 +19,7 @@ Nothing here reads files or touches the page.
 - `modes.ts`: the notes and modes a key can be in, how each mode sounds, and its own chords
 - `progression-notation.ts`: a progression written short (i ♭VI V:½), read and written
 - `progression-presets.ts`: the progressions offered to hear and keep, by the modes and feels they fit
+- `reference.types.ts`: a reference: a song someone else wrote in Furnace, to listen to and write notes on
 - `song-length.ts`: how long a song is, from its blocks and its clips' lengths
 - `song.types.ts`: a song: tracks of blocks that point to clips
 - `structure-notation.ts`: a structure written short (A8 A'8 B8), read and written; how a section stands to those before

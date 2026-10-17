@@ -23,6 +23,7 @@ At the top: the app's shell and what every area uses.
 - `ProgramWarning.css`: the look of ProgramWarning.tsx
 - `ProgramWarning.tsx`: a bar when a program the app calls is missing
 - `queries/`: everything read from or sent to the server (TanStack Query)
+- `references/`: Furnace's demo songs to listen to, channel by channel, with the user's notes
 - `router.ts`: which page the address is, and moving between them
 - `songs/`: the songs list and a song opened
 - `stores/`: Zustand stores: the player, the preferences and the confirm question

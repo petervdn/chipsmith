@@ -4,6 +4,7 @@
  * failed render is tried again after a pause that grows (docs/adr/0015, docs/later.md). 75 renders
  * back to back without a pause all worked (2026-10-17). A render that takes longer than RENDER_LIMIT
  * is stopped and not tried again: a .fur that Furnace hangs on (seen 2026-10-17) would hang again.
+ * The same runs write a WAV per channel, or the song as Furnace's text export.
  */
 import { spawn } from 'node:child_process';
 import { getSettings } from '../config/settings.ts';
@@ -29,26 +30,53 @@ let queue: Promise<unknown> = Promise.resolve();
  * @returns A promise that settles once the WAV is written, or rejects once every try has failed.
  */
 export function renderToWav(furFile: string, wavFile: string): Promise<void> {
-  const render = queue.then(() => renderWithRetries(furFile, wavFile));
-  queue = render.catch(() => undefined);
-  return render;
+  return runInTurn(furFile, ['-loops', '0', '-output', wavFile]);
 }
 
-async function renderWithRetries(furFile: string, wavFile: string): Promise<void> {
+/**
+ * Renders a .fur once through to a WAV file per channel, as Furnace names them: the given name with
+ * `_c01`, `_c02`… before `.wav`, the first channel 1. In turn with the other renders, and tried
+ * again as they are.
+ *
+ * @param furFile - The path of the .fur to render.
+ * @param wavFile - The path the channels' names are made from, ending in `.wav`.
+ * @returns A promise that settles once the WAVs are written, or rejects once every try has failed.
+ */
+export function renderChannelsToWav(furFile: string, wavFile: string): Promise<void> {
+  return runInTurn(furFile, ['-loops', '0', '-outmode', 'perchan', '-output', wavFile]);
+}
+
+/**
+ * Writes a .fur as Furnace's text export: its information, chips, instruments and every pattern.
+ * In turn with the renders, and tried again as they are.
+ *
+ * @param furFile - The path of the .fur.
+ * @param textFile - The path of the text file to write.
+ * @returns A promise that settles once the text is written, or rejects once every try has failed.
+ */
+export function exportText(furFile: string, textFile: string): Promise<void> {
+  return runInTurn(furFile, ['-txtout', textFile]);
+}
+
+/**
+ * Runs Furnace on a .fur once the runs before it are done.
+ *
+ * @param furFile - The path of the .fur.
+ * @param outputArgs - What Furnace is asked to write.
+ * @returns A promise that settles once it has, or rejects once every try has failed.
+ */
+function runInTurn(furFile: string, outputArgs: string[]): Promise<void> {
+  const run = queue.then(() => runWithRetries(furFile, outputArgs));
+  queue = run.catch(() => undefined);
+  return run;
+}
+
+async function runWithRetries(furFile: string, outputArgs: string[]): Promise<void> {
   let lastError: unknown = null;
   for (let attempt = 1; attempt <= TRIES; attempt++) {
     if (attempt > 1) await wait(RETRY_PAUSE * (attempt - 1));
     try {
-      await runFurnace([
-        '-loglevel',
-        'error',
-        '-nostatus',
-        '-loops',
-        '0',
-        '-output',
-        wavFile,
-        furFile,
-      ]);
+      await runFurnace(['-loglevel', 'error', '-nostatus', ...outputArgs, furFile]);
       return;
     } catch (error) {
       if (error instanceof RenderTimeout) throw error;

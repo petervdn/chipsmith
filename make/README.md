@@ -9,6 +9,7 @@ song that plays it. The server reads what was made when it is asked to look agai
 - `fur-file-builder.ts`: a song's .fur contents from rows per channel, instruments, tempo and meter
 - `fur-file-facts.ts`: what a .fur file says of its music, a clip's facts: tempo, meter, chips, channels, length
 - `ids.ts`: new ids for clips, songs, jobs and guides, each claimed by making its folder
+- `import-references.ts`: Furnace's demos imported as references: the .fur, its text, its mix and channels
 - `make-song.ts`: a new song of one whole clip, made from a .fur file
 - `song-titles.ts`: the words each song's title is asked to have, and the titles already taken
 - `song-plan.ts`: what a job's script gives per song, and its check

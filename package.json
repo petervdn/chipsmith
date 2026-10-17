@@ -6,6 +6,7 @@
     "dev": "vite",
     "build": "vite build",
     "typecheck": "tsc --noEmit",
+    "import-references": "node make/import-references.ts",
     "lint": "oxlint src server shared fur render make config test vite.config.ts",
     "test": "node --test \"src/**/*.test.ts\" \"server/**/*.test.ts\" \"shared/**/*.test.ts\" \"fur/**/*.test.ts\" \"render/**/*.test.ts\" \"make/**/*.test.ts\" \"config/**/*.test.ts\" \"test/**/*.test.ts\"",
     "check": "npm run typecheck && npm run lint && npm test && npm run format:check",

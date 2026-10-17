@@ -13,5 +13,7 @@ test('addresses read as their pages', () => {
   assert.deepEqual(getRoute('/jobs'), { page: 'jobs' });
   assert.deepEqual(getRoute('/new?from=s0031'), { page: 'new' });
   assert.deepEqual(getRoute('/songs/s0031'), { page: 'song', songId: 's0031' });
+  assert.deepEqual(getRoute('/references'), { page: 'references' });
+  assert.deepEqual(getRoute('/references/r0003'), { page: 'reference', referenceId: 'r0003' });
   assert.deepEqual(getRoute('/somewhere/else'), { page: 'home' });
 });
