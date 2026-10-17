@@ -41,6 +41,8 @@ for the format and the list). A decision made in a conversation is not done unti
 - The user's taste is in their **style guides** (`data/guides/`, the Guides page): chosen per prompt,
   sent with it, and kept with what it made (docs/adr/0019).
 - `references/furnace/demos/`: Furnace's demo songs, for checking how Furnace itself writes things.
+- `docs/improving-songs.md`: how the songs can get better, and whether a lesson goes in a skill or
+  a style guide.
 
 ## Working rules
 
