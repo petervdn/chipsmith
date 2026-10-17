@@ -184,3 +184,8 @@ phases:
      as asked rather than written; one with neither shows none.
    - Why not draw the structure sent: Claude may not follow its bars exactly, songs without one get
      nothing, and labels pinned to the timeline stay put when blocks move.
+3. Rethink what clips are for. The pool is shared (0005) so a clip can play in more than one song,
+   but no song shares one: the Clips page is a long flat list of clips each played by one song,
+   and some by none. To weigh: keep `clips/` on disk but drop Clips from the top bar (a song's
+   clips are in its editor), or group the page by song; clean up the clips no song plays; reuse
+   across songs, if wanted, as a picker in the editor's clip column. The outcome is an ADR beside 0005.
