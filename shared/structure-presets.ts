@@ -22,7 +22,7 @@ const PRESET_NOTATIONS: { id: string; name: string; notation: string }[] = [
   {
     id: 'build',
     name: 'Build to a climax',
-    notation: "A8(intro) B8 B'8(build) C16(climax) A4(outro)",
+    notation: "A8(intro) B8 B'8(build) C16(climax)",
   },
   { id: 'through', name: 'Through-composed', notation: 'A8 B8 C8 D8' },
 ];

@@ -29,3 +29,9 @@ test('every preset reads', () => {
   assert.ok(STRUCTURE_PRESETS.length > 0);
   for (const preset of STRUCTURE_PRESETS) assert.ok(preset.sections.length > 0, preset.id);
 });
+
+test('no preset asks for an outro: an ending is asked for in the prompt or added to a structure', () => {
+  for (const preset of STRUCTURE_PRESETS) {
+    assert.ok(!preset.sections.some((section) => section.role === 'outro'), preset.id);
+  }
+});
