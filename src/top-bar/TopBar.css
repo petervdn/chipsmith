@@ -78,7 +78,7 @@
   }
 }
 
-/* the logo in the top bar, with the name beside it on a wide screen */
+/* the logo in the top bar, with the name beside it */
 .top-bar-logo {
   display: inline-flex;
   align-items: center;
@@ -87,14 +87,4 @@
   padding-right: 4px;
   text-decoration: none;
   font-weight: 700;
-}
-
-.top-bar-logo-name {
-  display: none;
-}
-
-@media (min-width: 720px) {
-  .top-bar-logo-name {
-    display: inline;
-  }
 }
