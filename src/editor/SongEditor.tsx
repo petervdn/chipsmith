@@ -140,7 +140,9 @@ export function SongEditor({ detail }: SongEditorProps) {
             type="button"
             className="song-editor-button"
             onClick={() => {
-              if (window.confirm(getSplitQuestion(splitCount))) splitSong(song.id);
+              if (!window.confirm(getSplitQuestion(splitCount))) return;
+              transport.stop();
+              splitSong(song.id);
             }}
             disabled={draft.hasChanges || isSplitting}
             title={
