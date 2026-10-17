@@ -2,11 +2,10 @@
 // style guides sent with it), with a copy button,
 // links to prompt it again or to use the song as the base of a new prompt, and a warning when the
 // song has changed since; the song's facts; and the songs it was prompted from or prompted again as.
-import { useState } from 'react';
 import type { SongListing } from '../../shared/api.types.ts';
-import { copyText } from '../copy-text.ts';
 import '../lists/lists.css';
 import './SongRowDetails.css';
+import { useCopyText } from './use-copy-text.ts';
 
 type SongRowDetailsProps = { listing: SongListing; titlesById: Map<string, string> };
 
@@ -21,7 +20,7 @@ type SongRowDetailsProps = { listing: SongListing; titlesById: Map<string, strin
  */
 export function SongRowDetails({ listing, titlesById }: SongRowDetailsProps) {
   const { song, isChangedAfterPrompt, key, chips, clipCount, promptedAgainAs } = listing;
-  const [copyResult, setCopyResult] = useState<boolean | null>(null);
+  const { copyResult, copy } = useCopyText();
   function getSongLink(songId: string) {
     return (
       <a key={songId} href={`/songs/${encodeURIComponent(songId)}`}>
@@ -52,7 +51,7 @@ export function SongRowDetails({ listing, titlesById }: SongRowDetailsProps) {
           <button
             type="button"
             className="list-action"
-            onClick={() => void copyText(song.prompt).then(setCopyResult)}
+            onClick={() => copy(song.prompt)}
             data-tooltip="copy the prompt"
           >
             {copyResult === null

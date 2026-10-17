@@ -1,5 +1,5 @@
-/* The look of SongPrompt.tsx: the prompt in the page's text, three lines until opened, "more" under
-   it. */
+/* The look of SongPrompt.tsx: the prompt in the page's text, three lines until opened, "more" and
+   the copy icon under it. */
 
 .song-prompt {
   margin: 0 0 12px;
@@ -19,7 +19,14 @@
   display: block;
 }
 
-.song-prompt-more {
+.song-prompt-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.song-prompt-action {
   padding: 0;
   border: 0;
   background: none;
@@ -27,4 +34,14 @@
   font-size: 0.8125rem;
   text-decoration: underline;
   cursor: pointer;
+}
+
+.song-prompt-copy {
+  display: inline-flex;
+  align-items: center;
+}
+
+.song-prompt-copy svg {
+  width: 14px;
+  height: 14px;
 }
