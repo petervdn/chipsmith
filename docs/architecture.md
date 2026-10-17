@@ -164,3 +164,14 @@ phases:
 ## Still to build
 
 1. A prompt on the editor's selection, its new clips replacing the blocks, with versions (0014).
+2. A song's sections labelled on the timeline, as written and never changed:
+   - A song's script also returns the sections it wrote (`A 8, A′ 8, B 4 (breakdown), A 8`), with
+     or without a structure sent; `make/check-script.ts` checks they add up to the song's length.
+   - They are kept on the whole clip (`sections` in its record), like its prompt: a clip never
+     changes, so neither do they. Clips split from it cover the same bars and keep them.
+   - The timeline draws them in a thin lane above the tracks, where the clip's block plays: moved
+     with the block, cut by its trim.
+   - A song made before, with a structure but no sections, shows the structure it was sent, marked
+     as asked rather than written; one with neither shows none.
+   - Why not draw the structure sent: Claude may not follow its bars exactly, songs without one get
+     nothing, and labels pinned to the timeline stay put when blocks move.
