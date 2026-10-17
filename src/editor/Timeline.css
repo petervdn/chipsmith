@@ -3,7 +3,7 @@
 
 .timeline {
   --track-name-width: 120px;
-  --row-height: 52px;
+  --row-height: 78px;
   position: relative;
   width: max-content;
   min-width: 100%;

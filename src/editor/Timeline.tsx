@@ -26,7 +26,7 @@ import './Timeline.css';
 import { LANE_TRACK_ATTRIBUTE } from './lane-position.ts';
 
 /** How tall a track's row is drawn, in pixels; Timeline.css draws it so. */
-export const ROW_HEIGHT = 52;
+export const ROW_HEIGHT = 78;
 
 type TimelineProps = {
   song: Song;
