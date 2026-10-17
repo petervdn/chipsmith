@@ -15,6 +15,7 @@ const JOB: Job = {
   harmony: null,
   created: '2026-10-17T10:00:00Z',
   phase: 'done',
+  composeStep: null,
   phaseStarted: '2026-10-17T10:02:00Z',
   finished: '2026-10-17T10:02:00Z',
   notes: [],

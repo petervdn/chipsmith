@@ -5,7 +5,9 @@
  */
 import type { NewNote } from '../shared/job.types.ts';
 import { closeSync, existsSync, openSync, readFileSync, readSync, statSync } from 'node:fs';
-import { describeThought, describeTool, shorten } from './claude-words.ts';
+import type { ComposeStep } from '../shared/job.types.ts';
+import { COMPOSE_STEPS } from '../shared/job.types.ts';
+import { describeThought, describeTool, getComposeStep, shorten } from './claude-words.ts';
 
 /**
  * What Claude is in the middle of, as far as the log has gone: nothing that shows, thinking (with
@@ -32,6 +34,8 @@ export type LogNews = LogPlace & {
   tokens: number;
   /** The output tokens of what Claude is in the middle of, as far as the log has gone (estimated). */
   nowTokens: number;
+  /** The furthest compose step Claude's tool calls in what was read show, or null for none. */
+  composeStep: ComposeStep | null;
 };
 
 /** Nothing read yet. */
@@ -66,6 +70,7 @@ export function readLogNews(logFile: string, place: LogPlace, projectFolder: str
     now: describeProgress(place.progress, projectFolder),
     tokens: 0,
     nowTokens: getProgressTokens(place.progress),
+    composeStep: null,
   };
   if (!existsSync(logFile)) return unchanged;
   const size = statSync(logFile).size;
@@ -83,6 +88,7 @@ export function readLogNews(logFile: string, place: LogPlace, projectFolder: str
   let result: RunResult | null = null;
   let progress = place.progress;
   let tokens = 0;
+  let composeStep: ComposeStep | null = null;
   for (const line of text.slice(0, end).split('\n')) {
     const event = parseLine(line);
     if (!event || event['parent_tool_use_id']) continue;
@@ -97,6 +103,9 @@ export function readLogNews(logFile: string, place: LogPlace, projectFolder: str
           tokens: i === 0 ? blockTokens : null,
         })),
       );
+      for (const { name, input } of getToolUses(event)) {
+        composeStep = getLaterStep(composeStep, getComposeStep(name, input, projectFolder));
+      }
       progress = { kind: 'idle' };
     }
     if (event['type'] === 'system' && event['subtype'] === 'thinking_tokens') {
@@ -122,6 +131,7 @@ export function readLogNews(logFile: string, place: LogPlace, projectFolder: str
     now: describeProgress(progress, projectFolder),
     tokens,
     nowTokens: getProgressTokens(progress),
+    composeStep,
   };
 }
 
@@ -270,12 +280,54 @@ function getThinking(event: Record<string, unknown>): string {
     .join(' ');
 }
 
-function getAssistantNotes(event: Record<string, unknown>, projectFolder: string): string[] {
+/**
+ * Returns the later of two compose steps.
+ *
+ * @param step - One step, or null for none.
+ * @param other - The other, or null for none.
+ * @returns The one that comes later, or null when both are.
+ */
+export function getLaterStep(
+  step: ComposeStep | null,
+  other: ComposeStep | null,
+): ComposeStep | null {
+  if (!step || !other) return step ?? other;
+  return COMPOSE_STEPS.indexOf(other) > COMPOSE_STEPS.indexOf(step) ? other : step;
+}
+
+/**
+ * Returns the parts of an assistant message: its texts and tool calls.
+ *
+ * @param event - The log's assistant event.
+ * @returns The message's content parts, unchecked.
+ */
+function getContentParts(event: Record<string, unknown>): unknown[] {
   const message = event['message'];
   const content =
     typeof message === 'object' && message !== null && 'content' in message ? message.content : [];
-  if (!Array.isArray(content)) return [];
-  return content.flatMap((part: unknown): string[] => {
+  return Array.isArray(content) ? content : [];
+}
+
+/**
+ * Returns the tool calls of an assistant message.
+ *
+ * @param event - The log's assistant event.
+ * @returns Each call's tool name and input.
+ */
+function getToolUses(
+  event: Record<string, unknown>,
+): { name: string; input: Record<string, unknown> }[] {
+  return getContentParts(event).flatMap((part) => {
+    if (typeof part !== 'object' || part === null || !('type' in part)) return [];
+    if (part.type !== 'tool_use' || !('name' in part) || typeof part.name !== 'string') return [];
+    const input =
+      'input' in part && typeof part.input === 'object' && part.input !== null ? part.input : {};
+    return [{ name: part.name, input: { ...input } }];
+  });
+}
+
+function getAssistantNotes(event: Record<string, unknown>, projectFolder: string): string[] {
+  return getContentParts(event).flatMap((part: unknown): string[] => {
     if (typeof part !== 'object' || part === null || !('type' in part)) return [];
     if (
       part.type === 'text' &&

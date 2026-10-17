@@ -2,6 +2,9 @@
 
 The jobs: their page, a job's card, and the line of a running one.
 
+- `job-stages.ts`: a job's stages from start to end, and where it is with each
+- `JobStages.css`: the look of JobStages.tsx
+- `JobStages.tsx`: a job's stages in a row: done, current, to come, or where it failed
 - `job-steps.ts`: a job's steps written alike, and how long each took, with its share of the job
 - `JobCard.css`: the look of JobCard.tsx
 - `JobCard.tsx`: a job's card on the Jobs page

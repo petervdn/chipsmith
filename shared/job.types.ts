@@ -10,6 +10,16 @@ import type { SentStructure } from './structure.types.ts';
 export type JobPhase =
   'queued' | 'composing' | 'building' | 'rendering' | 'done' | 'failed' | 'cancelled';
 
+/**
+ * How far Claude has come while composing: `writing` once it first writes the job's script,
+ * `checking` once it first runs the check on it. Before either it is preparing (reading the skills,
+ * planning).
+ */
+export type ComposeStep = 'writing' | 'checking';
+
+/** The compose steps in the order they come. */
+export const COMPOSE_STEPS: ComposeStep[] = ['writing', 'checking'];
+
 /** What happened in a job, as it happened: Claude's notes and the steps after it. */
 export type JobNote = {
   at: string;
@@ -49,6 +59,8 @@ export type Job = {
   harmony: SentHarmony | null;
   created: string;
   phase: JobPhase;
+  /** How far composing has come, or null before Claude wrote the script (or for a job from before). */
+  composeStep: ComposeStep | null;
   /** When the phase began. */
   phaseStarted: string;
   finished: string | null;

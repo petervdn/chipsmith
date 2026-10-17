@@ -2,7 +2,7 @@
 // "the script" with its lines, the plan by its current item.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { describeThought, describeTool } from './claude-words.ts';
+import { describeThought, describeTool, getComposeStep } from './claude-words.ts';
 
 const PROJECT = '/project';
 
@@ -39,4 +39,21 @@ test('the plan by the item it is on, an unknown tool by its name', () => {
 test('a thought by its first sentence, or that it was thought over', () => {
   assert.equal(describeThought('A walking bass. Then a lead.'), 'A walking bass.');
   assert.equal(describeThought(''), 'thinking it over');
+});
+
+test('writing the script, then checking it, show how far composing has come', () => {
+  const script = { file_path: '/project/data/jobs/j0001/script.ts', content: 'x' };
+  assert.equal(getComposeStep('Write', script, PROJECT), 'writing');
+  assert.equal(getComposeStep('Edit', script, PROJECT), 'writing');
+  assert.equal(
+    getComposeStep(
+      'Bash',
+      { command: 'node make/check-script.ts data/jobs/j0001/script.ts' },
+      PROJECT,
+    ),
+    'checking',
+  );
+  assert.equal(getComposeStep('Read', script, PROJECT), null);
+  assert.equal(getComposeStep('Write', { file_path: '/project/notes.md' }, PROJECT), null);
+  assert.equal(getComposeStep('Bash', { command: 'node fur/dump.ts x.fur' }, PROJECT), null);
 });

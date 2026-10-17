@@ -5,7 +5,7 @@ import assert from 'node:assert/strict';
 import { appendFileSync, mkdtempSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { LOG_START, readLogNews, readRunTokens } from './claude-log.ts';
+import { LOG_START, getLaterStep, readLogNews, readRunTokens } from './claude-log.ts';
 
 const PROJECT = '/project';
 const SCRIPT = '/project/data/jobs/j0001/script.ts';
@@ -101,4 +101,22 @@ test("a run's tokens add up from its messages, and its result gives the exact to
   ]);
   assert.equal(readLogNews(logFile, LOG_START, PROJECT).result?.tokens, 1520);
   assert.equal(readRunTokens(logFile), 1520);
+});
+
+test('the furthest compose step the tool calls read show', () => {
+  const logFile = join(mkdtempSync(join(tmpdir(), 'chiptune-log-')), 'claude.log');
+  function toolCall(name: string, input: object): object {
+    return { type: 'assistant', message: { content: [{ type: 'tool_use', name, input }] } };
+  }
+  addLines(logFile, [toolCall('Skill', { skill: 'write-song' })]);
+  const preparing = readLogNews(logFile, LOG_START, PROJECT);
+  assert.equal(preparing.composeStep, null);
+  addLines(logFile, [
+    toolCall('Write', { file_path: SCRIPT, content: 'x' }),
+    toolCall('Bash', { command: `node make/check-script.ts ${SCRIPT}` }),
+    toolCall('Edit', { file_path: SCRIPT, new_string: 'y' }),
+  ]);
+  assert.equal(readLogNews(logFile, preparing, PROJECT).composeStep, 'checking');
+  assert.equal(getLaterStep('checking', 'writing'), 'checking');
+  assert.equal(getLaterStep(null, 'writing'), 'writing');
 });

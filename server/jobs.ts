@@ -43,6 +43,7 @@ export function openJobs(root: string): JobStore {
         tokens: job.tokens ?? null,
         nowTokens: job.nowTokens ?? null,
         songCount: job.songCount ?? null,
+        composeStep: job.composeStep ?? null,
         notes: job.notes.map((note) => ({ ...note, tokens: note.tokens ?? null })),
       });
     } catch {
@@ -97,6 +98,7 @@ export function createJob(
     nowTokens: null,
     created: now,
     phase: 'queued',
+    composeStep: null,
     phaseStarted: now,
     finished: null,
     notes: [],

@@ -1,10 +1,12 @@
 /**
  * How what Claude does in a job is said in a step's words: a tool call (reading a skill, writing or
  * changing the job's script, a command by its description, the plan's current item), and a stretch
- * of thinking (its first sentence when the log has its text). Words only, in lower case and without
+ * of thinking (its first sentence when the log has its text); and how far a tool call shows the
+ * composing has come. Words only, in lower case and without
  * a full stop: the page makes them sentences. Knows nothing of the log.
  */
 import { relative, resolve } from 'node:path';
+import type { ComposeStep } from '../shared/job.types.ts';
 
 /** The longest step kept from a line of Claude's. */
 const NOTE_LENGTH = 200;
@@ -14,6 +16,9 @@ const THOUGHT_LENGTH = 140;
 
 /** The job's script, by its path from the project folder (the data folder may be elsewhere). */
 const SCRIPT_PATH = /(^|\/)jobs\/[^/]+\/script\.ts$/;
+
+/** The command that checks the job's script. */
+const CHECK_COMMAND = 'make/check-script.ts';
 
 /** A skill's instructions, by their path from the project folder. */
 const SKILL_PATH = /(^|\/)\.claude\/skills\/([^/]+)\/SKILL\.md$/;
@@ -51,6 +56,29 @@ export function describeTool(
   if (name === 'Skill') return `reading the ${getText('skill') || 'next'} skill`;
   if (name === 'TodoWrite') return describePlan(input['todos']);
   return `using ${name}`;
+}
+
+/**
+ * Returns how far composing has come by a tool call: writing the job's script, or running its check.
+ *
+ * @param name - The tool's name.
+ * @param input - The tool call's input.
+ * @param projectFolder - The project's folder, which the call's paths are read from.
+ * @returns The step, or null for a call that shows none.
+ */
+export function getComposeStep(
+  name: string,
+  input: Record<string, unknown>,
+  projectFolder: string,
+): ComposeStep | null {
+  const path = typeof input['file_path'] === 'string' ? input['file_path'] : '';
+  const isScript = SCRIPT_PATH.test(relative(projectFolder, resolve(projectFolder, path)));
+  if ((name === 'Write' || name === 'Edit') && path && isScript) return 'writing';
+  const command = input['command'];
+  if (name === 'Bash' && typeof command === 'string' && command.includes(CHECK_COMMAND)) {
+    return 'checking';
+  }
+  return null;
 }
 
 /**

@@ -1,13 +1,14 @@
 // A job's card on the Jobs page, from the moment its prompt is sent: in its top row its phase, how
-// long it has been going and the tokens it used; then, labelled, the prompt, the style guides,
-// structure and harmony sent with it, the songs it makes as they come, Claude's reply, and its steps. A job that
-// is over folds to one line.
+// long it has been going and the tokens it used; under it its stages from start to end; then,
+// labelled, the prompt, the style guides, structure and harmony sent with it, the songs it makes as
+// they come, Claude's reply, and its steps. A job that is over folds to one line.
 import { useEffect, useState } from 'react';
 import type { Job, JobPhase, JobSong } from '../../shared/job.types.ts';
 import { formatSeconds, formatTokens } from '../format.ts';
 import { getHarmonySummary } from '../../shared/harmony-prompt.ts';
 import { writeNotation } from '../../shared/structure-notation.ts';
 import { isJobRunning, useCancelJob } from '../queries/jobs.ts';
+import { JobStages } from './JobStages.tsx';
 import { JobSteps } from './JobSteps.tsx';
 import './jobs.css';
 import './JobCard.css';
@@ -190,6 +191,7 @@ export function JobCard({ job, onRemove }: JobCardProps) {
         )}
         {removeButton}
       </header>
+      <JobStages job={job} />
       <dl className="job-card-facts">
         <dt>Prompt</dt>
         <dd className="job-card-prompt">{job.prompt}</dd>

@@ -1,0 +1,129 @@
+/* The look of JobStages.tsx: dots joined by a line, done ones filled in the accent with a tick, the
+   current one ringed and pulsing, a failed one red, a stopped one grey with a cross; each name under
+   its dot. Small: dots only, close together. */
+
+.job-stages {
+  display: flex;
+  margin: 4px 0 12px;
+  padding: 0;
+  list-style: none;
+}
+
+.job-stages-stage {
+  position: relative;
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+}
+
+/* the line from the stage before to this one */
+.job-stages-stage + .job-stages-stage::before {
+  content: '';
+  position: absolute;
+  top: 8px;
+  right: 50%;
+  left: -50%;
+  height: 2px;
+  background: var(--line);
+}
+
+.job-stages-stage.is-done + .job-stages-stage::before {
+  background: var(--accent);
+}
+
+.job-stages-dot {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  box-sizing: border-box;
+  border: 2px solid var(--line);
+  border-radius: 50%;
+  background: var(--card);
+  color: var(--on-accent);
+}
+
+.job-stages-dot .lucide {
+  width: 12px;
+  height: 12px;
+  stroke-width: 3;
+}
+
+.is-done > .job-stages-dot {
+  border-color: var(--accent);
+  background: var(--accent);
+}
+
+.is-current > .job-stages-dot {
+  border-color: var(--accent);
+  animation: job-stages-pulse 1.4s ease-in-out infinite;
+}
+
+.is-failed > .job-stages-dot {
+  border-color: var(--reject);
+  background: var(--reject);
+}
+
+.is-stopped > .job-stages-dot {
+  border-color: var(--muted);
+  background: var(--muted);
+  color: var(--card);
+}
+
+@keyframes job-stages-pulse {
+  50% {
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 35%, transparent);
+  }
+}
+
+.job-stages-name {
+  max-width: 100%;
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 0.6875rem;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.is-current > .job-stages-name {
+  color: var(--fg);
+  font-weight: 600;
+}
+
+/* small: dots only, close together, in a line of text */
+.job-stages.is-small {
+  flex: none;
+  gap: 0;
+  margin: 0;
+}
+
+.job-stages.is-small .job-stages-stage {
+  flex: none;
+  width: 14px;
+}
+
+.job-stages.is-small .job-stages-stage + .job-stages-stage::before {
+  top: 4px;
+}
+
+.job-stages.is-small .job-stages-dot {
+  width: 10px;
+  height: 10px;
+  border-width: 1.5px;
+}
+
+.job-stages.is-small .job-stages-dot .lucide {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .is-current > .job-stages-dot {
+    animation: none;
+  }
+}

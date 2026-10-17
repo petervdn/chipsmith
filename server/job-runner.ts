@@ -13,7 +13,7 @@ import type { BuiltPlan } from '../make/build-script.ts';
 import { makeSong } from '../make/make-song.ts';
 import { readFurFile } from '../fur/read.ts';
 import type { LogPlace } from './claude-log.ts';
-import { LOG_START, readLogNews, readRunTokens } from './claude-log.ts';
+import { LOG_START, getLaterStep, readLogNews, readRunTokens } from './claude-log.ts';
 import { isRunning, startClaude, stopClaude } from './claude-run.ts';
 import type { JobStore } from './jobs.ts';
 import { addNotes, getJobFolder, setPhase, updateJob } from './jobs.ts';
@@ -213,6 +213,9 @@ async function followClaude(
   const folder = getJobFolder(jobs, watch.jobId);
   const news = readLogNews(join(folder, 'claude.log'), watch.place, PROJECT_FOLDER);
   if (news.notes.length > 0) addNotes(jobs, watch.jobId, news.notes);
+  const composeStep = jobs.jobs.get(watch.jobId)?.composeStep ?? null;
+  const laterStep = getLaterStep(composeStep, news.composeStep);
+  if (laterStep !== composeStep) updateJob(jobs, watch.jobId, { composeStep: laterStep });
   if (news.tokens > 0) {
     updateJob(jobs, watch.jobId, {
       tokens: (jobs.jobs.get(watch.jobId)?.tokens ?? 0) + news.tokens,
