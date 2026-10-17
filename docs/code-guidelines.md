@@ -18,6 +18,27 @@ cut to what applies. A rule that is not followed is taken out, not left to rot.
 - **An import names its file with its extension** (`./store.ts`, `./App.tsx`): Node runs the
   TypeScript as it is (the tests, and Vite's config with the server) and finds nothing else.
 - **A move is a commit of its own** that changes no behaviour.
+- **No barrel files**: no `index.ts` that only re-exports a folder. An import names the file the thing
+  is in (`./jobs/JobCard.tsx`), so there is one place to find it and no cycle runs through a barrel
+  (docs/adr/0020).
+
+## The page's folders
+
+How `src/` is laid out (docs/adr/0020):
+
+- **A folder per area of the app**: a page, or a part several pages show (the top bar, the player,
+  the lists). It holds everything of that area: its components, their CSS, its hooks, the modules
+  that know no page, and their tests. No folders by kind (`components/`, `hooks/`, `styles/`).
+- **A folder can hold more than one component** when they belong together (a page and the parts
+  only it shows). A component that another area uses too stays in the area it belongs to most; one
+  that is an area of its own (the player bar) gets its own folder.
+- **A component's CSS is beside it, named after it** (`JobCard.css` beside `JobCard.tsx`) and
+  imported by the component itself, so its styles come and go with it. Its classes start with its
+  name in kebab-case (`.job-card`, `.job-card-head`), or the area's for what the area's components
+  share. `src/style.css` holds only the tokens and the base (the page, links, form controls).
+- **What every area uses stays in folders of its own**: `queries/` (the server's data), `stores/`,
+  `playback/`. The app's shell (`main.tsx`, `App.tsx`, the router, the page title) is at the top
+  of `src/`.
 
 ## Logic apart from the page
 
