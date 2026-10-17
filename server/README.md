@@ -7,6 +7,7 @@ back to its file (docs/adr/0006).
 - `api.ts`: the Vite plugin: the routes of `/api/` and `/media/`
 - `claude-log.ts`: a Claude run's log read as it grows: notes, what it is doing now, its result
 - `claude-run.ts`: Claude Code started headless for a job, detached, its output into claude.log
+- `clip-channels.ts`: the channels of clips made before clips recorded them, filled in
 - `examples.ts`: the example songs copied into an empty data folder
 - `guides.ts`: the style guides in memory and in guides/<id>/guide.json
 - `http.ts`: answering a request: JSON, a file with byte ranges, an error

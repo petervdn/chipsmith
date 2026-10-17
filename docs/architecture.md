@@ -66,10 +66,12 @@ page but Home starts with breadcrumbs, the last its heading (Songs › Seven Tee
   a playhead), ▶ / ■ from a cursor set on the ruler, zoom, and the selected block's clip with its
   prompt and versions. Editing (0022): drag a block to move it (to another track too), its edges to
   trim it, snapped to a grid; repeat, duplicate, untrim, remove; add, rename and remove tracks; mute
-  and solo (not saved); undo and redo; Save or Revert. Split (a song that is one whole clip; what cutting does to the sound: docs/splitting.md): its .fur
-  cut into a track per channel that plays and a block per order row (a pattern played again is the
-  same clip), the pieces rendered in the background, shown striped until their audio is in
-  (`fur/cut.ts`, `make/split-song.ts`, `POST /api/songs/<id>/split`). To come: a prompt on the
+  and solo (not saved); undo and redo; Save or Revert. Split into channels (a song that is one whole clip
+  of more than one channel; what cutting does to the sound: docs/splitting.md): a track per channel
+  that plays, each one block of a new clip, the whole song on that channel alone, rendered in the
+  background and shown striped until its audio is in (`fur/cut.ts`, `make/split-song.ts`,
+  `POST /api/songs/<id>/split`). A clip records the channels that play in it (`channels`, filled in
+  from its source for clips made before). To come: a prompt on the
   selection.
 - **Clips** (`/clips`): the pool, with the same filter bar.
 - **Guides** (`/guides`): the style guides, made, edited and deleted.

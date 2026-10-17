@@ -16,6 +16,7 @@ import { writeJsonAtomically } from '../server/store.ts';
 import { CLIP_IDS, SONG_IDS, claimId } from './ids.ts';
 import { getBeatsPerBar, getBpm, getChipNames } from './fur-file-facts.ts';
 import type { SentStructure } from '../shared/structure.types.ts';
+import { getPlayingChannels } from '../fur/cut.ts';
 
 /** What a new song is made from. */
 export type NewSong = {
@@ -92,7 +93,7 @@ export async function makeSong({
     promptId,
     name: { section: null, stem: null },
     bars: null,
-    channels: null,
+    channels: getPlayingChannels(furFile),
     parent: null,
     madeFor: songId,
     tags,

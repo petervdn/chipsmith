@@ -50,6 +50,8 @@ import { checkSentStructure } from './structure-checks.ts';
 import { routeStructures } from './structure-routes.ts';
 import type { StructureStore } from './structures.ts';
 import { openStructures } from './structures.ts';
+import { fillClipChannels } from './clip-channels.ts';
+import { getSplitCount } from '../shared/clip-channels.ts';
 
 /**
  * Checks the programs the app calls, and warns in the server's log of each one that cannot be used.
@@ -116,6 +118,8 @@ export function chiptuneServer(root: string): Plugin {
       });
       const { store, jobs, guides, structures } = stores;
       if (isFirstStart) {
+        const filled = fillClipChannels(store);
+        if (filled > 0) console.log(`the channels of ${filled} clips filled in`);
         for (const { file, error } of store.unreadable) {
           console.warn(`unreadable ${file}: ${error}`);
         }
@@ -230,7 +234,10 @@ async function route(
     const song = store.songs.get(id);
     if (!song) return sendError(response, 404, `no song ${id}`);
     const whole = getWholeClip(store, song);
-    if (!whole) return sendError(response, 400, 'only a song that is one whole clip can be split');
+    if (!whole) {
+      const reason = 'only a song that is one whole clip of more than one channel can be split';
+      return sendError(response, 400, reason);
+    }
     const { tracks } = splitSong(store.root, song, whole);
     rescanStore(store);
     saveSong(store, { ...song, tracks, updated: new Date().toISOString() });
@@ -337,8 +344,8 @@ function getSongDetail(store: Store, songId: string): SongDetail {
 }
 
 /**
- * Returns the clip a song plays when it is one whole clip: one track, one block, from the start,
- * untrimmed and played once, its clip every channel of all its bars, with its source.
+ * Returns the clip a song plays when it can be split: one track, one block, from the start,
+ * untrimmed and played once, its clip whole with more than one channel playing, with its source.
  *
  * @param store - The clips and songs in memory.
  * @param song - The song.
@@ -350,7 +357,7 @@ function getWholeClip(store: Store, song: Song): Clip | null {
   if (!block || otherTracks.length > 0 || otherBlocks.length > 0) return null;
   if (block.start !== 0 || block.trim !== null || block.repeats !== 1) return null;
   const clip = store.clips.get(block.clip);
-  if (!clip || clip.channels !== null || clip.bars !== null) return null;
+  if (!clip || getSplitCount(clip) === 0) return null;
   return existsSync(join(getClipFolder(store, clip.id), 'source.fur')) ? clip : null;
 }
 

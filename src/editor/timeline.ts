@@ -7,6 +7,7 @@ import type { Clip } from '../../shared/clip.types.ts';
 import { getTicksPerSecond } from '../../shared/song-length.ts';
 import type { Song } from '../../shared/song.types.ts';
 import { TICKS_PER_BEAT } from '../../shared/song.types.ts';
+import { getSplitCount } from '../../shared/clip-channels.ts';
 
 /** A block as the timeline draws it; `index` is its place in its track's blocks. */
 export type BlockSpan = {
@@ -33,20 +34,20 @@ const BARS_AFTER_END = 4;
 const LEAST_BARS = 8;
 
 /**
- * Tells whether a song is one whole clip, as a song is made: one track of one block, from the
- * start, untrimmed and played once, its clip every channel of all its bars. Such a song can be split.
+ * Returns how many channels a song can be split into: a song of one track of one block, from the
+ * start, untrimmed and played once, whose clip is whole with more than one channel playing.
  *
  * @param song - The song.
  * @param clips - The clips it plays.
- * @returns Whether it is one whole clip.
+ * @returns The channels it can be split into, or 0 when it cannot be split.
  */
-export function isOneWholeClip(song: Song, clips: Clip[]): boolean {
+export function getSongSplitCount(song: Song, clips: Clip[]): number {
   const [track, ...otherTracks] = song.tracks;
   const [block, ...otherBlocks] = track?.blocks ?? [];
-  if (!block || otherTracks.length > 0 || otherBlocks.length > 0) return false;
-  if (block.start !== 0 || block.trim !== null || block.repeats !== 1) return false;
+  if (!block || otherTracks.length > 0 || otherBlocks.length > 0) return 0;
+  if (block.start !== 0 || block.trim !== null || block.repeats !== 1) return 0;
   const clip = clips.find((candidate) => candidate.id === block.clip);
-  return clip !== undefined && clip.channels === null && clip.bars === null;
+  return clip ? getSplitCount(clip) : 0;
 }
 
 /**

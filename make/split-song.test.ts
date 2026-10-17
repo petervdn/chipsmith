@@ -1,5 +1,5 @@
-// A whole song is split into a clip per piece, each with its own source and the whole clip as its
-// parent, and tracks that place them: a piece played again in a row is one block repeated.
+// A whole song is split into a clip per channel that plays, each with its own source and the whole
+// clip as its parent, alone on a track named after its channel.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { existsSync, mkdirSync, mkdtempSync, writeFileSync } from 'node:fs';
@@ -29,7 +29,7 @@ test('a whole song becomes a track per channel of blocks of new clips', () => {
     bpm: 120,
     beatsPerBar: 4,
     patternLength: 16,
-    channels: [[], [], [...getBar('D-2'), ...getBar('D-2'), ...getBar('F-2')], [], []],
+    channels: [getBar('E-4'), [], [...getBar('D-2'), ...getBar('D-2'), ...getBar('F-2')], [], []],
     instruments: [makeInstrument('bass', NES_INSTRUMENT, [])],
   });
   writeFileSync(join(root, 'clips', 'c0001', 'source.fur'), getFurFileBytes(furFile));
@@ -41,7 +41,7 @@ test('a whole song becomes a track per channel of blocks of new clips', () => {
     promptId: 'j0001',
     name: { section: null, stem: null },
     bars: null,
-    channels: null,
+    channels: [0, 2],
     parent: null,
     madeFor: 's0001',
     tags: [],
@@ -83,31 +83,25 @@ test('a whole song becomes a track per channel of blocks of new clips', () => {
     [
       [
         'c0002',
-        { section: 'A', stem: 'Triangle' },
-        { from: 0, to: 1 },
-        [2],
+        { section: null, stem: 'Pulse 1' },
+        null,
+        [0],
         { clip: 'c0001', relation: 'split' },
-        2,
+        6,
       ],
       [
         'c0003',
-        { section: 'B', stem: 'Triangle' },
-        { from: 2, to: 3 },
+        { section: null, stem: 'Triangle' },
+        null,
         [2],
         { clip: 'c0001', relation: 'split' },
-        2,
+        6,
       ],
     ],
   );
   assert.deepEqual(tracks, [
-    {
-      id: 't1',
-      name: 'Triangle',
-      blocks: [
-        { clip: 'c0002', start: 0, trim: null, repeats: 2 },
-        { clip: 'c0003', start: 768, trim: null, repeats: 1 },
-      ],
-    },
+    { id: 't1', name: 'Pulse 1', blocks: [{ clip: 'c0002', start: 0, trim: null, repeats: 1 }] },
+    { id: 't2', name: 'Triangle', blocks: [{ clip: 'c0003', start: 0, trim: null, repeats: 1 }] },
   ]);
   assert.ok(existsSync(join(root, 'clips', 'c0002', 'source.fur')));
   assert.ok(existsSync(join(root, 'clips', 'c0003', 'clip.json')));

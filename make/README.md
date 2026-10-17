@@ -11,4 +11,4 @@ song that plays it. The server reads what was made when it is asked to look agai
 - `ids.ts`: new ids for clips, songs, jobs and guides, each claimed by making its folder
 - `make-song.ts`: a new song of one whole clip, made from a .fur file
 - `song-plan.ts`: what a job's script gives per song, and its check
-- `split-song.ts`: a whole song split into a clip per piece and tracks of blocks that place them
+- `split-song.ts`: a whole song split into a clip per channel, each alone on a track

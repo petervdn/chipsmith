@@ -7,6 +7,7 @@ import { getClipLabel } from '../clips/ClipsPage.tsx';
 import { formatSeconds } from '../format.ts';
 import type { BlockSpan } from './timeline.ts';
 import { getTicksPerBar } from './timeline.ts';
+import { getChannelName } from '../../shared/clip-channels.ts';
 import './BlockDetails.css';
 
 type BlockDetailsProps = {
@@ -111,8 +112,9 @@ export function BlockDetails({
               ? ` (plays ${formatSeconds(span.slice.duration)})`
               : ''}
             {clip.chips.length > 0 && ` · ${clip.chips.join(' + ')}`}
-            {clip.channels && ` · channels ${clip.channels.join(', ')}`} · made{' '}
-            {clip.created.slice(0, 10)}
+            {clip.channels &&
+              ` · ${clip.channels.length === 1 ? 'channel' : `${clip.channels.length} channels`}: ${clip.channels.map((channel) => getChannelName(clip.chips, channel)).join(', ')}`}{' '}
+            · made {clip.created.slice(0, 10)}
           </p>
           <p className="block-details-prompt">{clip.prompt || 'No prompt.'}</p>
           {clip.guides.length > 0 && (

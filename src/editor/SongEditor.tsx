@@ -18,7 +18,7 @@ import {
 } from './song-edits.ts';
 import type { BlockPlace } from './song-edits.ts';
 import { ROW_HEIGHT, Timeline } from './Timeline.tsx';
-import { getBlockSpans, getClipTicks, getTicksPerBar, isOneWholeClip } from './timeline.ts';
+import { getBlockSpans, getClipTicks, getSongSplitCount, getTicksPerBar } from './timeline.ts';
 import { getHeardTracks } from './track-mix.ts';
 import { TrackDetails } from './TrackDetails.tsx';
 import { useBlockDrag } from './use-block-drag.ts';
@@ -32,10 +32,6 @@ import { useWheelZoom } from './use-wheel-zoom.ts';
 import { getVersions } from './versions.ts';
 import '../jobs/jobs.css';
 import './SongEditor.css';
-
-/** What Split asks before it cuts. */
-const SPLIT_QUESTION =
-  'Split this song into a track per channel and a block per pattern row? Its layout is replaced; the whole clip stays in the pool.';
 
 type SongEditorProps = { detail: SongDetail };
 
@@ -51,7 +47,7 @@ export function SongEditor({ detail }: SongEditorProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const { song, clips, isWaitingForAudio, waitingClipIds } = detail;
   const { mutate: splitSong, isPending: isSplitting, error: splitError } = useSplitSong();
-  const canSplit = isOneWholeClip(song, clips);
+  const splitCount = getSongSplitCount(song, clips);
   const draft = useSongDraft(detail);
   const { mix, toggleMute, toggleSolo } = useTrackMix();
   const draftSong = { ...song, tracks: draft.tracks };
@@ -139,21 +135,21 @@ export function SongEditor({ detail }: SongEditorProps) {
         >
           + Track
         </button>
-        {canSplit && (
+        {splitCount > 0 && (
           <button
             type="button"
             className="song-editor-button"
             onClick={() => {
-              if (window.confirm(SPLIT_QUESTION)) splitSong(song.id);
+              if (window.confirm(getSplitQuestion(splitCount))) splitSong(song.id);
             }}
             disabled={draft.hasChanges || isSplitting}
             title={
               draft.hasChanges
                 ? 'save or revert the changes first'
-                : 'cut the song into a track per channel and a block per pattern row'
+                : 'make a track per channel, each the whole song on that channel alone'
             }
           >
-            {isSplitting ? 'Splitting…' : 'Split'}
+            {isSplitting ? 'Splitting…' : `Split into ${splitCount} channels`}
           </button>
         )}
         <span className="song-editor-group">
@@ -256,4 +252,14 @@ export function SongEditor({ detail }: SongEditorProps) {
       )}
     </div>
   );
+}
+
+/**
+ * Returns what Split asks before it splits.
+ *
+ * @param count - How many channels the song is split into.
+ * @returns The question.
+ */
+function getSplitQuestion(count: number): string {
+  return `Split this song into ${count} channels? Each becomes a track of its own, the whole song on that channel alone. The whole clip stays in the pool.`;
 }
