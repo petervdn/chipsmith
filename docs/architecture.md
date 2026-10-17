@@ -20,7 +20,7 @@ docs/code-guidelines.md.
   "Prompt again" on a song's row sends only the song's prompt; the new songs note the song
   (`promptedFrom`). A song whose clips were made by other prompts shows as changed after its prompt.
 - "Use as base" on a song's row opens New with `Based on <title> [<id>]: `; the composing Claude reads
-  that song's files and starts from its music (notes/making-songs.md). Nothing else is stored.
+  that song's files and starts from its music (the create-song skill). Nothing else is stored.
 
 The types are in `shared/clip.types.ts` and `shared/song.types.ts`.
 
@@ -149,7 +149,7 @@ from (0019). Its card shows on the Jobs page; a running job also has one line ab
 home page, and the Jobs tab turns while one runs. The runner (`server/job-runner.ts`) takes one job at a time through its
 phases:
 1. **composing**: Claude Code runs headless (`server/claude-run.ts`: `claude -p`, detached, its
-   stream written to `jobs/<id>/claude.log`). It follows `notes/making-songs.md` and writes
+   stream written to `jobs/<id>/claude.log`). It follows the create-song skill (`.claude/skills/`) and writes
    `jobs/<id>/script.ts`, whose default export gives a plan per song (`make/song-plan.ts`), its music
    made with `make/fur-file-builder.ts`; it checks them with `make/check-script.ts`. Its lines and what
    its tools do are read from the log every second (`server/claude-log.ts`) and become the job's

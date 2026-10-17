@@ -38,3 +38,4 @@ Consequences.
 | [0022](0022-an-edit-is-a-draft-until-saved.md) | An edit is a draft in the page until it is saved (for now) | accepted |
 | [0023](0023-a-structure-is-part-of-the-prompt.md) | A song's structure is part of the prompt, saved like a style guide | accepted |
 | [0024](0024-a-clips-facts-are-read-from-its-source.md) | A clip's facts are read from its source.fur, not stored | accepted |
+| [0025](0025-song-knowledge-is-skills.md) | How songs and instruments are made is in skills, one per subject and chip | accepted |

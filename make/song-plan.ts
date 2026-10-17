@@ -1,6 +1,6 @@
 /**
  * What a job's script gives: a plan per song (title, furFile, tags, key). A script's default export is
- * a function that returns them (notes/making-songs.md). Checked here, as the script is code from a
+ * a function that returns them (the create-song skill). Checked here, as the script is code from a
  * prompt.
  */
 import type { FurFile } from '../fur/fur.types.ts';

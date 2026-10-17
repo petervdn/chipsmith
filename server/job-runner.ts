@@ -36,6 +36,7 @@ function getAllowedTools(jobFolder: string): string[] {
     'Glob',
     'Grep',
     'TodoWrite',
+    'Skill',
     `Write(${writable}/**)`,
     `Edit(${writable}/**)`,
     'Bash(node make/check-script.ts *)',
@@ -44,7 +45,7 @@ function getAllowedTools(jobFolder: string): string[] {
 }
 const SYSTEM_PROMPT = [
   'You are running headless, started from the chiptune app; the user is not at this terminal and cannot answer.',
-  'Read notes/making-songs.md first and follow it.',
+  'Use the create-song skill first and follow it; it leads to the instrument skills.',
   'Before each step, say in one short line what you are about to do; the user sees these lines live.',
   'That includes the long ones: say a line before you plan the songs and before you write or rewrite the script.',
   'Finish with a short plain reply (1-3 sentences): what you made and anything the user should know.',

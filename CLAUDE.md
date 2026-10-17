@@ -31,10 +31,12 @@ for the format and the list). A decision made in a conversation is not done unti
 - Test the page silently: switch on the player bar's mute (or set localStorage `chiptune.mute` to
   `"1"`) before playing anything in the browser.
 
-## Notes
+## Where the knowledge is
 
-- `notes/making-songs.md`: how a job's Claude makes songs from a prompt.
-- `notes/furnace-facts.md`: verified Furnace facts and sound recipes.
+- The skills (`.claude/skills/`, docs/adr/0025): **create-song** (how a job's Claude makes songs from
+  a prompt), **create-instrument**, and per chip **create-nes-instrument** and
+  **create-scc-instrument**: what was verified and the sounds that worked.
+- `docs/fur-format.md`: the .fur format as `fur/` writes it.
 - The user's taste is in their **style guides** (`data/guides/`, the Guides page): chosen per prompt,
   sent with it, and kept with what it made (docs/adr/0019).
 - `references/furnace/demos/`: Furnace's demo songs, for checking how Furnace itself writes things.
