@@ -37,7 +37,15 @@ const NOTE_LENGTH = 200;
 /** Bytes to a KB, for the size of a file being written. */
 const KB = 1024;
 
-/** The whole lines a run's log gained after `place`, as notes, what Claude is doing now, and its result. */
+/**
+ * Reads the whole lines a run's log gained after `place`, as notes, what Claude is doing now, and
+ * its result. A line not yet ended is left for the next read.
+ *
+ * @param logFile - The path of the run's log.
+ * @param place - Where the log was read to last, and what Claude was in the middle of there.
+ * @param projectFolder - The project's folder, which file paths are shown relative to.
+ * @returns What the log said since, and where it was read to.
+ */
 export function readLogNews(logFile: string, place: LogPlace, projectFolder: string): LogNews {
   const { position } = place;
   const unchanged = {
@@ -85,7 +93,13 @@ export function readLogNews(logFile: string, place: LogPlace, projectFolder: str
   };
 }
 
-/** What Claude is in the middle of after a streamed event: a block begun, or more of one. */
+/**
+ * Returns what Claude is in the middle of after a streamed event: a block begun, or more of one.
+ *
+ * @param progress - What Claude was in the middle of before the event.
+ * @param streamed - The streamed event, not yet checked.
+ * @returns What Claude is in the middle of now; the same progress when the event changes nothing.
+ */
 function getNextProgress(progress: Progress, streamed: unknown): Progress {
   if (typeof streamed !== 'object' || streamed === null || !('type' in streamed)) return progress;
   if (streamed.type === 'content_block_start' && 'content_block' in streamed) {
@@ -114,7 +128,13 @@ function getNextProgress(progress: Progress, streamed: unknown): Progress {
   return progress;
 }
 
-/** What Claude is in the middle of, in a few words, or null when there is nothing to add to the notes. */
+/**
+ * Describes what Claude is in the middle of in a few words.
+ *
+ * @param progress - What Claude is in the middle of.
+ * @param projectFolder - The project's folder, which file paths are shown relative to.
+ * @returns The words, or null when there is nothing to add to the notes.
+ */
 function describeProgress(progress: Progress, projectFolder: string): string | null {
   if (progress.kind === 'thinking') {
     return `thinking (${progress.tokens.toLocaleString('en')} tokens)`;
@@ -162,12 +182,31 @@ function getAssistantNotes(event: Record<string, unknown>, projectFolder: string
   });
 }
 
-/** What a tool call does, in a few words. */
+/**
+ * Describes what a tool call does in a few words.
+ *
+ * @param name - The tool's name.
+ * @param input - The tool call's input.
+ * @param projectFolder - The project's folder, which file paths are shown relative to.
+ * @returns The words.
+ */
 function describeTool(name: string, input: Record<string, unknown>, projectFolder: string): string {
+  /**
+   * Returns a path in the input, relative to the project folder.
+   *
+   * @param key - The input's field that holds the path.
+   * @returns The path, or an empty string when the field is not a string.
+   */
   function getPath(key: string): string {
     const value = input[key];
     return typeof value === 'string' ? relative(projectFolder, resolve(projectFolder, value)) : '';
   }
+  /**
+   * Returns a text in the input.
+   *
+   * @param key - The input's field that holds the text.
+   * @returns The text, or an empty string when the field is not a string.
+   */
   function getText(key: string): string {
     const value = input[key];
     return typeof value === 'string' ? value : '';

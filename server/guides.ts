@@ -14,7 +14,13 @@ export type GuideStore = { root: string; guides: Map<string, Guide> };
 
 const GUIDE_FILE = 'guide.json';
 
-/** Reads every guide under `root`/guides; one that does not read is reported and left. */
+/**
+ * Reads every guide under `root`/guides. One that does not read is reported in the server's log and
+ * left.
+ *
+ * @param root - The data folder.
+ * @returns The guides read.
+ */
 export function openGuides(root: string): GuideStore {
   const store: GuideStore = { root, guides: new Map() };
   const folder = join(root, GUIDE_IDS.folder);
@@ -32,12 +38,23 @@ export function openGuides(root: string): GuideStore {
   return store;
 }
 
-/** The guides, by name. */
+/**
+ * Lists the guides, sorted by name.
+ *
+ * @param store - The guides in memory.
+ * @returns The guides.
+ */
 export function listGuides(store: GuideStore): Guide[] {
   return [...store.guides.values()].sort((first, second) => first.name.localeCompare(second.name));
 }
 
-/** Makes a new guide. */
+/**
+ * Makes a new guide and writes it to its file.
+ *
+ * @param store - The guides in memory.
+ * @param draft - The new guide's name, text and default.
+ * @returns The guide made.
+ */
 export function createGuide(store: GuideStore, draft: GuideDraft): Guide {
   const now = new Date().toISOString();
   const guide: Guide = { id: claimId(store.root, GUIDE_IDS), ...draft, created: now, updated: now };
@@ -45,7 +62,14 @@ export function createGuide(store: GuideStore, draft: GuideDraft): Guide {
   return guide;
 }
 
-/** Changes a guide's name, text or default; what was already sent with it keeps its copy. */
+/**
+ * Changes a guide's name, text or default. What was already sent with it keeps its copy.
+ *
+ * @param store - The guides in memory.
+ * @param guideId - The guide's id; an unknown id is an error.
+ * @param draft - The guide's new name, text and default.
+ * @returns The guide changed.
+ */
 export function updateGuide(store: GuideStore, guideId: string, draft: GuideDraft): Guide {
   const guide = getGuide(store, guideId);
   const changed: Guide = { ...guide, ...draft, updated: new Date().toISOString() };
@@ -53,14 +77,25 @@ export function updateGuide(store: GuideStore, guideId: string, draft: GuideDraf
   return changed;
 }
 
-/** Deletes a guide's file; what was already sent with it keeps its copy. */
+/**
+ * Deletes a guide's file. What was already sent with it keeps its copy.
+ *
+ * @param store - The guides in memory.
+ * @param guideId - The guide's id; an unknown id is an error.
+ */
 export function deleteGuide(store: GuideStore, guideId: string): void {
   getGuide(store, guideId);
   rmSync(join(store.root, GUIDE_IDS.folder, guideId), { recursive: true, force: true });
   store.guides.delete(guideId);
 }
 
-/** Copies of the guides chosen with a prompt, in the order chosen; an unknown id is an error. */
+/**
+ * Returns copies of the guides chosen with a prompt, in the order chosen.
+ *
+ * @param store - The guides in memory.
+ * @param guideIds - The ids of the guides chosen; an unknown id is an error.
+ * @returns The copies to send with the prompt.
+ */
 export function getSentGuides(store: GuideStore, guideIds: string[]): SentGuide[] {
   return guideIds.map((guideId) => {
     const { id, name, text } = getGuide(store, guideId);

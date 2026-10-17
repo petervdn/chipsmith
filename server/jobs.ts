@@ -15,7 +15,12 @@ const MOST_NOTES = 200;
 /** The jobs, by id, and the folder they are kept in. */
 export type JobStore = { root: string; jobs: Map<string, Job> };
 
-/** Reads every job under `root`/jobs. */
+/**
+ * Reads every job under `root`/jobs.
+ *
+ * @param root - The data folder.
+ * @returns The jobs read.
+ */
 export function openJobs(root: string): JobStore {
   const store: JobStore = { root, jobs: new Map() };
   const folder = join(root, 'jobs');
@@ -39,12 +44,26 @@ export function openJobs(root: string): JobStore {
   return store;
 }
 
-/** The folder of a job's files: its script, Claude's log, the built .fur files. */
+/**
+ * Returns the folder of a job's files: its script, Claude's log, the built .fur files.
+ *
+ * @param store - The jobs in memory.
+ * @param jobId - The job's id.
+ * @returns The path of the job's folder.
+ */
 export function getJobFolder(store: JobStore, jobId: string): string {
   return join(store.root, 'jobs', jobId);
 }
 
-/** Makes a new job for a prompt and the guides chosen with it, queued. */
+/**
+ * Makes a new job for a prompt and the guides chosen with it, queued, and writes it to its file.
+ *
+ * @param store - The jobs in memory.
+ * @param prompt - The prompt.
+ * @param guides - Copies of the guides chosen with the prompt.
+ * @param promptedFrom - The id of the song whose prompt was sent again, or null.
+ * @returns The job made.
+ */
 export function createJob(
   store: JobStore,
   prompt: string,
@@ -74,14 +93,25 @@ export function createJob(
   return job;
 }
 
-/** Every job not removed, newest first. */
+/**
+ * Lists every job not removed, newest first.
+ *
+ * @param store - The jobs in memory.
+ * @returns The jobs.
+ */
 export function listJobs(store: JobStore): Job[] {
   return [...store.jobs.values()]
     .filter((job) => !job.removed)
     .sort((first, second) => second.created.localeCompare(first.created));
 }
 
-/** Takes a job that is over off the list; its files stay, with `removed` in its job.json. */
+/**
+ * Takes a job that is over off the list. Its files stay, with `removed` in its job.json; a job still
+ * running is an error.
+ *
+ * @param store - The jobs in memory.
+ * @param jobId - The job's id; an unknown id is an error.
+ */
 export function removeJob(store: JobStore, jobId: string): void {
   const job = store.jobs.get(jobId);
   if (!job) throw new Error(`no job ${jobId}`);
@@ -89,7 +119,14 @@ export function removeJob(store: JobStore, jobId: string): void {
   updateJob(store, jobId, { removed: new Date().toISOString() });
 }
 
-/** Changes a job and writes it. */
+/**
+ * Changes a job and writes it to its file.
+ *
+ * @param store - The jobs in memory.
+ * @param jobId - The job's id; an unknown id is an error.
+ * @param change - The fields to change.
+ * @returns The job changed.
+ */
 export function updateJob(store: JobStore, jobId: string, change: Partial<Job>): Job {
   const job = store.jobs.get(jobId);
   if (!job) throw new Error(`no job ${jobId}`);
@@ -98,7 +135,15 @@ export function updateJob(store: JobStore, jobId: string, change: Partial<Job>):
   return next;
 }
 
-/** Moves a job to a phase, with a note saying so. */
+/**
+ * Moves a job to a phase, with a note saying so. Done or failed also marks it finished.
+ *
+ * @param store - The jobs in memory.
+ * @param jobId - The job's id; an unknown id is an error.
+ * @param phase - The phase it moves to.
+ * @param note - The note saying so.
+ * @returns The job changed.
+ */
 export function setPhase(store: JobStore, jobId: string, phase: JobPhase, note: string): Job {
   const now = new Date().toISOString();
   const isEnd = phase === 'done' || phase === 'failed';
@@ -110,7 +155,14 @@ export function setPhase(store: JobStore, jobId: string, phase: JobPhase, note: 
   return addNotes(store, job.id, [note]);
 }
 
-/** Adds notes to a job. */
+/**
+ * Adds notes to a job. Only the last 200 notes are kept.
+ *
+ * @param store - The jobs in memory.
+ * @param jobId - The job's id; an unknown id is an error.
+ * @param texts - The notes' texts.
+ * @returns The job changed.
+ */
 export function addNotes(store: JobStore, jobId: string, texts: string[]): Job {
   const job = store.jobs.get(jobId);
   if (!job) throw new Error(`no job ${jobId}`);

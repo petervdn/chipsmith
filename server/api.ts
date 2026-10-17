@@ -46,7 +46,11 @@ import {
   saveSong,
 } from './store.ts';
 
-/** Checks the programs the app calls, and says in the server's log which cannot be used. */
+/**
+ * Checks the programs the app calls, and warns in the server's log of each one that cannot be used.
+ *
+ * @returns The checks of the programs, once they are done.
+ */
 function checkProgramsAndWarn(): Promise<ProgramCheck[]> {
   const checks = checkPrograms(getSettings());
   void checks.then((results) => {
@@ -67,7 +71,11 @@ declare global {
   var chiptuneRenderingMissingAudio: Promise<void> | undefined;
 }
 
-/** Renders the missing audio in the background, unless that is running already. */
+/**
+ * Starts rendering the missing audio in the background, unless that is running already.
+ *
+ * @param store - The clips and songs whose missing audio is rendered.
+ */
 function startRenderingMissingAudio(store: Store): void {
   if (globalThis.chiptuneRenderingMissingAudio) return;
   globalThis.chiptuneRenderingMissingAudio = renderMissingAudio(store).finally(() => {
@@ -75,7 +83,12 @@ function startRenderingMissingAudio(store: Store): void {
   });
 }
 
-/** The plugin, serving the clips and songs under `root`. */
+/**
+ * Returns the Vite plugin that serves the app's clips, songs, jobs and guides.
+ *
+ * @param root - The data folder the clips and songs are in.
+ * @returns The plugin.
+ */
 export function chiptuneServer(root: string): Plugin {
   return {
     name: 'chiptune-server',
@@ -174,7 +187,18 @@ async function route(
   sendError(response, 404, 'not found');
 }
 
-/** `/api/guides`: the list, a new guide, a guide changed or deleted; each answers with the list. */
+/**
+ * Answers `/api/guides`: lists the guides, makes a new one, or changes or deletes one, and answers
+ * each with the list of guides.
+ *
+ * @param guides - The style guides.
+ * @param request - The request.
+ * @param response - The response to answer it on.
+ * @param target - What the request is for.
+ * @param target.id - The guide's id, or undefined for the list.
+ * @param target.method - The request's HTTP method.
+ * @returns A promise that settles when the answer is sent.
+ */
 async function routeGuides(
   guides: GuideStore,
   request: IncomingMessage,
@@ -212,7 +236,13 @@ function listSongs(store: Store): SongListing[] {
   });
 }
 
-/** The clips a song's blocks play, each once, in the order the song first plays them. */
+/**
+ * Returns the clips a song's blocks play, each once, in the order the song first plays them.
+ *
+ * @param store - The clips and songs.
+ * @param song - The song.
+ * @returns The clips; a clip the store does not have is left out.
+ */
 function getSongClips(store: Store, song: Song): Clip[] {
   const clipIds = new Set(
     song.tracks

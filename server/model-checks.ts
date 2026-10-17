@@ -21,12 +21,24 @@ const STATUSES: readonly Status[] = ['new', 'heard', 'keeper', 'rejected'];
 const TAG_SOURCES: readonly Tag['by'][] = ['claude', 'user'];
 const RELATIONS: readonly ClipParent['relation'][] = ['variation', 'split'];
 
-/** A status, as songs and clips hold it. */
+/**
+ * Checks a status, as songs and clips hold it.
+ *
+ * @param value - The value parsed from JSON.
+ * @param path - Where the value is (a file, or a field in one), named in an error.
+ * @returns The status.
+ */
 export function checkStatus(value: unknown, path: string): Status {
   return getOneOf(value, path, STATUSES);
 }
 
-/** A list of tags. */
+/**
+ * Checks a list of tags.
+ *
+ * @param value - The value parsed from JSON.
+ * @param path - Where the value is (a file, or a field in one), named in an error.
+ * @returns The tags.
+ */
 export function checkTags(value: unknown, path: string): Tag[] {
   return getArray(value, path, (item, itemPath) => {
     const tag = getObject(item, itemPath);
@@ -37,7 +49,13 @@ export function checkTags(value: unknown, path: string): Tag[] {
   });
 }
 
-/** The guides sent with a prompt; a file from before guides has none. */
+/**
+ * Checks the guides sent with a prompt. A file from before guides has none, read as an empty list.
+ *
+ * @param value - The value parsed from JSON.
+ * @param path - Where the value is (a file, or a field in one), named in an error.
+ * @returns The guides sent.
+ */
 export function checkSentGuides(value: unknown, path: string): SentGuide[] {
   return getArray(value ?? [], path, (item, itemPath) => {
     const guide = getObject(item, itemPath);
@@ -49,7 +67,13 @@ export function checkSentGuides(value: unknown, path: string): SentGuide[] {
   });
 }
 
-/** A guide.json's content. */
+/**
+ * Checks a guide.json's content.
+ *
+ * @param value - The value parsed from JSON.
+ * @param path - Where the value is (a file, or a field in one), named in an error.
+ * @returns The guide.
+ */
 export function checkGuide(value: unknown, path: string): Guide {
   const guide = getObject(value, path);
   return {
@@ -60,7 +84,14 @@ export function checkGuide(value: unknown, path: string): Guide {
   };
 }
 
-/** A guide's name, text and default, as a request sends them; the name is not empty. */
+/**
+ * Checks a guide's name, text and default, as a request sends them. The name, trimmed, must not be
+ * empty.
+ *
+ * @param value - The value parsed from JSON.
+ * @param path - Where the value is (a file, or a field in one), named in an error.
+ * @returns The guide's name, text and default.
+ */
 export function checkGuideDraft(value: unknown, path: string): GuideDraft {
   const draft = getObject(value, path);
   const name = getString(draft['name'], `${path}.name`).trim();
@@ -72,7 +103,13 @@ export function checkGuideDraft(value: unknown, path: string): GuideDraft {
   };
 }
 
-/** A clip.json's content. */
+/**
+ * Checks a clip.json's content.
+ *
+ * @param value - The value parsed from JSON.
+ * @param path - Where the value is (a file, or a field in one), named in an error.
+ * @returns The clip.
+ */
 export function checkClip(value: unknown, path: string): Clip {
   const clip = getObject(value, path);
   return {
@@ -98,7 +135,13 @@ export function checkClip(value: unknown, path: string): Clip {
   };
 }
 
-/** A song.json's content. */
+/**
+ * Checks a song.json's content.
+ *
+ * @param value - The value parsed from JSON.
+ * @param path - Where the value is (a file, or a field in one), named in an error.
+ * @returns The song.
+ */
 export function checkSong(value: unknown, path: string): Song {
   const song = getObject(value, path);
   return {

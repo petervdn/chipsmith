@@ -7,7 +7,17 @@ import { spawn } from 'node:child_process';
 import { closeSync, openSync } from 'node:fs';
 import { getSettings } from '../config/settings.ts';
 
-/** Starts Claude on a prompt; its output goes to `logFile`. */
+/**
+ * Starts Claude on a prompt, detached, with its output appended to `logFile`.
+ *
+ * @param run - What Claude is run with.
+ * @param run.projectFolder - The folder Claude runs in.
+ * @param run.prompt - The prompt.
+ * @param run.systemPrompt - What is added to Claude's system prompt.
+ * @param run.allowedTools - The tools Claude may use without asking.
+ * @param run.logFile - The file Claude's stream-json output is appended to.
+ * @returns The process id of Claude, or undefined when it did not start.
+ */
 export function startClaude({
   projectFolder,
   prompt,
@@ -50,7 +60,12 @@ export function startClaude({
   }
 }
 
-/** Whether a process still runs. */
+/**
+ * Checks whether a process still runs.
+ *
+ * @param pid - The process id.
+ * @returns Whether it runs.
+ */
 export function isRunning(pid: number): boolean {
   try {
     process.kill(pid, 0);
@@ -60,7 +75,12 @@ export function isRunning(pid: number): boolean {
   }
 }
 
-/** The environment without the variables of the Claude Code session the server may run inside. */
+/**
+ * Returns the server's environment without the variables of the Claude Code session the server may
+ * run inside.
+ *
+ * @returns The environment to start Claude with.
+ */
 function getCleanEnvironment(): NodeJS.ProcessEnv {
   return Object.fromEntries(
     Object.entries(process.env).filter(

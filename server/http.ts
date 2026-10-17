@@ -5,18 +5,35 @@
 import { createReadStream, statSync } from 'node:fs';
 import type { IncomingMessage, ServerResponse } from 'node:http';
 
-/** Sends a value as JSON. */
+/**
+ * Sends a value as JSON.
+ *
+ * @param response - The response to send it on.
+ * @param value - The value to send.
+ * @param status - The HTTP status, 200 unless given.
+ */
 export function sendJson(response: ServerResponse, value: unknown, status = 200): void {
   response.writeHead(status, { 'Content-Type': 'application/json; charset=utf-8' });
   response.end(JSON.stringify(value));
 }
 
-/** Sends an error as `{ error }`. */
+/**
+ * Sends an error as JSON, `{ error }`.
+ *
+ * @param response - The response to send it on.
+ * @param status - The HTTP status.
+ * @param message - What went wrong.
+ */
 export function sendError(response: ServerResponse, status: number, message: string): void {
   sendJson(response, { error: message }, status);
 }
 
-/** Reads a request's body as JSON, not yet checked. */
+/**
+ * Reads a request's body as JSON, without checking it.
+ *
+ * @param request - The request.
+ * @returns The parsed body, or null when the body is empty.
+ */
 export async function readJsonBody(request: IncomingMessage): Promise<unknown> {
   const chunks: Buffer[] = [];
   for await (const chunk of request) chunks.push(Buffer.from(chunk));
@@ -24,7 +41,15 @@ export async function readJsonBody(request: IncomingMessage): Promise<unknown> {
   return text ? JSON.parse(text) : null;
 }
 
-/** Sends a file, or the byte range the request asks for. */
+/**
+ * Sends a file, or the byte range of it the request asks for. A range that cannot be met is
+ * answered with 416.
+ *
+ * @param request - The request, which may ask for a range.
+ * @param response - The response to send the file on.
+ * @param file - The path of the file.
+ * @param contentType - The file's media type.
+ */
 export function sendFile(
   request: IncomingMessage,
   response: ServerResponse,

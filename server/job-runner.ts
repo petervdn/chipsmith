@@ -22,7 +22,12 @@ import { rescanStore } from './store.ts';
 
 /** Milliseconds between looks at running jobs. */
 const TICK = 1000;
-/** The tools a job's Claude may use without asking: nobody is at its terminal. */
+/**
+ * Returns the tools a job's Claude may use without asking, since nobody is at its terminal.
+ *
+ * @param jobFolder - The job's folder, the only one Claude may write in.
+ * @returns The tools, as Claude Code's `--allowedTools` reads them.
+ */
 function getAllowedTools(jobFolder: string): string[] {
   const writable = getPermissionPath(jobFolder);
   return [
@@ -44,19 +49,36 @@ const SYSTEM_PROMPT = [
   'Finish with a short plain reply (1-3 sentences): what you made and anything the user should know.',
 ].join(' ');
 
-/** A folder as Claude Code reads it: from the project folder it runs in, else `//` and its absolute path. */
+/**
+ * Returns a folder as Claude Code's permissions read it: relative to the project folder it runs in,
+ * or else `//` and its absolute path.
+ *
+ * @param folder - The folder.
+ * @returns The folder's path for a permission.
+ */
 function getPermissionPath(folder: string): string {
   const path = getProjectPath(folder);
   return isAbsolute(path) ? `/${path}` : path;
 }
 
-/** A path as seen from the project folder: relative inside it, absolute outside it. */
+/**
+ * Returns a path as seen from the project folder: relative inside it, absolute outside it.
+ *
+ * @param path - The path.
+ * @returns The path, relative to the project folder when it is inside it.
+ */
 function getProjectPath(path: string): string {
   const fromProject = relative(PROJECT_FOLDER, path);
   return fromProject.startsWith('..') || isAbsolute(fromProject) ? path : fromProject;
 }
 
-/** The style guides sent with the prompt, as part of it: each under its name (docs/adr/0019). */
+/**
+ * Returns the lines that add the style guides sent with the prompt to it, each under its name
+ * (docs/adr/0019).
+ *
+ * @param guides - The guides sent with the prompt.
+ * @returns The lines, or none when no guide was sent.
+ */
 function getGuideLines(guides: SentGuide[]): string[] {
   if (guides.length === 0) return [];
   return [
@@ -69,7 +91,14 @@ function getGuideLines(guides: SentGuide[]): string[] {
 /** What the runner keeps of the Claude run of the job in its composing phase. */
 type ClaudeWatch = { jobId: string; pid: number | undefined; place: LogPlace };
 
-/** Starts the ticker that moves jobs on; gives a function that stops it. */
+/**
+ * Starts the ticker that moves jobs on, one at a time. A job that was building or rendering when the
+ * server stopped is marked failed.
+ *
+ * @param jobs - The jobs in memory.
+ * @param store - The clips and songs, looked at again as each song is made.
+ * @returns A function that stops the ticker.
+ */
 export function startJobRunner(jobs: JobStore, store: Store): () => void {
   let watch: ClaudeWatch | null = null;
   let isBusy = false;
@@ -124,8 +153,12 @@ function startComposing(jobs: JobStore, job: Job): ClaudeWatch {
 }
 
 /**
- * Watches a job that was composing when the server started: its notes so far are in job.json, so
- * the log is read from its end, unless Claude finished meanwhile.
+ * Watches a job that was composing when the server started. Its notes so far are in job.json, so the
+ * log is read from its end, unless Claude finished meanwhile.
+ *
+ * @param jobs - The jobs in memory.
+ * @param job - The job that was composing.
+ * @returns What the runner keeps of the job's Claude run.
  */
 function resumeWatching(jobs: JobStore, job: Job): ClaudeWatch {
   const logFile = join(getJobFolder(jobs, job.id), 'claude.log');
@@ -134,7 +167,16 @@ function resumeWatching(jobs: JobStore, job: Job): ClaudeWatch {
   return { jobId: job.id, pid, place: news.result ? LOG_START : news };
 }
 
-/** Reads what Claude said since the last look; when it is done, builds and renders. */
+/**
+ * Reads what Claude said since the last look and adds it to the job's notes; when Claude is done,
+ * builds and renders the songs. A Claude that ended with an error, or stopped without a result, is
+ * an error.
+ *
+ * @param jobs - The jobs in memory.
+ * @param store - The clips and songs.
+ * @param watch - What the runner keeps of the job's Claude run.
+ * @returns The watch, read further, or null when the job has moved past composing.
+ */
 async function followClaude(
   jobs: JobStore,
   store: Store,

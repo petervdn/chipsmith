@@ -9,13 +9,24 @@ import { renderClipAudio } from '../render/render-clip.ts';
 import type { Store } from './store.ts';
 import { getClipFolder } from './store.ts';
 
-/** Whether a clip has no audio yet but can have it: its source is there. */
+/**
+ * Checks whether a clip has no audio yet but can have it, because its source is there.
+ *
+ * @param store - The clips and songs in memory.
+ * @param clipId - The clip's id.
+ * @returns Whether its audio.flac is missing and its source.fur is there.
+ */
 export function isAudioMissing(store: Store, clipId: string): boolean {
   const folder = getClipFolder(store, clipId);
   return !existsSync(join(folder, 'audio.flac')) && existsSync(join(folder, 'source.fur'));
 }
 
-/** The clips whose audio is missing, by id. */
+/**
+ * Returns the ids of the clips whose audio is missing.
+ *
+ * @param store - The clips and songs in memory.
+ * @returns The ids, sorted.
+ */
 export function getClipsMissingAudio(store: Store): string[] {
   return [...store.clips.keys()].filter((clipId) => isAudioMissing(store, clipId)).sort();
 }
@@ -23,6 +34,8 @@ export function getClipsMissingAudio(store: Store): string[] {
 /**
  * Renders every clip whose audio is missing, one after another, and says in the server's log what it
  * did. A clip that fails is reported and left; it is tried again when the server next starts.
+ *
+ * @param store - The clips and songs in memory.
  */
 export async function renderMissingAudio(store: Store): Promise<void> {
   const clipIds = getClipsMissingAudio(store);

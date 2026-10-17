@@ -9,7 +9,13 @@ import { join } from 'node:path';
 /** The folders of the data that the examples fill. */
 const FILLED_FOLDERS = ['clips', 'songs'];
 
-/** Copies the examples into `dataFolder` when it holds no clips and no songs; says whether it did. */
+/**
+ * Copies the examples into `dataFolder` when it holds no clips and no songs.
+ *
+ * @param dataFolder - The data folder.
+ * @param examplesFolder - The folder of the examples (examples/).
+ * @returns Whether the examples were copied.
+ */
 export function copyExamplesIfEmpty(dataFolder: string, examplesFolder: string): boolean {
   if (FILLED_FOLDERS.some((folder) => hasEntries(join(dataFolder, folder)))) return false;
   for (const folder of FILLED_FOLDERS) {
