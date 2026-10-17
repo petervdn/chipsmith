@@ -96,7 +96,7 @@ Nothing pops up from the browser (0026): a question before a change is the page'
 a tooltip is the page's own (`src/tooltip/`), a control's `data-tooltip` shown when the mouse rests
 on it or the keyboard moves to it.
 
-The page is laid out for a phone first (one column, rows that wrap, 40 px touch targets) and a
+The page is laid out for a phone first (one column, rows that wrap, controls 32 px tall, 36 px under a finger) and a
 desktop (rows on one line), in `src/style.css`.
 
 ## State in the page

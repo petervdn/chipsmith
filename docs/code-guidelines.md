@@ -199,8 +199,9 @@ sent is a card, newest first.
 
 ## The page
 
-- **Phone and desktop alike**: one column on a phone, rows that wrap, touch targets of 40 px
-  (`--touch`); on a desktop a row is one line. Nothing scrolls sideways.
+- **Phone and desktop alike**: one column on a phone, rows that wrap; a control 32 px tall with a
+  mouse and 36 px under a finger (`--touch`), an option pill 28 px and 32 px (`--pill`); on a
+  desktop a row is one line. Nothing scrolls sideways.
 - **Colours are tokens** on `:root`, with a dark set under `prefers-color-scheme: dark` and under
   `data-look="dark"` (the top bar's switch).
 - **A control that does not say what it does gets a tooltip**: `data-tooltip`, shown by the page's

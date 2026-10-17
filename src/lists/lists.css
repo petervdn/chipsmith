@@ -10,8 +10,9 @@
 }
 
 .list-chip {
-  min-height: 32px;
+  min-height: var(--pill);
   padding: 0 10px;
+  font-size: 0.875rem;
   border: var(--border-width) solid var(--line);
   border-radius: calc(var(--radius) * 2);
   background: var(--card);

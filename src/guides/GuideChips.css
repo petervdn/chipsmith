@@ -32,8 +32,7 @@
 }
 
 .guide-chips-chip {
-  min-height: var(--touch);
-  padding: 0 16px;
+  min-height: var(--pill);
 }
 
 .guide-chips-chip.is-on {

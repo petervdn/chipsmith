@@ -18,7 +18,10 @@
   --reject: #dc2f4b;
   --on-reject: #ffffff;
   color-scheme: light;
-  --touch: 40px;
+  /* how tall a control is: 32 px with a mouse, 36 px under a finger (below) */
+  --touch: 32px;
+  /* how tall an option pill is (a chip, a style guide, a structure) */
+  --pill: 28px;
   /* the widest the page's content gets, centred beyond that; the top bar's content keeps to it */
   --page-width: 1100px;
   /* the tracks' colours on the timeline, bright in light and dark alike, with --on-accent on them */
@@ -37,6 +40,14 @@
   --round: 50%;
   --border-width: 1px;
   font-size: var(--text-size);
+}
+
+/* a touch screen: controls a little taller, for a finger */
+@media (pointer: coarse) {
+  :root {
+    --touch: 36px;
+    --pill: 32px;
+  }
 }
 
 @media (prefers-color-scheme: dark) {

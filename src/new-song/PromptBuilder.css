@@ -47,11 +47,6 @@
   gap: 6px;
 }
 
-.prompt-builder-chips .list-chip {
-  min-height: var(--touch);
-  padding: 0 16px;
-}
-
 .prompt-builder-label {
   grid-area: label;
   color: var(--muted);
