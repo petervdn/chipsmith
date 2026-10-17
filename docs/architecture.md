@@ -99,8 +99,8 @@ page but Home starts with breadcrumbs, the last its heading (Songs › Seven Tee
 - **Clips** (`/clips`): the pool, with the same filter bar; not in the top bar (0029), opened by its
   address.
 - **Guides** (`/guides`): the style guides, made, edited and deleted.
-- **New** (`/new`): a prompt for Claude in a box, a prompt builder under it (the chips as switches, one or more, each off, once or
-  twice (0034); a part per row, rolled
+- **New** (`/new`): a prompt for Claude in a box, a prompt builder under it (the chips as switches: NES, PSG and SCC, the
+  SID not offered for now (0035), one or more, each off, once or twice (0034); a part per row, rolled
   at random or picked, each with a lock, the sentence they make on top; "Use" fills the box, which is otherwise its own),
   the Structure panel (AABA chosen at first; none, a preset, a saved structure or your own: written short and as tiles
   as wide as their bars, a section edited when tapped; between two tiles the gap, how one section
@@ -154,7 +154,7 @@ top bar's links open a list unfiltered, and the back button returns to a filtere
 ## The .fur files
 
 `fur/` writes and reads Furnace files (.fur) as this project writes them (format version 223, old INFO
-layout, one subsong, NES / SCC / SCC+ / SID): `write.ts` lays a file out as Furnace does, `read.ts` reads
+layout, one subsong, NES / PSG / SCC / SCC+ / SID): `write.ts` lays a file out as Furnace does, `read.ts` reads
 one back, `instrument.ts` and `pattern.ts` build the blocks, `dump.ts` shows a .fur file as text. It is
 the port of the Python tools (0002), held to them by `fur/round-trip.test.ts`: the examples' .fur files,
 whose patterns and instruments the Python writer made, are read and written again byte for byte. (Before the old project left

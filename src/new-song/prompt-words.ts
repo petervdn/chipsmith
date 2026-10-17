@@ -127,6 +127,8 @@ export const IDEAS: Idea[] = [
   { text: 'with sparse drums and lots of space' },
   { text: 'with a hook built on three notes' },
   { text: 'with call-and-response between the two pulses', chip: 'nes' },
+  { text: 'with punchy PSG drums: a square kick and a noise snare', chip: 'psg' },
+  { text: 'with a buzzing envelope bass on the PSG', chip: 'psg' },
   { text: 'with ghost notes on the snare' },
   { text: 'with the melody in thirds' },
   { text: 'with a dotted rhythm in the lead' },

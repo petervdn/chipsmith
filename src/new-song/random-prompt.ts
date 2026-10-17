@@ -11,6 +11,12 @@ import { CHIP_NAMES, CHIPS } from '../../shared/chips.ts';
 import type { Piece, Rhythm } from './prompt-words.ts';
 import { IDEAS, MOODS, PIECES, RHYTHMS } from './prompt-words.ts';
 
+/**
+ * The chips the prompt builder offers, in the order of CHIP_NAMES. The SID is left out for now: its
+ * notes start late now and then (docs/adr/0035); a prompt can still name it.
+ */
+export const PROMPT_CHIPS: ChipName[] = ['nes', 'psg', 'scc'];
+
 /** The most times a song may ask for one chip. */
 const MOST_OF_A_CHIP = 2;
 
@@ -174,13 +180,13 @@ function pickValue(values: string[], getRandom: () => number): string {
  */
 export function rollChips(getRandom: () => number): ChipName[] {
   const count = getRandom() < TWO_CHIPS_CHANCE ? 2 : 1;
-  const left: ChipName[] = [...CHIP_NAMES];
+  const left: ChipName[] = [...PROMPT_CHIPS];
   const picked: ChipName[] = [];
   while (picked.length < count && left.length > 0) {
     const [chip] = left.splice(Math.floor(getRandom() * left.length), 1);
     if (chip) picked.push(chip);
   }
-  return CHIP_NAMES.filter((chip) => picked.includes(chip));
+  return PROMPT_CHIPS.filter((chip) => picked.includes(chip));
 }
 
 /**

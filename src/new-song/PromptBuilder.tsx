@@ -4,9 +4,9 @@
 // as switches, one or more on, and closes it again, the sentence staying where it is. Use puts the
 // sentence in the box; the box is written to only by that button, so what is typed there afterwards
 // is the box's own.
-import { CHIP_NAMES, CHIPS } from '../../shared/chips.ts';
+import { CHIPS } from '../../shared/chips.ts';
 import { ArrowUp, Dices } from 'lucide-react';
-import { getPartValues, PROMPT_PARTS } from './random-prompt.ts';
+import { getPartValues, PROMPT_CHIPS, PROMPT_PARTS } from './random-prompt.ts';
 import '../lists/lists.css';
 import { usePromptBuilder } from './use-prompt-builder.ts';
 import { FoldPanel } from './FoldPanel.tsx';
@@ -67,7 +67,7 @@ export function PromptBuilder({ isOpen, onToggle, onUse }: PromptBuilderProps) {
           onRoll={() => rollOne('chips')}
           onToggleLock={() => toggleLock('chips')}
         >
-          {CHIP_NAMES.map((chip) => {
+          {PROMPT_CHIPS.map((chip) => {
             const count = parts.chips.filter((other) => other === chip).length;
             return (
               <button

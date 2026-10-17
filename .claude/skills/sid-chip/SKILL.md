@@ -6,7 +6,13 @@ description: Writing for the Commodore 64 SID (6581) in Furnace for chipsmith so
 # The SID (Commodore 64)
 
 Chip `0x47` in Furnace (the 6581, the first C64's), 3 channels (SID 1-3): `chips: ['sid']` alone, or
-after the NES and SCC with others (NES first, then SCC, then SID). Its clock is PAL. Song-wide
+after the NES, PSG and SCC with others (NES first, then PSG, SCC, SID). Its clock is PAL.
+
+**Timing (measured 2026-10-17):** in the four songs made with it, 11% of SID notes that start from
+silence start about 33 ms late (two ticks), on bass, lead and drums alike; no NES or SCC note in
+the same songs did. The cause is not found: Furnace's envelope reset time (`initResetTime` 0-4)
+did not change it, nor did whole ticks to a row. Until it is, the New page does not offer the SID
+(docs/adr/0035); a prompt that names it still gets it. Song-wide
 things: **furnace-song**. Sources: Furnace 0.6.8.3's C64 pages (doc/7-systems/c64.md,
 doc/4-instrument/c64.md, papers/newIns.md) and the C64 demos in `references/furnace/demos/c64/`
 (read with `node fur/dump.ts <file> --ins`). Marked **measured** where rendered and checked here;

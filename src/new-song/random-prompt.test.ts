@@ -17,14 +17,14 @@ import {
 test('the first of every part', () => {
   assert.equal(
     getPromptText(rollParts(null, [], () => 0)),
-    'A dark funk groove for the NES and the SCC, in 4/4, with a walking bass.',
+    'A dark funk groove for the NES and the PSG, in 4/4, with a walking bass.',
   );
 });
 
 test('the last of every part, never past it, and only what the chips can play', () => {
   assert.equal(
     getPromptText(rollParts(null, [], () => 0.9999)),
-    'A restless baroque dance for the SID, with a syncopated groove, with the melody doubled in octaves.',
+    'A restless baroque dance for the SCC, with a syncopated groove, with the melody doubled in octaves.',
   );
 });
 
@@ -33,7 +33,7 @@ test('a kept part keeps its value; the others are picked again', () => {
   const again = rollParts(first, ['chips', 'mood'], () => 0.9999);
   assert.deepEqual(
     [again.mood, again.chips, again.idea],
-    ['dark', ['nes', 'scc'], 'with the melody doubled in octaves'],
+    ['dark', ['nes', 'psg'], 'with the melody doubled in octaves'],
   );
 });
 
@@ -71,16 +71,16 @@ test('a mood that starts with a vowel takes "an"', () => {
 test('one chip, or now and then two, never the same twice', () => {
   assert.deepEqual(
     rollChips(() => 0.5),
-    ['scc'],
+    ['psg'],
   );
   assert.deepEqual(
     rollChips(() => 0),
-    ['nes', 'scc'],
+    ['nes', 'psg'],
   );
   const twice = [0.1, 0.9, 0.9];
   assert.deepEqual(
     rollChips(() => twice.shift() ?? 0),
-    ['scc', 'sid'],
+    ['psg', 'scc'],
   );
 });
 
