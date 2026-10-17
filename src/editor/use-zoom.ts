@@ -11,7 +11,7 @@ const MOST_PIXELS = 600;
 /** How much one step zooms in or out. */
 const STEP = 1.5;
 /** The width of the track names, which the fitted bars leave free; Timeline.css draws them so. */
-export const TRACK_NAME_WIDTH = 92;
+export const TRACK_NAME_WIDTH = 120;
 
 /**
  * Keeps how wide a bar is drawn: fitted to the timeline's width until zoomed, then a step in or out

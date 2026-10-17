@@ -202,6 +202,8 @@ export function SongEditor({ detail }: SongEditorProps) {
           onMoveTo={transport.moveTo}
           onPress={drag.startPress}
           wasDragged={drag.wasDragged}
+          onToggleMute={toggleMute}
+          onToggleSolo={toggleSolo}
           waitingClipIds={waitingClipIds}
         />
       </div>
@@ -232,13 +234,9 @@ export function SongEditor({ detail }: SongEditorProps) {
       {selectedTrack && (
         <TrackDetails
           track={selectedTrack}
-          isMuted={mix.muted.includes(selectedTrack.id)}
-          isSoloed={mix.soloed.includes(selectedTrack.id)}
           onRename={(name) =>
             draft.changeTracks((tracks) => renameTrack(tracks, selectedTrack.id, name))
           }
-          onToggleMute={() => toggleMute(selectedTrack.id)}
-          onToggleSolo={() => toggleSolo(selectedTrack.id)}
           onRemove={() => {
             draft.changeTracks((tracks) => removeTrack(tracks, selectedTrack.id));
             draft.select(null);

@@ -2,7 +2,7 @@
    are drawn as lines behind the blocks. */
 
 .timeline {
-  --track-name-width: 92px;
+  --track-name-width: 120px;
   --row-height: 52px;
   position: relative;
   width: max-content;
@@ -34,16 +34,9 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: flex-start;
-  padding: 0 8px;
+  gap: 2px;
+  padding: 0 6px 0 10px;
   overflow: hidden;
-  border: 0;
-  border-right: var(--border-width) solid var(--line);
-  color: var(--fg);
-  font-size: 0.8125rem;
-  font-weight: 600;
-  text-align: left;
-  cursor: pointer;
 }
 
 .timeline-track-name.is-selected {
@@ -62,15 +55,53 @@
 
 .timeline-track-title {
   max-width: 100%;
+  padding: 0;
   overflow: hidden;
+  border: 0;
+  background: none;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  text-align: left;
   white-space: nowrap;
   text-overflow: ellipsis;
+  cursor: pointer;
 }
 
 .timeline-track-mix {
+  display: flex;
+  gap: 3px;
+}
+
+.timeline-track-mix button {
+  width: 24px;
+  height: 20px;
+  padding: 0;
+  border: var(--border-width) solid var(--line);
+  border-radius: calc(var(--radius) * 0.5);
+  background: var(--card);
   color: var(--muted);
   font-size: 0.6875rem;
-  font-weight: 400;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.timeline-track-mix button.is-on {
+  border-color: var(--fg);
+  background: var(--fg);
+  color: var(--bg);
+}
+
+.timeline-track-mix button.is-solo.is-on {
+  border-color: var(--keep);
+  background: var(--keep);
+  color: var(--on-accent);
+}
+
+@media (pointer: coarse) {
+  .timeline-track-mix button {
+    width: 30px;
+    height: 24px;
+  }
 }
 
 .timeline-row.is-unheard .timeline-lane {
@@ -87,7 +118,10 @@
 }
 
 .timeline-ruler {
-  cursor: pointer;
+  cursor: ew-resize;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .timeline-bar-number {
@@ -114,4 +148,12 @@
   height: 100%;
   margin-left: -1px;
   background: var(--accent);
+}
+
+/* where the play position goes while the ruler is dragged */
+.timeline-playhead-line.is-scrub {
+  position: absolute;
+  top: 0;
+  background: var(--fg);
+  opacity: 0.6;
 }

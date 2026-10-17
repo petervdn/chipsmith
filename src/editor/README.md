@@ -18,7 +18,7 @@ saved, playing from a cursor, the zoom, and the selected block's clip or track.
 - `TimelineBlock.tsx`: a block and its repeats on the timeline, dragged and trimmed
 - `track-mix.ts`: which tracks are heard, by mute and solo
 - `TrackDetails.css`: the look of TrackDetails.tsx
-- `TrackDetails.tsx`: the selected track: its name, mute, solo, remove
+- `TrackDetails.tsx`: the selected track: its name, remove
 - `use-block-drag.ts`: dragging blocks: a mouse at once, a finger after holding still
 - `use-editor-keys.ts`: the editor's keys: Space, Delete, ⌘Z, ⇧⌘Z, ⌘S, Escape
 - `use-element-width.ts`: an element's width, kept current

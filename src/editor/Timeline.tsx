@@ -1,7 +1,7 @@
-// The song's timeline: a ruler of bars, a row per track with its blocks, and the playhead. A tap on
-// the ruler moves the play position there; a tap on a track's name or a block selects it; blocks
-// are dragged to move and trim them.
-import { useRef } from 'react';
+// The song's timeline: a ruler of bars, a row per track (its name, which selects it, and mute and
+// solo) with its blocks, and the playhead. A tap or drag on the ruler moves the play position; a tap
+// on a block selects it; blocks are dragged to move and trim them.
+import { useRef, useState } from 'react';
 import type { CSSProperties, PointerEvent as ReactPointerEvent } from 'react';
 import type { Clip } from '../../shared/clip.types.ts';
 import { getTicksPerSecond } from '../../shared/song-length.ts';
@@ -35,6 +35,8 @@ type TimelineProps = {
   onSelect: (selection: Selection) => void;
   onMoveTo: (seconds: number) => void;
   onPress: (event: ReactPointerEvent, place: BlockPlace, mode: DragMode) => void;
+  onToggleMute: (trackId: string) => void;
+  onToggleSolo: (trackId: string) => void;
   wasDragged: () => boolean;
   waitingClipIds: string[];
 };
@@ -52,6 +54,8 @@ type TimelineProps = {
  * @param props.onSelect - Called with what a tap selects, or null for a tap on empty space.
  * @param props.onMoveTo - Called with the second a tap on the ruler points at.
  * @param props.onPress - Called on a press on a block or one of its edges.
+ * @param props.onToggleMute - Called with a track's id to mute or unmute it.
+ * @param props.onToggleSolo - Called with a track's id to solo it or stop soloing it.
  * @param props.wasDragged - Tells whether a drag just ended, so its click selects nothing.
  * @param props.waitingClipIds - The clips whose audio is still being rendered.
  * @returns The timeline element.
@@ -66,10 +70,13 @@ export function Timeline({
   onSelect,
   onMoveTo,
   onPress,
+  onToggleMute,
+  onToggleSolo,
   wasDragged,
   waitingClipIds,
 }: TimelineProps) {
   const lineRef = useRef<HTMLDivElement>(null);
+  const [scrub, setScrub] = useState<number | null>(null);
   const ticksPerBar = getTicksPerBar(song);
   const pixelsPerTick = pixelsPerBar / ticksPerBar;
   const pixelsPerSecond = pixelsPerTick * getTicksPerSecond(song.bpm);
@@ -89,11 +96,20 @@ export function Timeline({
         <div className="timeline-corner" />
         <div
           className="timeline-ruler"
-          onClick={(event) => {
-            const left = event.currentTarget.getBoundingClientRect().left;
-            onMoveTo(Math.max(0, (event.clientX - left) / pixelsPerSecond));
+          onPointerDown={(event) => {
+            event.currentTarget.setPointerCapture(event.pointerId);
+            setScrub(getRulerSeconds(event, pixelsPerSecond));
           }}
-          title="play from here"
+          onPointerMove={(event) => {
+            if (scrub !== null) setScrub(getRulerSeconds(event, pixelsPerSecond));
+          }}
+          onPointerUp={(event) => {
+            if (scrub === null) return;
+            onMoveTo(getRulerSeconds(event, pixelsPerSecond));
+            setScrub(null);
+          }}
+          onPointerCancel={() => setScrub(null)}
+          title="tap or drag to move the play position"
         >
           {Array.from({ length: bars }, (_unused, bar) =>
             bar % labelStep === 0 ? (
@@ -106,10 +122,6 @@ export function Timeline({
       </div>
       {song.tracks.map((track, trackIndex) => {
         const isTrackSelected = selection?.kind === 'track' && selection.trackId === track.id;
-        const marks = [
-          mix.muted.includes(track.id) ? 'muted' : '',
-          mix.soloed.includes(track.id) ? 'solo' : '',
-        ].filter(Boolean);
         const rowStyle: CSSProperties & Record<'--track-color', string> = {
           '--track-color': getTrackColor(trackIndex),
         };
@@ -119,15 +131,36 @@ export function Timeline({
             className={`timeline-row${isHeard(track.id, mix) ? '' : ' is-unheard'}`}
             style={rowStyle}
           >
-            <button
-              type="button"
-              className={`timeline-track-name${isTrackSelected ? ' is-selected' : ''}`}
-              onClick={() => onSelect({ kind: 'track', trackId: track.id })}
-              title="the track: rename, mute, solo, remove"
-            >
-              <span className="timeline-track-title">{track.name}</span>
-              {marks.length > 0 && <span className="timeline-track-mix">{marks.join(' · ')}</span>}
-            </button>
+            <div className={`timeline-track-name${isTrackSelected ? ' is-selected' : ''}`}>
+              <button
+                type="button"
+                className="timeline-track-title"
+                onClick={() => onSelect({ kind: 'track', trackId: track.id })}
+                title="the track: rename, remove"
+              >
+                {track.name}
+              </button>
+              <span className="timeline-track-mix">
+                <button
+                  type="button"
+                  className={mix.muted.includes(track.id) ? 'is-on' : ''}
+                  onClick={() => onToggleMute(track.id)}
+                  aria-pressed={mix.muted.includes(track.id)}
+                  title="mute (while editing, not saved)"
+                >
+                  M
+                </button>
+                <button
+                  type="button"
+                  className={`is-solo${mix.soloed.includes(track.id) ? ' is-on' : ''}`}
+                  onClick={() => onToggleSolo(track.id)}
+                  aria-pressed={mix.soloed.includes(track.id)}
+                  title="solo (while editing, not saved)"
+                >
+                  S
+                </button>
+              </span>
+            </div>
             <div className="timeline-lane" onClick={() => onSelect(null)}>
               {spans
                 .filter((span) => span.trackId === track.id)
@@ -158,7 +191,25 @@ export function Timeline({
       })}
       <div className="timeline-playhead">
         <div ref={lineRef} className="timeline-playhead-line" />
+        {scrub !== null && (
+          <div
+            className="timeline-playhead-line is-scrub"
+            style={{ transform: `translateX(${scrub * pixelsPerSecond}px)` }}
+          />
+        )}
       </div>
     </div>
   );
+}
+
+/**
+ * Returns the second of the song a pointer on the ruler points at.
+ *
+ * @param event - The pointer event on the ruler.
+ * @param pixelsPerSecond - How wide a second is drawn.
+ * @returns The second, never before the start.
+ */
+function getRulerSeconds(event: ReactPointerEvent<HTMLElement>, pixelsPerSecond: number): number {
+  const left = event.currentTarget.getBoundingClientRect().left;
+  return Math.max(0, (event.clientX - left) / pixelsPerSecond);
 }
