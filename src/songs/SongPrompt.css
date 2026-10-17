@@ -1,0 +1,30 @@
+/* The look of SongPrompt.tsx: the prompt in the page's text, three lines until opened, "more" under
+   it. */
+
+.song-prompt {
+  margin: 0 0 12px;
+}
+
+.song-prompt-text {
+  display: -webkit-box;
+  margin: 0;
+  overflow: hidden;
+  white-space: pre-wrap;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+}
+
+.song-prompt-text.is-open {
+  display: block;
+}
+
+.song-prompt-more {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  font-size: 0.8125rem;
+  text-decoration: underline;
+  cursor: pointer;
+}
