@@ -30,6 +30,28 @@
   border-right: var(--border-width) solid var(--line);
 }
 
+.timeline-corner {
+  display: flex;
+  align-items: center;
+}
+
+/* the small + in the corner above the track names */
+.timeline-add-track {
+  width: var(--touch);
+  height: var(--touch);
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  font-size: 1.125rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.timeline-add-track:hover {
+  color: var(--fg);
+}
+
 .timeline-track-name {
   display: flex;
   flex-direction: column;

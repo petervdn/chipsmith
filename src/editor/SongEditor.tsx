@@ -148,15 +148,8 @@ export function SongEditor({ detail }: SongEditorProps) {
             ))}
           </select>
         </ControlGroup>
-        <ControlGroup label="tracks">
-          <button
-            type="button"
-            className="song-editor-button"
-            onClick={() => draft.changeTracks(addTrack)}
-          >
-            + Track
-          </button>
-          {splitCount > 0 && (
+        {splitCount > 0 && (
+          <ControlGroup label="tracks">
             <button
               type="button"
               className="song-editor-button"
@@ -175,8 +168,8 @@ export function SongEditor({ detail }: SongEditorProps) {
             >
               {isSplitting ? 'Splitting…' : `Split into ${splitCount} channels`}
             </button>
-          )}
-        </ControlGroup>
+          </ControlGroup>
+        )}
         <ControlGroup label="zoom">
           <button type="button" onClick={zoomOut} data-tooltip="zoom out">
             −
@@ -229,6 +222,7 @@ export function SongEditor({ detail }: SongEditorProps) {
           wasDragged={drag.wasDragged}
           onToggleMute={toggleMute}
           onToggleSolo={toggleSolo}
+          onAddTrack={() => draft.changeTracks(addTrack)}
           waitingClipIds={waitingClipIds}
         />
       </div>

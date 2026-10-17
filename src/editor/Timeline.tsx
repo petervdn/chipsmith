@@ -38,6 +38,7 @@ type TimelineProps = {
   onPress: (event: ReactPointerEvent, place: BlockPlace, mode: DragMode) => void;
   onToggleMute: (trackId: string) => void;
   onToggleSolo: (trackId: string) => void;
+  onAddTrack: () => void;
   wasDragged: () => boolean;
   waitingClipIds: string[];
 };
@@ -57,6 +58,7 @@ type TimelineProps = {
  * @param props.onPress - Called on a press on a block or one of its edges.
  * @param props.onToggleMute - Called with a track's id to mute or unmute it.
  * @param props.onToggleSolo - Called with a track's id to solo it or stop soloing it.
+ * @param props.onAddTrack - Called to add an empty track at the bottom.
  * @param props.wasDragged - Tells whether a drag just ended, so its click selects nothing.
  * @param props.waitingClipIds - The clips whose audio is still being rendered.
  * @returns The timeline element.
@@ -73,6 +75,7 @@ export function Timeline({
   onPress,
   onToggleMute,
   onToggleSolo,
+  onAddTrack,
   wasDragged,
   waitingClipIds,
 }: TimelineProps) {
@@ -94,7 +97,17 @@ export function Timeline({
   return (
     <div className="timeline" style={style}>
       <div className="timeline-row timeline-ruler-row">
-        <div className="timeline-corner" />
+        <div className="timeline-corner">
+          <button
+            type="button"
+            className="timeline-add-track"
+            onClick={onAddTrack}
+            data-tooltip="add a track"
+            aria-label="add a track"
+          >
+            +
+          </button>
+        </div>
         <div
           className="timeline-ruler"
           onPointerDown={(event) => {
