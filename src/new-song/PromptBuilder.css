@@ -1,6 +1,7 @@
-/* The look of PromptBuilder.tsx: a card the width of the prompt, its bar always shown and the
-   builder under it while open: the sentence large at its top; per part a small label above its
-   lock and menu, the lock right of the menu, in two columns of equal width on a wide screen. */
+/* The look of PromptBuilder.tsx: a card the width of the prompt, the sentence always shown large at
+   its top with its buttons at the right, and the parts under it while open: per part a small label
+   above its lock and menu, the lock right of the menu, in two columns of equal width on a wide
+   screen. */
 
 .prompt-builder {
   overflow: hidden;
@@ -9,61 +10,10 @@
   background: var(--card);
 }
 
-.prompt-builder-bar {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  width: 100%;
-  min-height: 48px;
-  padding: 0 16px;
-  border: 0;
-  background: none;
-  text-align: left;
-  cursor: pointer;
-}
-
-@media (hover: hover) {
-  .prompt-builder-bar:hover {
-    background: var(--raised);
-  }
-}
-
-.prompt-builder-bar-label {
-  flex: none;
-  font-weight: 600;
-}
-
-.prompt-builder-bar-hint {
-  flex: 1;
-  min-width: 0;
-  overflow: hidden;
-  color: var(--muted);
-  font-size: 0.875rem;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-}
-
-.prompt-builder-bar-arrow {
-  flex: none;
-  color: var(--muted);
-  font-size: 1.125rem;
-  transition: rotate 0.15s;
-}
-
-.prompt-builder.is-open .prompt-builder-bar {
-  border-bottom: var(--border-width) solid var(--line);
-}
-
-.prompt-builder.is-open .prompt-builder-bar-arrow {
-  rotate: 90deg;
-}
-
-.prompt-builder-body {
-  padding: 12px 16px 16px;
-}
-
 .prompt-builder-rows {
   display: grid;
+  padding: 12px 16px 16px;
+  border-top: var(--border-width) solid var(--line);
   grid-template-columns: minmax(0, 1fr);
   gap: 6px 24px;
 }
@@ -145,19 +95,29 @@
   }
 }
 
-/* the sentence, the block's point, large at the top, with Roll and Use at its right */
+/* the sentence, the block's point, large at the top, with Roll, Use and ▸ at its right; it stays
+   where it is as the parts open and close */
 .prompt-builder-result {
   display: flex;
   flex-wrap: wrap;
   align-items: flex-start;
   gap: 12px 16px;
-  margin-bottom: 16px;
-  padding-bottom: 16px;
-  border-bottom: var(--border-width) solid var(--line);
+  padding: 12px 12px 12px 16px;
+}
+
+.prompt-builder-sentence {
+  flex: 1 1 280px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.prompt-builder-heading {
+  color: var(--muted);
+  font-size: 0.75rem;
 }
 
 .prompt-builder-text {
-  flex: 1 1 280px;
   margin: 0;
   font-size: 1.125rem;
   font-weight: 600;
@@ -178,6 +138,23 @@
   border-radius: var(--radius);
   background: var(--raised);
   cursor: pointer;
+}
+
+.prompt-builder-actions .prompt-builder-toggle {
+  min-width: var(--touch);
+  padding: 0;
+  border-color: transparent;
+  background: none;
+  color: var(--muted);
+  font-size: 1.125rem;
+}
+
+.prompt-builder-toggle {
+  transition: rotate 0.15s;
+}
+
+.prompt-builder.is-open .prompt-builder-toggle {
+  rotate: 90deg;
 }
 
 .prompt-builder-actions .is-primary {
