@@ -20,3 +20,15 @@ export function formatSeconds(seconds: number): string {
 export function formatMeter(beats: number): string {
   return `${beats}/4`;
 }
+
+/**
+ * Returns a number of tokens as it is shown: in thousands from a thousand on.
+ *
+ * @param tokens - The tokens.
+ * @returns "850 tokens", "15k tokens" or "1.2k tokens".
+ */
+export function formatTokens(tokens: number): string {
+  if (tokens < 1000) return `${tokens} tokens`;
+  const thousands = tokens / 1000;
+  return `${thousands < 10 ? Math.round(thousands * 10) / 10 : Math.round(thousands)}k tokens`;
+}

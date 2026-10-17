@@ -1,0 +1,92 @@
+/* The look of JobSteps.tsx: the current step on one line with the toggle at its right; every step
+   in a grid of time, bar and text, the text wrapping beside its bar; nothing scrolls inside it. */
+
+.job-steps-current {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
+}
+
+.job-steps-label {
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.job-steps-now,
+.job-steps-list li.is-current .job-steps-words {
+  background: linear-gradient(90deg, var(--fg) 0%, var(--muted) 50%, var(--fg) 100%);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: job-steps-shimmer 2.4s linear infinite;
+}
+
+.job-steps-now {
+  flex: 1 1 200px;
+  min-width: 0;
+}
+
+@keyframes job-steps-shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}
+
+.job-steps-toggle {
+  min-height: var(--touch);
+  margin-left: auto;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  font-size: 0.8125rem;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.job-steps-list {
+  margin: 4px 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.8125rem;
+}
+
+.job-steps-list li {
+  display: grid;
+  grid-template-columns: 44px 64px minmax(0, 1fr);
+  align-items: start;
+  gap: 8px;
+  padding: 1px 0;
+}
+
+.job-steps-time {
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.job-steps-length {
+  width: 64px;
+  height: 6px;
+  margin-top: calc((1lh - 6px) / 2);
+  overflow: hidden;
+  border-radius: 3px;
+  background: var(--raised);
+}
+
+.job-steps-length > span {
+  display: block;
+  min-width: 2px;
+  height: 100%;
+  background: var(--accent);
+}
+
+.job-steps-text .jobs-spinner {
+  display: inline-block;
+  margin-right: 6px;
+  vertical-align: -1px;
+}

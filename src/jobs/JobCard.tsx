@@ -1,10 +1,13 @@
-// A job's card on the Jobs page, from the moment its prompt is sent: its phase, how long it has been
-// going, what it is doing now, the songs it makes as they come, and how it ended.
+// A job's card on the Jobs page, from the moment its prompt is sent: in its top row its phase, how
+// long it has been going and the tokens it used; then, labelled, the prompt, the style guides and
+// structure sent with it, the songs it makes as they come, Claude's reply, and its steps. A job that
+// is over folds to one line.
 import { useEffect, useState } from 'react';
 import type { Job, JobPhase, JobSong } from '../../shared/job.types.ts';
-import { formatSeconds } from '../format.ts';
+import { formatSeconds, formatTokens } from '../format.ts';
+import { writeNotation } from '../../shared/structure-notation.ts';
 import { isJobRunning } from '../queries/jobs.ts';
-import { getStepLengths } from './job-steps.ts';
+import { JobSteps } from './JobSteps.tsx';
 import './jobs.css';
 import './JobCard.css';
 
@@ -17,11 +20,12 @@ const PHASE_NAMES = {
   failed: 'Failed',
 } satisfies Record<JobPhase, string>;
 
-const SONG_MARKS = {
-  waiting: '·',
-  rendering: '⟳',
-  done: '✓',
-  failed: '✗',
+/** What a song of the job is doing, said beside its title. */
+const SONG_STATES = {
+  waiting: 'waiting',
+  rendering: 'rendering…',
+  done: '',
+  failed: 'failed',
 } satisfies Record<JobSong['state'], string>;
 
 /** The card, and what to do when its job is removed (a job that is over), if it can be. */
@@ -72,9 +76,7 @@ export function getNowText({ now, notes }: Job): string {
 }
 
 /**
- * Shows the card of a job: its phase, how long it has been going, what it is doing now, the songs
- * it makes, how it ended, and its steps on demand. A job that is over shows as one line, its prompt,
- * opened on a tap.
+ * Shows the card of a job.
  *
  * @param props - The component's props.
  * @param props.job - The job shown.
@@ -84,17 +86,13 @@ export function getNowText({ now, notes }: Job): string {
  */
 export function JobCard({ job, onRemove }: JobCardProps) {
   const isRunning = isJobRunning(job);
-  const [isShowingNotes, setShowingNotes] = useState(false);
   const [isOpen, setOpen] = useState(isRunning);
   const elapsed = useElapsed(job);
-  const phaseName = getPhaseName(job);
-  const now = getNowText(job);
-  const lengths = getStepLengths(
-    job.notes,
-    job.created,
-    job.finished ?? Date.parse(job.created) + elapsed * 1000,
+  const tokens = (
+    <span className="job-card-tokens" title="the tokens Claude wrote, thinking included">
+      {job.tokens ? formatTokens(job.tokens) : ''}
+    </span>
   );
-
   const removeButton = onRemove && (
     <button
       type="button"
@@ -123,6 +121,7 @@ export function JobCard({ job, onRemove }: JobCardProps) {
             <span className="job-card-title">{job.prompt.split('\n')[0]}</span>
           </button>
           <span className="jobs-time">{formatSeconds(elapsed)}</span>
+          {tokens}
           <span className="job-card-outcome">
             {job.phase === 'failed'
               ? 'failed'
@@ -139,7 +138,7 @@ export function JobCard({ job, onRemove }: JobCardProps) {
       <header className="job-card-head">
         {isRunning && <span className="jobs-spinner" aria-hidden="true" />}
         {isRunning ? (
-          <span className="job-card-phase">{phaseName}</span>
+          <span className="job-card-phase">{getPhaseName(job)}</span>
         ) : (
           <button
             type="button"
@@ -151,69 +150,73 @@ export function JobCard({ job, onRemove }: JobCardProps) {
             <span className="job-card-mark" aria-hidden="true">
               ▾
             </span>
-            <span className="job-card-phase">{phaseName}</span>
+            <span className="job-card-phase">{getPhaseName(job)}</span>
           </button>
         )}
         <span className="jobs-time">{formatSeconds(elapsed)}</span>
+        {tokens}
         {removeButton}
       </header>
-      <p className="job-card-prompt">{job.prompt}</p>
-      {job.guides.length > 0 && (
-        <p className="job-card-guides">with {job.guides.map((guide) => guide.name).join(', ')}</p>
-      )}
-      {isRunning && <p className="job-card-now">{now}</p>}
-      {job.songs.length > 0 && (
-        <ul className="job-card-songs">
-          {job.songs.map((song) => (
-            <li key={song.title} className={`job-card-song is-${song.state}`}>
-              <span className="job-card-song-mark">{SONG_MARKS[song.state]}</span>
-              {song.songId ? (
-                <a href={`/songs/${encodeURIComponent(song.songId)}`}>{song.title}</a>
-              ) : (
-                <span>{song.title}</span>
-              )}
-            </li>
-          ))}
-        </ul>
-      )}
-      {job.summary && !isRunning && <p className="job-card-summary">{job.summary}</p>}
+      <dl className="job-card-facts">
+        <dt>Prompt</dt>
+        <dd className="job-card-prompt">{job.prompt}</dd>
+        {job.guides.length > 0 && (
+          <>
+            <dt>Style guides</dt>
+            <dd>
+              {job.guides.map((guide, i) => (
+                <span key={guide.id}>
+                  {i > 0 && ', '}
+                  <a href="/guides" title="the style guides (what was sent is kept with the songs)">
+                    {guide.name}
+                  </a>
+                </span>
+              ))}
+            </dd>
+          </>
+        )}
+        {job.structure && (
+          <>
+            <dt>Structure</dt>
+            <dd>
+              {job.structure.name}{' '}
+              <span className="job-card-notation">{writeNotation(job.structure.sections)}</span>
+            </dd>
+          </>
+        )}
+        {job.songs.length > 0 && (
+          <>
+            <dt>Songs</dt>
+            <dd>
+              <ul className="job-card-songs">
+                {job.songs.map((song) => (
+                  <li key={song.title} className={`job-card-song is-${song.state}`}>
+                    {song.state === 'rendering' && (
+                      <span className="jobs-spinner" aria-hidden="true" />
+                    )}
+                    {song.songId ? (
+                      <a href={`/songs/${encodeURIComponent(song.songId)}`}>{song.title}</a>
+                    ) : (
+                      <span>{song.title}</span>
+                    )}
+                    {SONG_STATES[song.state] && (
+                      <span className="job-card-song-state">{SONG_STATES[song.state]}</span>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </dd>
+          </>
+        )}
+        {job.summary && !isRunning && (
+          <>
+            <dt>Claude's reply</dt>
+            <dd className="job-card-summary">{job.summary}</dd>
+          </>
+        )}
+      </dl>
       {job.error && <p className="error">{job.error}</p>}
-      <button
-        type="button"
-        className="job-card-notes-toggle"
-        onClick={() => setShowingNotes(!isShowingNotes)}
-      >
-        {isShowingNotes ? 'Hide steps' : `All steps (${job.notes.length})`}
-      </button>
-      {isShowingNotes && (
-        <ol className="job-card-notes">
-          {job.notes.map((note, i) => {
-            const length = lengths[i];
-            const isCurrent = isRunning && i === job.notes.length - 1;
-            return (
-              <li key={`${note.at}-${i}`} className={isCurrent ? 'is-current' : ''}>
-                <span className="job-card-note-time">
-                  {formatSeconds((Date.parse(note.at) - Date.parse(job.created)) / 1000)}
-                </span>
-                <span
-                  className="job-card-note-length"
-                  title={
-                    length
-                      ? `${formatSeconds(length.seconds)}, ${Math.round(length.share * 100)}% of the job`
-                      : ''
-                  }
-                >
-                  <span style={{ width: `${(length?.share ?? 0) * 100}%` }} />
-                </span>
-                <span className="job-card-note-text">
-                  {isCurrent && <span className="jobs-spinner" aria-label="in progress" />}
-                  <span className="job-card-note-words">{note.text}</span>
-                </span>
-              </li>
-            );
-          })}
-        </ol>
-      )}
+      <JobSteps job={job} isRunning={isRunning} elapsed={elapsed} now={getNowText(job)} />
     </section>
   );
 }

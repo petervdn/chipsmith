@@ -107,7 +107,7 @@ export function startJobRunner(jobs: JobStore, store: Store, isResuming: boolean
   let watch: ClaudeWatch | null = null;
   let isBusy = false;
   for (const job of jobs.jobs.values()) {
-    if (job.tokens === null && (job.phase === 'done' || job.phase === 'failed')) {
+    if ((job.tokens ?? null) === null && (job.phase === 'done' || job.phase === 'failed')) {
       const tokens = readRunTokens(join(getJobFolder(jobs, job.id), 'claude.log'));
       if (tokens !== null) updateJob(jobs, job.id, { tokens });
     }

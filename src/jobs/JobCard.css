@@ -1,4 +1,5 @@
-/* The look of JobCard.tsx. */
+/* The look of JobCard.tsx: a top row of phase, time and tokens; the facts as labelled rows (the
+   label above on a phone, beside on a desktop); a job that is over folded to one line. */
 
 .job-card {
   margin-bottom: 12px;
@@ -26,6 +27,13 @@
   font-weight: 600;
 }
 
+.job-card-tokens {
+  flex: none;
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+}
+
 .job-card-remove {
   min-width: var(--touch);
   min-height: var(--touch);
@@ -36,87 +44,81 @@
   cursor: pointer;
 }
 
-.job-card-prompt {
-  margin: 6px 0;
-  color: var(--muted);
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+/* the facts: a label and its value per row */
+.job-card-facts {
+  display: grid;
+  grid-template-columns: 110px minmax(0, 1fr);
+  gap: 6px 12px;
+  margin: 10px 0;
 }
 
-.job-card-now {
-  margin: 6px 0;
-  font-size: 0.875rem;
+.job-card-facts dt {
+  padding-top: 2px;
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.job-card-facts dd {
+  margin: 0;
+  min-width: 0;
+}
+
+.job-card-prompt {
+  white-space: pre-wrap;
+}
+
+.job-card-notation {
+  margin-left: 6px;
+  color: var(--muted);
+  font-family: ui-monospace, monospace;
+  font-size: 0.8125rem;
 }
 
 .job-card-summary {
-  margin: 6px 0;
   font-size: 0.875rem;
+  white-space: pre-wrap;
 }
 
 .job-card-songs {
-  list-style: none;
-  margin: 8px 0;
+  margin: 0;
   padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
+  list-style: none;
 }
 
 .job-card-song {
   display: flex;
+  align-items: center;
   gap: 8px;
+  min-height: 28px;
+}
+
+.job-card-song.is-waiting {
   color: var(--muted);
 }
 
-.job-card-song.is-done,
-.job-card-song.is-rendering {
-  color: var(--fg);
+.job-card-song-state {
+  color: var(--muted);
+  font-size: 0.8125rem;
 }
 
-.job-card-song.is-failed {
+.job-card-song.is-failed .job-card-song-state {
   color: var(--reject);
 }
 
-.job-card-song-mark {
-  width: 14px;
-  text-align: center;
+@media (max-width: 600px) {
+  .job-card-facts {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2px;
+  }
+  .job-card-facts dd {
+    margin-bottom: 8px;
+  }
 }
 
-.job-card-notes-toggle {
-  padding: 4px 0;
-  border: 0;
-  background: none;
-  color: var(--muted);
-  font-size: 0.8125rem;
-  text-decoration: underline;
-  cursor: pointer;
-}
-
-.job-card-notes {
-  margin: 4px 0 0;
-  padding-left: 0;
-  list-style: none;
-  font-size: 0.8125rem;
-  max-height: 240px;
-  overflow-y: auto;
-}
-
-.job-card-note-time {
-  display: block;
-  width: 44px;
-  color: var(--muted);
-  font-variant-numeric: tabular-nums;
-}
-
-.job-card-guides {
-  margin: 0;
-  color: var(--muted);
-  font-size: 0.8125rem;
-}
-
-/* a job that is over, folded to one line: its prompt, what it made, its time */
+/* a job that is over, folded to one line: its prompt, its time, tokens and outcome */
 .job-card.is-closed {
   margin-bottom: 6px;
   padding-top: 2px;
@@ -161,52 +163,13 @@
   color: var(--reject);
 }
 
-/* a step's share of the job's time, as a bar between its time and its text */
-.job-card-notes li {
-  display: grid;
-  grid-template-columns: 44px 64px minmax(0, 1fr);
-  align-items: start;
-  gap: 8px;
+.job-card.is-closed .jobs-time {
+  width: 44px;
+  margin-left: 8px;
+  text-align: right;
 }
 
-.job-card-note-length {
-  margin-top: calc((1lh - 6px) / 2);
+.job-card.is-closed .job-card-tokens {
   width: 64px;
-  height: 6px;
-  overflow: hidden;
-  border-radius: 3px;
-  background: var(--raised);
-}
-
-.job-card-note-length > span {
-  display: block;
-  min-width: 2px;
-  height: 100%;
-  background: var(--accent);
-}
-
-.job-card-note-text {
-  min-width: 0;
-}
-
-/* the step in progress: a spinner, and its text shimmering softly */
-.job-card-notes li.is-current .jobs-spinner {
-  display: inline-block;
-  margin-right: 6px;
-  vertical-align: -1px;
-}
-
-.job-card-notes li.is-current .job-card-note-words {
-  background: linear-gradient(90deg, var(--fg) 0%, var(--muted) 50%, var(--fg) 100%);
-  background-size: 200% 100%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  animation: job-card-note-shimmer 2.4s linear infinite;
-}
-
-@keyframes job-card-note-shimmer {
-  to {
-    background-position: -200% 0;
-  }
+  text-align: right;
 }

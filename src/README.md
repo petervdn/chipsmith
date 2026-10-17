@@ -10,7 +10,7 @@ At the top: the app's shell and what every area uses.
 - `clips/`: the clip pool
 - `copy-text.ts`: copying text, also where the clipboard API is missing (plain http)
 - `editor/`: the song editor: the timeline, playing from a cursor, the selected block
-- `format.ts`: how lengths and meters are shown
+- `format.ts`: how lengths, meters and tokens are shown
 - `guides/`: the style guides, their page and their chips
 - `home/`: the home page
 - `jobs/`: the jobs page, a job's card and its line
