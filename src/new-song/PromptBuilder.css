@@ -1,5 +1,5 @@
-/* The look of PromptBuilder.tsx: a row per part, label, value and lock on one line, in two columns
-   of equal width on a wide screen; on a phone the label goes above. */
+/* The look of PromptBuilder.tsx: per part a small label above its menu and its lock left of it, in
+   two columns of equal width on a wide screen. */
 
 .prompt-builder {
   padding: 12px;
@@ -22,17 +22,22 @@
 
 .prompt-builder-row {
   display: grid;
-  grid-template-columns: 60px minmax(0, 1fr) 32px;
+  grid-template-columns: 32px minmax(0, 1fr);
+  grid-template-areas:
+    '. label'
+    'lock value';
   align-items: center;
-  gap: 8px;
+  gap: 2px 4px;
 }
 
 .prompt-builder-label {
+  grid-area: label;
   color: var(--muted);
-  font-size: 0.875rem;
+  font-size: 0.75rem;
 }
 
 .prompt-builder-value {
+  grid-area: value;
   min-width: 0;
   min-height: var(--touch);
   padding: 0 8px;
@@ -42,6 +47,7 @@
 }
 
 .prompt-builder-lock {
+  grid-area: lock;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -95,11 +101,8 @@
   font-weight: 600;
 }
 
-@media (max-width: 480px) {
+@media (pointer: coarse) {
   .prompt-builder-row {
-    grid-template-columns: minmax(0, 1fr) var(--touch);
-  }
-  .prompt-builder-label {
-    grid-column: 1 / -1;
+    grid-template-columns: var(--touch) minmax(0, 1fr);
   }
 }
