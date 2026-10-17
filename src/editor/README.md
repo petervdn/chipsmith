@@ -7,6 +7,8 @@ saved, playing from a cursor, the zoom, and the selected block's clip or track.
 - `BlockDetails.css`: the look of BlockDetails.tsx
 - `BlockDetails.tsx`: the selected block: where it plays, its clip, its prompt and versions
 - `clip-peaks.ts`: a clip's waveform as peaks, from its samples
+- `ControlGroup.css`: the look of ControlGroup.tsx
+- `ControlGroup.tsx`: controls grouped under a very small label over a line
 - `grid.ts`: the snap grid: its steps, and a time snapped to one
 - `song-edits.ts`: the edits of the arrangement: move, trim, repeat, duplicate, remove a block; tracks
 - `SongEditor.css`: the look of SongEditor.tsx

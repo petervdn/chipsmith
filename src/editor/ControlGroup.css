@@ -1,0 +1,30 @@
+/* The look of ControlGroup.tsx: the label in very small capitals over a hairline as wide as the
+   group, the controls side by side under it. */
+
+.control-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.control-group.is-at-end {
+  margin-left: auto;
+}
+
+.control-group-label {
+  padding-bottom: 3px;
+  border-bottom: var(--border-width) solid var(--line);
+  color: var(--muted);
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  line-height: 1;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.control-group-controls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}

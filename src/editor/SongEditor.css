@@ -4,8 +4,8 @@
 .song-editor-bar {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
-  gap: 8px;
+  align-items: flex-end;
+  gap: 8px 16px;
   margin-bottom: 8px;
 }
 
@@ -34,24 +34,12 @@
   color: var(--on-accent);
 }
 
-.song-editor-group {
-  display: flex;
-  gap: 4px;
-}
-
 .song-editor-grid {
   padding: 0 8px;
 }
 
 .song-editor-button {
   padding: 0 14px;
-}
-
-.song-editor-save {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-left: auto;
 }
 
 .song-editor-unsaved {
