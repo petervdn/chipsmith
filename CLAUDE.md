@@ -35,7 +35,8 @@ for the format and the list). A decision made in a conversation is not done unti
 
 - The skills (`.claude/skills/`, docs/adr/0025): **write-song** (where a job starts: the prompt, the
   structure, the music), **furnace-song** (writing it down as a .fur: the script, rows, pitch,
-  effects, macros) and per chip **nes-chip**, **scc-chip** (channels, instruments, idioms, levels).
+  effects, macros) and per chip **nes-chip**, **scc-chip**, **sid-chip** (channels, instruments,
+  idioms, levels).
 - `docs/fur-format.md`: the .fur format as `fur/` writes it.
 - The user's taste is in their **style guides** (`data/guides/`, the Guides page): chosen per prompt,
   sent with it, and kept with what it made (docs/adr/0019).
@@ -44,7 +45,8 @@ for the format and the list). A decision made in a conversation is not done unti
 ## Working rules
 
 - **Pitch naming: Furnace's A-3 is 440 Hz on pulse and SCC channels**, and the NES triangle sounds an
-  octave below a pulse. Write parts in true pitch and shift pulse/SCC notes down 12.
+  octave below a pulse; the SID sounds at its name (A-3 is 220 Hz). Write parts in true pitch and
+  shift pulse/SCC notes down 12.
 - Say what was verified (loads, renders, measured levels and pitches) and what was not (how it sounds).
 - Don't claim certainty about format details that can't be verified; say what's unverified.
 - Chip-specific effects (SCC wavetables, wavetable sweeps) are Claude's weakest area. Tracker-correct

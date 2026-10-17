@@ -1,6 +1,6 @@
 /**
- * A .fur file as text, to see what is in it: the song's settings, the instruments' macros, and a
- * channel's pattern at an order as the tracker shows it.
+ * A .fur file as text, to see what is in it: the song's settings, the instruments' macros (and a
+ * SID instrument's settings), and a channel's pattern at an order as the tracker shows it.
  * Run: `node fur/dump.ts file.fur [--ins] [--pat CHANNEL[,ORDER]]`.
  */
 import { readFileSync } from 'node:fs';
@@ -9,6 +9,7 @@ import { ARP_FIXED } from './instrument.ts';
 import type { FurFile, Row } from './fur.types.ts';
 import { getNoteName } from './notes.ts';
 import { readFurFile } from './read.ts';
+import { readSidFeature } from './sid.ts';
 
 const MACRO_NAMES = new Map([
   [0, 'vol'],
@@ -19,10 +20,16 @@ const MACRO_NAMES = new Map([
   [5, 'ex1'],
   [6, 'ex2'],
   [7, 'ex3'],
+  [8, 'alg'],
   [12, 'panL'],
   [13, 'panR'],
   [14, 'phaseReset'],
+  [15, 'ex4'],
+  [16, 'ex5'],
+  [17, 'ex6'],
+  [18, 'ex7'],
 ]);
+
 /** The byte size of a macro value, by the top two bits of its flags. */
 const VALUE_SIZES = [1, 1, 2, 4];
 
@@ -71,6 +78,7 @@ export function describeInstrument(block: Uint8Array): string {
     const end = reader.position + length;
     if (feature === 'NA') parts.unshift(`"${reader.cString()}"`);
     if (feature === 'MA') parts.push(...describeMacros(reader, end));
+    if (feature === '64') parts.push(describeSid(reader.take(length)));
     reader.position = end;
   }
   return parts.join('  ');
@@ -95,6 +103,27 @@ export function describeSong({ song, instruments, wavetables, patterns }: FurFil
     `${song.orders[0]?.length ?? 0} orders of ${song.patternLength} rows, ` +
       `${instruments.length} instruments, ${wavetables.length} wavetables, ${patterns.length} patterns`,
   ].join('\n');
+}
+
+/**
+ * Describes a SID instrument's settings: its waveforms, envelope, duty, filter and flags.
+ *
+ * @param data - The `64` feature's data.
+ * @returns One text, its parts a space apart.
+ */
+function describeSid(data: Uint8Array): string {
+  const sid = readSidFeature(data);
+  const flags = Object.entries(sid).filter(
+    ([key, value]) => key.startsWith('is') && value === true,
+  );
+  return [
+    `sid ${sid.waves.join('+') || 'no wave'}`,
+    `adsr ${sid.attack} ${sid.decay} ${sid.sustain} ${sid.release}`,
+    `duty ${sid.duty}`,
+    `cutoff ${sid.cutoff} res ${sid.resonance}`,
+    `filter ${sid.filterModes.join('+') || 'none'}`,
+    ...flags.map(([key]) => key),
+  ].join(' ');
 }
 
 function describeMacros(reader: ByteReader, end: number): string[] {

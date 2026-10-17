@@ -4,7 +4,7 @@
  * song's settings as the archive's songs had them (60 Hz, speed 6, a virtual tempo for the bpm).
  */
 import type { ChipName } from '../shared/chips.ts';
-import { CHIP_NAMES } from '../shared/chips.ts';
+import { CHIP_NAMES, CHIPS, getFurnaceChip } from '../shared/chips.ts';
 import type { FurFile, FurSong, Row } from '../fur/fur.types.ts';
 
 /** What a script gives to make a .fur file. */
@@ -20,8 +20,9 @@ export type FurFileDraft = {
   /** Rows to a pattern. */
   patternLength?: number;
   /**
-   * One list of rows per chip channel, all as long as the song: NES pulse 1, pulse 2, triangle,
-   * noise, DPCM, then for the SCC+ its five channels. `null` is an empty row.
+   * One list of rows per chip channel, all as long as the song, chip by chip in the order of
+   * CHIP_NAMES (NES: pulse 1, pulse 2, triangle, noise, DPCM; SCC+: 5; SID: 3). `null` is an
+   * empty row.
    */
   channels: (Row | null)[][];
   instruments: Uint8Array[];
@@ -34,19 +35,15 @@ const TICK_RATE = 60;
 const SPEED = 6;
 /** The denominator of the virtual tempo; its numerator sets the bpm. */
 const TEMPO_BASE = 150;
-/** Each chip as Furnace has it: its id, its name in a system's name, its channels and its flags. */
-const FURNACE_CHIPS = {
-  nes: {
-    id: 0x06,
-    name: 'NES',
-    channelCount: 5,
-    flags: 'clockSel=0\ncustomClock=0\ndpcmMode=false\n',
-  },
-  scc: { id: 0xb4, name: 'SCC+', channelCount: 5, flags: null },
-} satisfies Record<
-  ChipName,
-  { id: number; name: string; channelCount: number; flags: string | null }
->;
+/**
+ * The flags each chip is written with: the NES and the SID as the demos have them (the SID's clock
+ * PAL, as the European C64 most of its music was written for), the SCC+ with none.
+ */
+const CHIP_FLAGS = {
+  nes: 'clockSel=0\ncustomClock=0\ndpcmMode=false\n',
+  scc: null,
+  sid: 'clockSel=1\n',
+} satisfies Record<ChipName, string | null>;
 
 /**
  * Builds the .fur file of a draft: cuts each channel's rows into patterns, reusing a pattern the
@@ -79,11 +76,13 @@ export function buildFurFile({
   wavetables = [],
   chipVolumes,
 }: FurFileDraft): FurFile {
-  const furnaceChips = CHIP_NAMES.filter((name) => chips.includes(name)).map(
-    (name) => FURNACE_CHIPS[name],
-  );
+  const furnaceChips = CHIP_NAMES.filter((name) => chips.includes(name)).map((name) => {
+    const chip = getFurnaceChip(CHIPS[name].furnaceId);
+    if (!chip) throw new Error(`no Furnace chip for ${name}`);
+    return { ...chip, flags: CHIP_FLAGS[name] };
+  });
   if (furnaceChips.length === 0) throw new Error('a song needs at least one chip');
-  const channelCount = furnaceChips.reduce((sum, chip) => sum + chip.channelCount, 0);
+  const channelCount = furnaceChips.reduce((sum, chip) => sum + chip.channelNames.length, 0);
   if (channels.length !== channelCount) {
     const names = furnaceChips.map((chip) => chip.name).join(' + ');
     throw new Error(`${names} has ${channelCount} channels; the draft has ${channels.length}`);

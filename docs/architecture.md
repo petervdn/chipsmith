@@ -115,7 +115,7 @@ top bar's links open a list unfiltered, and the back button returns to a filtere
 ## The .fur files
 
 `fur/` writes and reads Furnace files (.fur) as this project writes them (format version 223, old INFO
-layout, one subsong, NES / SCC / SCC+): `write.ts` lays a file out as Furnace does, `read.ts` reads
+layout, one subsong, NES / SCC / SCC+ / SID): `write.ts` lays a file out as Furnace does, `read.ts` reads
 one back, `instrument.ts` and `pattern.ts` build the blocks, `dump.ts` shows a .fur file as text. It is
 the port of the Python tools (0002), held to them by `fur/round-trip.test.ts`: the examples' .fur files,
 whose patterns and instruments the Python writer made, are read and written again byte for byte. (Before the old project left

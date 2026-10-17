@@ -1,19 +1,14 @@
 /**
  * Reading a .fur written by this project back into a FurFile, so that writing it again gives the
  * same bytes. Instruments and wavetables are kept as their blocks. Only the old INFO layout with one
- * subsong and the NES, SCC and SCC+ chips is read: what fur/write.ts writes.
+ * subsong and the chips of shared/chips.ts is read: what fur/write.ts writes.
  */
 import { inflateSync } from 'node:zlib';
+import { getFurnaceChip } from '../shared/chips.ts';
 import { ByteReader } from './bytes.ts';
 import type { FurFile, FurSong, Pattern } from './fur.types.ts';
 import { unpackRows } from './pattern.ts';
 
-/** Channels of each chip this project uses, by Furnace's chip id. */
-const CHANNELS_OF_CHIP = new Map([
-  [0x06, 5], // NES
-  [0xb4, 5], // SCC+
-  [0xa1, 5], // SCC
-]);
 const MAGIC = '-Furnace module-';
 
 /**
@@ -124,9 +119,9 @@ export function readFurFile(file: Uint8Array): FurFile {
 }
 
 function getChannelsOfChip(chip: number): number {
-  const channels = CHANNELS_OF_CHIP.get(chip);
-  if (channels === undefined) throw new Error(`chip 0x${chip.toString(16)} is not read`);
-  return channels;
+  const furnaceChip = getFurnaceChip(chip);
+  if (!furnaceChip) throw new Error(`chip 0x${chip.toString(16)} is not read`);
+  return furnaceChip.channelNames.length;
 }
 
 /**

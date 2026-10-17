@@ -14,7 +14,7 @@ test('the first of every part', () => {
 test('the last of every part, never past it', () => {
   assert.equal(
     getPromptText(rollParts(null, [], () => 0.9999)),
-    'Restless baroque dances for the SCC, with a syncopated groove, with the melody doubled in octaves.',
+    'Restless baroque dances for the SID, with a syncopated groove, with the melody doubled in octaves.',
   );
 });
 
@@ -39,7 +39,7 @@ test('one chip, or now and then two, never the same twice', () => {
   const twice = [0.1, 0.9, 0.9];
   assert.deepEqual(
     rollChips(() => twice.shift() ?? 0),
-    ['nes', 'scc'],
+    ['scc', 'sid'],
   );
 });
 

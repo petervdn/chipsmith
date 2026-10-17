@@ -8,8 +8,8 @@ description: Write chiptune songs for a chipsmith job from a prompt - reading th
 Where a job starts (Claude running headless from the app; the user is not at the terminal). This
 skill is the music; the others are how it is written down:
 - **furnace-song**: the job's script, the builder, rows and tempo, pitch, effects, macros, the check.
-- One skill per chip the prompt names: **nes-chip**, **scc-chip**. Each has the chip's channels,
-  instruments, idioms and levels.
+- One skill per chip the prompt names: **nes-chip**, **scc-chip**, **sid-chip**. Each has the
+  chip's channels, instruments, idioms and levels.
 
 ## The prompt
 

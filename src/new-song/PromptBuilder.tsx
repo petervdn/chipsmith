@@ -4,7 +4,7 @@
 // prompt (its value to pick, a lock), the chips first as switches, one or more on. Use puts the
 // sentence in the box; the box is written to only by that button, so what is typed there afterwards
 // is the box's own.
-import { CHIP_LABELS, CHIP_NAMES } from '../../shared/chips.ts';
+import { CHIP_NAMES, CHIPS } from '../../shared/chips.ts';
 import { LockIcon } from './LockIcon.tsx';
 import type { PartName } from './random-prompt.ts';
 import { PROMPT_PARTS } from './random-prompt.ts';
@@ -86,7 +86,7 @@ export function PromptBuilder({ isOpen, onToggle, onUse }: PromptBuilderProps) {
                     aria-pressed={parts.chips.includes(chip)}
                     title="switch this chip on or off (one stays on)"
                   >
-                    {CHIP_LABELS[chip]}
+                    {CHIPS[chip].label}
                   </button>
                 ))}
               </span>

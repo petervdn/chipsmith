@@ -5,7 +5,7 @@
  * one, sometimes two. Knows nothing of the page.
  */
 import type { ChipName } from '../../shared/chips.ts';
-import { CHIP_LABELS, CHIP_NAMES } from '../../shared/chips.ts';
+import { CHIP_NAMES, CHIPS } from '../../shared/chips.ts';
 
 /**
  * The parts, in the order a prompt joins them. The ideas are about the music, not its form: where
@@ -196,7 +196,7 @@ export function rollChips(getRandom: () => number): ChipName[] {
  * @returns "for the NES", "for the NES and the SCC", "for the NES, the SCC and the SID".
  */
 export function getChipsText(chips: ChipName[]): string {
-  const names = chips.map((chip) => `the ${CHIP_LABELS[chip]}`);
+  const names = chips.map((chip) => `the ${CHIPS[chip].label}`);
   const last = names.pop() ?? '';
   return `for ${names.length > 0 ? `${names.join(', ')} and ${last}` : last}`;
 }

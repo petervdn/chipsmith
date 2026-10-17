@@ -3,7 +3,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { buildFurFile } from '../make/fur-file-builder.ts';
-import { getChannelFurFile, getChannelNames, getPlayingChannels } from './cut.ts';
+import { getChannelFurFile, getPlayingChannels } from './cut.ts';
 import type { Row } from './fur.types.ts';
 import { NES_INSTRUMENT, makeInstrument } from './instrument.ts';
 import { getNoteValue } from './notes.ts';
@@ -32,14 +32,7 @@ const FUR_FILE = buildFurFile({
   instruments: [makeInstrument('bass', NES_INSTRUMENT, [])],
 });
 
-test('the NES channels are named, and the playing ones found', () => {
-  assert.deepEqual(getChannelNames(FUR_FILE.song), [
-    'Pulse 1',
-    'Pulse 2',
-    'Triangle',
-    'Noise',
-    'DPCM',
-  ]);
+test('the playing channels are found', () => {
   assert.deepEqual(getPlayingChannels(FUR_FILE), [0, 2]);
 });
 

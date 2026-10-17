@@ -21,3 +21,10 @@ instruments with it is in the skills (`.claude/skills/`, docs/adr/0025).
   SCC `0xA1` channels 4 and 5 share a waveform). NES instruments are type 34, SCC instruments type 18
   with a `wave` macro holding the wavetable index.
 - With two chips the channel order is NES 0-4 (pulse 1, pulse 2, triangle, noise, DPCM), then SCC 5-9.
+- The SID: chip `0x47` (6581) or `0x07` (8580), 3 channels; we write the 6581 with `clockSel=1`
+  (PAL). Its instruments are type 3 with a `64` feature after the macros (`NA`, `MA`, `64`, `EN`, as
+  Furnace writes them): 9 bytes from version 199 (8 before), laid out in Furnace's papers/newIns.md
+  and written by `fur/sid.ts`, held to the C64 demos byte for byte. From version 222 its last byte's
+  bit 4 ("reset duty on new note") must be set, or a pulse keeps width 0 and is silent (measured).
+- SID macros (codes as the demos use them): `ex1` (5) filter mode, `ex2` (6) resonance, `alg` (8)
+  cutoff, `ex4` (15) special (gate, sync, ring, test).

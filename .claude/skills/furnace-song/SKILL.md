@@ -6,7 +6,7 @@ description: Write a chipsmith song down as a Furnace .fur file - the job's scri
 # Write a song down in Furnace
 
 The music comes from **write-song**; each chip's channels, instruments and idioms from its skill
-(**nes-chip**, **scc-chip**). This is how it all becomes a .fur file.
+(**nes-chip**, **scc-chip**, **sid-chip**). This is how it all becomes a .fur file.
 
 ## The job
 
@@ -41,18 +41,20 @@ export default function makeSongs(): SongPlan[] {
 - **`key`**: e.g. `"D minor"`, or null.
 - **`tags`**: from the list below, a style and what stands out (two to four).
 - **`furFile`**: from `buildFurFile` (`make/fur-file-builder.ts`): `chips`, the chips the prompt
-  names (`['nes']`, `['scc']`, `['nes', 'scc']`; "for the NES and the SCC" is both), `bpm`,
+  names (`['nes']`, `['sid']`, `['nes', 'scc']`; "for the NES and the SCC" is both), `bpm`,
   `beatsPerBar`, `rowsPerBeat` (4: a row is a 16th), and `channels`: one list of rows per chip
-  channel for the whole song, NES first whatever order `chips` is in (each chip's channels: its
-  skill). `chipVolumes` follow the same order. Repeated stretches are reused as patterns.
+  channel for the whole song, chip by chip as NES, SCC, SID whatever order `chips` is in (each
+  chip's channels: its skill). `chipVolumes` follow the same order. Repeated stretches are reused as patterns.
 - Rows (`fur/fur.types.ts`): `{ note, instrument, volume, effects }`, any left out. Notes from
   `getNoteValue('D-3')` (`fur/notes.ts`); `NOTE_OFF` ends one.
 
 ## Pitch (measured)
 
 - **Furnace's A-3 is 440 Hz** on pulse and SCC channels: a note sounds one octave above its name in
-  standard terms. The NES triangle sounds an octave below a pulse.
-- **Write parts in true pitch and shift pulse and SCC notes down 12.**
+  standard terms. The NES triangle sounds an octave below a pulse, and the SID at its name (A-3 is
+  220 Hz).
+- **Write parts in true pitch and shift pulse and SCC notes down 12** (not the triangle's, not the
+  SID's).
 
 ## Timing
 

@@ -1,12 +1,28 @@
 /**
- * An instrument (INS2 block) and a wavetable (WAVE block), as this project writes them: a name and
- * macros (volume, arpeggio, duty, wave, pitch), and a wavetable's samples.
+ * An instrument (INS2 block) and a wavetable (WAVE block), as this project writes them: a name,
+ * macros (volume, arpeggio, duty, wave, pitch, and the SID's filter and envelope ones) and a chip's
+ * own feature (the SID's, fur/sid.ts), and a wavetable's samples.
  */
 import { ByteWriter } from './bytes.ts';
 import { FORMAT_VERSION, makeBlock } from './block.ts';
 
-/** The macros an instrument may have, by Furnace's code for each. */
-const MACRO_CODES = { vol: 0, arp: 1, duty: 2, wave: 3, pitch: 4 } satisfies Record<string, number>;
+/**
+ * The macros an instrument may have, by Furnace's code for each. From `filterMode` on they are the
+ * SID's, under Furnace's names ex1, ex2, alg and ex4, as the C64 demos use them: the filter mode
+ * (bits low 1, band 2, high 4), the resonance, the cutoff, and `special` (bits: gate 1, sync 2,
+ * ring 4, test 8).
+ */
+const MACRO_CODES = {
+  vol: 0,
+  arp: 1,
+  duty: 2,
+  wave: 3,
+  pitch: 4,
+  filterMode: 5,
+  resonance: 6,
+  cutoff: 8,
+  special: 15,
+} satisfies Record<string, number>;
 
 /** The kind of a macro. */
 export type MacroKind = keyof typeof MACRO_CODES;
@@ -38,9 +54,16 @@ const WIDE_VALUES = 0xc1;
  * @param name - The instrument's name.
  * @param type - Furnace's instrument type, such as `NES_INSTRUMENT`.
  * @param macros - The macros, written in this order; with none, the block has no macro feature.
+ * @param features - A chip's own features, whole (code, length, data), written after the macros, as
+ *   the SID's from makeSidFeature; none if left out.
  * @returns The INS2 block's bytes.
  */
-export function makeInstrument(name: string, type: number, macros: Macro[]): Uint8Array {
+export function makeInstrument(
+  name: string,
+  type: number,
+  macros: Macro[],
+  features: Uint8Array[] = [],
+): Uint8Array {
   const body = new ByteWriter().u16(FORMAT_VERSION).u16(type);
   const nameBytes = new ByteWriter().cString(name).getBytes();
   body.ascii('NA').u16(nameBytes.length).add(nameBytes);
@@ -51,6 +74,7 @@ export function makeInstrument(name: string, type: number, macros: Macro[]): Uin
     const macroData = macroBytes.getBytes();
     body.ascii('MA').u16(macroData.length).add(macroData);
   }
+  for (const feature of features) body.add(feature);
   body.ascii('EN');
   return makeBlock('INS2', body.getBytes());
 }

@@ -3,27 +3,21 @@
  * piece (made from a prompt or imported) that can be split into its channels. Knows nothing of files
  * or the page.
  */
+import { FURNACE_CHIPS } from './chips.ts';
 import type { Clip } from './clip.types.ts';
-
-/** The names of each chip's five channels, by the chip's name. */
-const CHANNEL_NAMES: Record<string, string[]> = {
-  NES: ['Pulse 1', 'Pulse 2', 'Triangle', 'Noise', 'DPCM'],
-  SCC: ['SCC 1', 'SCC 2', 'SCC 3', 'SCC 4', 'SCC 5'],
-  'SCC+': ['SCC 1', 'SCC 2', 'SCC 3', 'SCC 4', 'SCC 5'],
-};
-/** The channels of a chip this project writes. */
-const CHANNELS_OF_CHIP = 5;
 
 /**
  * Returns the name of a channel.
  *
  * @param chips - The clip's chips, by name, in order ("NES", "SCC+").
  * @param channel - The channel's number, counted over the chips in order.
- * @returns Its name, like "Triangle" or "SCC 2"; "Channel 7" for a chip not known.
+ * @returns Its name, like "Triangle" or "SCC 2"; "Channel 7" past the chips known.
  */
 export function getChannelName(chips: string[], channel: number): string {
-  const chip = chips[Math.floor(channel / CHANNELS_OF_CHIP)] ?? '';
-  return CHANNEL_NAMES[chip]?.[channel % CHANNELS_OF_CHIP] ?? `Channel ${channel + 1}`;
+  const names = chips.flatMap(
+    (name) => FURNACE_CHIPS.find((chip) => chip.name === name)?.channelNames ?? [],
+  );
+  return names[channel] ?? `Channel ${channel + 1}`;
 }
 
 /**

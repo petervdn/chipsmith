@@ -2,16 +2,10 @@
  * What a .fur file says of its music: its tempo, beats to a bar, chips, the channels that play and
  * its length, which are a clip's facts (docs/adr/0024). Given a .fur file, gives values.
  */
+import { getFurnaceChip } from '../shared/chips.ts';
 import type { ClipFacts } from '../shared/clip.types.ts';
 import { getPlayingChannels } from '../fur/cut.ts';
 import type { FurFile, FurSong } from '../fur/fur.types.ts';
-
-/** Furnace's chip ids and the names a clip gives them. */
-const CHIP_NAMES = new Map([
-  [0x06, 'NES'],
-  [0xb4, 'SCC+'],
-  [0xa1, 'SCC'],
-]);
 
 /**
  * Returns a song's tempo as Furnace shows it: rows to a beat from the first highlight, sped by the
@@ -50,7 +44,7 @@ export function getBeatsPerBar({ highlights }: FurSong): number {
  * @returns Each chip's name, or its id in hex when it has none.
  */
 export function getChipNames({ chips }: FurSong): string[] {
-  return chips.map((chip) => CHIP_NAMES.get(chip) ?? `0x${chip.toString(16)}`);
+  return chips.map((chip) => getFurnaceChip(chip)?.name ?? `0x${chip.toString(16)}`);
 }
 
 /**
