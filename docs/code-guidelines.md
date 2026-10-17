@@ -148,6 +148,13 @@ Where state lives, in this order (why: docs/adr/0017):
 - **Look before writing**: use what already does it.
 - **The second use is when a thing becomes a function.** A block is never copied a third time.
 - **A new case is an entry in a list, not a branch**, where a list already holds such cases.
+- **A fact is kept in one place.** What can be worked out from where it is kept (a clip's tempo or
+  channels from its source.fur, its length from its audio) is worked out when it is needed, not
+  stored beside it. A copy that has to be kept in step with its source (written twice, filled in
+  later, copied from another record) is the last choice: it is taken only when nothing else works,
+  and asked about first, with the other ways and why they fail; the decision is an ADR.
+  - Not a copy in this sense: a record of how something was at a moment, which never changes
+    after (the guides as they were sent, 0019; a clip's own prompt, 0004).
 
 ## Commits
 
