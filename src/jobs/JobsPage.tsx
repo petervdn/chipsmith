@@ -1,11 +1,12 @@
 // The Jobs page: every prompt sent, as a card, newest first: the ones on their way, then the ones
 // done or failed, each with ✕ to take it off the list, under a heading with their totals (songs,
-// time, tokens) in the columns the cards show them in. Sending a prompt on New leads here.
+// time, tokens) in the columns the cards show them in and Clear to take them all off. Sending a
+// prompt on New leads here.
 import type { Job } from '../../shared/job.types.ts';
 import { formatSeconds, formatTokens } from '../format.ts';
 import { JobCard } from './JobCard.tsx';
 import { getJobTotals } from './job-totals.ts';
-import { isJobRunning, useRemoveJob } from '../queries/jobs.ts';
+import { isJobRunning, useRemoveJob, useRemoveJobs } from '../queries/jobs.ts';
 import { usePageTitle } from '../use-page-title.ts';
 import { Breadcrumbs } from '../Breadcrumbs.tsx';
 import './JobsPage.css';
@@ -22,6 +23,7 @@ type JobsPageProps = { jobs: Job[] };
 export function JobsPage({ jobs }: JobsPageProps) {
   usePageTitle('Jobs');
   const { mutate: removeJob } = useRemoveJob();
+  const { mutate: removeJobs, isPending: isClearing } = useRemoveJobs();
   const running = jobs.filter(isJobRunning);
   const finished = jobs.filter((job) => !isJobRunning(job));
   const totals = getJobTotals(finished);
@@ -49,6 +51,19 @@ export function JobsPage({ jobs }: JobsPageProps) {
           <span className="jobs-page-totals-songs" title="the songs the jobs made, added up">
             {totals.songCount} {totals.songCount === 1 ? 'song' : 'songs'}
           </span>
+          <button
+            type="button"
+            className="jobs-page-clear"
+            onClick={() => {
+              if (window.confirm(getClearQuestion(finished.length))) {
+                removeJobs(finished.map((job) => job.id));
+              }
+            }}
+            disabled={isClearing}
+            title="remove every job that is over from the list (their songs stay)"
+          >
+            Clear
+          </button>
         </h2>
       )}
       {finished.map((job) => (
@@ -56,4 +71,14 @@ export function JobsPage({ jobs }: JobsPageProps) {
       ))}
     </section>
   );
+}
+
+/**
+ * Returns what Clear asks before it removes the jobs that are over.
+ *
+ * @param count - How many jobs are over.
+ * @returns The question.
+ */
+function getClearQuestion(count: number): string {
+  return `Remove the ${count === 1 ? 'job' : `${count} jobs`} that ${count === 1 ? 'is' : 'are'} over from the list? Their songs stay.`;
 }

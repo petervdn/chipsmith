@@ -59,6 +59,27 @@ export function useRemoveJob() {
 }
 
 /**
+ * Takes several jobs that are over off the Jobs page, one after another; the server's last answer
+ * becomes the cached jobs.
+ *
+ * @returns The mutation, called with the jobs' ids.
+ */
+export function useRemoveJobs() {
+  return useMutation({
+    mutationFn: async (jobIds: string[]) => {
+      let jobs: Job[] | null = null;
+      for (const jobId of jobIds) {
+        jobs = await sendJson<Job[]>(`/api/jobs/${encodeURIComponent(jobId)}`, 'DELETE', null);
+      }
+      return jobs;
+    },
+    onSuccess: (jobs) => {
+      if (jobs) queryClient.setQueryData(getQueryKey({ type: 'jobs' }), jobs);
+    },
+  });
+}
+
+/**
  * Cancels a job on its way; the server's list becomes the cached one.
  *
  * @returns The mutation, called with the job's id.
