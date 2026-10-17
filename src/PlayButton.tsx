@@ -24,7 +24,7 @@ export function PlayButton({ songId }: PlayButtonProps) {
   return (
     <button
       type="button"
-      className="play-button"
+      className={`play-button${isThisSong ? ' is-playing' : ''}`}
       onClick={() => void toggle()}
       title={isThisSong ? 'stop' : 'play'}
     >

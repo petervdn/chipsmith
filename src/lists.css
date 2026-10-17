@@ -69,9 +69,6 @@
   gap: 2px 12px;
   padding: 10px 12px;
 }
-.item-row:hover {
-  background: color-mix(in srgb, var(--raised) 60%, transparent);
-}
 .item-main {
   grid-area: main;
   display: flex;
@@ -130,18 +127,12 @@
   color: var(--muted);
   cursor: pointer;
 }
-.status-buttons button:hover {
-  background: var(--raised);
-}
 .status-keep.is-on {
   color: var(--keep);
 }
 .status-buttons .status-reject {
   font-size: 15px;
   opacity: 0.45;
-}
-.status-buttons .status-reject:hover {
-  opacity: 1;
 }
 .status-buttons .status-reject.is-on {
   color: var(--reject);
@@ -313,5 +304,18 @@
   }
   .item-row.has-expand .item-tags {
     grid-area: tags;
+  }
+}
+
+/* hover looks only where there is a mouse: a phone keeps a tapped element "hovered" */
+@media (hover: hover) {
+  .item-row:hover {
+    background: color-mix(in srgb, var(--raised) 60%, transparent);
+  }
+  .status-buttons button:hover {
+    background: var(--raised);
+  }
+  .status-buttons .status-reject:hover {
+    opacity: 1;
   }
 }

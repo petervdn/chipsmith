@@ -14,9 +14,21 @@
   font-variant-numeric: tabular-nums;
   cursor: pointer;
 }
-.play-button:hover {
+/* orange while its song plays (the player's state); the hover look only where there is a mouse, as a
+   phone keeps a tapped button "hovered" until the next tap */
+.play-button.is-playing {
   border-color: var(--accent);
-  color: var(--accent);
+  background: var(--accent);
+  color: #fff;
+}
+@media (hover: hover) {
+  .play-button:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .play-button.is-playing:hover {
+    color: #fff;
+  }
 }
 .item-row.has-play {
   grid-template-columns: auto 1fr auto;
