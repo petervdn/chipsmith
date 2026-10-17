@@ -115,5 +115,6 @@ Where state lives, in this order (why: docs/adr/0017):
 
 - **Phone and desktop alike**: one column on a phone, rows that wrap, touch targets of 40 px
   (`--touch`); on a desktop a row is one line. Nothing scrolls sideways.
-- **Colours are tokens** on `:root`, with a dark set under `prefers-color-scheme: dark`.
+- **Colours are tokens** on `:root`, with a dark set under `prefers-color-scheme: dark` and under
+  `data-look="dark"` (the top bar's switch).
 - **A control that does not say what it does gets a tooltip.**

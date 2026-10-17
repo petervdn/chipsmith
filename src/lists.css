@@ -13,8 +13,8 @@
   flex: 1 1 240px;
   min-height: var(--touch);
   padding: 0 12px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
+  border: var(--border-width) solid var(--line);
+  border-radius: var(--radius);
   background: var(--card);
 }
 .filter-switch {
@@ -32,18 +32,18 @@
 .tag-chip {
   min-height: 32px;
   padding: 0 10px;
-  border: 1px solid var(--line);
-  border-radius: 16px;
+  border: var(--border-width) solid var(--line);
+  border-radius: calc(var(--radius) * 2);
   background: var(--card);
   cursor: pointer;
 }
 .tag-chip.is-on {
-  border-color: var(--accent);
-  color: var(--accent);
+  border-color: var(--accent-text);
+  color: var(--accent-text);
 }
 .tag-count {
   color: var(--muted);
-  font-size: 12px;
+  font-size: 0.75rem;
 }
 
 /* a list of songs or clips: on a phone each row wraps, its facts under its title */
@@ -52,11 +52,11 @@
   list-style: none;
   margin: 0;
   padding: 0;
-  border-top: 1px solid var(--line);
-  border-bottom: 1px solid var(--line);
+  border-top: var(--border-width) solid var(--line);
+  border-bottom: var(--border-width) solid var(--line);
 }
 .item-list > li + li {
-  border-top: 1px solid var(--line);
+  border-top: var(--border-width) solid var(--line);
 }
 .item-row {
   position: relative;
@@ -91,12 +91,12 @@
 .item-id {
   font-weight: 400;
   color: var(--muted);
-  font-size: 13px;
+  font-size: 0.8125rem;
 }
 .item-tags,
 .item-prompt {
   color: var(--muted);
-  font-size: 13px;
+  font-size: 0.8125rem;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -107,7 +107,7 @@
   flex-wrap: wrap;
   gap: 0 12px;
   color: var(--muted);
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-variant-numeric: tabular-nums;
 }
 .status-buttons {
@@ -121,9 +121,9 @@
   width: var(--touch);
   height: var(--touch);
   border: 0;
-  border-radius: 8px;
+  border-radius: var(--radius);
   background: none;
-  font-size: 20px;
+  font-size: 1.25rem;
   color: var(--muted);
   cursor: pointer;
 }
@@ -131,7 +131,7 @@
   color: var(--keep);
 }
 .status-buttons .status-reject {
-  font-size: 15px;
+  font-size: 0.9375rem;
   opacity: 0.45;
 }
 .status-buttons .status-reject.is-on {
@@ -166,7 +166,7 @@
   gap: 12px;
   max-width: calc(100% - 32px);
   padding: 8px 8px 8px 16px;
-  border-radius: 10px;
+  border-radius: calc(var(--radius) * 1.25);
   background: var(--fg);
   color: var(--bg);
   box-shadow: 0 4px 16px rgb(0 0 0 / 25%);
@@ -180,9 +180,9 @@
   min-height: var(--touch);
   padding: 0 14px;
   border: 0;
-  border-radius: 8px;
+  border-radius: var(--radius);
   background: var(--accent);
-  color: #fff;
+  color: var(--on-accent);
   font-weight: 600;
   cursor: pointer;
 }
@@ -207,10 +207,10 @@
   width: 32px;
   height: var(--touch);
   border: 0;
-  border-radius: 8px;
+  border-radius: var(--radius);
   background: none;
   color: var(--muted);
-  font-size: 18px;
+  font-size: 1.125rem;
   cursor: pointer;
   transition: transform 0.15s;
 }
@@ -219,7 +219,7 @@
 }
 .row-details {
   padding: 4px 12px 12px 64px;
-  font-size: 14px;
+  font-size: 0.875rem;
 }
 @media (max-width: 759px) {
   .row-details {
@@ -228,7 +228,7 @@
 }
 .row-prompt {
   padding: 8px 10px;
-  border-radius: 8px;
+  border-radius: var(--radius);
   background: var(--raised);
 }
 .row-prompt + .row-prompt {
@@ -248,10 +248,10 @@
   align-items: center;
   min-height: 34px;
   padding: 0 12px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
+  border: var(--border-width) solid var(--line);
+  border-radius: var(--radius);
   background: var(--card);
-  font-size: 13px;
+  font-size: 0.8125rem;
   text-decoration: none;
   cursor: pointer;
 }
@@ -262,7 +262,7 @@
 .row-warning {
   margin: 0 0 6px;
   color: var(--keep);
-  font-size: 13px;
+  font-size: 0.8125rem;
 }
 
 /* a phone: tighter rows, so the title and the facts keep their room */

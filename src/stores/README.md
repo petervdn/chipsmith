@@ -5,4 +5,4 @@ through many layers (docs/adr/0017). Persisted ones use the persist middleware; 
 storage.
 
 - `player-store.ts`: the one player: which song, loading or playing, where (not persisted)
-- `preferences-store.ts`: the mute switch and the hidden job cards (localStorage)
+- `preferences-store.ts`: the mute switch, the hidden job cards and the look (localStorage)

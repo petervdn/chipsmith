@@ -9,6 +9,7 @@ import './lists.css';
 import './player.css';
 import './jobs.css';
 import './guides.css';
+import './home.css';
 
 const rootElement = document.getElementById('root');
 if (!rootElement) throw new Error('no #root in index.html');

@@ -4,12 +4,14 @@ import { formatMeter } from '../format.ts';
 import { PlayButton } from '../PlayButton.tsx';
 import { useSong } from '../queries/songs.ts';
 import { getClipLabel } from './ClipsPage.tsx';
+import { usePageTitle } from '../use-page-title.ts';
 
 type SongPageProps = { songId: string };
 
 /** The song page. */
 export function SongPage({ songId }: SongPageProps) {
   const { data: detail, error } = useSong(songId);
+  usePageTitle(detail?.song.title ?? songId);
   if (error) return <p className="error">{error.message}</p>;
   if (!detail) return <p className="empty">Loading…</p>;
   const { song, clips, isWaitingForAudio } = detail;

@@ -10,6 +10,7 @@ import { PromptBox } from '../PromptBox.tsx';
 import { isJobRunning } from '../queries/jobs.ts';
 import { useSongs } from '../queries/songs.ts';
 import { usePreferencesStore } from '../stores/preferences-store.ts';
+import { usePageTitle } from '../use-page-title.ts';
 
 type NewPageProps = { jobs: Job[] };
 
@@ -20,6 +21,7 @@ export function NewPage({ jobs }: NewPageProps) {
   const [fromSongId] = useState(() => new URLSearchParams(window.location.search).get('from'));
   const [baseSongId] = useState(() => new URLSearchParams(window.location.search).get('base'));
   const [isSourceCleared, setSourceCleared] = useState(false);
+  usePageTitle('New song');
   const { data: listings } = useSongs();
   const from = fromSongId ? listings?.find(({ song }) => song.id === fromSongId) : undefined;
   const base = baseSongId ? listings?.find(({ song }) => song.id === baseSongId) : undefined;

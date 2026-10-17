@@ -7,7 +7,7 @@
 }
 .new-heading {
   margin: 20px 0 8px;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.03em;
@@ -23,18 +23,18 @@
 .prompt-text {
   min-height: 40vh;
   padding: 12px;
-  font-size: 16px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
+  font-size: 1rem;
+  border: var(--border-width) solid var(--line);
+  border-radius: var(--radius);
   background: var(--card);
   resize: vertical;
 }
 .prompt-send {
   min-height: 48px;
   border: 0;
-  border-radius: 8px;
+  border-radius: var(--radius);
   background: var(--accent);
-  color: #fff;
+  color: var(--on-accent);
   font-weight: 600;
   cursor: pointer;
 }
@@ -49,8 +49,8 @@
 .job-card {
   margin-bottom: 12px;
   padding: 12px;
-  border: 1px solid var(--accent);
-  border-radius: 10px;
+  border: var(--border-width) solid var(--accent-text);
+  border-radius: calc(var(--radius) * 1.25);
   background: var(--card);
 }
 .job-card.is-done {
@@ -76,7 +76,7 @@
   border: 0;
   background: none;
   color: var(--muted);
-  font-size: 16px;
+  font-size: 1rem;
   cursor: pointer;
 }
 .job-prompt {
@@ -89,11 +89,11 @@
 }
 .job-now {
   margin: 6px 0;
-  font-size: 14px;
+  font-size: 0.875rem;
 }
 .job-summary {
   margin: 6px 0;
-  font-size: 14px;
+  font-size: 0.875rem;
 }
 .job-songs {
   list-style: none;
@@ -124,7 +124,7 @@
   border: 0;
   background: none;
   color: var(--muted);
-  font-size: 13px;
+  font-size: 0.8125rem;
   text-decoration: underline;
   cursor: pointer;
 }
@@ -132,7 +132,7 @@
   margin: 4px 0 0;
   padding-left: 0;
   list-style: none;
-  font-size: 13px;
+  font-size: 0.8125rem;
   max-height: 240px;
   overflow-y: auto;
 }
@@ -145,9 +145,9 @@
 .job-spinner {
   width: 12px;
   height: 12px;
-  border: 2px solid var(--line);
-  border-top-color: var(--accent);
-  border-radius: 50%;
+  border: calc(var(--border-width) * 2) solid var(--line);
+  border-top-color: var(--accent-text);
+  border-radius: var(--round);
   animation: job-spin 0.9s linear infinite;
 }
 @keyframes job-spin {
@@ -163,10 +163,10 @@
   height: 18px;
   margin-left: 6px;
   padding: 0 5px;
-  border-radius: 9px;
+  border-radius: calc(var(--radius) * 1.125);
   background: var(--accent);
-  color: #fff;
-  font-size: 11px;
+  color: var(--on-accent);
+  font-size: 0.6875rem;
 }
 
 /* a running job's line above the songs list */
@@ -176,8 +176,8 @@
   gap: 10px;
   margin-bottom: 8px;
   padding: 10px 12px;
-  border: 1px solid var(--accent);
-  border-radius: 10px;
+  border: var(--border-width) solid var(--accent-text);
+  border-radius: calc(var(--radius) * 1.25);
   background: var(--card);
   text-decoration: none;
 }
@@ -189,14 +189,14 @@
   flex: 1;
   min-width: 0;
   color: var(--muted);
-  font-size: 13px;
+  font-size: 0.8125rem;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 .job-strip-go {
   color: var(--muted);
-  font-size: 18px;
+  font-size: 1.125rem;
 }
 .prompt-source {
   display: flex;
@@ -204,7 +204,7 @@
   gap: 8px;
   margin: 0;
   color: var(--muted);
-  font-size: 14px;
+  font-size: 0.875rem;
 }
 .prompt-source-clear {
   border: 0;

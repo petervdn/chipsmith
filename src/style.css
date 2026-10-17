@@ -1,32 +1,59 @@
 /* The look of the app, for a phone (one column, rows that wrap, big touch targets) and a desktop
-   (rows on one line). Colours are tokens, light and dark by the system's setting. */
+   (rows on one line). Colours are tokens: light, or dark by the system's setting, unless the top bar's
+   switch chose one (`data-look` on <html>, looks.ts). The accent is a bright lime: a fill, with
+   --on-accent on it; as text or a line on the light page it is --accent-text, a deeper shade. */
 
 :root {
-  --bg: #f6f5f1;
+  --bg: #f3f5f0;
   --card: #ffffff;
-  --raised: #efede6;
-  --fg: #1d1d1b;
-  --muted: #6b6b66;
-  --line: #dcdad3;
-  --accent: #c2410c;
-  --keep: #b8860b;
-  --reject: #dc2626;
-  --touch: 40px;
+  --raised: #e7ebe2;
+  --fg: #1a1d17;
+  --muted: #666d5f;
+  --line: #d5dbcd;
+  --accent: #a6f23a;
+  --accent-text: #4a8a00;
+  --on-accent: #1a1d17;
+  --keep: #c08400;
+  --reject: #dc2f4b;
   color-scheme: light;
+  --touch: 40px;
+  --font: system-ui, -apple-system, sans-serif;
+  --text-size: 16px;
+  --line-height: 1.4;
+  --radius: 8px;
+  --round: 50%;
+  --border-width: 1px;
+  font-size: var(--text-size);
 }
 @media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #101219;
-    --card: #181b25;
-    --raised: #222633;
-    --fg: #e8e6df;
-    --muted: #8c91a4;
-    --line: #343a4e;
-    --accent: #ff8a4c;
-    --keep: #e9d758;
-    --reject: #f2555a;
+  :root:not([data-look='light']) {
+    --bg: #18181b;
+    --card: #222226;
+    --raised: #2e2e33;
+    --fg: #ececef;
+    --muted: #9a9aa3;
+    --line: #3a3a41;
+    --accent: #a6f23a;
+    --accent-text: #a6f23a;
+    --on-accent: #18181b;
+    --keep: #ffb83d;
+    --reject: #ff4d6d;
     color-scheme: dark;
   }
+}
+:root[data-look='dark'] {
+  --bg: #18181b;
+  --card: #222226;
+  --raised: #2e2e33;
+  --fg: #ececef;
+  --muted: #9a9aa3;
+  --line: #3a3a41;
+  --accent: #a6f23a;
+  --accent-text: #a6f23a;
+  --on-accent: #18181b;
+  --keep: #ffb83d;
+  --reject: #ff4d6d;
+  color-scheme: dark;
 }
 
 * {
@@ -36,10 +63,9 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--fg);
-  font:
-    15px/1.4 system-ui,
-    -apple-system,
-    sans-serif;
+  font-family: var(--font);
+  font-size: 0.9375rem;
+  line-height: var(--line-height);
   -webkit-text-size-adjust: 100%;
 }
 a {
@@ -59,11 +85,12 @@ textarea {
   z-index: 10;
   display: flex;
   align-items: center;
-  gap: 12px;
+  flex-wrap: wrap;
+  gap: 8px 12px;
   padding: 8px 16px;
   padding-top: max(8px, env(safe-area-inset-top));
   background: var(--card);
-  border-bottom: 1px solid var(--line);
+  border-bottom: var(--border-width) solid var(--line);
 }
 .top-nav {
   display: flex;
@@ -74,7 +101,7 @@ textarea {
   align-items: center;
   min-height: var(--touch);
   padding: 0 14px;
-  border-radius: 8px;
+  border-radius: var(--radius);
   text-decoration: none;
   font-weight: 600;
   color: var(--muted);
@@ -82,6 +109,49 @@ textarea {
 .top-link.is-on {
   color: var(--fg);
   background: var(--raised);
+}
+/* the button for a new song, at the right: an action, not a section */
+.top-new {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--touch);
+  margin-left: auto;
+  padding: 0 14px;
+  border-radius: var(--radius);
+  background: var(--accent);
+  color: var(--on-accent);
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.top-new.is-on {
+  outline: 2px solid var(--fg);
+  outline-offset: 2px;
+}
+.top-new .top-badge {
+  background: var(--on-accent);
+  color: var(--accent-text);
+}
+/* the switch between light and dark (LookSwitcher.tsx) */
+.look-switcher {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.look-switcher button {
+  min-width: var(--touch);
+  min-height: var(--touch);
+  border: var(--border-width) solid var(--line);
+  border-radius: var(--radius);
+  background: var(--raised);
+  cursor: pointer;
+}
+.look-name {
+  min-width: 4em;
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.8125rem;
+  white-space: nowrap;
 }
 .top-crumb {
   display: flex;
@@ -117,7 +187,7 @@ textarea {
 /* a song */
 .song-title {
   margin: 8px 0 2px;
-  font-size: 22px;
+  font-size: 1.375rem;
 }
 .song-facts {
   margin: 0 0 16px;
@@ -137,8 +207,8 @@ textarea {
   align-items: center;
   gap: 8px;
   padding: 10px 12px;
-  border: 1px solid var(--line);
-  border-radius: 10px;
+  border: var(--border-width) solid var(--line);
+  border-radius: calc(var(--radius) * 1.25);
   background: var(--card);
 }
 .track-name {
@@ -152,17 +222,17 @@ textarea {
 }
 .block-chip {
   padding: 4px 10px;
-  border-radius: 6px;
+  border-radius: calc(var(--radius) * 0.75);
   background: var(--raised);
-  font-size: 13px;
+  font-size: 0.8125rem;
 }
 
 /* a program the app calls is missing (ProgramWarning.tsx) */
 .program-warning {
   padding: 8px 16px;
   background: color-mix(in srgb, var(--reject) 15%, var(--card));
-  border-bottom: 1px solid var(--reject);
-  font-size: 14px;
+  border-bottom: var(--border-width) solid var(--reject);
+  font-size: 0.875rem;
 }
 .program-warning p {
   margin: 4px 0;
@@ -170,8 +240,23 @@ textarea {
 .program-warning button {
   min-height: 34px;
   padding: 0 12px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
+  border: var(--border-width) solid var(--line);
+  border-radius: var(--radius);
   background: var(--card);
   cursor: pointer;
+}
+
+/* a phone: the logo and the links share one row */
+@media (max-width: 480px) {
+  .top-bar {
+    gap: 4px 6px;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+  .top-nav {
+    gap: 0;
+  }
+  .top-link {
+    padding: 0 8px;
+  }
 }

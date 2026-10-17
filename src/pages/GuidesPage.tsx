@@ -4,6 +4,7 @@
 import { useState } from 'react';
 import { GuideEditor } from '../GuideEditor.tsx';
 import { useGuides } from '../queries/guides.ts';
+import { usePageTitle } from '../use-page-title.ts';
 
 /** What is open: a guide by id, a new one, or nothing. */
 type OpenGuide = { guideId: string } | 'new' | null;
@@ -12,6 +13,7 @@ type OpenGuide = { guideId: string } | 'new' | null;
 export function GuidesPage() {
   const [open, setOpen] = useState<OpenGuide>(null);
   const { data: guides, error } = useGuides();
+  usePageTitle('Guides');
   return (
     <section className="guides-page">
       <p className="guides-intro">

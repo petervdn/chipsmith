@@ -4,7 +4,9 @@ The page (React). It asks the server (server/) for clips and songs and shows the
 out without the page is in a module of its own beside it, with its test.
 
 - `App.tsx`: the top bar and the page the address is
+- `Logo.tsx`: the logo, a note above an anvil in pixels
 - `JobCard.tsx`: a job's card on the New page
+- `LookSwitcher.tsx`: ‹ › in the top bar, to switch between light and dark
 - `JobStrip.tsx`: one line for a running job, above the songs list
 - `FilterBar.tsx`: the filter bar above a list
 - `GuideChips.tsx`: the style guides as chips under the prompt box
@@ -20,9 +22,12 @@ out without the page is in a module of its own beside it, with its test.
 - `copy-text.ts`: copying text, also where the clipboard API is missing (plain http)
 - `format.ts`: how lengths and meters are shown
 - `guides.css`: the look of the Guides page and the guide chips
+- `home.css`: the look of the home page and the logo
+- `home.ts`: what the home page shows of the songs: the latest, the counts
 - `jobs.css`: the look of the prompt box, the job cards and the running count
 - `list-filter.ts`: the filter both lists share
 - `lists.css`: the look of the lists: filter bar, rows, status buttons
+- `looks.ts`: the two looks, light and dark, and stepping between them
 - `main.tsx`: the page's entry
 - `pages/`: one file to a page
 - `player.css`: the look of ▶ and the player bar
@@ -34,3 +39,5 @@ out without the page is in a module of its own beside it, with its test.
 - `use-guide-choice.ts`: the style guides chosen for a prompt
 - `use-guide-editor.ts`: a style guide's draft, saved or deleted
 - `use-list-filter.ts`: a list's filter kept in the address
+- `use-look.ts`: the look the page is in, and stepping to another
+- `use-page-title.ts`: the browser tab's title, the page's name and then chipsmith

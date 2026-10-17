@@ -1,9 +1,14 @@
-// The bar at the top of every page: Songs, Clips, Guides and New (with how many jobs are on their way), the
-// one open marked, and in a song the song's title.
+// The bar at the top of every page: the logo (home), Songs, Clips and Guides (the one open marked),
+// in a song the song's title, a button for a new song at the right (with how many jobs are on their
+// way), and the looks to try.
 import type { Job } from '../shared/job.types.ts';
+import { Logo } from './Logo.tsx';
+import { LookSwitcher } from './LookSwitcher.tsx';
 import { isJobRunning } from './queries/jobs.ts';
 import { useSong } from './queries/songs.ts';
 import type { Route } from './router.ts';
+
+const LOGO_SIZE = 32;
 
 type TopBarProps = { route: Route; jobs: Job[] };
 
@@ -13,8 +18,12 @@ export function TopBar({ route, jobs }: TopBarProps) {
   const runningCount = jobs.filter(isJobRunning).length;
   return (
     <header className="top-bar">
+      <a href="/" className="top-logo" title="home">
+        <Logo size={LOGO_SIZE} />
+        <span className="top-logo-name">chipsmith</span>
+      </a>
       <nav className="top-nav">
-        <a href="/" className={`top-link${isSongs ? ' is-on' : ''}`}>
+        <a href="/songs" className={`top-link${isSongs ? ' is-on' : ''}`}>
           Songs
         </a>
         <a href="/clips" className={`top-link${route.page === 'clips' ? ' is-on' : ''}`}>
@@ -27,16 +36,17 @@ export function TopBar({ route, jobs }: TopBarProps) {
         >
           Guides
         </a>
-        <a
-          href="/new"
-          className={`top-link${route.page === 'new' ? ' is-on' : ''}`}
-          title={runningCount > 0 ? `${runningCount} on its way` : 'ask Claude for new songs'}
-        >
-          New
-          {runningCount > 0 && <span className="top-badge">{runningCount}</span>}
-        </a>
       </nav>
       {route.page === 'song' && <SongCrumb songId={route.songId} />}
+      <a
+        href="/new"
+        className={`top-new${route.page === 'new' ? ' is-on' : ''}`}
+        title={runningCount > 0 ? `${runningCount} on its way` : 'write a prompt for a new song'}
+      >
+        + New song
+        {runningCount > 0 && <span className="top-badge">{runningCount}</span>}
+      </a>
+      <LookSwitcher />
     </header>
   );
 }

@@ -1,14 +1,16 @@
-// Every address reads as the page it is, and anything else as the songs list.
+// Every address reads as the page it is, and anything else as the home page.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { getRoute } from './router.ts';
 
 test('addresses read as their pages', () => {
-  assert.deepEqual(getRoute('/'), { page: 'songs' });
+  assert.deepEqual(getRoute('/'), { page: 'home' });
+  assert.deepEqual(getRoute('/songs'), { page: 'songs' });
+  assert.deepEqual(getRoute('/songs?tag=funk'), { page: 'songs' });
   assert.deepEqual(getRoute('/clips'), { page: 'clips' });
   assert.deepEqual(getRoute('/guides'), { page: 'guides' });
   assert.deepEqual(getRoute('/new'), { page: 'new' });
   assert.deepEqual(getRoute('/new?from=s0031'), { page: 'new' });
   assert.deepEqual(getRoute('/songs/s0031'), { page: 'song', songId: 's0031' });
-  assert.deepEqual(getRoute('/somewhere/else'), { page: 'songs' });
+  assert.deepEqual(getRoute('/somewhere/else'), { page: 'home' });
 });

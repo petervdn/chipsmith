@@ -2,6 +2,7 @@
 // the player bar.
 import { ClipsPage } from './pages/ClipsPage.tsx';
 import { GuidesPage } from './pages/GuidesPage.tsx';
+import { HomePage } from './pages/HomePage.tsx';
 import { NewPage } from './pages/NewPage.tsx';
 import { SongPage } from './pages/SongPage.tsx';
 import { SongsPage } from './pages/SongsPage.tsx';
@@ -20,6 +21,7 @@ export function App() {
       <TopBar route={route} jobs={jobs} />
       <ProgramWarning />
       <main className="page">
+        {route.page === 'home' && <HomePage jobs={jobs} />}
         {route.page === 'songs' && <SongsPage jobs={jobs} />}
         {route.page === 'clips' && <ClipsPage />}
         {route.page === 'guides' && <GuidesPage />}

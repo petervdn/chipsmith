@@ -1,4 +1,4 @@
-// The songs list, the start page: every song with its length, tempo, meter, tags and status, the
+// The songs list: every song with its length, tempo, meter, tags and status, the
 // filter bar above it, ▶, ★ / ✕ and ⌄ (more) on each row, and a line for each job on its way. A
 // row's title opens the song.
 import { useState } from 'react';
@@ -16,6 +16,7 @@ import { useListFilter } from '../use-list-filter.ts';
 import { SongRowDetails } from '../SongRowDetails.tsx';
 import { StatusButtons } from '../StatusButtons.tsx';
 import { UndoBar, useUndo } from '../UndoBar.tsx';
+import { usePageTitle } from '../use-page-title.ts';
 
 type SongsPageProps = { jobs: Job[] };
 
@@ -26,6 +27,7 @@ export function SongsPage({ jobs }: SongsPageProps) {
   const [filter, setFilter] = useListFilter();
   const [undoOffer, setUndoOffer] = useUndo();
   const [openSongs, setOpenSongs] = useState<string[]>([]);
+  usePageTitle('Songs');
   const titlesById = new Map((listings ?? []).map(({ song }) => [song.id, song.title]));
 
   function toggleOpen(songId: string): void {

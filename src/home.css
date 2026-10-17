@@ -1,0 +1,75 @@
+/* The home page (pages/HomePage.tsx) and the logo, top left in the top bar and large on the home
+   page. Uses the tokens of style.css. */
+
+.logo {
+  display: block;
+  flex: none;
+}
+.logo-note {
+  fill: var(--accent-text);
+}
+.logo-anvil {
+  fill: var(--fg);
+}
+
+/* the logo in the top bar, with the name beside it on a wide screen */
+.top-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: var(--touch);
+  padding-right: 4px;
+  text-decoration: none;
+  font-weight: 700;
+}
+.top-logo-name {
+  display: none;
+}
+@media (min-width: 720px) {
+  .top-logo-name {
+    display: inline;
+  }
+}
+
+/* the home page */
+.home-hero {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px 24px;
+  margin: 24px 0;
+}
+.home-name {
+  margin: 0;
+  font-size: 2.25rem;
+}
+.home-line {
+  max-width: 34em;
+  margin: 4px 0 0;
+  color: var(--muted);
+}
+.home-new {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--touch);
+  margin-bottom: 16px;
+  padding: 0 20px;
+  border-radius: var(--radius);
+  background: var(--accent);
+  color: var(--on-accent);
+  font-weight: 700;
+  text-decoration: none;
+}
+.home-counts {
+  color: var(--muted);
+}
+.home-heading {
+  margin: 24px 0 8px;
+  font-size: 1.125rem;
+}
+.home-all {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--touch);
+  color: var(--muted);
+}

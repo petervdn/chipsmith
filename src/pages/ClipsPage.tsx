@@ -9,6 +9,7 @@ import { useClips, useSetClipStatus } from '../queries/clips.ts';
 import { useListFilter } from '../use-list-filter.ts';
 import { StatusButtons } from '../StatusButtons.tsx';
 import { UndoBar, useUndo } from '../UndoBar.tsx';
+import { usePageTitle } from '../use-page-title.ts';
 
 /** A clip's name as the list shows it: its section and stem, or "whole" for an unsplit clip. */
 export function getClipLabel({ name }: Clip): string {
@@ -22,6 +23,7 @@ export function ClipsPage() {
   const { mutateAsync: sendStatus } = useSetClipStatus();
   const [filter, setFilter] = useListFilter();
   const [undoOffer, setUndoOffer] = useUndo();
+  usePageTitle('Clips');
   const items = (listings ?? []).map((listing) => ({
     listing,
     text: `${getClipLabel(listing.clip)} ${listing.clip.prompt} ${listing.clip.id}`,
