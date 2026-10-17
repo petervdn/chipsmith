@@ -114,6 +114,11 @@ select:not([multiple]) {
   padding: 12px 16px 40px;
 }
 
+/* a page that uses the whole width: the song editor */
+.page.is-wide {
+  max-width: none;
+}
+
 .empty,
 .error {
   padding: 24px 0;

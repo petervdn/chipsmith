@@ -1,4 +1,13 @@
-/* The look of SongEditor.tsx: the timeline scrolls sideways inside its box, never the page. */
+/* The look of SongEditor.tsx: the song's clips in a column at the left of the timeline and what is
+   under it; the timeline scrolls sideways inside its box, never the page. */
+
+.song-editor-body {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
+  gap: 12px;
+}
 
 .song-editor-scroll {
   overflow-x: auto;

@@ -1,6 +1,9 @@
-// The clips the song plays, under the timeline: each with its name, length, channels and how many
-// blocks play it. A tap selects its first block; a drag puts a new block of it on a track (a chip of
-// it follows the pointer). It knows nothing of how a drop is placed.
+// The clips the song plays, in a column at the left of the timeline: each with its name, length,
+// channels and how many blocks play it. A tap selects its first block; a drag puts a new block of it
+// on a track (a chip of it follows the pointer). « folds the column to a strip and » opens it again;
+// on a phone it starts folded, and open it lies over the timeline and steps aside while a clip is
+// dragged. It knows nothing of how a drop is placed.
+import { useState } from 'react';
 import type { PointerEvent as ReactPointerEvent } from 'react';
 import type { Clip } from '../../shared/clip.types.ts';
 import { getChannelName } from '../../shared/clip-channels.ts';
@@ -9,6 +12,9 @@ import { formatSeconds } from '../format.ts';
 import type { SongClip } from './song-clips.ts';
 import type { ClipDrag } from './use-clip-drag.ts';
 import './SongClips.css';
+
+/** A screen wide enough for the column beside the timeline; a narrower one starts with it folded. */
+const WIDE_SCREEN = '(min-width: 720px)';
 
 type SongClipsProps = {
   songClips: SongClip[];
@@ -20,7 +26,7 @@ type SongClipsProps = {
 };
 
 /**
- * Shows the song's clips, to select and to drag onto the timeline.
+ * Shows the song's clips in a column, to select and to drag onto the timeline.
  *
  * @param props - The component's props.
  * @param props.songClips - The clips, in the order the song first plays them, with their blocks.
@@ -29,7 +35,7 @@ type SongClipsProps = {
  * @param props.drag - The clip being dragged, or null.
  * @param props.onPress - Called on a press on a clip, which may become a drag.
  * @param props.onSelect - Called with a clip's id when it is tapped.
- * @returns The clips' section element.
+ * @returns The column's element.
  */
 export function SongClips({
   songClips,
@@ -39,37 +45,63 @@ export function SongClips({
   onPress,
   onSelect,
 }: SongClipsProps) {
+  const [isOpen, setOpen] = useState(() => window.matchMedia(WIDE_SCREEN).matches);
   const dragged = songClips.find(({ clip }) => clip.id === drag?.clipId)?.clip;
+  if (!isOpen) {
+    return (
+      <aside className="song-clips is-folded">
+        <button
+          type="button"
+          className="song-clips-fold"
+          onClick={() => setOpen(true)}
+          aria-expanded={false}
+          aria-label="show the song's clips"
+          data-tooltip="show the song's clips"
+        >
+          »
+        </button>
+        <span className="song-clips-strip-label">clips</span>
+      </aside>
+    );
+  }
   return (
-    <section className="song-clips">
-      <h2 className="song-clips-title">
-        Clips <span className="song-clips-hint">drag one onto a track to place it</span>
-      </h2>
-      <ul className="song-clips-list">
-        {songClips.map(({ clip, blockCount }) => (
-          <li key={clip.id}>
-            <button
-              type="button"
-              className={`song-clips-clip${clip.id === selectedClipId ? ' is-selected' : ''}${clip.id === drag?.clipId ? ' is-dragged' : ''}`}
-              onPointerDown={(event) => onPress(event, clip.id)}
-              onClick={() => onSelect(clip.id)}
-              data-tooltip={
-                blockCount > 0
-                  ? 'tap to select its first block; drag onto a track'
-                  : 'drag onto a track'
-              }
-            >
-              <span className="song-clips-name">
-                {getClipLabel(clip)} <span className="song-clips-id">{clip.id}</span>
-              </span>
-              <span className="song-clips-facts">
-                {formatSeconds(clip.seconds)} · {getChannelsText(clip)} ·{' '}
-                {waitingClipIds.includes(clip.id) ? 'rendering…' : getBlockCountText(blockCount)}
-              </span>
-            </button>
-          </li>
-        ))}
-      </ul>
+    <aside className={`song-clips${drag ? ' is-dragging' : ''}`}>
+      <div className="song-clips-panel">
+        <header className="song-clips-head">
+          <h2 className="song-clips-title">clips</h2>
+          <button
+            type="button"
+            className="song-clips-fold"
+            onClick={() => setOpen(false)}
+            aria-expanded={true}
+            aria-label="fold the clips away"
+            data-tooltip="fold the clips away"
+          >
+            «
+          </button>
+        </header>
+        <p className="song-clips-hint">Drag one onto a track to place it.</p>
+        <ul className="song-clips-list">
+          {songClips.map(({ clip, blockCount }) => (
+            <li key={clip.id}>
+              <button
+                type="button"
+                className={`song-clips-clip${clip.id === selectedClipId ? ' is-selected' : ''}${clip.id === drag?.clipId ? ' is-dragged' : ''}`}
+                onPointerDown={(event) => onPress(event, clip.id)}
+                onClick={() => onSelect(clip.id)}
+              >
+                <span className="song-clips-name">
+                  {getClipLabel(clip)} <span className="song-clips-id">{clip.id}</span>
+                </span>
+                <span className="song-clips-facts">
+                  {formatSeconds(clip.seconds)} · {getChannelsText(clip)} ·{' '}
+                  {waitingClipIds.includes(clip.id) ? 'rendering…' : getBlockCountText(blockCount)}
+                </span>
+              </button>
+            </li>
+          ))}
+        </ul>
+      </div>
       {drag && dragged && (
         <span
           className="song-clips-ghost"
@@ -79,7 +111,7 @@ export function SongClips({
           {getClipLabel(dragged)} {drag.preview ? '' : '· over a track to place it'}
         </span>
       )}
-    </section>
+    </aside>
   );
 }
 

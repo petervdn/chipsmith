@@ -16,7 +16,7 @@ saved, playing from a cursor, the zoom, and the selected block's clip or track.
 - `song-edits.ts`: the edits of the arrangement: move, trim, repeat, duplicate, remove a block; tracks
 - `song-clips.ts`: the song's clips in the order it plays them, their blocks counted; a clip's first block
 - `SongClips.css`: the look of SongClips.tsx
-- `SongClips.tsx`: the song's clips under the timeline, to select and to drag onto a track
+- `SongClips.tsx`: the song's clips in a column left of the timeline, to select and drag onto a track
 - `SongEditor.css`: the look of SongEditor.tsx
 - `SongEditor.tsx`: the editor: its bar of controls, the timeline, the song's clips, the selected block's or track's details
 - `Timeline.css`: the look of Timeline.tsx

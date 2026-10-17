@@ -155,78 +155,86 @@ export function SongEditor({ detail }: SongEditorProps) {
           play once all are rendered.
         </p>
       )}
-      <div ref={scrollRef} className="song-editor-scroll">
-        <Timeline
-          song={shownSong}
-          clips={clips}
-          pixelsPerBar={pixelsPerBar}
-          selection={selection}
-          mix={mix}
-          cursor={transport.cursor}
-          onSelect={draft.select}
-          onMoveTo={transport.moveTo}
-          onPress={drag.startPress}
-          wasDragged={() => drag.wasDragged() || pan.wasPanned()}
-          onToggleMute={toggleMute}
-          onToggleSolo={toggleSolo}
-          onAddTrack={() => draft.changeTracks(addTrack)}
-          onPanStart={pan.startPan}
+      <div className="song-editor-body">
+        <SongClips
+          songClips={getSongClips(draft.tracks, clips)}
+          selectedClipId={span?.clipId ?? null}
           waitingClipIds={waitingClipIds}
-        />
-      </div>
-      <SongClips
-        songClips={getSongClips(draft.tracks, clips)}
-        selectedClipId={span?.clipId ?? null}
-        waitingClipIds={waitingClipIds}
-        drag={clipDrag.drag}
-        onPress={clipDrag.startPress}
-        onSelect={(clipId) => {
-          if (clipDrag.wasDragged()) return;
-          const first = getFirstBlockPlace(draft.tracks, clipId);
-          if (first) draft.select({ kind: 'block', place: first });
-        }}
-      />
-      {place && span && (
-        <BlockDetails
-          song={draftSong}
-          span={span}
-          clip={clip}
-          versions={clip ? getVersions(clip.id, poolClips.length > 0 ? poolClips : clips) : []}
-          onPlayFrom={transport.playFrom}
-          onRepeats={(repeats) => draft.edit((tracks) => setRepeats(tracks, place, repeats))}
-          onDuplicate={() =>
-            draft.edit((tracks) => duplicateBlock(tracks, place, getPlaceTicks(place)))
-          }
-          onUntrim={() =>
-            draft.edit((tracks) =>
-              trimBlock(
-                tracks,
-                place,
-                { start: span.start - (getBlock(tracks, place)?.trim?.offset ?? 0), trim: null },
-                getPlaceTicks(place),
-              ),
-            )
-          }
-          onRemove={() => draft.edit((tracks) => removeBlock(tracks, place))}
-        />
-      )}
-      {selectedTrack && (
-        <TrackDetails
-          track={selectedTrack}
-          onRename={(name) =>
-            draft.changeTracks((tracks) => renameTrack(tracks, selectedTrack.id, name))
-          }
-          onRemove={() => {
-            draft.changeTracks((tracks) => removeTrack(tracks, selectedTrack.id));
-            draft.select(null);
+          drag={clipDrag.drag}
+          onPress={clipDrag.startPress}
+          onSelect={(clipId) => {
+            if (clipDrag.wasDragged()) return;
+            const first = getFirstBlockPlace(draft.tracks, clipId);
+            if (first) draft.select({ kind: 'block', place: first });
           }}
         />
-      )}
-      {!selection && (
-        <p className="song-editor-hint">
-          Tap a block or a track's name to see it. Drag a block to move it, its edges to trim it.
-        </p>
-      )}
+        <div className="song-editor-main">
+          <div ref={scrollRef} className="song-editor-scroll">
+            <Timeline
+              song={shownSong}
+              clips={clips}
+              pixelsPerBar={pixelsPerBar}
+              selection={selection}
+              mix={mix}
+              cursor={transport.cursor}
+              onSelect={draft.select}
+              onMoveTo={transport.moveTo}
+              onPress={drag.startPress}
+              wasDragged={() => drag.wasDragged() || pan.wasPanned()}
+              onToggleMute={toggleMute}
+              onToggleSolo={toggleSolo}
+              onAddTrack={() => draft.changeTracks(addTrack)}
+              onPanStart={pan.startPan}
+              waitingClipIds={waitingClipIds}
+            />
+          </div>
+          {place && span && (
+            <BlockDetails
+              song={draftSong}
+              span={span}
+              clip={clip}
+              versions={clip ? getVersions(clip.id, poolClips.length > 0 ? poolClips : clips) : []}
+              onPlayFrom={transport.playFrom}
+              onRepeats={(repeats) => draft.edit((tracks) => setRepeats(tracks, place, repeats))}
+              onDuplicate={() =>
+                draft.edit((tracks) => duplicateBlock(tracks, place, getPlaceTicks(place)))
+              }
+              onUntrim={() =>
+                draft.edit((tracks) =>
+                  trimBlock(
+                    tracks,
+                    place,
+                    {
+                      start: span.start - (getBlock(tracks, place)?.trim?.offset ?? 0),
+                      trim: null,
+                    },
+                    getPlaceTicks(place),
+                  ),
+                )
+              }
+              onRemove={() => draft.edit((tracks) => removeBlock(tracks, place))}
+            />
+          )}
+          {selectedTrack && (
+            <TrackDetails
+              track={selectedTrack}
+              onRename={(name) =>
+                draft.changeTracks((tracks) => renameTrack(tracks, selectedTrack.id, name))
+              }
+              onRemove={() => {
+                draft.changeTracks((tracks) => removeTrack(tracks, selectedTrack.id));
+                draft.select(null);
+              }}
+            />
+          )}
+          {!selection && (
+            <p className="song-editor-hint">
+              Tap a block or a track's name to see it. Drag a block to move it, its edges to trim
+              it.
+            </p>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
