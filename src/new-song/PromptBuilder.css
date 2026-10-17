@@ -1,4 +1,4 @@
-/* The look of PromptBuilder.tsx: per part a small label above its menu and its lock left of it, in
+/* The look of PromptBuilder.tsx: per part a small label above its lock and menu, the lock left of the menu, in
    two columns of equal width on a wide screen. */
 
 .prompt-builder {
@@ -24,7 +24,7 @@
   display: grid;
   grid-template-columns: 32px minmax(0, 1fr);
   grid-template-areas:
-    '. label'
+    'label label'
     'lock value';
   align-items: center;
   gap: 2px 4px;
