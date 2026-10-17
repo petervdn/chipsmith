@@ -28,7 +28,7 @@ export function App() {
     <div className="app">
       <TopBar route={route} jobs={jobs} />
       <ProgramWarning />
-      <main className={`page${route.page === 'song' ? ' is-wide' : ''}`}>
+      <main className="page">
         {route.page === 'home' && <HomePage jobs={jobs} />}
         {route.page === 'songs' && <SongsPage jobs={jobs} />}
         {route.page === 'clips' && <ClipsPage />}
