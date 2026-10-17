@@ -1,10 +1,10 @@
 // A dragged block snaps to the grid and moves between tracks; its edges trim it within its clip and
-// never below a step of the grid.
+// never below a step of the grid. A clip dropped on a track is a new block, snapped the same way.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import type { Track } from '../../shared/song.types.ts';
 import type { Drag } from './block-drag.ts';
-import { getDraggedTracks } from './block-drag.ts';
+import { getDraggedTracks, getDroppedTracks } from './block-drag.ts';
 import { GRID_STEPS } from './grid.ts';
 
 const BAR = GRID_STEPS[0];
@@ -52,4 +52,15 @@ test('the start is trimmed later into the clip, and not before the clip starts',
     [before.tracks[0]?.blocks[0]?.start, before.tracks[0]?.blocks[0]?.trim],
     [384, null],
   );
+});
+
+test('a clip dropped on a track is a new block there, snapped to the bar', () => {
+  assert.ok(BAR);
+  const grid = { step: BAR, ticksPerBar: 384 };
+  const drop = { clipId: 'c2', trackId: 't2', ticks: 700, isFree: false };
+  const { tracks, place } = getDroppedTracks(TRACKS, drop, grid);
+  assert.deepEqual(place, { trackId: 't2', index: 0 });
+  assert.deepEqual(tracks[1]?.blocks[0], { clip: 'c2', start: 768, trim: null, repeats: 1 });
+  const free = getDroppedTracks(TRACKS, { ...drop, ticks: -20, isFree: true }, grid);
+  assert.equal(free.tracks[1]?.blocks[0]?.start, 0);
 });

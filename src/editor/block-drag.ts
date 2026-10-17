@@ -1,13 +1,14 @@
 /**
  * Where a dragged block goes: moved by the pointer (snapped to the grid, onto the track it is
  * dragged to), or one of its edges dragged to trim it, within its clip and never shorter than a
- * step of the grid. Given the drag, gives the edited tracks; knows nothing of the page.
+ * step of the grid; and where a clip dragged onto a track goes, as a new block snapped the same way.
+ * Given the drag, gives the edited tracks; knows nothing of the page.
  */
 import type { Track } from '../../shared/song.types.ts';
 import type { GridStep } from './grid.ts';
 import { getStepTicks, snapToGrid } from './grid.ts';
 import type { BlockPlace, Edited } from './song-edits.ts';
-import { getBlock, moveBlock, trimBlock } from './song-edits.ts';
+import { addBlock, getBlock, moveBlock, trimBlock } from './song-edits.ts';
 
 /** What a drag does: move the block, or trim it from its start or its end. */
 export type DragMode = 'move' | 'trim-start' | 'trim-end';
@@ -79,4 +80,34 @@ export function getDraggedTracks(
     { start, trim: { offset: offset + moved, length: length - moved } },
     clipTicks,
   );
+}
+
+/** A clip dragged onto a track: which clip, the track, and the tick the pointer is at. */
+export type ClipDrop = {
+  clipId: string;
+  trackId: string;
+  /** Where on the track the pointer is, in ticks from the song's start. */
+  ticks: number;
+  /** Whether the block goes where the pointer is, without the grid. */
+  isFree: boolean;
+};
+
+/**
+ * Returns the tracks with a clip dropped on one: a new block of it starting where the pointer is,
+ * snapped to the grid.
+ *
+ * @param tracks - The song's tracks.
+ * @param drop - The clip, the track and where on it.
+ * @param grid - What the drop snaps to.
+ * @param grid.step - The grid's step.
+ * @param grid.ticksPerBar - The song's ticks to a bar.
+ * @returns The tracks with the block added, and where it is.
+ */
+export function getDroppedTracks(
+  tracks: Track[],
+  drop: ClipDrop,
+  { step, ticksPerBar }: { step: GridStep; ticksPerBar: number },
+): Edited {
+  const start = drop.isFree ? Math.round(drop.ticks) : snapToGrid(drop.ticks, step, ticksPerBar);
+  return addBlock(tracks, { clipId: drop.clipId, start, trackId: drop.trackId });
 }

@@ -4,6 +4,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import type { Track } from '../../shared/song.types.ts';
 import {
+  addBlock,
   addTrack,
   duplicateBlock,
   moveBlock,
@@ -75,4 +76,12 @@ test('a new track gets the next id; a track is renamed and removed', () => {
     removeTrack(added, 't1').map((track) => track.id),
     ['t2', 't3'],
   );
+});
+
+test('a block added goes in order of its start, a whole clip played once', () => {
+  const { tracks, place } = addBlock(TRACKS, { clipId: 'c3', start: 384, trackId: 't1' });
+  assert.deepEqual(place, { trackId: 't1', index: 1 });
+  assert.deepEqual(tracks[0]?.blocks[1], { clip: 'c3', start: 384, trim: null, repeats: 1 });
+  assert.equal(TRACKS[0]?.blocks.length, 2);
+  assert.deepEqual(addBlock(TRACKS, { clipId: 'c3', start: 0, trackId: 'none' }).place, null);
 });

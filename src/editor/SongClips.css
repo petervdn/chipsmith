@@ -1,0 +1,96 @@
+/* The look of SongClips.tsx: the clips as cards that wrap, one column on a phone; pressed and held
+   to drag (a swipe still scrolls); the chip that follows the pointer while dragging. */
+
+.song-clips {
+  margin-top: 16px;
+}
+
+.song-clips-title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 10px;
+  margin: 0 0 8px;
+  font-size: 1rem;
+}
+
+.song-clips-hint {
+  color: var(--muted);
+  font-size: 0.8125rem;
+  font-weight: 400;
+}
+
+.song-clips-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.song-clips-clip {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 100%;
+  min-height: var(--touch);
+  padding: 8px 12px;
+  border: var(--border-width) solid var(--line);
+  border-radius: var(--radius);
+  background: var(--card);
+  text-align: left;
+  cursor: grab;
+  touch-action: pan-x pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+.song-clips-clip:hover {
+  border-color: var(--muted);
+}
+
+.song-clips-clip.is-selected {
+  border-color: var(--fg);
+  box-shadow: 0 0 0 1px var(--fg);
+}
+
+.song-clips-clip.is-dragged {
+  opacity: 0.5;
+}
+
+.song-clips-name {
+  font-weight: 600;
+}
+
+.song-clips-id,
+.song-clips-facts {
+  color: var(--muted);
+  font-size: 0.8125rem;
+  font-weight: 400;
+}
+
+@media (max-width: 600px) {
+  .song-clips-list {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* the chip that follows the pointer while a clip is dragged; never in the way of what is under it */
+.song-clips-ghost {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 25;
+  margin: 8px 0 0 12px;
+  padding: 4px 10px;
+  border-radius: var(--radius);
+  background: var(--accent);
+  color: var(--on-accent);
+  box-shadow: 0 4px 16px rgb(0 0 0 / 25%);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  white-space: nowrap;
+  pointer-events: none;
+}

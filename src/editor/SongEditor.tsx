@@ -20,9 +20,12 @@ import {
 import type { BlockPlace } from './song-edits.ts';
 import { ROW_HEIGHT, Timeline } from './Timeline.tsx';
 import { getBlockSpans, getClipTicks, getSongSplitCount, getTicksPerBar } from './timeline.ts';
+import { SongClips } from './SongClips.tsx';
+import { getFirstBlockPlace, getSongClips } from './song-clips.ts';
 import { TrackDetails } from './TrackDetails.tsx';
 import { TransportButtons } from './TransportButtons.tsx';
 import { useBlockDrag } from './use-block-drag.ts';
+import { useClipDrag } from './use-clip-drag.ts';
 import { useEditorKeys } from './use-editor-keys.ts';
 import { useElementWidth } from './use-element-width.ts';
 import { useSongDraft } from './use-song-draft.ts';
@@ -72,6 +75,13 @@ export function SongEditor({ detail }: SongEditorProps) {
     getClipTicks: getPlaceTicks,
     onEdit: (edited) => draft.edit(() => edited),
   });
+  const clipDrag = useClipDrag({
+    tracks: draft.tracks,
+    pixelsPerTick: pixelsPerBar / ticksPerBar,
+    step,
+    ticksPerBar,
+    onEdit: (edited) => draft.edit(() => edited),
+  });
   const { data: pool } = useClips();
   const selection = draft.selection;
   const place = selection?.kind === 'block' ? selection.place : null;
@@ -96,7 +106,8 @@ export function SongEditor({ detail }: SongEditorProps) {
       ? draft.tracks.find((track) => track.id === selection.trackId)
       : undefined;
   const poolClips = (pool ?? []).map((listing) => listing.clip);
-  const shownSong = drag.preview ? { ...song, tracks: drag.preview.tracks } : draftSong;
+  const preview = drag.preview ?? clipDrag.drag?.preview;
+  const shownSong = preview ? { ...song, tracks: preview.tracks } : draftSong;
   return (
     <div className="song-editor">
       <div className="song-editor-bar">
@@ -221,6 +232,18 @@ export function SongEditor({ detail }: SongEditorProps) {
           waitingClipIds={waitingClipIds}
         />
       </div>
+      <SongClips
+        songClips={getSongClips(draft.tracks, clips)}
+        selectedClipId={span?.clipId ?? null}
+        waitingClipIds={waitingClipIds}
+        drag={clipDrag.drag}
+        onPress={clipDrag.startPress}
+        onSelect={(clipId) => {
+          if (clipDrag.wasDragged()) return;
+          const first = getFirstBlockPlace(draft.tracks, clipId);
+          if (first) draft.select({ kind: 'block', place: first });
+        }}
+      />
       {place && span && (
         <BlockDetails
           song={draftSong}

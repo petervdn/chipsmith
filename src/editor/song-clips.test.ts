@@ -1,0 +1,66 @@
+// The song's clips are listed in the order it first plays them, with their blocks counted; one no
+// block plays comes last. A clip's first block is its earliest.
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import type { Clip } from '../../shared/clip.types.ts';
+import type { Track } from '../../shared/song.types.ts';
+import { getFirstBlockPlace, getSongClips } from './song-clips.ts';
+
+/**
+ * Returns a clip with only what the list reads filled in.
+ *
+ * @param id - The clip's id.
+ * @returns The clip.
+ */
+function makeClip(id: string): Clip {
+  return {
+    id,
+    created: '2026-10-17T00:00:00.000Z',
+    prompt: '',
+    guides: [],
+    promptId: 'p1',
+    name: { section: null, stem: null },
+    bars: null,
+    parent: null,
+    madeFor: null,
+    tags: [],
+    status: 'new',
+    key: null,
+    furnace: null,
+    bpm: 120,
+    beats: 4,
+    chips: ['NES'],
+    channels: [0],
+    seconds: 8,
+  };
+}
+
+const TRACKS: Track[] = [
+  {
+    id: 't1',
+    name: 'Bass',
+    blocks: [
+      { clip: 'c2', start: 768, trim: null, repeats: 1 },
+      { clip: 'c2', start: 1536, trim: null, repeats: 1 },
+    ],
+  },
+  { id: 't2', name: 'Lead', blocks: [{ clip: 'c3', start: 0, trim: null, repeats: 2 }] },
+];
+
+test('in the order the song first plays them, with their blocks counted, unplayed last', () => {
+  const listed = getSongClips(TRACKS, [makeClip('c1'), makeClip('c2'), makeClip('c3')]);
+  assert.deepEqual(
+    listed.map(({ clip, blockCount }) => [clip.id, blockCount]),
+    [
+      ['c3', 1],
+      ['c2', 2],
+      ['c1', 0],
+    ],
+  );
+});
+
+test("a clip's first block is its earliest, none for a clip no block plays", () => {
+  assert.deepEqual(getFirstBlockPlace(TRACKS, 'c2'), { trackId: 't1', index: 0 });
+  assert.deepEqual(getFirstBlockPlace(TRACKS, 'c3'), { trackId: 't2', index: 0 });
+  assert.equal(getFirstBlockPlace(TRACKS, 'c1'), null);
+});

@@ -22,6 +22,7 @@ import { isHeard } from './track-mix.ts';
 import type { Selection } from './use-song-draft.ts';
 import { usePlayheadLine } from './use-playhead-line.ts';
 import './Timeline.css';
+import { LANE_TRACK_ATTRIBUTE } from './use-clip-drag.ts';
 
 /** How tall a track's row is drawn, in pixels; Timeline.css draws it so. */
 export const ROW_HEIGHT = 52;
@@ -176,7 +177,11 @@ export function Timeline({
               </span>
               <TrackMeter songId={song.id} trackId={track.id} />
             </div>
-            <div className="timeline-lane" onClick={() => onSelect(null)}>
+            <div
+              className="timeline-lane"
+              {...{ [LANE_TRACK_ATTRIBUTE]: track.id }}
+              onClick={() => onSelect(null)}
+            >
               {spans
                 .filter((span) => span.trackId === track.id)
                 .map((span) => {

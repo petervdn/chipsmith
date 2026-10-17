@@ -1,5 +1,6 @@
 /**
- * The edits of a song's arrangement: moving, trimming, repeating, duplicating and removing a block,
+ * The edits of a song's arrangement: adding, moving, trimming, repeating, duplicating and removing a
+ * block,
  * and adding, renaming and removing a track. Each takes the tracks and gives new ones (the old are
  * left as they were), with where the edited block is now. Knows nothing of the page.
  */
@@ -23,6 +24,30 @@ export const MOST_REPEATS = 64;
  */
 export function getBlock(tracks: Track[], place: BlockPlace): Block | undefined {
   return tracks.find((track) => track.id === place.trackId)?.blocks[place.index];
+}
+
+/**
+ * Adds a block of a whole clip, played once, to a track.
+ *
+ * @param tracks - The song's tracks.
+ * @param to - Where it goes.
+ * @param to.clipId - The clip it plays.
+ * @param to.start - Where it starts, in ticks; below 0 is 0.
+ * @param to.trackId - The track it goes to.
+ * @returns The tracks with the block added, and where it is; as they were when there is no such
+ *   track.
+ */
+export function addBlock(
+  tracks: Track[],
+  { clipId, start, trackId }: { clipId: string; start: number; trackId: string },
+): Edited {
+  if (!tracks.some((track) => track.id === trackId)) return { tracks, place: null };
+  return putBlock(tracks, trackId, {
+    clip: clipId,
+    start: Math.max(0, start),
+    trim: null,
+    repeats: 1,
+  });
 }
 
 /**
