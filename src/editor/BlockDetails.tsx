@@ -1,0 +1,86 @@
+// The selected block's details: where it plays, its clip (what it is, its facts, the prompt and
+// guides it was made with) and the versions of the clip; ▶ plays the song from the block.
+import type { Clip } from '../../shared/clip.types.ts';
+import { getTicksPerSecond } from '../../shared/song-length.ts';
+import type { Song } from '../../shared/song.types.ts';
+import { getClipLabel } from '../clips/ClipsPage.tsx';
+import { formatSeconds } from '../format.ts';
+import type { BlockSpan } from './timeline.ts';
+import { getTicksPerBar } from './timeline.ts';
+import './BlockDetails.css';
+
+type BlockDetailsProps = {
+  song: Song;
+  span: BlockSpan;
+  clip: Clip | undefined;
+  versions: Clip[];
+  onPlayFrom: (seconds: number) => void;
+};
+
+/** The details of the selected block. */
+export function BlockDetails({ song, span, clip, versions, onPlayFrom }: BlockDetailsProps) {
+  const ticksPerBar = getTicksPerBar(song);
+  const trackName = song.tracks.find((track) => track.id === span.trackId)?.name ?? span.trackId;
+  const fromBar = formatBar(span.start / ticksPerBar);
+  const toBar = formatBar(span.end / ticksPerBar);
+  const startSeconds = span.start / getTicksPerSecond(song.bpm);
+  return (
+    <section className="block-details">
+      <header className="block-details-head">
+        <h2 className="block-details-title">
+          {clip ? getClipLabel(clip) : `missing ${span.clipId}`}
+        </h2>
+        <span className="block-details-place">
+          {trackName} · bar {fromBar} – {toBar}
+          {span.repeats > 1 && ` · ×${span.repeats}`}
+        </span>
+        <button
+          type="button"
+          className="block-details-play"
+          onClick={() => onPlayFrom(startSeconds)}
+          title="play the song from this block"
+        >
+          ▶ from here
+        </button>
+      </header>
+      {clip && (
+        <>
+          <p className="block-details-facts">
+            {clip.id} · {Math.round(clip.bpm)} bpm · {formatSeconds(clip.seconds)}
+            {span.slice && span.slice.duration < clip.seconds - 0.01
+              ? ` (plays ${formatSeconds(span.slice.duration)})`
+              : ''}
+            {clip.chips.length > 0 && ` · ${clip.chips.join(' + ')}`}
+            {clip.channels && ` · channels ${clip.channels.join(', ')}`} · made{' '}
+            {clip.created.slice(0, 10)}
+          </p>
+          <p className="block-details-prompt">{clip.prompt || 'No prompt.'}</p>
+          {clip.guides.length > 0 && (
+            <p className="block-details-guides">
+              with {clip.guides.map((guide) => guide.name).join(', ')}
+            </p>
+          )}
+          {versions.length > 1 && (
+            <div className="block-details-versions">
+              <h3 className="block-details-subtitle">Versions</h3>
+              <ol>
+                {versions.map((version) => (
+                  <li key={version.id} className={version.id === clip.id ? 'is-current' : ''}>
+                    {version.id} · {version.created.slice(0, 10)}
+                    {version.id === clip.id && ' · in this block'}
+                  </li>
+                ))}
+              </ol>
+            </div>
+          )}
+        </>
+      )}
+    </section>
+  );
+}
+
+/** A bar as the page counts it: from 1, with a fraction where it starts inside one. */
+function formatBar(bar: number): string {
+  const rounded = Math.round((bar + 1) * 100) / 100;
+  return String(rounded);
+}

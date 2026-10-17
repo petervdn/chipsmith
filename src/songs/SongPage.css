@@ -1,61 +1,11 @@
 /* The look of SongPage.tsx. */
 
-/* a song */
 .song-page-title {
   margin: 8px 0 2px;
   font-size: 1.375rem;
 }
 
 .song-page-facts {
-  margin: 0 0 16px;
+  margin: 0 0 12px;
   color: var(--muted);
-}
-
-.song-page-tracks {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.song-page-track {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 12px;
-  border: var(--border-width) solid var(--line);
-  border-radius: calc(var(--radius) * 1.25);
-  background: var(--card);
-}
-
-.song-page-track-name {
-  font-weight: 600;
-  min-width: 90px;
-}
-
-.song-page-blocks {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-
-.song-page-block {
-  padding: 4px 10px;
-  border-radius: calc(var(--radius) * 0.75);
-  background: var(--raised);
-  font-size: 0.8125rem;
-}
-
-.song-page-head {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-top: 8px;
-}
-
-.song-page-head .song-page-title {
-  margin: 0;
 }

@@ -58,8 +58,11 @@ holds (Jobs turning while one runs), in a song the song's title, and at the righ
   there are (kept, not heard yet) and the five made last with ▶.
 - **Songs** (`/songs`): every song, with the filter bar (words, tags, rejected or not), its facts, ▶,
   ★ / ✕, and ⌄ to open the row: its prompt (copy, prompt again), its facts and its prompt links.
-- **Song** (`/songs/<id>`): the song opened. Now: its tracks and the clips they play. To come: the
-  timeline, playback, the selected block's clip with its prompt and versions, a prompt box.
+- **Song** (`/songs/<id>`): the song opened in the editor (`src/editor/`): a timeline of its tracks
+  (a ruler of bars, each block drawn as the slice of its clip's waveform it plays, repeats after it,
+  a playhead), ▶ / ■ from a cursor set on the ruler, zoom, and the selected block's clip with its
+  prompt and versions. To come: editing the blocks, cutting a clip into sections and stems, a prompt
+  on the selection.
 - **Clips** (`/clips`): the pool, with the same filter bar.
 - **Guides** (`/guides`): the style guides, made, edited and deleted.
 - **New** (`/new`): a prompt for Claude in a box that takes the screen, and the style guides as chips
@@ -145,5 +148,5 @@ phases:
 
 ## Still to build
 
-1. The song editor: the timeline, the selected block's clip, a prompt box.
+1. The song editor: editing blocks (move, trim, repeat, tracks, undo), a prompt on the selection.
 2. Cutting a whole clip into sections and stems (0010), and versions of a clip (0014).

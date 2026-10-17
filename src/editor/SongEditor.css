@@ -1,0 +1,51 @@
+/* The look of SongEditor.tsx: the timeline scrolls sideways inside its box, never the page. */
+
+.song-editor-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.song-editor-play {
+  min-width: var(--touch);
+  min-height: var(--touch);
+  border: var(--border-width) solid var(--line);
+  border-radius: var(--radius);
+  background: var(--raised);
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.song-editor-play.is-on {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+.song-editor-zoom {
+  display: flex;
+  gap: 4px;
+  margin-left: auto;
+}
+
+.song-editor-zoom button {
+  min-width: var(--touch);
+  min-height: var(--touch);
+  border: var(--border-width) solid var(--line);
+  border-radius: var(--radius);
+  background: var(--raised);
+  cursor: pointer;
+}
+
+.song-editor-scroll {
+  overflow-x: auto;
+  border: var(--border-width) solid var(--line);
+  border-radius: var(--radius);
+  background: var(--card);
+}
+
+.song-editor-hint {
+  color: var(--muted);
+  font-size: 0.875rem;
+}

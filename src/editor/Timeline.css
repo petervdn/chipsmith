@@ -1,0 +1,126 @@
+/* The look of Timeline.tsx: the track names stay at the left while the lanes scroll sideways; bars
+   are drawn as lines behind the blocks. */
+
+.timeline {
+  --track-name-width: 92px;
+  --row-height: 52px;
+  position: relative;
+  width: max-content;
+  min-width: 100%;
+}
+
+.timeline-row {
+  display: flex;
+  height: var(--row-height);
+  border-bottom: var(--border-width) solid var(--line);
+}
+
+.timeline-ruler-row {
+  height: 28px;
+}
+
+.timeline-corner,
+.timeline-track-name {
+  position: sticky;
+  left: 0;
+  z-index: 3;
+  flex: none;
+  width: var(--track-name-width);
+  background: var(--card);
+  border-right: var(--border-width) solid var(--line);
+}
+
+.timeline-track-name {
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  overflow: hidden;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.timeline-ruler,
+.timeline-lane {
+  position: relative;
+  flex: none;
+  width: var(--lane-width);
+  background-image: linear-gradient(to right, var(--line) 1px, transparent 1px);
+  background-size: var(--bar-width) 100%;
+}
+
+.timeline-ruler {
+  cursor: pointer;
+}
+
+.timeline-bar-number {
+  position: absolute;
+  top: 6px;
+  padding-left: 4px;
+  color: var(--muted);
+  font-size: 0.6875rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.timeline-block {
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  overflow: hidden;
+  padding: 0;
+  border: var(--border-width) solid var(--line);
+  border-radius: calc(var(--radius) * 0.5);
+  background: var(--raised);
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.timeline-block.is-repeat {
+  border-style: dashed;
+  opacity: 0.45;
+}
+
+.timeline-block.is-selected {
+  border-color: var(--fg);
+  box-shadow: inset 0 0 0 1px var(--fg);
+  color: var(--fg);
+}
+
+.timeline-block.is-missing {
+  background: repeating-linear-gradient(
+    45deg,
+    color-mix(in srgb, var(--reject) 25%, transparent) 0 6px,
+    transparent 6px 12px
+  );
+}
+
+.timeline-block-label {
+  position: absolute;
+  top: 2px;
+  left: 4px;
+  max-width: calc(100% - 8px);
+  overflow: hidden;
+  color: var(--fg);
+  font-size: 0.6875rem;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  pointer-events: none;
+}
+
+/* the playhead: a line over the lanes, moved by its transform */
+.timeline-playhead {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: var(--track-name-width);
+  z-index: 2;
+  pointer-events: none;
+}
+
+.timeline-playhead-line {
+  width: 2px;
+  height: 100%;
+  margin-left: -1px;
+  background: var(--accent);
+}

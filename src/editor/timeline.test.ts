@@ -1,0 +1,78 @@
+// The timeline places blocks in ticks with their trim and repeats, shows bars past the song's end,
+// and numbers fewer bars when they are narrow.
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import type { Clip, ClipParent } from '../../shared/clip.types.ts';
+import type { Song } from '../../shared/song.types.ts';
+import { getBarLabelStep, getBlockSpans, getTicksPerBar, getTimelineBars } from './timeline.ts';
+
+const SONG: Song = {
+  id: 's0001',
+  title: 'Test',
+  created: '',
+  updated: '',
+  bpm: 120,
+  beats: 4,
+  tags: [],
+  status: 'new',
+  prompt: '',
+  guides: [],
+  promptedFrom: null,
+  tracks: [
+    {
+      id: 't1',
+      name: 'Bass',
+      blocks: [
+        { clip: 'c0001', start: 0, trim: null, repeats: 1 },
+        { clip: 'c0001', start: 1536, trim: { offset: 384, length: 768 }, repeats: 2 },
+      ],
+    },
+  ],
+};
+function getClip(id: string, seconds: number, created: string, parent: ClipParent | null): Clip {
+  return {
+    id,
+    created,
+    prompt: '',
+    guides: [],
+    promptId: 'j0001',
+    name: { section: null, stem: null },
+    bars: null,
+    channels: null,
+    parent,
+    madeFor: null,
+    tags: [],
+    status: 'new',
+    bpm: 120,
+    beats: 4,
+    key: null,
+    chips: ['NES'],
+    seconds,
+    furnace: null,
+  };
+}
+
+// 4 s at 120 bpm: 8 beats, two bars
+const CLIP = getClip('c0001', 4, '', null);
+
+test('a whole block is as long as its clip, a trimmed one its trim, times its repeats', () => {
+  const [whole, trimmed] = getBlockSpans(SONG, [CLIP]);
+  assert.deepEqual(
+    [whole?.length, whole?.end, whole?.slice],
+    [768, 768, { offset: 0, duration: 4 }],
+  );
+  assert.deepEqual(
+    [trimmed?.length, trimmed?.end, trimmed?.slice],
+    [768, 3072, { offset: 2, duration: 4 }],
+  );
+});
+
+test('the timeline shows the song and four bars after it', () => {
+  const spans = getBlockSpans(SONG, [CLIP]);
+  assert.equal(getTicksPerBar(SONG), 384);
+  assert.equal(getTimelineBars(spans, 384), 12);
+});
+
+test('narrow bars are numbered every fourth or eighth', () => {
+  assert.deepEqual([40, 15, 6].map(getBarLabelStep), [1, 4, 8]);
+});

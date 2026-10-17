@@ -7,6 +7,7 @@ At the top: the app's shell and what every area uses.
 - `App.tsx`: the top bar and the page the address is
 - `clips/`: the clip pool
 - `copy-text.ts`: copying text, also where the clipboard API is missing (plain http)
+- `editor/`: the song editor: the timeline, playing from a cursor, the selected block
 - `format.ts`: how lengths and meters are shown
 - `guides/`: the style guides, their page and their chips
 - `home/`: the home page

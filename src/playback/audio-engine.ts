@@ -131,7 +131,7 @@ function getOutput(): GainNode {
 }
 
 /** A clip's audio, decoded; fetched once, a few at a time, given up after LOAD_TIMEOUT. */
-function loadAudio(url: string): Promise<AudioBuffer> {
+export function loadAudio(url: string): Promise<AudioBuffer> {
   let buffer = buffers.get(url);
   if (!buffer) {
     buffer = takeLoadSlot(() => fetchAndDecode(url));

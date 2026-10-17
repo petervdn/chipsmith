@@ -1,0 +1,7 @@
+/* The look of Waveform.tsx: as tall as what holds it, in its text colour. */
+
+.waveform {
+  display: block;
+  height: 100%;
+  color: inherit;
+}

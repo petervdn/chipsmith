@@ -17,7 +17,8 @@ export type QueryKeyParams =
   | { type: 'clips' }
   | { type: 'jobs' }
   | { type: 'guides' }
-  | { type: 'programs' };
+  | { type: 'programs' }
+  | { type: 'peaks'; clipId: string };
 
 /**
  * The key of a cached read. A song's key starts with the songs list's, so the list's key with
@@ -37,6 +38,8 @@ export function getQueryKey(params: QueryKeyParams): QueryKey {
       return ['guides'];
     case 'programs':
       return ['programs'];
+    case 'peaks':
+      return ['peaks', params.clipId];
     default:
       return getUnknownKey(params);
   }
