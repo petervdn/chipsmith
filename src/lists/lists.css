@@ -210,3 +210,17 @@
     height: 36px;
   }
 }
+
+/* a group of a list by when its items were made (time-groups.ts): a line above, its label */
+.list-group {
+  padding: 14px 4px 4px;
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.list > .list-group + li {
+  border-top: 0;
+}

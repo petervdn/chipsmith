@@ -11,6 +11,8 @@ import { FilterBar } from '../lists/FilterBar.tsx';
 import { PlayButton } from '../player/PlayButton.tsx';
 import { formatMeter, formatSeconds } from '../format.ts';
 import { getTagCounts, isShown } from '../lists/list-filter.ts';
+import { groupByTime } from '../lists/time-groups.ts';
+import { useNow } from '../lists/use-now.ts';
 import { useSetSongStatus, useSongs } from '../queries/songs.ts';
 import { useListFilter } from '../lists/use-list-filter.ts';
 import { SongRowDetails } from './SongRowDetails.tsx';
@@ -36,6 +38,7 @@ export function SongsPage({ jobs }: SongsPageProps) {
   const [filter, setFilter] = useListFilter();
   const [undoOffer, setUndoOffer] = useUndo();
   const [openSongs, setOpenSongs] = useState<string[]>([]);
+  const now = useNow();
   usePageTitle('Songs');
   const titlesById = new Map((listings ?? []).map(({ song }) => [song.id, song.title]));
 
@@ -52,7 +55,8 @@ export function SongsPage({ jobs }: SongsPageProps) {
   }));
   const shown = items
     .filter((item) => isShown(item, filter))
-    .sort((first, second) => second.listing.song.updated.localeCompare(first.listing.song.updated));
+    .sort((first, second) => second.listing.song.created.localeCompare(first.listing.song.created));
+  const groups = groupByTime(shown, ({ listing }) => listing.song.created, now);
 
   async function setStatus(song: Song, status: Status): Promise<void> {
     await sendStatus({ songId: song.id, status });
@@ -84,45 +88,52 @@ export function SongsPage({ jobs }: SongsPageProps) {
         <p className="empty">No songs match this filter (a song needs every chosen tag).</p>
       )}
       <ul className="list">
-        {shown.map(({ listing }) => {
-          const { song, seconds } = listing;
-          const isOpen = openSongs.includes(song.id);
-          return (
-            <li key={song.id}>
-              <div className="list-row has-play has-expand">
-                <PlayButton songId={song.id} isWaitingForAudio={listing.isWaitingForAudio} />
-                <span className="list-main">
-                  <a
-                    className="list-title list-link"
-                    href={`/songs/${encodeURIComponent(song.id)}`}
+        {groups.flatMap(({ label, items: groupItems }) => [
+          <li key={`group-${label}`} className="list-group">
+            {label}
+          </li>,
+          ...groupItems.map(({ listing }) => {
+            const { song, seconds } = listing;
+            const isOpen = openSongs.includes(song.id);
+            return (
+              <li key={song.id}>
+                <div className="list-row has-play has-expand">
+                  <PlayButton songId={song.id} isWaitingForAudio={listing.isWaitingForAudio} />
+                  <span className="list-main">
+                    <a
+                      className="list-title list-link"
+                      href={`/songs/${encodeURIComponent(song.id)}`}
+                    >
+                      {song.title}
+                    </a>
+                    <span className="list-tags">
+                      {song.tags.map((tag) => tag.name).join(' · ')}
+                    </span>
+                  </span>
+                  <span className="list-facts">
+                    <span>{formatSeconds(seconds)}</span>
+                    <span>{Math.round(song.bpm)} bpm</span>
+                    <span>{formatMeter(song.beats)}</span>
+                  </span>
+                  <StatusButtons
+                    status={song.status}
+                    onChange={(status) => void setStatus(song, status)}
+                  />
+                  <button
+                    type="button"
+                    className={`songs-page-expand${isOpen ? ' is-open' : ''}`}
+                    onClick={() => toggleOpen(song.id)}
+                    title={isOpen ? 'less' : 'more: the prompt, prompt again, details'}
+                    aria-expanded={isOpen}
                   >
-                    {song.title}
-                  </a>
-                  <span className="list-tags">{song.tags.map((tag) => tag.name).join(' · ')}</span>
-                </span>
-                <span className="list-facts">
-                  <span>{formatSeconds(seconds)}</span>
-                  <span>{Math.round(song.bpm)} bpm</span>
-                  <span>{formatMeter(song.beats)}</span>
-                </span>
-                <StatusButtons
-                  status={song.status}
-                  onChange={(status) => void setStatus(song, status)}
-                />
-                <button
-                  type="button"
-                  className={`songs-page-expand${isOpen ? ' is-open' : ''}`}
-                  onClick={() => toggleOpen(song.id)}
-                  title={isOpen ? 'less' : 'more: the prompt, prompt again, details'}
-                  aria-expanded={isOpen}
-                >
-                  ⌄
-                </button>
-              </div>
-              {isOpen && <SongRowDetails listing={listing} titlesById={titlesById} />}
-            </li>
-          );
-        })}
+                    ⌄
+                  </button>
+                </div>
+                {isOpen && <SongRowDetails listing={listing} titlesById={titlesById} />}
+              </li>
+            );
+          }),
+        ])}
       </ul>
       <UndoBar offer={undoOffer} onClose={() => setUndoOffer(null)} />
     </section>
