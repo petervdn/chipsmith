@@ -5,11 +5,10 @@
  */
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
+import { getSettings } from '../config/settings.ts';
 import { getUncompressed, readModule } from './read.ts';
 import { getModuleBytes } from './write.ts';
 
-/** Where the archive is checked out, beside this project. */
-const ARCHIVE = join(import.meta.dirname, '..', '..', 'chiptune-archive');
 /** Folders of the archive that hold .fur files the Python writer made. */
 const WRITTEN_BY_PYTHON = ['furnace', 'editor'];
 
@@ -29,7 +28,7 @@ function findDifference(first: Uint8Array, second: Uint8Array): number {
   return -1;
 }
 
-const archive = process.argv[2] ?? ARCHIVE;
+const archive = process.argv[2] ?? getSettings().archiveFolder;
 const files = WRITTEN_BY_PYTHON.flatMap((folder) => findFurFiles(join(archive, folder)));
 const failures: string[] = [];
 for (const file of files) {

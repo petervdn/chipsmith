@@ -24,5 +24,5 @@
     "skipLibCheck": true,
     "types": ["vite/client", "node"]
   },
-  "include": ["src", "server", "shared", "fur", "render", "make", "test", "vite.config.ts"]
+  "include": ["src", "server", "shared", "fur", "render", "make", "config", "test", "vite.config.ts"]
 }

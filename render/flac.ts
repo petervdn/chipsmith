@@ -1,8 +1,6 @@
 /** Encoding a WAV as FLAC, with ffmpeg (docs/adr/0007). Knows nothing of Furnace. */
 import { spawn } from 'node:child_process';
-
-/** The ffmpeg binary; CHIPTUNE_FFMPEG points elsewhere. */
-const FFMPEG = process.env['CHIPTUNE_FFMPEG'] ?? 'ffmpeg';
+import { getSettings } from '../config/settings.ts';
 
 /** Writes a WAV's audio as a FLAC file; fails rather than replace one that is there. */
 export function encodeFlac(wavFile: string, flacFile: string): Promise<void> {
@@ -19,7 +17,7 @@ export function encodeFlac(wavFile: string, flacFile: string): Promise<void> {
     flacFile,
   ];
   return new Promise((resolve, reject) => {
-    const ffmpeg = spawn(FFMPEG, args, { stdio: ['ignore', 'ignore', 'pipe'] });
+    const ffmpeg = spawn(getSettings().ffmpeg, args, { stdio: ['ignore', 'ignore', 'pipe'] });
     let errors = '';
     ffmpeg.stderr.on('data', (chunk: Buffer) => {
       errors += chunk.toString();

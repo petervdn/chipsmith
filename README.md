@@ -33,9 +33,9 @@ How it is built and why: [docs/architecture.md](docs/architecture.md), the decis
 
 macOS (Furnace is called as the installed app), and:
 
-| Program | Used for | Found at |
+| Program | Used for | Found at, unless set (below) |
 |---|---|---|
-| Node 24 or later | the app, the tools, job scripts (runs TypeScript as it is) | `node` on the PATH |
+| Node 24 or later | the app, the tools, job scripts (runs TypeScript as it is) | the Node running the server |
 | [Furnace](https://github.com/tildearrow/furnace) 0.6.8.3 | rendering a module to audio | `/Applications/Furnace.app/Contents/MacOS/Furnace` |
 | ffmpeg | encoding the renders as FLAC | `ffmpeg` on the PATH (`brew install ffmpeg`) |
 | [Claude Code](https://claude.com/claude-code) | composing songs from prompts | `~/.local/bin/claude`, else `claude` on the PATH |
@@ -55,14 +55,21 @@ address, e.g. `http://192.168.x.x:8780`).
 
 ### Settings
 
+All settings are read in one place, [config/settings.ts](config/settings.ts). Each is an environment
+variable, or a line in a `.env` file in the project folder (copy [.env.example](.env.example); `.env`
+is not in git). A variable set in the shell wins over the file; what is not set has its default.
+
 | Variable | What it changes | Default |
 |---|---|---|
-| `CHIPTUNE_DATA` | the folder holding `clips/` and `songs/` | the project folder |
-| `CHIPTUNE_FURNACE` | the Furnace binary | the app in `/Applications` |
-| `CHIPTUNE_FFMPEG` | the ffmpeg binary | `ffmpeg` |
+| `CHIPSMITH_DATA` | the folder holding `clips/`, `songs/` and `jobs/` | the project folder |
+| `CHIPSMITH_PORT` | the port the app is served on | `8780` |
+| `CHIPSMITH_ARCHIVE` | the old project's checkout | `../chiptune-archive` |
+| `CHIPSMITH_FURNACE` | the Furnace binary | the app in `/Applications` |
+| `CHIPSMITH_FFMPEG` | the ffmpeg binary | `ffmpeg` |
+| `CHIPSMITH_CLAUDE` | the Claude Code binary | `~/.local/bin/claude`, else `claude` |
+| `CHIPSMITH_NODE` | the Node that runs a job's script | the Node running the server |
 
-The port (`vite.config.ts`) and the Furnace version written into each clip (`render/furnace.ts`) are
-set in code.
+The Furnace version written into each clip is set in code (`render/furnace.ts`).
 
 ## Audio and git
 

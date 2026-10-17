@@ -4,6 +4,7 @@
  * and the store is told to look again after each, so finished songs show while the rest render.
  */
 import { spawn } from 'node:child_process';
+import { getSettings } from '../config/settings.ts';
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import type { Job, JobSong } from '../shared/job.types.ts';
@@ -178,7 +179,7 @@ async function buildAndRender(jobs: JobStore, store: Store, jobId: string): Prom
 
 function runBuild(projectFolder: string, scriptFile: string, buildFolder: string): Promise<void> {
   return new Promise((resolve, reject) => {
-    const build = spawn('node', ['make/build-script.ts', scriptFile, buildFolder], {
+    const build = spawn(getSettings().node, ['make/build-script.ts', scriptFile, buildFolder], {
       cwd: projectFolder,
       stdio: ['ignore', 'ignore', 'pipe'],
     });

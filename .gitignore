@@ -8,3 +8,6 @@ dist/
 
 # a job's working files (Claude's log, the script, the built modules); what it made is in clips/
 jobs/
+
+# local settings (see .env.example)
+.env

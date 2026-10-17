@@ -5,10 +5,8 @@
  * back to back without a pause all worked (2026-10-17).
  */
 import { spawn } from 'node:child_process';
+import { getSettings } from '../config/settings.ts';
 
-/** The Furnace binary; CHIPTUNE_FURNACE points elsewhere. */
-export const FURNACE =
-  process.env['CHIPTUNE_FURNACE'] ?? '/Applications/Furnace.app/Contents/MacOS/Furnace';
 /** The Furnace version renders are made with, as clip.json records it. */
 export const FURNACE_VERSION = '0.6.8.3';
 /** Milliseconds before a failed render is tried again, times the number of the try. */
@@ -50,7 +48,7 @@ async function renderWithRetries(furFile: string, wavFile: string): Promise<void
 
 function runFurnace(args: string[]): Promise<void> {
   return new Promise((resolve, reject) => {
-    const furnace = spawn(FURNACE, args, { stdio: ['ignore', 'ignore', 'pipe'] });
+    const furnace = spawn(getSettings().furnace, args, { stdio: ['ignore', 'ignore', 'pipe'] });
     let errors = '';
     furnace.stderr.on('data', (chunk: Buffer) => {
       errors = (errors + chunk.toString()).slice(-2000);

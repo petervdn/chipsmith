@@ -69,6 +69,9 @@ top bar's links open a list unfiltered, and the back button returns to a filtere
 
 ## Tooling
 
+- Settings (data folder, port, the archive, the programs called: Furnace, ffmpeg, Claude Code,
+  Node) are read in one place, `config/settings.ts`: `CHIPSMITH_…` variables over a `.env` file over
+  the defaults (README.md, "Settings").
 - Vite + TypeScript, strict (0012). `npm run dev` serves on port 8780, on the local network too. The
   old player (branch `archive`, run from `../chiptune-archive/player`) keeps port 8765 until the new
   app replaces it.

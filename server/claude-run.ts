@@ -5,8 +5,8 @@
  */
 import { spawn } from 'node:child_process';
 import { closeSync, existsSync, openSync, readSync, statSync } from 'node:fs';
-import { homedir } from 'node:os';
-import { join, relative, resolve } from 'node:path';
+import { relative, resolve } from 'node:path';
+import { getSettings } from '../config/settings.ts';
 
 /** What a run's log has said since it was last read. */
 export type LogNews = { notes: string[]; result: RunResult | null; position: number };
@@ -46,7 +46,7 @@ export function startClaude({
   ];
   const out = openSync(logFile, 'a');
   try {
-    const child = spawn(findClaude(), args, {
+    const child = spawn(getSettings().claude, args, {
       cwd: projectFolder,
       detached: true,
       stdio: ['ignore', out, out],
@@ -155,11 +155,6 @@ function describeTool(name: string, input: Record<string, unknown>, projectFolde
 function shorten(text: string): string {
   const line = text.replace(/\s+/g, ' ');
   return line.length > NOTE_LENGTH ? `${line.slice(0, NOTE_LENGTH - 1)}…` : line;
-}
-
-function findClaude(): string {
-  const local = join(homedir(), '.local', 'bin', 'claude');
-  return existsSync(local) ? local : 'claude';
 }
 
 /** The environment without the variables of the Claude Code session the server may run inside. */

@@ -4,16 +4,13 @@
  * Run: `node make/import-archive.ts --favorites` (the user's thumbs-up, as keepers) or with .fur files.
  */
 import { readFileSync } from 'node:fs';
+import { getSettings } from '../config/settings.ts';
 import { basename, dirname, join, relative } from 'node:path';
 import type { Tag } from '../shared/catalogue.types.ts';
 import { readModule } from '../fur/read.ts';
 import { makeSong } from './make-song.ts';
 
-/** Where the archive is checked out. */
-const ARCHIVE = join(import.meta.dirname, '..', '..', 'chiptune-archive');
-const ROOT = process.env['CHIPTUNE_DATA'] ?? join(import.meta.dirname, '..');
-/** The app's server, told to read the new files when the import is done. */
-const SERVER = 'http://localhost:8780';
+const { archiveFolder: ARCHIVE_FOLDER, dataFolder, port } = getSettings();
 
 /** The thread of each old batch, by its number. */
 const THREADS: { from: number; to: number; tag: string }[] = [
@@ -48,22 +45,22 @@ export function getArchiveTags(batchFolder: string): Tag[] {
 /** The .fur files of the user's thumbs-up, from the archive's favorites.json. */
 function getFavoriteFiles(): string[] {
   const favorites: unknown = JSON.parse(
-    readFileSync(join(ARCHIVE, 'furnace', 'favorites.json'), 'utf8'),
+    readFileSync(join(ARCHIVE_FOLDER, 'furnace', 'favorites.json'), 'utf8'),
   );
   const names = Array.isArray(favorites) ? favorites : [];
   return names
     .filter((name): name is string => typeof name === 'string')
-    .map((mp3) => join(ARCHIVE, 'furnace', mp3.replace(/\.mp3$/, '.fur')));
+    .map((mp3) => join(ARCHIVE_FOLDER, 'furnace', mp3.replace(/\.mp3$/, '.fur')));
 }
 
 async function importFiles(furFiles: string[], isFavorite: boolean): Promise<void> {
   const promptId = `import-${new Date().toISOString().slice(0, 10)}`;
   for (const furFile of furFiles) {
     const batchFolder = basename(dirname(furFile));
-    const path = relative(ARCHIVE, furFile);
+    const path = relative(ARCHIVE_FOLDER, furFile);
     const module = readModule(readFileSync(furFile));
     const made = await makeSong({
-      root: ROOT,
+      root: dataFolder,
       title: module.song.name || basename(furFile, '.fur'),
       module,
       prompt: `Imported from the archive: ${path} (batch ${batchFolder}).`,
@@ -76,7 +73,7 @@ async function importFiles(furFiles: string[], isFavorite: boolean): Promise<voi
     });
     console.log(`${made.songId} ${made.clipId}  ${path}`);
   }
-  await fetch(`${SERVER}/api/rescan`, { method: 'POST' }).catch(() => {
+  await fetch(`http://localhost:${port}/api/rescan`, { method: 'POST' }).catch(() => {
     console.log('the server did not answer; it reads the new songs when it starts');
   });
 }
