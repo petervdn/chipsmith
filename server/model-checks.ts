@@ -4,7 +4,7 @@
  * where it comes in).
  */
 import type { Status, Tag } from '../shared/catalogue.types.ts';
-import type { BarRange, Clip, ClipName, ClipParent } from '../shared/clip.types.ts';
+import type { BarRange, ClipName, ClipParent, ClipRecord } from '../shared/clip.types.ts';
 import type { Guide, GuideDraft, SentGuide } from '../shared/guide.types.ts';
 import type { Block, BlockTrim, Song, Track } from '../shared/song.types.ts';
 import {
@@ -105,13 +105,14 @@ export function checkGuideDraft(value: unknown, path: string): GuideDraft {
 }
 
 /**
- * Checks a clip.json's content.
+ * Checks a clip.json's content. Fields it no longer holds (what its source says, docs/adr/0024) are
+ * left out.
  *
  * @param value - The value parsed from JSON.
  * @param path - Where the value is (a file, or a field in one), named in an error.
- * @returns The clip.
+ * @returns The clip's record.
  */
-export function checkClip(value: unknown, path: string): Clip {
+export function checkClipRecord(value: unknown, path: string): ClipRecord {
   const clip = getObject(value, path);
   return {
     id: getString(clip['id'], `${path}.id`),
@@ -121,17 +122,11 @@ export function checkClip(value: unknown, path: string): Clip {
     promptId: getString(clip['promptId'], `${path}.promptId`),
     name: checkClipName(clip['name'], `${path}.name`),
     bars: clip['bars'] === null ? null : checkBarRange(clip['bars'], `${path}.bars`),
-    channels:
-      clip['channels'] === null ? null : getArray(clip['channels'], `${path}.channels`, getNumber),
     parent: clip['parent'] === null ? null : checkParent(clip['parent'], `${path}.parent`),
     madeFor: getStringOrNull(clip['madeFor'], `${path}.madeFor`),
     tags: checkTags(clip['tags'], `${path}.tags`),
     status: checkStatus(clip['status'], `${path}.status`),
-    bpm: getNumber(clip['bpm'], `${path}.bpm`),
-    beats: getNumber(clip['beats'], `${path}.beats`),
     key: getStringOrNull(clip['key'], `${path}.key`),
-    chips: getArray(clip['chips'], `${path}.chips`, getString),
-    seconds: getNumber(clip['seconds'], `${path}.seconds`),
     furnace: getStringOrNull(clip['furnace'], `${path}.furnace`),
   };
 }

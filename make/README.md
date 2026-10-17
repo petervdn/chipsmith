@@ -7,7 +7,7 @@ song that plays it. The server reads what was made when it is asked to look agai
 - `check-script.ts`: the quick check of a job's script: length, peak and gain of every song
 - `example-script.ts`: an example of a job's script, one short NES song
 - `fur-file-builder.ts`: a song's .fur contents from rows per channel, instruments, tempo and meter
-- `fur-file-facts.ts`: a .fur song's tempo, meter and chips
+- `fur-file-facts.ts`: what a .fur file says of its music, a clip's facts: tempo, meter, chips, channels, length
 - `ids.ts`: new ids for clips, songs, jobs and guides, each claimed by making its folder
 - `make-song.ts`: a new song of one whole clip, made from a .fur file
 - `song-plan.ts`: what a job's script gives per song, and its check

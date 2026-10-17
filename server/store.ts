@@ -1,7 +1,8 @@
 /**
  * The clips and songs in memory: read from `clips/<id>/clip.json` and `songs/<id>/song.json` when the
- * server starts, and every change written back to its file before the copy in memory changes. The
- * files are the data; this is only a copy of them (docs/adr/0006). Knows nothing of HTTP.
+ * server starts, and every change written back to its file before the copy in memory changes. A
+ * clip's facts are read from its source.fur beside its clip.json, and never written (docs/adr/0024).
+ * The files are the data; this is only a copy of them (docs/adr/0006). Knows nothing of HTTP.
  */
 import {
   existsSync,
@@ -12,9 +13,11 @@ import {
   writeFileSync,
 } from 'node:fs';
 import { join } from 'node:path';
-import type { Clip } from '../shared/clip.types.ts';
+import type { Clip, ClipRecord } from '../shared/clip.types.ts';
 import type { Song } from '../shared/song.types.ts';
-import { checkClip, checkSong } from './model-checks.ts';
+import { readFurFile } from '../fur/read.ts';
+import { getClipFacts } from '../make/fur-file-facts.ts';
+import { checkClipRecord, checkSong } from './model-checks.ts';
 
 /** The data folder's copy in memory, and the files that could not be read. */
 export type Store = {
@@ -26,6 +29,7 @@ export type Store = {
 };
 
 const CLIP_FILE = 'clip.json';
+const SOURCE_FILE = 'source.fur';
 const SONG_FILE = 'song.json';
 
 /**
@@ -38,7 +42,7 @@ const SONG_FILE = 'song.json';
 export function openStore(root: string): Store {
   const store: Store = { root, clips: new Map(), songs: new Map(), unreadable: [] };
   for (const file of listFiles(join(root, 'clips'), CLIP_FILE)) {
-    const clip = readChecked(store, file, checkClip);
+    const clip = readChecked(store, file, readClip);
     if (clip) store.clips.set(clip.id, clip);
   }
   for (const file of listFiles(join(root, 'songs'), SONG_FILE)) {
@@ -83,15 +87,39 @@ export function saveSong(store: Store, song: Song): void {
 }
 
 /**
- * Writes a clip's metadata to its file, then keeps it in memory. Its audio and source are not
- * touched.
+ * Writes a clip's record to its clip.json, then keeps the clip in memory. Its facts are not written
+ * (they are its source's), and its audio and source are not touched.
  *
  * @param store - The clips and songs in memory.
  * @param clip - The clip to save.
  */
 export function saveClip(store: Store, clip: Clip): void {
-  writeJsonAtomically(join(getClipFolder(store, clip.id), CLIP_FILE), clip);
+  writeJsonAtomically(join(getClipFolder(store, clip.id), CLIP_FILE), getClipRecord(clip));
   store.clips.set(clip.id, clip);
+}
+
+/**
+ * Returns a clip's record: what its clip.json holds, without the facts read from its source.
+ *
+ * @param clip - The clip.
+ * @returns Its record.
+ */
+export function getClipRecord(clip: ClipRecord): ClipRecord {
+  return {
+    id: clip.id,
+    created: clip.created,
+    prompt: clip.prompt,
+    guides: clip.guides,
+    promptId: clip.promptId,
+    name: clip.name,
+    bars: clip.bars,
+    parent: clip.parent,
+    madeFor: clip.madeFor,
+    tags: clip.tags,
+    status: clip.status,
+    key: clip.key,
+    furnace: clip.furnace,
+  };
 }
 
 /**
@@ -147,6 +175,20 @@ function listFiles(folder: string, name: string): string[] {
     .filter((entry) => entry.isDirectory())
     .map((entry) => join(folder, entry.name, name))
     .filter((file) => existsSync(file));
+}
+
+/**
+ * Reads a clip: its record from its clip.json, its facts from the source.fur beside it. Throws when
+ * either does not read.
+ *
+ * @param value - The clip.json's content, parsed.
+ * @param file - The clip.json's path.
+ * @returns The clip.
+ */
+function readClip(value: unknown, file: string): Clip {
+  const record = checkClipRecord(value, file);
+  const source = join(file, '..', SOURCE_FILE);
+  return { ...record, ...getClipFacts(readFurFile(readFileSync(source))) };
 }
 
 function readChecked<Checked>(

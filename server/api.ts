@@ -43,7 +43,6 @@ import { routeStructures } from './structure-routes.ts';
 import { routeJobs } from './job-routes.ts';
 import type { StructureStore } from './structures.ts';
 import { openStructures } from './structures.ts';
-import { fillClipChannels } from './clip-channels.ts';
 import { getSplitCount } from '../shared/clip-channels.ts';
 
 /**
@@ -111,8 +110,6 @@ export function chiptuneServer(root: string): Plugin {
       });
       const { store, jobs, guides, structures } = stores;
       if (isFirstStart) {
-        const filled = fillClipChannels(store);
-        if (filled > 0) console.log(`the channels of ${filled} clips filled in`);
         for (const { file, error } of store.unreadable) {
           console.warn(`unreadable ${file}: ${error}`);
         }

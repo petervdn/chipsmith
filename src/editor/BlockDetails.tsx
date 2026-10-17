@@ -112,7 +112,7 @@ export function BlockDetails({
               ? ` (plays ${formatSeconds(span.slice.duration)})`
               : ''}
             {clip.chips.length > 0 && ` · ${clip.chips.join(' + ')}`}
-            {clip.channels &&
+            {clip.channels.length > 0 &&
               ` · ${clip.channels.length === 1 ? 'channel' : `${clip.channels.length} channels`}: ${clip.channels.map((channel) => getChannelName(clip.chips, channel)).join(', ')}`}{' '}
             · made {clip.created.slice(0, 10)}
           </p>

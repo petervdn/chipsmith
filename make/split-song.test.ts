@@ -1,5 +1,5 @@
 // A whole song is split into a clip per channel that plays, each with its own source and the whole
-// clip as its parent, alone on a track named after its channel.
+// clip as its parent, alone on a track named after its channel; its facts are read from its source.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { existsSync, mkdirSync, mkdtempSync, writeFileSync } from 'node:fs';
@@ -13,6 +13,7 @@ import { getNoteValue } from '../fur/notes.ts';
 import { getFurFileBytes } from '../fur/write.ts';
 import { buildFurFile } from './fur-file-builder.ts';
 import { splitSong } from './split-song.ts';
+import { openStore } from '../server/store.ts';
 
 function getBar(note: string): (Row | null)[] {
   return Array.from({ length: 16 }, (_row, i) =>
@@ -70,32 +71,34 @@ test('a whole song becomes a track per channel of blocks of new clips', () => {
       { id: 't1', name: 'Whole', blocks: [{ clip: 'c0001', start: 0, trim: null, repeats: 1 }] },
     ],
   };
-  const { tracks, clips } = splitSong(root, song, whole);
+  const { tracks } = splitSong(root, song, whole);
+  const store = openStore(root);
+  assert.deepEqual(store.unreadable, []);
   assert.deepEqual(
-    clips.map(({ id, name, bars, channels, parent, seconds }) => [
+    [...store.clips.values()].map(({ id, name, parent, channels, seconds, furnace }) => [
       id,
       name,
-      bars,
-      channels,
       parent,
+      channels,
       seconds,
+      furnace,
     ]),
     [
       [
         'c0002',
         { section: null, stem: 'Pulse 1' },
-        null,
-        [0],
         { clip: 'c0001', relation: 'split' },
+        [0],
         6,
+        null,
       ],
       [
         'c0003',
         { section: null, stem: 'Triangle' },
-        null,
-        [2],
         { clip: 'c0001', relation: 'split' },
+        [2],
         6,
+        null,
       ],
     ],
   );

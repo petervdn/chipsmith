@@ -1,13 +1,14 @@
 /**
  * Audio that is not there yet: a clip with a source.fur and no audio.flac (a fresh checkout, the
  * examples, a data folder restored without its audio) is rendered when the server starts, one clip at
- * a time, in the background (docs/adr/0011). Knows nothing of HTTP.
+ * a time, in the background (docs/adr/0011), and the Furnace version that rendered it is recorded in
+ * its clip.json. Knows nothing of HTTP.
  */
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { renderClipAudio } from '../render/render-clip.ts';
 import type { Store } from './store.ts';
-import { getClipFolder } from './store.ts';
+import { getClipFolder, saveClip } from './store.ts';
 
 /**
  * Checks whether a clip has no audio yet but can have it, because its source is there.
@@ -50,10 +51,8 @@ export async function renderMissingAudio(store: Store): Promise<void> {
       if (!isAudioMissing(store, clipId)) continue;
       try {
         const { furnace } = await renderClipAudio(getClipFolder(store, clipId));
-        const recorded = store.clips.get(clipId)?.furnace;
-        if (recorded && recorded !== furnace) {
-          console.warn(`${clipId} rendered with Furnace ${furnace}; it was made with ${recorded}`);
-        }
+        const clip = store.clips.get(clipId);
+        if (clip && clip.furnace !== furnace) saveClip(store, { ...clip, furnace });
       } catch (error) {
         failed.add(clipId);
         console.warn(`${clipId}: ${error instanceof Error ? error.message : String(error)}`);

@@ -6,7 +6,7 @@
 import { copyFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import type { Status, Tag } from '../shared/catalogue.types.ts';
-import type { Clip } from '../shared/clip.types.ts';
+import type { ClipRecord } from '../shared/clip.types.ts';
 import type { SentGuide } from '../shared/guide.types.ts';
 import type { Song } from '../shared/song.types.ts';
 import type { FurFile } from '../fur/fur.types.ts';
@@ -14,9 +14,8 @@ import { getFurFileBytes } from '../fur/write.ts';
 import { renderClipAudio } from '../render/render-clip.ts';
 import { writeJsonAtomically } from '../server/store.ts';
 import { CLIP_IDS, SONG_IDS, claimId } from './ids.ts';
-import { getBeatsPerBar, getBpm, getChipNames } from './fur-file-facts.ts';
+import { getBeatsPerBar, getBpm } from './fur-file-facts.ts';
 import type { SentStructure } from '../shared/structure.types.ts';
-import { getPlayingChannels } from '../fur/cut.ts';
 
 /** What a new song is made from. */
 export type NewSong = {
@@ -81,11 +80,11 @@ export async function makeSong({
   const clipFolder = join(root, 'clips', clipId);
   writeFileSync(join(clipFolder, 'source.fur'), getFurFileBytes(furFile));
   copyFileSync(scriptFile, join(clipFolder, 'script.ts'));
-  const { seconds, furnace } = await renderClipAudio(clipFolder);
+  const { furnace } = await renderClipAudio(clipFolder);
   const created = new Date().toISOString();
   const bpm = getBpm(furFile.song);
   const beats = getBeatsPerBar(furFile.song);
-  const clip: Clip = {
+  const clip: ClipRecord = {
     id: clipId,
     created,
     prompt,
@@ -93,16 +92,11 @@ export async function makeSong({
     promptId,
     name: { section: null, stem: null },
     bars: null,
-    channels: getPlayingChannels(furFile),
     parent: null,
     madeFor: songId,
     tags,
     status,
-    bpm,
-    beats,
     key,
-    chips: getChipNames(furFile.song),
-    seconds,
     furnace,
   };
   const song: Song = {

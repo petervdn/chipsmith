@@ -9,7 +9,6 @@
     "stem": null
   },
   "bars": null,
-  "channels": null,
   "parent": null,
   "madeFor": "s0005",
   "tags": [
@@ -23,12 +22,6 @@
     }
   ],
   "status": "new",
-  "bpm": 112,
-  "beats": 4,
   "key": null,
-  "chips": [
-    "NES"
-  ],
-  "seconds": 42.86671201814059,
-  "furnace": "0.6.8.3"
+  "furnace": null
 }

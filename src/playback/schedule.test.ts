@@ -58,7 +58,7 @@ const SOME_CLIP: Clip = {
   promptId: '',
   name: { section: null, stem: null },
   bars: null,
-  channels: null,
+  channels: [0],
   parent: null,
   madeFor: null,
   tags: [],

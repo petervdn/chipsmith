@@ -43,6 +43,6 @@ export function isWholeClip(clip: Clip): boolean {
  * @returns The channels that play in it, when it is whole and more than one; else 0.
  */
 export function getSplitCount(clip: Clip): number {
-  if (!isWholeClip(clip) || !clip.channels || clip.channels.length < 2) return 0;
+  if (!isWholeClip(clip) || clip.channels.length < 2) return 0;
   return clip.channels.length;
 }

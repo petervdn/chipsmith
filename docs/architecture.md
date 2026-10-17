@@ -9,7 +9,9 @@ docs/code-guidelines.md.
   song's grid (ticks, `TICKS_PER_BEAT` to a beat), with an optional trim and a number of repeats.
 - **A clip** is one piece of audio: a whole piece, or a slice of it by bars and chip channels. Every
   clip is the same kind of thing, however it was cut. It holds all of its own information (0004):
-  prompt, slice, name, parent, tags, status, facts, and its own .fur and script.
+  in clip.json its record (prompt, slice, name, parent, tags, status, the Furnace that rendered it),
+  and its own .fur and script. Its facts (tempo, beats, chips, the channels that play, its length)
+  are read from its .fur when it is read, never stored (0024).
 - Clips are one shared pool (0005); a song points to clips by id. A clip's audio and source never
   change: a change is a new clip whose parent is the old one (`variation`), and a cut is new clips
   whose parent is the whole one (`split`). Which songs use a clip is worked out, not stored.
@@ -25,7 +27,7 @@ The types are in `shared/clip.types.ts` and `shared/song.types.ts`.
 ## The files
 
 ```
-clips/<id>/clip.json      a clip's information (shared/clip.types.ts)
+clips/<id>/clip.json      a clip's record (shared/clip.types.ts); its facts are read from source.fur
 clips/<id>/audio.flac     its audio (rendered from source.fur when the server starts, if missing)
 clips/<id>/source.fur     its own Furnace file
 clips/<id>/script.ts      its own copy of the script that wrote it
@@ -41,9 +43,10 @@ They are in the data folder (`data/` unless set), which is never in git (0018), 
 ## The server
 
 `server/`, run inside Vite's dev server as a plugin (`server/api.ts`). When it starts it copies the
-examples into an empty data folder (`server/examples.ts`), reads every clip.json and song.json into
-memory (`server/store.ts`; a file that does not fit is reported and left alone), and renders, one at a
-time in the background, every clip that has a source.fur and no audio.flac (`server/missing-audio.ts`);
+examples into an empty data folder (`server/examples.ts`), reads every clip.json (with the facts
+of the source.fur beside it) and song.json into memory (`server/store.ts`; a file that does not fit
+is reported and left alone), and renders, one at a time in the background, every clip that has a
+source.fur and no audio.flac, recording the Furnace that rendered it (`server/missing-audio.ts`);
 a song waiting for its audio shows … for ▶ and its list is read again until it has it. A change is written to its file, then to the copy in memory.
 
 Routes: `GET /api/songs`, `GET /api/songs/<id>`, `PATCH /api/songs/<id>` (status, tags),
@@ -70,9 +73,7 @@ page but Home starts with breadcrumbs, the last its heading (Songs › Seven Tee
   of more than one channel; what cutting does to the sound: docs/splitting.md): a track per channel
   that plays, each one block of a new clip, the whole song on that channel alone, rendered in the
   background and shown striped until its audio is in (`fur/cut.ts`, `make/split-song.ts`,
-  `POST /api/songs/<id>/split`). A clip records the channels that play in it (`channels`, filled in
-  from its source for clips made before). To come: a prompt on the
-  selection.
+  `POST /api/songs/<id>/split`). To come: a prompt on the selection.
 - **Clips** (`/clips`): the pool, with the same filter bar.
 - **Guides** (`/guides`): the style guides, made, edited and deleted.
 - **New** (`/new`): a prompt for Claude in a box, a prompt builder under it (a part per row, rolled

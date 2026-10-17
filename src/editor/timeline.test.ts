@@ -46,7 +46,7 @@ function getClip(id: string, seconds: number, created: string, parent: ClipParen
     promptId: 'j0001',
     name: { section: null, stem: null },
     bars: null,
-    channels: null,
+    channels: [0],
     parent,
     madeFor: null,
     tags: [],
