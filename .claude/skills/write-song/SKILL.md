@@ -58,8 +58,9 @@ A prompt may send a structure as a numbered line per section: its name, its bars
 ## A set of songs
 
 - **One song** of **40 s** unless the prompt says otherwise.
-- **A set has real variety**: meter, tempo, groove, form and texture differ between its songs, not
-  only notes. Before writing, list per song what differs.
+- **A set has real variety**: meter, tempo, groove (note values, drum pattern), form, texture and
+  how layers enter differ between its songs, not only notes and sounds. Before writing, list per
+  song what differs; if two share tempo, meter and groove, change one.
 
 ## Arrangement recipes that worked
 
