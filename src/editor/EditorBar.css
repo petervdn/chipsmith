@@ -1,0 +1,48 @@
+/* The look of EditorBar.tsx: its groups side by side, wrapping on a phone; its buttons alike, a
+   disabled one clearly off, Save lit while there is something to save. */
+
+.editor-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 8px 16px;
+  margin-bottom: 8px;
+}
+
+.editor-bar button,
+.editor-bar-grid {
+  min-width: var(--touch);
+  min-height: var(--touch);
+  border: var(--border-width) solid var(--line);
+  border-radius: var(--radius);
+  background: var(--raised);
+  cursor: pointer;
+}
+
+/* a button that cannot be pressed: no fill, only its outline, its symbol faint */
+.editor-bar button:disabled {
+  background: transparent;
+  color: var(--muted);
+  opacity: 0.4;
+  cursor: default;
+}
+
+.editor-bar-grid {
+  padding: 0 8px;
+}
+
+.editor-bar-button {
+  padding: 0 14px;
+}
+
+.editor-bar-unsaved {
+  color: var(--muted);
+  font-size: 0.8125rem;
+}
+
+.editor-bar .editor-bar-button.is-primary:not(:disabled) {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--on-accent);
+  font-weight: 600;
+}

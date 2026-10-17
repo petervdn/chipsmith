@@ -9,6 +9,8 @@ saved, playing from a cursor, the zoom, and the selected block's clip or track.
 - `clip-peaks.ts`: a clip's waveform as peaks, from its samples
 - `ControlGroup.css`: the look of ControlGroup.tsx
 - `ControlGroup.tsx`: controls grouped under a very small label over a line
+- `EditorBar.css`: the look of EditorBar.tsx
+- `EditorBar.tsx`: the bar of controls above the timeline, in groups
 - `grid.ts`: the snap grid: its steps, and a time snapped to one
 - `lane-position.ts`: the track's lane under a point, and the tick a point is at, read from the page
 - `song-edits.ts`: the edits of the arrangement: move, trim, repeat, duplicate, remove a block; tracks
@@ -16,7 +18,7 @@ saved, playing from a cursor, the zoom, and the selected block's clip or track.
 - `SongClips.css`: the look of SongClips.tsx
 - `SongClips.tsx`: the song's clips under the timeline, to select and to drag onto a track
 - `SongEditor.css`: the look of SongEditor.tsx
-- `SongEditor.tsx`: the editor: its bar of controls, the timeline, the selected block's or track's details
+- `SongEditor.tsx`: the editor: its bar of controls, the timeline, the song's clips, the selected block's or track's details
 - `Timeline.css`: the look of Timeline.tsx
 - `timeline.ts`: where blocks lie in ticks, the bars shown, which bars are numbered
 - `Timeline.tsx`: the ruler, a row per track with its blocks, room under them to drag, the playhead

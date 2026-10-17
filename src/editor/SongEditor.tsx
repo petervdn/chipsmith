@@ -5,8 +5,8 @@ import type { SongDetail } from '../../shared/api.types.ts';
 import { useClips } from '../queries/clips.ts';
 import { useSplitSong } from '../queries/songs.ts';
 import { BlockDetails } from './BlockDetails.tsx';
-import { ControlGroup } from './ControlGroup.tsx';
-import { BAR_STEP, GRID_STEPS } from './grid.ts';
+import { EditorBar } from './EditorBar.tsx';
+import { BAR_STEP } from './grid.ts';
 import {
   addTrack,
   duplicateBlock,
@@ -23,7 +23,6 @@ import { getBlockSpans, getClipTicks, getSongSplitCount, getTicksPerBar } from '
 import { SongClips } from './SongClips.tsx';
 import { getFirstBlockPlace, getSongClips } from './song-clips.ts';
 import { TrackDetails } from './TrackDetails.tsx';
-import { TransportButtons } from './TransportButtons.tsx';
 import { useBlockDrag } from './use-block-drag.ts';
 import { useClipDrag } from './use-clip-drag.ts';
 import { useEdgeScroll } from './use-edge-scroll.ts';
@@ -121,101 +120,22 @@ export function SongEditor({ detail }: SongEditorProps) {
   const shownSong = preview ? { ...song, tracks: preview.tracks } : draftSong;
   return (
     <div className="song-editor">
-      <div className="song-editor-bar">
-        <TransportButtons
-          mode={transport.mode}
-          isPaused={transport.isPaused}
-          isWaitingForAudio={isWaitingForAudio}
-          onStop={transport.stop}
-          onTogglePlaying={transport.togglePlaying}
-        />
-        <ControlGroup label="edit">
-          <button
-            type="button"
-            onClick={draft.undo}
-            disabled={!draft.canUndo}
-            data-tooltip="undo (⌘Z)"
-          >
-            ↶
-          </button>
-          <button
-            type="button"
-            onClick={draft.redo}
-            disabled={!draft.canRedo}
-            data-tooltip="redo (⇧⌘Z)"
-          >
-            ↷
-          </button>
-        </ControlGroup>
-        <ControlGroup label="snap">
-          <select
-            className="song-editor-grid"
-            value={step.id}
-            onChange={(event) =>
-              setStep(
-                GRID_STEPS.find((candidate) => candidate.id === event.target.value) ?? BAR_STEP,
-              )
-            }
-            data-tooltip="what blocks snap to when dragged (Alt: no snapping)"
-          >
-            {GRID_STEPS.map((candidate) => (
-              <option key={candidate.id} value={candidate.id}>
-                {candidate.name}
-              </option>
-            ))}
-          </select>
-        </ControlGroup>
-        {splitCount > 0 && (
-          <ControlGroup label="tracks">
-            <button
-              type="button"
-              className="song-editor-button"
-              onClick={async () => {
-                const question = getSplitQuestion(splitCount);
-                if (!(await askToConfirm({ question, answer: 'Split' }))) return;
-                transport.stop();
-                splitSong(song.id);
-              }}
-              disabled={draft.hasChanges || isSplitting}
-              data-tooltip={
-                draft.hasChanges
-                  ? 'save or revert the changes first'
-                  : 'make a track per channel, each the whole song on that channel alone'
-              }
-            >
-              {isSplitting ? 'Splitting…' : `Split into ${splitCount} channels`}
-            </button>
-          </ControlGroup>
-        )}
-        <ControlGroup label="zoom">
-          <button type="button" onClick={zoomOut} data-tooltip="zoom out">
-            −
-          </button>
-          <button type="button" onClick={fit} data-tooltip="fit the song to the screen">
-            fit
-          </button>
-          <button type="button" onClick={zoomIn} data-tooltip="zoom in">
-            +
-          </button>
-        </ControlGroup>
-        <ControlGroup label="song" isAtEnd>
-          {draft.hasChanges && <span className="song-editor-unsaved">unsaved changes</span>}
-          {draft.hasChanges && (
-            <button type="button" className="song-editor-button" onClick={draft.revert}>
-              Revert
-            </button>
-          )}
-          <button
-            type="button"
-            className="song-editor-button is-primary"
-            onClick={draft.save}
-            disabled={!draft.hasChanges || draft.isSaving}
-            data-tooltip="save the song as it is now (⌘S)"
-          >
-            {draft.isSaving ? 'Saving…' : 'Save'}
-          </button>
-        </ControlGroup>
-      </div>
+      <EditorBar
+        transport={transport}
+        isWaitingForAudio={isWaitingForAudio}
+        draft={draft}
+        step={step}
+        onStep={setStep}
+        splitCount={splitCount}
+        isSplitting={isSplitting}
+        onSplit={async () => {
+          const question = getSplitQuestion(splitCount);
+          if (!(await askToConfirm({ question, answer: 'Split' }))) return;
+          transport.stop();
+          splitSong(song.id);
+        }}
+        zoom={{ zoomIn, zoomOut, fit }}
+      />
       {draft.saveError && <p className="error">{draft.saveError.message}</p>}
       {splitError && <p className="error">{splitError.message}</p>}
       {waitingClipIds.length > 0 && (
