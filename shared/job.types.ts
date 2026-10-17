@@ -24,6 +24,8 @@ export type Job = {
   prompt: string;
   /** The style guides chosen with the prompt, copied when it was sent. */
   guides: SentGuide[];
+  /** The output tokens Claude used composing, thinking included: counted as it runs, exact at its end. */
+  tokens: number | null;
   /** The structure chosen with the prompt, copied when it was sent, or null. */
   structure: SentStructure | null;
   created: string;

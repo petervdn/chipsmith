@@ -13,7 +13,7 @@ import type { BuiltPlan } from '../make/build-script.ts';
 import { makeSong } from '../make/make-song.ts';
 import { readFurFile } from '../fur/read.ts';
 import type { LogPlace } from './claude-log.ts';
-import { LOG_START, readLogNews } from './claude-log.ts';
+import { LOG_START, readLogNews, readRunTokens } from './claude-log.ts';
 import { isRunning, startClaude } from './claude-run.ts';
 import type { JobStore } from './jobs.ts';
 import { addNotes, getJobFolder, setPhase, updateJob } from './jobs.ts';
@@ -106,6 +106,12 @@ type ClaudeWatch = { jobId: string; pid: number | undefined; place: LogPlace };
 export function startJobRunner(jobs: JobStore, store: Store, isResuming: boolean): () => void {
   let watch: ClaudeWatch | null = null;
   let isBusy = false;
+  for (const job of jobs.jobs.values()) {
+    if (job.tokens === null && (job.phase === 'done' || job.phase === 'failed')) {
+      const tokens = readRunTokens(join(getJobFolder(jobs, job.id), 'claude.log'));
+      if (tokens !== null) updateJob(jobs, job.id, { tokens });
+    }
+  }
   const resuming = isResuming
     ? [...jobs.jobs.values()].filter((job) => job.phase === 'building' || job.phase === 'rendering')
     : [];
@@ -193,9 +199,18 @@ async function followClaude(
   const folder = getJobFolder(jobs, watch.jobId);
   const news = readLogNews(join(folder, 'claude.log'), watch.place, PROJECT_FOLDER);
   if (news.notes.length > 0) addNotes(jobs, watch.jobId, news.notes);
+  if (news.tokens > 0) {
+    updateJob(jobs, watch.jobId, {
+      tokens: (jobs.jobs.get(watch.jobId)?.tokens ?? 0) + news.tokens,
+    });
+  }
   if (jobs.jobs.get(watch.jobId)?.now !== news.now) updateJob(jobs, watch.jobId, { now: news.now });
   if (news.result) {
-    updateJob(jobs, watch.jobId, { summary: news.result.text, now: null });
+    updateJob(jobs, watch.jobId, {
+      summary: news.result.text,
+      now: null,
+      tokens: news.result.tokens ?? jobs.jobs.get(watch.jobId)?.tokens ?? null,
+    });
     if (news.result.isError) throw new Error(`Claude stopped with an error: ${news.result.text}`);
     await buildAndRender(jobs, store, watch.jobId);
     return null;

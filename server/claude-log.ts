@@ -3,7 +3,7 @@
  * tools do become notes, what it is in the middle of (thinking, a line or a file being written) is
  * read as it happens, and its result ends the run. Knows nothing of how the run was started.
  */
-import { closeSync, existsSync, openSync, readSync, statSync } from 'node:fs';
+import { closeSync, existsSync, openSync, readFileSync, readSync, statSync } from 'node:fs';
 import { relative, resolve } from 'node:path';
 
 /**
@@ -23,13 +23,24 @@ export type LogPlace = { position: number; progress: Progress };
  * What a run's log has said since it was last read: notes, its result at the end, where it was read
  * to, and what Claude is doing now (null when the last note says it).
  */
-export type LogNews = LogPlace & { notes: string[]; result: RunResult | null; now: string | null };
+export type LogNews = LogPlace & {
+  notes: string[];
+  result: RunResult | null;
+  now: string | null;
+  /** The output tokens (thinking included) of the messages Claude finished in what was read. */
+  tokens: number;
+};
 
 /** Nothing read yet. */
 export const LOG_START: LogPlace = { position: 0, progress: { kind: 'idle' } };
 
 /** How a run ended: Claude's reply, and whether it was an error. */
-export type RunResult = { text: string; isError: boolean };
+export type RunResult = {
+  text: string;
+  isError: boolean;
+  /** The run's output tokens, thinking included, as its result reports them; null if it does not. */
+  tokens: number | null;
+};
 
 /** The longest note kept from a line of Claude's. */
 const NOTE_LENGTH = 200;
@@ -53,6 +64,7 @@ export function readLogNews(logFile: string, place: LogPlace, projectFolder: str
     notes: [],
     result: null,
     now: describeProgress(place.progress, projectFolder),
+    tokens: 0,
   };
   if (!existsSync(logFile)) return unchanged;
   const size = statSync(logFile).size;
@@ -69,6 +81,7 @@ export function readLogNews(logFile: string, place: LogPlace, projectFolder: str
   const notes: string[] = [];
   let result: RunResult | null = null;
   let progress = place.progress;
+  let tokens = 0;
   for (const line of text.slice(0, end).split('\n')) {
     const event = parseLine(line);
     if (!event || event['parent_tool_use_id']) continue;
@@ -82,9 +95,16 @@ export function readLogNews(logFile: string, place: LogPlace, projectFolder: str
     if (event['type'] === 'system' && event['subtype'] === 'thinking_tokens') {
       progress = { kind: 'thinking', tokens: Number(event['estimated_tokens'] ?? 0) };
     }
-    if (event['type'] === 'stream_event') progress = getNextProgress(progress, event['event']);
+    if (event['type'] === 'stream_event') {
+      progress = getNextProgress(progress, event['event']);
+      tokens += getMessageTokens(event['event']);
+    }
     if (event['type'] === 'result') {
-      result = { text: String(event['result'] ?? ''), isError: event['is_error'] === true };
+      result = {
+        text: String(event['result'] ?? ''),
+        isError: event['is_error'] === true,
+        tokens: getOutputTokens(event['usage']),
+      };
     }
   }
   return {
@@ -93,7 +113,47 @@ export function readLogNews(logFile: string, place: LogPlace, projectFolder: str
     position: position + Buffer.byteLength(text.slice(0, end)),
     progress,
     now: describeProgress(progress, projectFolder),
+    tokens,
   };
+}
+
+/**
+ * Reads the output tokens a finished run's result reports, for a job made before they were kept.
+ *
+ * @param logFile - The run's log.
+ * @returns The tokens, or null when the log has no result with them.
+ */
+export function readRunTokens(logFile: string): number | null {
+  if (!existsSync(logFile)) return null;
+  const resultLine = readFileSync(logFile, 'utf8')
+    .split('\n')
+    .filter((line) => line.includes('"type":"result"'))
+    .at(-1);
+  const event = resultLine ? parseLine(resultLine) : null;
+  return event ? getOutputTokens(event['usage']) : null;
+}
+
+/**
+ * Returns the output tokens a streamed event says a message ended with.
+ *
+ * @param streamed - The streamed event, not yet checked.
+ * @returns The message's output tokens on its message_delta, else 0.
+ */
+function getMessageTokens(streamed: unknown): number {
+  if (typeof streamed !== 'object' || streamed === null || !('type' in streamed)) return 0;
+  if (streamed.type !== 'message_delta' || !('usage' in streamed)) return 0;
+  return getOutputTokens(streamed.usage) ?? 0;
+}
+
+/**
+ * Returns the output tokens of a usage.
+ *
+ * @param usage - The usage, not yet checked.
+ * @returns Its output_tokens, or null when it has none.
+ */
+function getOutputTokens(usage: unknown): number | null {
+  if (typeof usage !== 'object' || usage === null || !('output_tokens' in usage)) return null;
+  return typeof usage.output_tokens === 'number' ? usage.output_tokens : null;
 }
 
 /**

@@ -5,7 +5,7 @@ import assert from 'node:assert/strict';
 import { appendFileSync, mkdtempSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { LOG_START, readLogNews } from './claude-log.ts';
+import { LOG_START, readLogNews, readRunTokens } from './claude-log.ts';
 
 const PROJECT = '/project';
 const SCRIPT = '/project/data/jobs/j0001/script.ts';
@@ -69,4 +69,18 @@ test('a stretch of thinking becomes a note with its tokens once it ends', () => 
   const news = readLogNews(logFile, LOG_START, PROJECT);
   assert.deepEqual(news.notes, ['thought (3,550 tokens)']);
   assert.equal(news.now, null);
+});
+
+test("a run's tokens add up from its messages, and its result gives the exact total", () => {
+  const logFile = join(mkdtempSync(join(tmpdir(), 'chiptune-log-')), 'claude.log');
+  addLines(logFile, [
+    streamed({ type: 'message_delta', usage: { output_tokens: 300 } }),
+    streamed({ type: 'message_delta', usage: { output_tokens: 1200 } }),
+  ]);
+  assert.equal(readLogNews(logFile, LOG_START, PROJECT).tokens, 1500);
+  addLines(logFile, [
+    { type: 'result', result: 'done', is_error: false, usage: { output_tokens: 1520 } },
+  ]);
+  assert.equal(readLogNews(logFile, LOG_START, PROJECT).result?.tokens, 1520);
+  assert.equal(readRunTokens(logFile), 1520);
 });

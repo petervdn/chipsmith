@@ -38,6 +38,7 @@ export function openJobs(root: string): JobStore {
         removed: job.removed ?? null,
         now: job.now ?? null,
         structure: job.structure ?? null,
+        tokens: job.tokens ?? null,
       });
     } catch {
       /* a job.json that does not read is left; jobs are a log, not data */
@@ -81,6 +82,7 @@ export function createJob(
     prompt,
     guides,
     structure,
+    tokens: null,
     created: now,
     phase: 'queued',
     phaseStarted: now,
