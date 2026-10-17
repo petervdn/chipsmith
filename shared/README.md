@@ -10,3 +10,7 @@ Nothing here reads files or touches the page.
 - `job.types.ts`: a job: a prompt on its way to songs, its phases and notes
 - `song-length.ts`: how long a song is, from its blocks and its clips' lengths
 - `song.types.ts`: a song: tracks of blocks that point to clips
+- `structure-notation.ts`: a structure written short (A8 A'8 B8), read and written; how a section stands to those before
+- `structure-presets.ts`: the structures every prompt can start from
+- `structure-prompt.ts`: a structure as the lines of a prompt that ask for it
+- `structure.types.ts`: a song's structure: its sections, saved and sent
