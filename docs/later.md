@@ -22,3 +22,29 @@ as it is when the job runs. If a song is changed later (the editor), a prompt se
 new state. If that ever matters: record the base song's arrangement at the time of the prompt on the
 job and its songs (clips never change, so that pins the music exactly). Set aside 2026-10-17 as not
 needed yet.
+
+## A step's tokens that add up to the job's
+
+A step's tokens are estimated (Claude Code's guess for thinking, characters / 4 for text and tool
+calls) and come to 65-81% of the exact total at the top of a job's card, as code and JSON hold more
+tokens per character. The log gives each message's exact output tokens when it ends: they could be
+shared out over that message's steps by their estimates. To find out first: whether that count comes
+before or after the lines the steps are read from. Set aside 2026-10-17.
+
+## "Prompt again" keeps the song count
+
+"Prompt again" starts the count at 1, whatever the prompt was sent with. The count is on the job, not
+the song, so the song would need to know its job or the count. Set aside 2026-10-17.
+
+## The stages row going back to Writing
+
+The stages row only moves forward, as do the stage lines in the steps: when Claude changes the script
+after a check, it still shows Checking. It could show Writing again. Set aside 2026-10-17.
+
+## One job per song, the songs of a prompt a set
+
+Each song its own Claude run in turn, so its stages are the song's and a failure or a stop costs one
+song; each later one told the songs made before it (title, tempo, meter, key, groove), to differ
+from them. Weighed against: more tokens (1.3-1.5× by the jobs so far, from two jobs of three songs),
+and the variety one Claude gets by writing the songs of a set together. Undecided; an ADR when it is.
+Set aside 2026-10-17.

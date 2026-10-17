@@ -208,16 +208,3 @@ phases:
    but no song shares one. Clips has left the top bar (0029); still to weigh: drop the Clips page or
    group it by song; clean up the clips no song plays; reuse across songs, if wanted, as a picker in
    the editor's clip column. The outcome is an ADR beside 0005.
-4. A step's tokens that add up to the job's. A step's are estimated (Claude Code's guess for
-   thinking, characters / 4 for text and tool calls) and come to 65-81% of the exact total at the
-   top of the card, as code and JSON hold more tokens per character. The log gives each message's
-   exact output tokens when it ends: share them out over that message's steps by their estimates.
-   To find out first: whether that count comes before or after the lines the steps are read from.
-5. "Prompt again" keeps the song count the prompt was sent with (it starts at 1 now). The count is
-   on the job, not the song, so the song would need to know its job or the count.
-6. The stages row could show Writing again when Claude changes the script after a check; it only
-   moves forward now, as do the stage lines in the steps.
-7. One job per song, the songs of a prompt a set: each its own Claude run in turn, so its stages
-   are the song's and a failure or a stop costs one song; each later one told the songs made
-   before it, to differ from them. Weighed against: more tokens (1.3-1.5× by the jobs so far), and
-   the variety one Claude gets by writing the songs together. Undecided; an ADR when it is.
