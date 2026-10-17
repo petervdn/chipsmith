@@ -1,5 +1,6 @@
-/* The look of ChordAudition.tsx: the part chips, then a row per progression (▶, its name, its
-   chords, keep), the one kept outlined in the accent. */
+/* The look of ChordAudition.tsx: a row per part (its letter in its colour, what it will use, its
+   buttons at the right), one with a progression picked outlined in the accent; under the part being
+   picked for, its presets to hear in an inset box. */
 
 .chord-audition {
   display: flex;
@@ -13,45 +14,50 @@
   font-size: 0.8125rem;
 }
 
-.chord-audition-parts {
+.chord-audition-part {
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
+  flex-direction: column;
   gap: 6px;
 }
 
-.chord-audition-parts .lucide {
-  width: 12px;
-  height: 12px;
-  margin-left: 4px;
-}
-
-.chord-audition-label {
-  color: var(--muted);
-  font-size: 0.75rem;
-}
-
 .chord-audition-row {
-  display: grid;
-  grid-template-columns: var(--touch) minmax(6em, max-content) minmax(0, 1fr) auto;
+  display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 8px;
-  padding: 4px 8px 4px 4px;
+  gap: 6px 10px;
+  min-height: calc(var(--touch) + 10px);
+  padding: 4px 6px;
   border: var(--border-width) solid var(--line);
   border-radius: var(--radius);
   background: var(--card);
 }
 
-.chord-audition-row.is-kept {
+.chord-audition-row.is-picked {
   border-color: var(--accent);
   box-shadow: inset 0 0 0 1px var(--accent);
+}
+
+.chord-audition-letter {
+  min-width: 2em;
+  padding: 2px 6px;
+  border-radius: calc(var(--radius) * 0.5);
+  background: var(--part-color);
+  color: var(--on-accent);
+  font-weight: 700;
+  text-align: center;
 }
 
 .chord-audition-name {
   font-weight: 600;
 }
 
+.chord-audition-claude {
+  color: var(--muted);
+}
+
 .chord-audition-chords {
+  flex: 1 1 8em;
+  min-width: 0;
   overflow: hidden;
   color: var(--muted);
   font-size: 0.875rem;
@@ -59,10 +65,14 @@
   text-overflow: ellipsis;
 }
 
+.chord-audition-actions {
+  display: flex;
+  gap: 6px;
+  margin-left: auto;
+}
+
 .chord-audition-play,
-.chord-audition-drop,
-.chord-audition-keep,
-.chord-audition-others {
+.chord-audition-button {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -82,18 +92,36 @@
 }
 
 .chord-audition-play.is-on,
-.chord-audition-keep.is-on {
+.chord-audition-button.is-primary {
   border-color: var(--accent);
   background: var(--accent);
   color: var(--on-accent);
 }
 
-.chord-audition-keep:disabled {
-  cursor: default;
+.chord-audition-button.is-primary {
+  margin-left: auto;
+  font-weight: 600;
 }
 
-.chord-audition-others {
-  align-self: flex-start;
+.chord-audition-chooser {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-left: 16px;
+  padding: 8px 10px;
+  border-left: 2px solid var(--accent);
+  background: var(--bg);
+}
+
+.chord-audition-chooser-head {
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.chord-audition-chooser-actions {
+  display: flex;
+  gap: 6px;
 }
 
 .chord-audition .lucide {

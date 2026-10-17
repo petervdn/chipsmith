@@ -1,7 +1,7 @@
 // The Harmony panel on New: always the harmony chosen in one line, with 🎲 Roll for the unlocked
 // rows and ▸ at its right; ▸ opens under them the scale (how the one chosen sounds under it), the
 // key's note, the feel and the colour, each a row with a die and a lock ("any" is Claude's choice),
-// then chords to hear and keep per part (ChordAudition.tsx), and setting it all to any. How one
+// then what chords each part will use, picked by ear or Claude's choice (ChordAudition.tsx), and setting it all to any. How one
 // section leads into the next is the Structure panel's.
 import { Dices } from 'lucide-react';
 import { useState } from 'react';
@@ -143,7 +143,7 @@ export function HarmonyPanel({ choice }: HarmonyPanelProps) {
       </h3>
       <ChordAudition
         parts={choice.parts}
-        hearingPart={choice.hearingPart}
+        choosingPart={choice.choosingPart}
         progressions={harmony.progressions}
         candidates={choice.candidates}
         hearingNote={hearingNote}
@@ -151,7 +151,7 @@ export function HarmonyPanel({ choice }: HarmonyPanelProps) {
         playingId={preview.playingId}
         onPlay={(id, chords) => void preview.play(id, chords, hearingNote)}
         onStop={preview.stop}
-        onHearFor={choice.hearFor}
+        onChooseFor={choice.chooseFor}
         onKeep={choice.keep}
         onDrop={choice.drop}
         onPickOthers={choice.pickOthers}

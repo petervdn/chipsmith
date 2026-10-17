@@ -1,7 +1,7 @@
 // The harmony chosen for a prompt on New: everything Claude's choice at first; its scale, note,
 // feel and colour picked by hand (which locks them) or rolled; three presets to hear that fit them,
-// picked again when they change or on asking, and the part they are heard for; a progression kept
-// per part. Kept while the page is open.
+// picked again when they change or on asking; the part one is being chosen for, if any; a
+// progression kept per part. Kept while the page is open.
 import { useState } from 'react';
 import type { ProgressionPreset } from '../../shared/progression-presets.ts';
 import type { Section } from '../../shared/structure.types.ts';
@@ -26,9 +26,10 @@ const CANDIDATES = 3;
  * @param sections - The sections of the structure chosen, or null for none: then one progression
  *   is for the whole song.
  * @returns The harmony (`choice`), its parts, the locked rows, `sent` (the harmony to send, or null),
- *   the presets to hear (`candidates`) and the part they are for (`hearingPart`); and what changes
- *   it: `roll`, `rollRow`, `setRow` (locks the row), `pickOthers`, `hearFor`, `keep`, `drop`,
- *   `toggleLock`, and `clear` (all Claude's choice, unlocked).
+ *   the presets to hear (`candidates`) and the part one is being chosen for (`choosingPart`, or
+ *   undefined); and what changes it: `roll`, `rollRow`, `setRow` (locks the row), `pickOthers`,
+ *   `chooseFor` (a part, or null to stop choosing), `keep` (for the part chosen for, which ends the
+ *   choosing), `drop`, `toggleLock`, and `clear` (all Claude's choice, unlocked).
  */
 export function useHarmonyChoice(sections: Section[] | null) {
   const [choice, setChoice] = useState(OPEN_HARMONY);
@@ -36,9 +37,9 @@ export function useHarmonyChoice(sections: Section[] | null) {
   const [candidates, setCandidates] = useState<ProgressionPreset[]>(() =>
     pickCandidates(OPEN_HARMONY, CANDIDATES, [], Math.random),
   );
-  const [hearingKey, setHearingKey] = useState<string | null>(null);
+  const [choosingKey, setChoosingKey] = useState<string | null>(null);
   const parts = getHarmonyParts(sections);
-  const hearingPart = parts.find((part) => part.key === hearingKey) ?? parts[0];
+  const choosingPart = parts.find((part) => part.key === choosingKey);
   function change(next: HarmonyChoice): void {
     if (next.mode !== choice.mode || next.feel !== choice.feel) {
       setCandidates(pickCandidates(next, CANDIDATES, [], Math.random));
@@ -51,7 +52,7 @@ export function useHarmonyChoice(sections: Section[] | null) {
     locked,
     sent: getSentHarmony(choice, parts),
     candidates,
-    hearingPart,
+    choosingPart,
     roll: () => change(rollHarmony(choice, locked, Math.random)),
     rollRow: (name: HarmonyRowName) => change(rollHarmonyRow(choice, name, Math.random)),
     setRow: (name: HarmonyRowName, value: string | null) => {
@@ -67,9 +68,11 @@ export function useHarmonyChoice(sections: Section[] | null) {
           Math.random,
         ),
       ),
-    hearFor: (part: HarmonyPart) => setHearingKey(part.key),
+    chooseFor: (part: HarmonyPart | null) => setChoosingKey(part ? part.key : null),
     keep: (preset: ProgressionPreset) => {
-      if (hearingPart) setChoice(keepProgression(choice, hearingPart, preset));
+      if (!choosingPart) return;
+      setChoice(keepProgression(choice, choosingPart, preset));
+      setChoosingKey(null);
     },
     drop: (part: HarmonyPart) => setChoice(dropProgression(choice, part)),
     toggleLock: (name: HarmonyRowName) =>

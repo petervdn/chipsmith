@@ -3,7 +3,7 @@
 The New page: a prompt written, or made up at random, and sent.
 
 - `ChordAudition.css`: the look of ChordAudition.tsx
-- `ChordAudition.tsx`: chords to hear and keep per part: presets that fit the scale and feel, ▶ and keep
+- `ChordAudition.tsx`: what chords each part will use: one picked by ear from presets, or Claude's choice
 - `CreatePanel.css`: the look of CreatePanel.tsx
 - `CreatePanel.tsx`: Create and the number of songs, at the right of the prompt, kept in view
 - `FoldPanel.css`: the look of FoldPanel.tsx
