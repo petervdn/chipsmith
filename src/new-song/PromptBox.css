@@ -31,64 +31,27 @@
   cursor: pointer;
 }
 
-/* Create and how many songs: at the top right, staying under the top bar as the page scrolls */
-.prompt-box-create {
-  position: sticky;
-  top: calc(var(--top-bar-height, 0px) + 8px);
-  z-index: 5;
+/* the prompt and its panels, with Create at their right (CreatePanel.css) */
+.prompt-box-body {
   display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.prompt-box-main {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
   gap: 8px;
-  align-self: flex-end;
-  padding: 6px;
-  border: var(--border-width) solid var(--line);
-  border-radius: var(--radius);
-  background: var(--card);
-  box-shadow: 0 4px 16px rgb(0 0 0 / 15%);
+  min-width: 0;
 }
 
-.prompt-box-count {
-  display: flex;
-  flex: none;
-  align-items: center;
-  gap: 4px;
-}
-
-.prompt-box-count button {
-  min-width: var(--touch);
-  min-height: 48px;
-  border: var(--border-width) solid var(--line);
-  border-radius: var(--radius);
-  background: var(--raised);
-  cursor: pointer;
-}
-
-.prompt-box-count button:disabled {
-  color: var(--muted);
-  cursor: default;
-}
-
-.prompt-box-count-number {
-  min-width: 1.5em;
-  font-weight: 600;
-  font-variant-numeric: tabular-nums;
-  text-align: center;
-}
-
-.prompt-box-send {
-  min-height: 48px;
-  padding: 0 18px;
-  border: 0;
-  border-radius: var(--radius);
-  background: var(--accent);
-  color: var(--on-accent);
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.prompt-box-send:disabled {
-  background: var(--raised);
-  color: var(--muted);
-  cursor: default;
+@media (max-width: 639px) {
+  .prompt-box-body {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
 }
 
 .prompt-box .error {

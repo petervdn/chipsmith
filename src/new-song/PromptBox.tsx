@@ -4,6 +4,7 @@
 // the note is cleared.
 import { useState } from 'react';
 import { GuideChips } from '../guides/GuideChips.tsx';
+import { CreatePanel } from './CreatePanel.tsx';
 import { PromptBuilder } from './PromptBuilder.tsx';
 import { StructurePanel } from './StructurePanel.tsx';
 import { useStructureChoice } from './use-structure-choice.ts';
@@ -16,9 +17,8 @@ import './PromptBox.css';
 /** The song a prompt is sent again from: its id, its title, and whether it changed after its prompt. */
 export type PromptSource = { songId: string; title: string; isChangedAfterPrompt: boolean };
 
-/** How many songs a prompt makes to start with, and the most it can. */
+/** How many songs a prompt makes to start with. */
 const DEFAULT_SONGS = 1;
-const MOST_SONGS = 6;
 
 type PromptBoxProps = {
   initialText: string;
@@ -77,31 +77,6 @@ export function PromptBox({ initialText, source, onClearSource }: PromptBoxProps
         send();
       }}
     >
-      <div className="prompt-box-create">
-        <span className="prompt-box-count" aria-label="how many songs">
-          <button
-            type="button"
-            onClick={() => setSongCount(Math.max(1, songCount - 1))}
-            disabled={songCount <= 1}
-            title="one song fewer"
-          >
-            −
-          </button>
-          <span className="prompt-box-count-number">{songCount}</span>
-          <button
-            type="button"
-            onClick={() => setSongCount(Math.min(MOST_SONGS, songCount + 1))}
-            disabled={songCount >= MOST_SONGS}
-            title="one song more"
-          >
-            +
-          </button>
-        </span>
-        <button type="submit" className="prompt-box-send" disabled={!text.trim() || isSending}>
-          {isSending ? 'Sending…' : `Create ${songCount} ${songCount === 1 ? 'song' : 'songs'}`}
-        </button>
-      </div>
-      {error && <p className="error">{error.message}</p>}
       {source && (
         <p className="prompt-box-source">
           Prompting again from{' '}
@@ -121,44 +96,55 @@ export function PromptBox({ initialText, source, onClearSource }: PromptBoxProps
           ⚠ That song changed after this prompt; sending it again makes it as it first was asked.
         </p>
       )}
-      <textarea
-        autoFocus={isFocusAtEnd}
-        onFocus={(event) => {
-          if (isFocusAtEnd) event.target.setSelectionRange(text.length, text.length);
-        }}
-        className="prompt-box-text"
-        placeholder="What should Claude make? (e.g. three dark NES funk grooves in odd meters)"
-        value={text}
-        onChange={(event) => setText(event.target.value)}
-        onKeyDown={(event) => {
-          if (event.key === 'Enter' && (event.metaKey || event.ctrlKey)) send();
-        }}
-      />
-      <div className="prompt-box-tools">
-        <button
-          type="button"
-          className={`prompt-box-random${isBuilding ? ' is-on' : ''}`}
-          onClick={() => setBuilding(!isBuilding)}
-          aria-expanded={isBuilding}
-          title="build a prompt from parts, rolled at random or picked (nothing is sent)"
-        >
-          🎲 Build a prompt
-        </button>
-      </div>
-      {isBuilding && (
-        <PromptBuilder
-          onUse={(built) => {
-            const isOwnText = text.trim() !== '' && text !== usedText;
-            if (isOwnText && !window.confirm('Replace what is in the box with this prompt?')) {
-              return;
-            }
-            setText(built);
-            setUsedText(built);
-          }}
+      <div className="prompt-box-body">
+        <div className="prompt-box-main">
+          {error && <p className="error">{error.message}</p>}
+          <textarea
+            autoFocus={isFocusAtEnd}
+            onFocus={(event) => {
+              if (isFocusAtEnd) event.target.setSelectionRange(text.length, text.length);
+            }}
+            className="prompt-box-text"
+            placeholder="What should Claude make? (e.g. three dark NES funk grooves in odd meters)"
+            value={text}
+            onChange={(event) => setText(event.target.value)}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter' && (event.metaKey || event.ctrlKey)) send();
+            }}
+          />
+          <div className="prompt-box-tools">
+            <button
+              type="button"
+              className={`prompt-box-random${isBuilding ? ' is-on' : ''}`}
+              onClick={() => setBuilding(!isBuilding)}
+              aria-expanded={isBuilding}
+              title="build a prompt from parts, rolled at random or picked (nothing is sent)"
+            >
+              🎲 Build a prompt
+            </button>
+          </div>
+          {isBuilding && (
+            <PromptBuilder
+              onUse={(built) => {
+                const isOwnText = text.trim() !== '' && text !== usedText;
+                if (isOwnText && !window.confirm('Replace what is in the box with this prompt?')) {
+                  return;
+                }
+                setText(built);
+                setUsedText(built);
+              }}
+            />
+          )}
+          <StructurePanel choice={structureChoice} />
+          <GuideChips guides={guides} chosenIds={chosenIds} onToggle={toggleGuide} />
+        </div>
+        <CreatePanel
+          songCount={songCount}
+          canSend={text.trim() !== ''}
+          isSending={isSending}
+          onSongCountChange={setSongCount}
         />
-      )}
-      <StructurePanel choice={structureChoice} />
-      <GuideChips guides={guides} chosenIds={chosenIds} onToggle={toggleGuide} />
+      </div>
     </form>
   );
 }
