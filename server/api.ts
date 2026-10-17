@@ -74,6 +74,12 @@ declare global {
   var chiptuneStopJobRunner: (() => void) | undefined;
   /** The rendering of missing audio, while it runs: a restart of the server does not start another. */
   var chiptuneRenderingMissingAudio: Promise<void> | undefined;
+  /**
+   * The stores of this process. Vite restarts the server in the same process when a server file
+   * changes, and work under way (a song rendering) goes on there: it must change the stores the
+   * restarted server serves, not copies.
+   */
+  var chiptuneStores: Stores | undefined;
 }
 
 /**
@@ -101,16 +107,25 @@ export function chiptuneServer(root: string): Plugin {
       if (copyExamplesIfEmpty(root, EXAMPLES_FOLDER)) {
         console.log(`the examples copied into ${root}`);
       }
-      const store = openStore(root);
-      for (const { file, error } of store.unreadable) console.warn(`unreadable ${file}: ${error}`);
+      const isFirstStart = globalThis.chiptuneStores === undefined;
+      const stores = (globalThis.chiptuneStores ??= {
+        store: openStore(root),
+        jobs: openJobs(root),
+        guides: openGuides(root),
+        structures: openStructures(root),
+      });
+      const { store, jobs, guides, structures } = stores;
+      if (isFirstStart) {
+        for (const { file, error } of store.unreadable) {
+          console.warn(`unreadable ${file}: ${error}`);
+        }
+      }
       startRenderingMissingAudio(store);
-      const jobs = openJobs(root);
-      const guides = openGuides(root);
-      const structures = openStructures(root);
       let programChecks = checkProgramsAndWarn();
-      // one runner: a restart of the server (Vite restarts it when a server file changes) replaces it
+      // one runner: a restart of the server replaces it; only a new process resumes the jobs that
+      // were building or rendering, as in the same process that work is still going on
       globalThis.chiptuneStopJobRunner?.();
-      globalThis.chiptuneStopJobRunner = startJobRunner(jobs, store);
+      globalThis.chiptuneStopJobRunner = startJobRunner(jobs, store, isFirstStart);
       server.middlewares.use((request, response, next) => {
         const path = (request.url ?? '').split('?')[0] ?? '';
         if (!path.startsWith('/api/') && !path.startsWith('/media/')) {

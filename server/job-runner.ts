@@ -94,25 +94,30 @@ type ClaudeWatch = { jobId: string; pid: number | undefined; place: LogPlace };
 
 /**
  * Starts the ticker that moves jobs on, one at a time. A job that was building or rendering when the
- * server stopped is marked failed.
+ * server stopped goes on where it stopped: its .fur files are built again unless it was rendering,
+ * and the songs it made already are kept.
  *
  * @param jobs - The jobs in memory.
  * @param store - The clips and songs, looked at again as each song is made.
+ * @param isResuming - Whether this is a new process, whose jobs that were building or rendering
+ *   are resumed; in a restart within the process that work is still going on.
  * @returns A function that stops the ticker.
  */
-export function startJobRunner(jobs: JobStore, store: Store): () => void {
+export function startJobRunner(jobs: JobStore, store: Store, isResuming: boolean): () => void {
   let watch: ClaudeWatch | null = null;
   let isBusy = false;
-  for (const job of jobs.jobs.values()) {
-    if (job.phase === 'building' || job.phase === 'rendering') {
-      setPhase(jobs, job.id, 'failed', 'stopped: the server restarted during this phase');
-    }
-  }
+  const resuming = isResuming
+    ? [...jobs.jobs.values()].filter((job) => job.phase === 'building' || job.phase === 'rendering')
+    : [];
   async function tick(): Promise<void> {
     if (isBusy) return;
     isBusy = true;
     try {
-      if (watch) {
+      const resumed = resuming.shift();
+      if (resumed) {
+        addNotes(jobs, resumed.id, ['the server restarted; going on where it stopped']);
+        await buildAndRender(jobs, store, resumed.id);
+      } else if (watch) {
         watch = await followClaude(jobs, store, watch);
       } else {
         const composing = [...jobs.jobs.values()].find((job) => job.phase === 'composing');
@@ -121,7 +126,8 @@ export function startJobRunner(jobs: JobStore, store: Store): () => void {
         else if (queued) watch = startComposing(jobs, queued);
       }
     } catch (error) {
-      if (watch) failJob(jobs, watch.jobId, error);
+      const failedId = watch?.jobId ?? null;
+      if (failedId) failJob(jobs, failedId, error);
       watch = null;
     } finally {
       isBusy = false;
@@ -204,11 +210,20 @@ async function buildAndRender(jobs: JobStore, store: Store, jobId: string): Prom
   const folder = getJobFolder(jobs, jobId);
   const scriptFile = join(folder, 'script.ts');
   if (!existsSync(scriptFile)) throw new Error('Claude wrote no script.ts');
-  setPhase(jobs, jobId, 'building', 'running the script');
   const buildFolder = join(folder, 'build');
-  await runBuild(scriptFile, buildFolder);
-  const plans: BuiltPlan[] = JSON.parse(readFileSync(join(buildFolder, 'plan.json'), 'utf8'));
-  let songs: JobSong[] = plans.map(({ title }) => ({ title, state: 'waiting', songId: null }));
+  const planFile = join(buildFolder, 'plan.json');
+  const before = jobs.jobs.get(jobId);
+  if (before?.phase !== 'rendering' || !existsSync(planFile)) {
+    setPhase(jobs, jobId, 'building', 'running the script');
+    await runBuild(scriptFile, buildFolder);
+  }
+  const plans: BuiltPlan[] = JSON.parse(readFileSync(planFile, 'utf8'));
+  let songs: JobSong[] = plans.map(({ title }, i) => {
+    const made = before?.songs[i];
+    return made?.state === 'done' && made.title === title
+      ? made
+      : { title, state: 'waiting', songId: null };
+  });
   updateJob(jobs, jobId, { songs });
   setPhase(
     jobs,
@@ -218,6 +233,7 @@ async function buildAndRender(jobs: JobStore, store: Store, jobId: string): Prom
   );
   const job = jobs.jobs.get(jobId);
   for (const [i, plan] of plans.entries()) {
+    if (songs[i]?.state === 'done') continue;
     songs = songs.map((song, index) => (index === i ? { ...song, state: 'rendering' } : song));
     updateJob(jobs, jobId, { songs });
     try {
