@@ -25,7 +25,8 @@ for the format and the list). A decision made in a conversation is not done unti
 - **What is made is never in git**: songs, clips, jobs and style guides are in the data folder
   (`data/`, docs/adr/0018). The repository holds the app and five example songs (`examples/`), and no
   one's name, prompts or taste.
-- **`npm run check`** (types, lint, tests, formatting) passes before a commit.
+- **`npm run check`** (types, lint, tests, formatting) passes before a commit, and a change is
+  committed when it is done, one subject to a commit (docs/code-guidelines.md, "Commits").
 - **The app**: `npm run dev`, port 6502, on the local network too.
 - Test the page silently: switch on the player bar's mute (or set localStorage `chiptune.mute` to
   `"1"`) before playing anything in the browser.

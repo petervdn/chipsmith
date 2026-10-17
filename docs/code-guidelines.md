@@ -125,12 +125,46 @@ Where state lives, in this order (why: docs/adr/0017):
 - **The second use is when a thing becomes a function.** A block is never copied a third time.
 - **A new case is an entry in a list, not a branch**, where a list already holds such cases.
 
+## Commits
+
+Taken over from unknown-game.
+
+- **A change is committed when it is done**: when it works and `npm run check` passes, it is a
+  commit, before the next change starts. Finished work is not left lying in the working tree.
+- **One subject to a commit**: changes that belong together go in one commit (the code, its docs,
+  its ADR, the examples it touches), and changes that do not go in commits of their own, even when
+  they were made in one sitting. If the title needs an "and" or an "also", it is two commits.
+- **A commit holds everything the change touched**: a move rewrites imports in other folders, so
+  `git status` is clean of that change after its commit.
+- **A short title, a blank line, then a body.** Not one long line.
+  - **Title**: `type(area): what it does`, in at most about 60 characters, the part after the colon
+    in the imperative so that "This commit will …" reads before it ("show the jobs on a page of
+    their own"), starting lower case. No names of functions or files, no full stop. Commits before
+    2026-10-17 are statements without a type; they stay as they are.
+  - **type**: `feat` (something new to see or use), `fix` (something wrong made right), `refactor`
+    (structure changed, behaviour the same: a move is one), `perf` (faster, the measurement before
+    and after in the body), `docs` (docs, ADRs, comments only), `test` (tests only), `chore`
+    (scripts, config, formatting, dependencies). A change that needs two types is two commits.
+  - **area**: `page`, `server`, `jobs`, `fur`, `make`, `render`, `examples`, `config`, in lower
+    case; left out where the type says enough (`docs: record why the page is grouped by area`).
+  - **Body**: what was done and why, wrapped at about 100 characters, as short paragraphs or a list
+    of `-` items. Names of functions, files and ADRs go here.
+
+```
+feat(page): show the jobs on a page of their own
+
+New is only the prompt now; sending it leads to Jobs (`/jobs`, `JobsPage.tsx`), where every prompt
+sent is a card, newest first.
+
+- A job that is over can be removed (✕); `removed` is set in its job.json and its files stay.
+- The Jobs tab counts the jobs on their way.
+```
+
 ## Tests
 
 - **Logic that knows no page has tests** where a mistake would lose or mix up work: what goes into a
   file and comes out (`store.test.ts`), what filters a list, what a route reads as.
 - **A bug in such logic is first a test that fails**, then the fix.
-- **`npm run check` passes before a commit.**
 
 ## The page
 
