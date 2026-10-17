@@ -59,3 +59,14 @@ test('a line of Claude shows as it is written', () => {
   ]);
   assert.equal(readLogNews(logFile, LOG_START, PROJECT).now, 'Planning the three songs.');
 });
+
+test('a stretch of thinking becomes a note with its tokens once it ends', () => {
+  const logFile = join(mkdtempSync(join(tmpdir(), 'chiptune-log-')), 'claude.log');
+  addLines(logFile, [
+    { type: 'system', subtype: 'thinking_tokens', estimated_tokens: 3550 },
+    { type: 'assistant', message: { content: [{ type: 'thinking', thinking: '' }] } },
+  ]);
+  const news = readLogNews(logFile, LOG_START, PROJECT);
+  assert.deepEqual(news.notes, ['thought (3,550 tokens)']);
+  assert.equal(news.now, null);
+});

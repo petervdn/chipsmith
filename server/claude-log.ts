@@ -73,6 +73,9 @@ export function readLogNews(logFile: string, place: LogPlace, projectFolder: str
     const event = parseLine(line);
     if (!event || event['parent_tool_use_id']) continue;
     if (event['type'] === 'assistant') {
+      if (progress.kind === 'thinking') {
+        notes.push(`thought (${progress.tokens.toLocaleString('en')} tokens)`);
+      }
       notes.push(...getAssistantNotes(event, projectFolder));
       progress = { kind: 'idle' };
     }
