@@ -51,7 +51,7 @@ What they answer is typed in `shared/api.types.ts`.
 
 ## The pages
 
-`src/`, React (0013). One top bar on every page: the logo (home), Songs | Clips | Guides | Jobs, each with how many it
+`src/`, React (0013), a folder per area (a page, the top bar, the player, the lists; 0020). One top bar on every page: the logo (home), Songs | Clips | Guides | Jobs, each with how many it
 holds (Jobs turning while one runs), in a song the song's title, and at the right + New song (an action, not a section).
 
 - **Home** (`/`): the logo and what the app is, a + New song button, the running jobs, how many songs
@@ -67,7 +67,7 @@ holds (Jobs turning while one runs), in a song the song's title, and at the righ
 - **Jobs** (`/jobs`): every prompt sent, as a card, newest first; one that is over can be removed
   (✕; `removed` in its job.json, its files kept). The tab counts the jobs on their way.
 
-The page is light or dark: as the system is set, until the top bar's ☾ / ☀ switches it (`src/looks.ts`,
+The page is light or dark: as the system is set, until the top bar's ☾ / ☀ switches it (`src/top-bar/looks.ts`,
 the colours in `src/style.css`), kept in the preferences. The accent is a bright lime.
 
 The page is laid out for a phone first (one column, rows that wrap, 40 px touch targets) and a
@@ -116,7 +116,7 @@ git, all 1,534 of its .fur files were checked so.)
 `src/playback/`: `schedule.ts` turns a song's blocks into stretches of clips' audio in seconds;
 `audio-engine.ts` plays them with Web Audio, each on the audio clock, loading a few clips at a time.
 The player's state is a Zustand store (`src/stores/player-store.ts`). The player bar
-(`src/PlayerBar.tsx`) sits at the bottom of every page: ▶ / ■ (the share loaded while loading), the
+(`src/player/PlayerBar.tsx`) sits at the bottom of every page: ▶ / ■ (the share loaded while loading), the
 title, a slider to move in the song, and a mute switch for testing (the preferences store). Every song
 row and song page has ▶.
 

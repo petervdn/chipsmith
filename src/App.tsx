@@ -1,17 +1,17 @@
 // The app: the top bar, a warning when a program it calls is missing, the page the address is, and
 // the player bar.
-import { ClipsPage } from './pages/ClipsPage.tsx';
-import { GuidesPage } from './pages/GuidesPage.tsx';
-import { HomePage } from './pages/HomePage.tsx';
-import { JobsPage } from './pages/JobsPage.tsx';
-import { NewPage } from './pages/NewPage.tsx';
-import { SongPage } from './pages/SongPage.tsx';
-import { SongsPage } from './pages/SongsPage.tsx';
-import { PlayerBar } from './PlayerBar.tsx';
+import { ClipsPage } from './clips/ClipsPage.tsx';
+import { GuidesPage } from './guides/GuidesPage.tsx';
+import { HomePage } from './home/HomePage.tsx';
+import { JobsPage } from './jobs/JobsPage.tsx';
+import { NewPage } from './new-song/NewPage.tsx';
+import { SongPage } from './songs/SongPage.tsx';
+import { SongsPage } from './songs/SongsPage.tsx';
+import { PlayerBar } from './player/PlayerBar.tsx';
 import { ProgramWarning } from './ProgramWarning.tsx';
 import { useJobs } from './queries/jobs.ts';
 import { useRoute } from './router.ts';
-import { TopBar } from './TopBar.tsx';
+import { TopBar } from './top-bar/TopBar.tsx';
 
 /** The whole page. */
 export function App() {

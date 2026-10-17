@@ -1,45 +1,26 @@
 # src/
 
-The page (React). It asks the server (server/) for clips and songs and shows them; what can be worked
-out without the page is in a module of its own beside it, with its test.
+The page (React), a folder per area of the app (docs/code-guidelines.md, "The page's folders"):
+each holds its components, their CSS, hooks, and the modules that know no page with their tests.
+At the top: the app's shell and what every area uses.
 
 - `App.tsx`: the top bar and the page the address is
-- `Logo.tsx`: the logo, a note above an anvil in pixels
-- `JobCard.tsx`: a job's card on the Jobs page
-- `LookSwitcher.tsx`: ☾ / ☀ in the top bar, to switch between light and dark
-- `JobStrip.tsx`: one line for a running job, above the songs list
-- `FilterBar.tsx`: the filter bar above a list
-- `GuideChips.tsx`: the style guides as chips under the prompt box
-- `GuideEditor.tsx`: one style guide opened to edit, or a new one
-- `ProgramWarning.tsx`: a bar when a program the app calls is missing
-- `PromptBox.tsx`: the box where a prompt is written and sent
-- `PlayButton.tsx`: ▶ for one song, in a list or on its page
-- `PlayerBar.tsx`: the player bar at the bottom of every page
-- `SongRowDetails.tsx`: a song's row opened: its prompt (copy, prompt again) and details
-- `StatusButtons.tsx`: ★ and ✕ for a song's or a clip's status
-- `TopBar.tsx`: the bar at the top of every page
-- `UndoBar.tsx`: the offer to undo a change that hid something
+- `clips/`: the clip pool
 - `copy-text.ts`: copying text, also where the clipboard API is missing (plain http)
 - `format.ts`: how lengths and meters are shown
-- `guides.css`: the look of the Guides page and the guide chips
-- `home.css`: the look of the home page and the logo
-- `home.ts`: what the home page shows of the songs: the latest, the counts
-- `jobs.css`: the look of the prompt box, the job cards and the running count
-- `list-filter.ts`: the filter both lists share
-- `lists.css`: the look of the lists: filter bar, rows, status buttons
-- `looks.ts`: the two looks, light and dark, and switching between them
+- `guides/`: the style guides, their page and their chips
+- `home/`: the home page
+- `jobs/`: the jobs page, a job's card and its line
+- `lists/`: what the songs and clips lists share
 - `main.tsx`: the page's entry
-- `pages/`: one file to a page
-- `player.css`: the look of ▶ and the player bar
+- `new-song/`: the New page and its prompt box
 - `playback/`: playing a song: what plays when, the audio, the shared player
+- `player/`: ▶ and the player bar
+- `ProgramWarning.tsx`: a bar when a program the app calls is missing
 - `queries/`: everything read from or sent to the server (TanStack Query)
-- `random-prompt.ts`: a prompt made up from parts at random, to start from
 - `router.ts`: which page the address is, and moving between them
+- `songs/`: the songs list and a song opened
 - `stores/`: Zustand stores: the player and the preferences
 - `style.css`: the colours, the page, the top bar and a song's page, for phone and desktop
-- `use-guide-choice.ts`: the style guides chosen for a prompt
-- `use-guide-editor.ts`: a style guide's draft, saved or deleted
-- `use-list-filter.ts`: a list's filter kept in the address
-- `use-look.ts`: the look the page is in, and stepping to another
-- `use-tab-counts.ts`: how many each of the top bar's tabs holds
+- `top-bar/`: the bar at the top of every page
 - `use-page-title.ts`: the browser tab's title, the page's name and then chipsmith
