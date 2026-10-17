@@ -77,6 +77,31 @@ export function PromptBox({ initialText, source, onClearSource }: PromptBoxProps
         send();
       }}
     >
+      <div className="prompt-box-create">
+        <span className="prompt-box-count" aria-label="how many songs">
+          <button
+            type="button"
+            onClick={() => setSongCount(Math.max(1, songCount - 1))}
+            disabled={songCount <= 1}
+            title="one song fewer"
+          >
+            −
+          </button>
+          <span className="prompt-box-count-number">{songCount}</span>
+          <button
+            type="button"
+            onClick={() => setSongCount(Math.min(MOST_SONGS, songCount + 1))}
+            disabled={songCount >= MOST_SONGS}
+            title="one song more"
+          >
+            +
+          </button>
+        </span>
+        <button type="submit" className="prompt-box-send" disabled={!text.trim() || isSending}>
+          {isSending ? 'Sending…' : `Create ${songCount} ${songCount === 1 ? 'song' : 'songs'}`}
+        </button>
+      </div>
+      {error && <p className="error">{error.message}</p>}
       {source && (
         <p className="prompt-box-source">
           Prompting again from{' '}
@@ -134,31 +159,6 @@ export function PromptBox({ initialText, source, onClearSource }: PromptBoxProps
       )}
       <StructurePanel choice={structureChoice} />
       <GuideChips guides={guides} chosenIds={chosenIds} onToggle={toggleGuide} />
-      <div className="prompt-box-create">
-        <span className="prompt-box-count" aria-label="how many songs">
-          <button
-            type="button"
-            onClick={() => setSongCount(Math.max(1, songCount - 1))}
-            disabled={songCount <= 1}
-            title="one song fewer"
-          >
-            −
-          </button>
-          <span className="prompt-box-count-number">{songCount}</span>
-          <button
-            type="button"
-            onClick={() => setSongCount(Math.min(MOST_SONGS, songCount + 1))}
-            disabled={songCount >= MOST_SONGS}
-            title="one song more"
-          >
-            +
-          </button>
-        </span>
-        <button type="submit" className="prompt-box-send" disabled={!text.trim() || isSending}>
-          {isSending ? 'Sending…' : `Create ${songCount} ${songCount === 1 ? 'song' : 'songs'}`}
-        </button>
-      </div>
-      {error && <p className="error">{error.message}</p>}
     </form>
   );
 }

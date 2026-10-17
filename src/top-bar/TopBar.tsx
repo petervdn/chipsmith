@@ -1,11 +1,13 @@
 // The bar at the top of every page: the logo (home), Songs, Clips, Guides and Jobs with how many each
 // holds (Jobs: how many are on their way; the one open marked, Jobs turning while one runs), a
 // button for a new song at the right, and the switch between light and dark.
+import { useRef } from 'react';
 import type { Job } from '../../shared/job.types.ts';
 import { Logo } from './Logo.tsx';
 import { LookSwitcher } from './LookSwitcher.tsx';
 import { isJobRunning } from '../queries/jobs.ts';
 import { useTabCounts } from './use-tab-counts.ts';
+import { useTopBarHeight } from './use-top-bar-height.ts';
 import type { Route } from '../router.ts';
 import '../jobs/jobs.css';
 import './TopBar.css';
@@ -26,8 +28,10 @@ export function TopBar({ route, jobs }: TopBarProps) {
   const isSongs = route.page === 'songs' || route.page === 'song';
   const isAnyRunning = jobs.some(isJobRunning);
   const { songCount, clipCount, guideCount, jobCount } = useTabCounts(jobs);
+  const barRef = useRef<HTMLElement>(null);
+  useTopBarHeight(barRef);
   return (
-    <header className="top-bar">
+    <header ref={barRef} className="top-bar">
       <a href="/" className="top-bar-logo" title="home">
         <Logo size={LOGO_SIZE} />
         <span className="top-bar-logo-name">chipsmith</span>
