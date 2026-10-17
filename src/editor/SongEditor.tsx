@@ -99,7 +99,7 @@ export function SongEditor({ detail }: SongEditorProps) {
   return (
     <div className="song-editor">
       <div className="song-editor-bar">
-        <ControlGroup label="Play">
+        <ControlGroup label="play">
           <button
             type="button"
             className={`song-editor-play${transport.mode === 'stopped' ? '' : ' is-on'}`}
@@ -112,7 +112,7 @@ export function SongEditor({ detail }: SongEditorProps) {
             {transport.mode === 'stopped' ? '▶' : transport.mode === 'loading' ? '…' : '■'}
           </button>
         </ControlGroup>
-        <ControlGroup label="Edit">
+        <ControlGroup label="edit">
           <button
             type="button"
             onClick={draft.undo}
@@ -130,7 +130,7 @@ export function SongEditor({ detail }: SongEditorProps) {
             ↷
           </button>
         </ControlGroup>
-        <ControlGroup label="Snap">
+        <ControlGroup label="snap">
           <select
             className="song-editor-grid"
             value={step.id}
@@ -148,7 +148,7 @@ export function SongEditor({ detail }: SongEditorProps) {
             ))}
           </select>
         </ControlGroup>
-        <ControlGroup label="Tracks">
+        <ControlGroup label="tracks">
           <button
             type="button"
             className="song-editor-button"
@@ -177,7 +177,7 @@ export function SongEditor({ detail }: SongEditorProps) {
             </button>
           )}
         </ControlGroup>
-        <ControlGroup label="Zoom">
+        <ControlGroup label="zoom">
           <button type="button" onClick={zoomOut} data-tooltip="zoom out">
             −
           </button>
@@ -188,7 +188,7 @@ export function SongEditor({ detail }: SongEditorProps) {
             +
           </button>
         </ControlGroup>
-        <ControlGroup label="Song" isAtEnd>
+        <ControlGroup label="song" isAtEnd>
           {draft.hasChanges && <span className="song-editor-unsaved">unsaved changes</span>}
           {draft.hasChanges && (
             <button type="button" className="song-editor-button" onClick={draft.revert}>

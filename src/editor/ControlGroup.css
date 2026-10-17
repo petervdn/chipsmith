@@ -1,4 +1,4 @@
-/* The look of ControlGroup.tsx: the label in very small capitals over a hairline as wide as the
+/* The look of ControlGroup.tsx: the label, very small and in lower case, over a hairline as wide as the
    group, the controls side by side under it. */
 
 .control-group {
@@ -17,9 +17,7 @@
   color: var(--muted);
   font-size: 0.625rem;
   font-weight: 600;
-  letter-spacing: 0.06em;
   line-height: 1;
-  text-transform: uppercase;
   white-space: nowrap;
 }
 
