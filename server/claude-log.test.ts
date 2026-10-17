@@ -23,6 +23,7 @@ test('thinking, a file being written, then the note of the write', () => {
   addLines(logFile, [{ type: 'system', subtype: 'thinking_tokens', estimated_tokens: 2400 }]);
   const thinking = readLogNews(logFile, LOG_START, PROJECT);
   assert.equal(thinking.now, 'thinking (2,400 tokens)');
+  assert.equal(thinking.nowTokens, 2400);
 
   addLines(logFile, [
     streamed({ type: 'content_block_start', content_block: { type: 'tool_use', name: 'Write' } }),

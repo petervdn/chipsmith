@@ -29,6 +29,8 @@ export type LogNews = LogPlace & {
   now: string | null;
   /** The output tokens (thinking included) of the messages Claude finished in what was read. */
   tokens: number;
+  /** The output tokens of what Claude is in the middle of, as far as the log has gone (estimated). */
+  nowTokens: number;
 };
 
 /** Nothing read yet. */
@@ -65,6 +67,7 @@ export function readLogNews(logFile: string, place: LogPlace, projectFolder: str
     result: null,
     now: describeProgress(place.progress, projectFolder),
     tokens: 0,
+    nowTokens: getProgressTokens(place.progress),
   };
   if (!existsSync(logFile)) return unchanged;
   const size = statSync(logFile).size;
@@ -114,7 +117,24 @@ export function readLogNews(logFile: string, place: LogPlace, projectFolder: str
     progress,
     now: describeProgress(progress, projectFolder),
     tokens,
+    nowTokens: getProgressTokens(progress),
   };
+}
+
+/** Characters to a token, roughly, for text and tool input still streaming. */
+const CHARACTERS_PER_TOKEN = 4;
+
+/**
+ * Estimates the output tokens of what Claude is in the middle of.
+ *
+ * @param progress - What Claude is in the middle of.
+ * @returns The thinking's tokens so far, or a line's or tool input's length in tokens; 0 when idle.
+ */
+function getProgressTokens(progress: Progress): number {
+  if (progress.kind === 'thinking') return progress.tokens;
+  if (progress.kind === 'text') return Math.ceil(progress.text.length / CHARACTERS_PER_TOKEN);
+  if (progress.kind === 'tool') return Math.ceil(progress.input.length / CHARACTERS_PER_TOKEN);
+  return 0;
 }
 
 /**

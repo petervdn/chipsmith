@@ -93,10 +93,14 @@ export function JobCard({ job, onRemove }: JobCardProps) {
   const isRunning = isJobRunning(job);
   const [isOpen, setOpen] = useState(isRunning);
   const { mutate: cancelJob } = useCancelJob();
+  const totalTokens = (job.tokens ?? 0) + (isRunning ? (job.nowTokens ?? 0) : 0);
   const elapsed = useElapsed(job);
   const tokens = (
-    <span className="job-card-tokens" title="the tokens Claude wrote, thinking included">
-      {job.tokens ? formatTokens(job.tokens) : ''}
+    <span
+      className="job-card-tokens"
+      title="the tokens Claude wrote, thinking included; while it runs, what it is in the middle of counts too"
+    >
+      {totalTokens ? formatTokens(totalTokens) : ''}
     </span>
   );
   const removeButton = onRemove && (

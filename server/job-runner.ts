@@ -214,11 +214,15 @@ async function followClaude(
       tokens: (jobs.jobs.get(watch.jobId)?.tokens ?? 0) + news.tokens,
     });
   }
-  if (jobs.jobs.get(watch.jobId)?.now !== news.now) updateJob(jobs, watch.jobId, { now: news.now });
+  const current = jobs.jobs.get(watch.jobId);
+  if (current?.now !== news.now || current.nowTokens !== news.nowTokens) {
+    updateJob(jobs, watch.jobId, { now: news.now, nowTokens: news.nowTokens });
+  }
   if (news.result) {
     updateJob(jobs, watch.jobId, {
       summary: news.result.text,
       now: null,
+      nowTokens: null,
       tokens: news.result.tokens ?? jobs.jobs.get(watch.jobId)?.tokens ?? null,
     });
     if (news.result.isError) throw new Error(`Claude stopped with an error: ${news.result.text}`);

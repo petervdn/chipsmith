@@ -39,6 +39,7 @@ export function openJobs(root: string): JobStore {
         now: job.now ?? null,
         structure: job.structure ?? null,
         tokens: job.tokens ?? null,
+        nowTokens: job.nowTokens ?? null,
         songCount: job.songCount ?? null,
       });
     } catch {
@@ -87,6 +88,7 @@ export function createJob(
     structure,
     songCount,
     tokens: null,
+    nowTokens: null,
     created: now,
     phase: 'queued',
     phaseStarted: now,
