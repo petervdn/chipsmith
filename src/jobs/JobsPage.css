@@ -62,6 +62,11 @@
   cursor: pointer;
 }
 
+.jobs-page-clear {
+  opacity: 0.5;
+}
+
 .jobs-page-clear:hover {
   color: var(--reject);
+  opacity: 1;
 }

@@ -191,6 +191,11 @@
   text-align: right;
 }
 
+.job-card-remove {
+  opacity: 0.5;
+}
+
 .job-card-remove:hover {
   color: var(--reject);
+  opacity: 1;
 }
