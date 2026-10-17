@@ -1,11 +1,11 @@
 // The prompt builder's parts: rolled at random to start, rolled again except the locked ones, a
-// part picked by hand or a chip switched (which locks it), and the sentence they make. Kept while
-// the page is open.
+// part picked by hand or a chip switched (which locks it; a rhythm or idea that no longer goes with
+// the rest is picked again), and the sentence they make. Kept while the page is open.
 import { useState } from 'react';
 import type { ChipName } from '../../shared/chips.ts';
 import { CHIP_NAMES } from '../../shared/chips.ts';
 import type { ListPartName, PartName, PromptParts } from './random-prompt.ts';
-import { getPromptText, rollParts } from './random-prompt.ts';
+import { fitParts, getPromptText, rollParts } from './random-prompt.ts';
 
 /**
  * Keeps the prompt builder's parts and locks.
@@ -26,7 +26,7 @@ export function usePromptBuilder() {
     text: getPromptText(parts),
     roll: () => setParts((current) => rollParts(current, locked, Math.random)),
     pick: (name: ListPartName, value: string) => {
-      setParts((current) => ({ ...current, [name]: value }));
+      setParts((current) => fitParts({ ...current, [name]: value }, Math.random));
       lock(name);
     },
     toggleChip: (chip: ChipName) => {
@@ -36,7 +36,7 @@ export function usePromptBuilder() {
         const chips = CHIP_NAMES.filter((name) =>
           name === chip ? !isOn : current.chips.includes(name),
         );
-        return { ...current, chips };
+        return fitParts({ ...current, chips }, Math.random);
       });
       lock('chips');
     },

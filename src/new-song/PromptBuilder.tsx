@@ -7,7 +7,7 @@
 import { CHIP_NAMES, CHIPS } from '../../shared/chips.ts';
 import { ArrowUp, ChevronRight, Dices, Lock, LockOpen } from 'lucide-react';
 import type { PartName } from './random-prompt.ts';
-import { PROMPT_PARTS } from './random-prompt.ts';
+import { getPartValues, PROMPT_PARTS } from './random-prompt.ts';
 import '../lists/lists.css';
 import { usePromptBuilder } from './use-prompt-builder.ts';
 import './PromptBuilder.css';
@@ -99,7 +99,7 @@ export function PromptBuilder({ isOpen, onToggle, onUse }: PromptBuilderProps) {
             </span>
             {renderLock('chips')}
           </div>
-          {PROMPT_PARTS.map(({ name, label, values }) => {
+          {PROMPT_PARTS.map(({ name, label }) => {
             return (
               <div key={name} className="prompt-builder-row">
                 <span className="prompt-builder-label">{label}</span>
@@ -109,7 +109,7 @@ export function PromptBuilder({ isOpen, onToggle, onUse }: PromptBuilderProps) {
                   onChange={(event) => pick(name, event.target.value)}
                   aria-label={label}
                 >
-                  {values.map((value) => (
+                  {getPartValues(name, parts).map((value) => (
                     <option key={value} value={value}>
                       {value}
                     </option>

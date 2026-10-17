@@ -10,7 +10,8 @@ The New page: a prompt written, or made up at random, and sent.
 - `PromptBox.tsx`: the box where a prompt is written and sent
 - `PromptBuilder.css`: the look of PromptBuilder.tsx
 - `PromptBuilder.tsx`: the prompt builder: the sentence on top with Roll and Use, a row per part with a lock
-- `random-prompt.ts`: a prompt built from parts: their lists, rolling the unlocked ones, the sentence
+- `prompt-words.ts`: the words a built prompt is made of, and what does not go together
+- `random-prompt.ts`: a prompt built from parts: rolling the unlocked ones to go together, the sentence
 - `SectionEditor.css`: the look of SectionEditor.tsx
 - `SectionEditor.tsx`: a structure's selected section: its part, bars, role, energy, note
 - `structure-edits.ts`: a structure's sections added, copied, moved, removed and changed

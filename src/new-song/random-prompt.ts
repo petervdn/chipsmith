@@ -1,130 +1,24 @@
 /**
- * A prompt built from parts, to start from on the New page: how many songs, a mood, a kind of piece,
- * the chips, a rhythm and one thing to build it around. Each part is picked from its list, at random
- * or by hand, and a part can be kept while the others are picked again; the chips are a set, usually
- * one, sometimes two. Knows nothing of the page.
+ * A prompt built from parts, to start from on the New page: a mood, a key (its note and mode), a kind
+ * of piece, the chips, a rhythm and one thing to build it around, said as one song ("A dark waltz
+ * in C♯ phrygian for the NES, …"): how many songs is set beside the Create button. Each part is
+ * picked from its list (prompt-words.ts), at random or by hand, and a part can be kept while the
+ * others are picked again; the chips are a set, usually one, sometimes two. Only what goes together
+ * is picked: a rhythm the piece can take, an idea the chips can play. Knows nothing of the page.
  */
 import type { ChipName } from '../../shared/chips.ts';
 import { CHIP_NAMES, CHIPS } from '../../shared/chips.ts';
+import type { Piece, Rhythm } from './prompt-words.ts';
+import { IDEAS, MODES, MOODS, NOTES, PIECES, RHYTHMS } from './prompt-words.ts';
 
-/**
- * The parts, in the order a prompt joins them. The ideas are about the music, not its form: where
- * sections fall is the Structure panel's.
- */
-const MOODS = [
-  'dark',
-  'sunny',
-  'melancholic',
-  'frantic',
-  'dreamy',
-  'tense',
-  'triumphant',
-  'eerie',
-  'playful',
-  'brooding',
-  'hopeful',
-  'mysterious',
-  'nostalgic',
-  'aggressive',
-  'calm',
-  'bittersweet',
-  'heroic',
-  'lonely',
-  'mischievous',
-  'urgent',
-  'cold',
-  'warm',
-  'cheeky',
-  'solemn',
-  'restless',
-];
-const PIECES = [
-  'funk grooves',
-  'boss battle themes',
-  'title screen themes',
-  'town themes',
-  'fugues',
-  'ambient loops',
-  'breakbeat tracks',
-  'chase themes',
-  'end credits themes',
-  'puzzle game loops',
-  'overworld themes',
-  'dungeon themes',
-  'underwater levels',
-  'castle themes',
-  'shop themes',
-  'game over jingles',
-  'level clear fanfares',
-  'night levels',
-  'racing themes',
-  'space shooter stages',
-  'marches',
-  'waltzes',
-  'lullabies',
-  'disco tracks',
-  'rock anthems',
-  'jazz ballads',
-  'bossa novas',
-  'drum and bass tracks',
-  'synth-pop songs',
-  'baroque dances',
-];
 /** How often a roll picks two chips instead of one. */
 const TWO_CHIPS_CHANCE = 1 / 3;
-const RHYTHMS = [
-  'in 4/4',
-  'in a straight 4/4 at 120 bpm',
-  'in 4/4 with a backbeat',
-  'four on the floor',
-  'at a relaxed 90 bpm',
-  'at a driving 140 bpm',
-  'in 3/4',
-  'in 6/8',
-  'in 2/4 like a march',
-  'in 12/8',
-  'in 7/8',
-  'in 5/4',
-  'in 11/16',
-  'in 9/8',
-  'with a swung shuffle',
-  'at a slow 70 bpm',
-  'at a racing 170 bpm',
-  'in half-time',
-  'in double-time',
-  'with a syncopated groove',
-];
-const IDEAS = [
-  'with a walking bass',
-  'built around a call-and-response hook',
-  'where the triangle carries the melody',
-  'with arpeggiated chords',
-  'with the noise channel playing a breakbeat',
-  'with an echo on the lead',
-  'with a catchy whistled-style melody',
-  'with a counter-melody against the lead',
-  'with stabbing chords on the offbeat',
-  'with a pedal note under changing chords',
-  'with vibrato on the lead',
-  'with pitch slides in the bass',
-  'that ends on an unresolved chord',
-  'with a melody that climbs throughout',
-  'with a riff passed between the channels',
-  'with fast arpeggio runs',
-  'with sparse drums and lots of space',
-  'with a hook built on three notes',
-  'with call-and-response between the two pulses',
-  'with ghost notes on the snare',
-  'with the melody in thirds',
-  'with a dotted rhythm in the lead',
-  'with a bass that jumps in octaves',
-  'with a chromatic line in the bass',
-  'with the melody doubled in octaves',
-];
 
 /** The parts of a prompt, by name, each a value from its list. */
 export type PromptParts = {
   mood: string;
+  note: string;
+  mode: string;
   piece: string;
   /** The chips, one or more, in the order of CHIP_NAMES. */
   chips: ChipName[];
@@ -138,16 +32,61 @@ export type PartName = keyof PromptParts;
 /** The name of a part picked from a list of words: every part but the chips. */
 export type ListPartName = Exclude<PartName, 'chips'>;
 
-/** Each list part's label and the values it is picked from, in the order the builder shows them. */
-export const PROMPT_PARTS: { name: ListPartName; label: string; values: string[] }[] = [
-  { name: 'mood', label: 'Mood', values: MOODS },
-  { name: 'piece', label: 'Piece', values: PIECES },
-  { name: 'rhythm', label: 'Rhythm', values: RHYTHMS },
-  { name: 'idea', label: 'Idea', values: IDEAS },
+/** Each list part's label, in the order the builder shows them. */
+export const PROMPT_PARTS: { name: ListPartName; label: string }[] = [
+  { name: 'mood', label: 'Mood' },
+  { name: 'piece', label: 'Piece' },
+  { name: 'note', label: 'Key' },
+  { name: 'mode', label: 'Mode' },
+  { name: 'rhythm', label: 'Rhythm' },
+  { name: 'idea', label: 'Idea' },
 ];
 
+/** The parts picked again when they do not go with the others. */
+const FITTED_PARTS: ListPartName[] = ['rhythm', 'idea'];
+
+/** The order a roll picks the parts in, so each is picked to go with those before it. */
+const ROLL_ORDER: PartName[] = ['mood', 'note', 'mode', 'chips', 'piece', 'rhythm', 'idea'];
+
 /**
- * Picks every part again at random, except the kept ones.
+ * Returns whether a piece can take a rhythm: its meter and pace, where both say one.
+ *
+ * @param piece - The piece, or undefined when there is none yet.
+ * @param rhythm - The rhythm, or undefined when there is none yet.
+ * @returns True when they go together.
+ */
+function isFitting(piece: Piece | undefined, rhythm: Rhythm | undefined): boolean {
+  if (!piece || !rhythm) return true;
+  const isMeterFitting = !rhythm.meter || !piece.meters || piece.meters.includes(rhythm.meter);
+  const isPaceFitting = !rhythm.pace || !piece.paces || piece.paces.includes(rhythm.pace);
+  return isMeterFitting && isPaceFitting;
+}
+
+/**
+ * Returns the values a part can take with the other parts as they are.
+ *
+ * @param name - The part.
+ * @param parts - The parts; an empty value is none yet, and goes with anything.
+ * @returns The part's values that go with the others, in their list's order.
+ */
+export function getPartValues(name: ListPartName, parts: PromptParts): string[] {
+  const piece = PIECES.find((candidate) => candidate.text === parts.piece);
+  const rhythm = RHYTHMS.find((candidate) => candidate.text === parts.rhythm);
+  const values = {
+    mood: () => MOODS,
+    note: () => NOTES,
+    mode: () => MODES,
+    piece: () => PIECES.filter((candidate) => isFitting(candidate, rhythm)).map(({ text }) => text),
+    rhythm: () =>
+      RHYTHMS.filter((candidate) => isFitting(piece, candidate)).map(({ text }) => text),
+    idea: () =>
+      IDEAS.filter(({ chip }) => !chip || parts.chips.includes(chip)).map(({ text }) => text),
+  } satisfies Record<ListPartName, () => string[]>;
+  return values[name]();
+}
+
+/**
+ * Picks every part again at random, except the kept ones, each to go with those picked or kept.
  *
  * @param parts - The parts now, or null to pick them all.
  * @param kept - The parts that keep their value.
@@ -159,17 +98,60 @@ export function rollParts(
   kept: PartName[],
   getRandom: () => number,
 ): PromptParts {
-  function pick(name: ListPartName, values: string[]): string {
-    if (parts && kept.includes(name)) return parts[name];
-    return values[Math.floor(getRandom() * values.length)] ?? values[0] ?? '';
+  /**
+   * Returns whether a part keeps its value.
+   *
+   * @param name - The part.
+   * @returns True when there are parts now and the part is kept.
+   */
+  function isKept(name: PartName): boolean {
+    return parts !== null && kept.includes(name);
   }
-  return {
-    mood: pick('mood', MOODS),
-    piece: pick('piece', PIECES),
-    chips: parts && kept.includes('chips') ? parts.chips : rollChips(getRandom),
-    rhythm: pick('rhythm', RHYTHMS),
-    idea: pick('idea', IDEAS),
+  let next: PromptParts = {
+    mood: parts && isKept('mood') ? parts.mood : '',
+    note: parts && isKept('note') ? parts.note : '',
+    mode: parts && isKept('mode') ? parts.mode : '',
+    piece: parts && isKept('piece') ? parts.piece : '',
+    chips: parts && isKept('chips') ? parts.chips : [],
+    rhythm: parts && isKept('rhythm') ? parts.rhythm : '',
+    idea: parts && isKept('idea') ? parts.idea : '',
   };
+  for (const name of ROLL_ORDER) {
+    if (isKept(name)) continue;
+    next =
+      name === 'chips'
+        ? { ...next, chips: rollChips(getRandom) }
+        : { ...next, [name]: pickValue(getPartValues(name, next), getRandom) };
+  }
+  return next;
+}
+
+/**
+ * Picks again, at random, a rhythm the piece cannot take and an idea the chips cannot play: after a
+ * part is picked by hand or a chip switched.
+ *
+ * @param parts - The parts.
+ * @param getRandom - Gives numbers from 0 up to 1, as Math.random does.
+ * @returns The parts, all going together.
+ */
+export function fitParts(parts: PromptParts, getRandom: () => number): PromptParts {
+  const fitted = { ...parts };
+  for (const name of FITTED_PARTS) {
+    const values = getPartValues(name, fitted);
+    if (!values.includes(fitted[name])) fitted[name] = pickValue(values, getRandom);
+  }
+  return fitted;
+}
+
+/**
+ * Picks one of some values at random.
+ *
+ * @param values - The values.
+ * @param getRandom - Gives numbers from 0 up to 1, as Math.random does.
+ * @returns One of them; an empty string when there are none.
+ */
+function pickValue(values: string[], getRandom: () => number): string {
+  return values[Math.floor(getRandom() * values.length)] ?? values[0] ?? '';
 }
 
 /**
@@ -202,17 +184,27 @@ export function getChipsText(chips: ChipName[]): string {
 }
 
 /**
- * Returns the prompt its parts make: one sentence.
+ * Returns the prompt its parts make: one sentence, about one song.
  *
  * @param parts - The parts.
  * @param parts.mood - The mood.
+ * @param parts.note - The key's note.
+ * @param parts.mode - The key's mode.
  * @param parts.piece - The kind of piece.
  * @param parts.chips - The chips.
- * @param parts.rhythm - The meter or tempo.
+ * @param parts.rhythm - The meter, tempo or feel.
  * @param parts.idea - One thing to build it around.
- * @returns The prompt, one sentence without a count: how many songs is set beside the Create button.
+ * @returns The prompt, without a count: how many songs is set beside the Create button.
  */
-export function getPromptText({ mood, piece, chips, rhythm, idea }: PromptParts): string {
-  const chipsText = getChipsText(chips);
-  return `${mood.charAt(0).toUpperCase()}${mood.slice(1)} ${piece} ${chipsText}, ${rhythm}, ${idea}.`;
+export function getPromptText({
+  mood,
+  note,
+  mode,
+  piece,
+  chips,
+  rhythm,
+  idea,
+}: PromptParts): string {
+  const article = /^[aeiou]/i.test(mood) ? 'An' : 'A';
+  return `${article} ${mood} ${piece} in ${note} ${mode} ${getChipsText(chips)}, ${rhythm}, ${idea}.`;
 }
