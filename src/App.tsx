@@ -1,9 +1,11 @@
-// The app: the top bar, the page the address is, and the player bar.
+// The app: the top bar, a warning when a program it calls is missing, the page the address is, and
+// the player bar.
 import { ClipsPage } from './pages/ClipsPage.tsx';
 import { NewPage } from './pages/NewPage.tsx';
 import { SongPage } from './pages/SongPage.tsx';
 import { SongsPage } from './pages/SongsPage.tsx';
 import { PlayerBar } from './PlayerBar.tsx';
+import { ProgramWarning } from './ProgramWarning.tsx';
 import { useJobs } from './queries/jobs.ts';
 import { useRoute } from './router.ts';
 import { TopBar } from './TopBar.tsx';
@@ -15,6 +17,7 @@ export function App() {
   return (
     <div className="app">
       <TopBar route={route} jobs={jobs} />
+      <ProgramWarning />
       <main className="page">
         {route.page === 'songs' && <SongsPage jobs={jobs} />}
         {route.page === 'clips' && <ClipsPage />}

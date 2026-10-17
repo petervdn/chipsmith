@@ -80,7 +80,9 @@ is not in git). A variable set in the shell wins over the file; what is not set 
 | `CHIPSMITH_CLAUDE` | the Claude Code binary | `~/.local/bin/claude`, else `claude` |
 | `CHIPSMITH_NODE` | the Node that runs a job's script | the Node running the server |
 
-The Furnace version written into each clip is set in code (`render/furnace.ts`).
+When the server starts it checks each program: it runs it, reads its version (the Furnace version is
+what each clip records as rendered by), and logs what cannot be used. The page then shows a bar naming
+what is missing, what it is needed for and which setting to change, with "Check again".
 
 ## Audio and git
 

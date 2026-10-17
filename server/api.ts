@@ -7,7 +7,15 @@ import { existsSync } from 'node:fs';
 import type { IncomingMessage, ServerResponse } from 'node:http';
 import { join } from 'node:path';
 import type { Plugin } from 'vite';
-import type { CatalogueChange, ClipListing, SongDetail, SongListing } from '../shared/api.types.ts';
+import type {
+  CatalogueChange,
+  ClipListing,
+  ProgramCheck,
+  SongDetail,
+  SongListing,
+} from '../shared/api.types.ts';
+import { checkPrograms } from '../config/programs.ts';
+import { getSettings } from '../config/settings.ts';
 import type { Clip } from '../shared/clip.types.ts';
 import type { Song } from '../shared/song.types.ts';
 import { getSongSeconds } from '../shared/song-length.ts';
@@ -28,6 +36,17 @@ import {
   saveSong,
 } from './store.ts';
 
+/** Checks the programs the app calls, and says in the server's log which cannot be used. */
+function checkProgramsAndWarn(): Promise<ProgramCheck[]> {
+  const checks = checkPrograms(getSettings());
+  void checks.then((results) => {
+    for (const { name, path, error, neededFor } of results) {
+      if (error) console.warn(`${name} (${path}) cannot be used for ${neededFor}: ${error}`);
+    }
+  });
+  return checks;
+}
+
 declare global {
   /** Stops the job runner of the server before a restart, so only one runs. */
   var chiptuneStopJobRunner: (() => void) | undefined;
@@ -41,6 +60,7 @@ export function chiptuneServer(root: string): Plugin {
       const store = openStore(root);
       for (const { file, error } of store.unreadable) console.warn(`unreadable ${file}: ${error}`);
       const jobs = openJobs(root);
+      let programChecks = checkProgramsAndWarn();
       // one runner: a restart of the server (Vite restarts it when a server file changes) replaces it
       globalThis.chiptuneStopJobRunner?.();
       globalThis.chiptuneStopJobRunner = startJobRunner(jobs, store);
@@ -48,6 +68,14 @@ export function chiptuneServer(root: string): Plugin {
         const path = (request.url ?? '').split('?')[0] ?? '';
         if (!path.startsWith('/api/') && !path.startsWith('/media/')) {
           next();
+          return;
+        }
+        if (path === '/api/programs') {
+          if (request.method === 'POST') programChecks = checkProgramsAndWarn();
+          programChecks.then(
+            (checks) => sendJson(response, checks),
+            (error: unknown) => sendError(response, 500, String(error)),
+          );
           return;
         }
         route(store, jobs, request, response, path).catch((error: unknown) => {

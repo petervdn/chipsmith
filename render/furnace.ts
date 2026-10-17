@@ -7,8 +7,6 @@
 import { spawn } from 'node:child_process';
 import { getSettings } from '../config/settings.ts';
 
-/** The Furnace version renders are made with, as clip.json records it. */
-export const FURNACE_VERSION = '0.6.8.3';
 /** Milliseconds before a failed render is tried again, times the number of the try. */
 const RETRY_PAUSE = 1000;
 /** Tries before a render is given up. */

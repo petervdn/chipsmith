@@ -25,3 +25,17 @@ export type ClipListing = { clip: Clip; usedBy: string[] };
 
 /** A change to a song's or a clip's catalogue fields; a field left out stays as it is. */
 export type CatalogueChange = { status?: Status; tags?: Tag[] };
+
+/** A program the app calls (config/settings.ts). */
+export type ProgramName = 'furnace' | 'ffmpeg' | 'claude' | 'node';
+
+/** Whether a program can be run, its version, and what it is needed for. */
+export type ProgramCheck = {
+  name: ProgramName;
+  path: string;
+  neededFor: string;
+  /** Its version, when it ran and named one. */
+  version: string | null;
+  /** Why it cannot be used, or null. */
+  error: string | null;
+};

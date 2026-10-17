@@ -156,3 +156,22 @@ textarea {
   background: var(--raised);
   font-size: 13px;
 }
+
+/* a program the app calls is missing (ProgramWarning.tsx) */
+.program-warning {
+  padding: 8px 16px;
+  background: color-mix(in srgb, var(--reject) 15%, var(--card));
+  border-bottom: 1px solid var(--reject);
+  font-size: 14px;
+}
+.program-warning p {
+  margin: 4px 0;
+}
+.program-warning button {
+  min-height: 34px;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--card);
+  cursor: pointer;
+}

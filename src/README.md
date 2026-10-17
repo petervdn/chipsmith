@@ -7,6 +7,7 @@ out without the page is in a module of its own beside it, with its test.
 - `JobCard.tsx`: a job's card on the New page
 - `JobStrip.tsx`: one line for a running job, above the songs list
 - `FilterBar.tsx`: the filter bar above a list
+- `ProgramWarning.tsx`: a bar when a program the app calls is missing
 - `PromptBox.tsx`: the box where a prompt is written and sent
 - `PlayButton.tsx`: ▶ for one song, in a list or on its page
 - `PlayerBar.tsx`: the player bar at the bottom of every page

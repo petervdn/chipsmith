@@ -12,7 +12,11 @@ export const queryClient = new QueryClient({
 
 /** What is cached, one case per kind of read. */
 export type QueryKeyParams =
-  { type: 'songs' } | { type: 'song'; songId: string } | { type: 'clips' } | { type: 'jobs' };
+  | { type: 'songs' }
+  | { type: 'song'; songId: string }
+  | { type: 'clips' }
+  | { type: 'jobs' }
+  | { type: 'programs' };
 
 /**
  * The key of a cached read. A song's key starts with the songs list's, so the list's key with
@@ -28,6 +32,8 @@ export function getQueryKey(params: QueryKeyParams): QueryKey {
       return ['clips'];
     case 'jobs':
       return ['jobs'];
+    case 'programs':
+      return ['programs'];
     default:
       return getUnknownKey(params);
   }

@@ -6,7 +6,8 @@ import { existsSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { encodeFlac } from './flac.ts';
-import { FURNACE_VERSION, renderToWav } from './furnace.ts';
+import { getFurnaceVersion } from '../config/programs.ts';
+import { renderToWav } from './furnace.ts';
 import { getWavFacts } from './wav.ts';
 
 /** What rendering found out about the audio. */
@@ -26,7 +27,7 @@ export async function renderClipAudio(clipFolder: string): Promise<RenderedAudio
     await renderToWav(furFile, wavFile);
     const { seconds } = getWavFacts(readFileSync(wavFile));
     await encodeFlac(wavFile, flacFile);
-    return { seconds, furnace: FURNACE_VERSION };
+    return { seconds, furnace: await getFurnaceVersion() };
   } finally {
     rmSync(workFolder, { recursive: true, force: true });
   }
