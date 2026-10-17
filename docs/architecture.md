@@ -178,7 +178,8 @@ from (0019); so are the structure and the harmony chosen with it (`structure`, `
 Claude gets as lines of its prompt (`shared/structure-prompt.ts`, `shared/harmony-prompt.ts`). Its
 card shows on the Jobs page, with its stages from start to end (preparing, writing the script,
 checking it, building, rendering, done; `src/jobs/job-stages.ts`, the compose steps read from Claude's
-tool calls: writing once it first writes the script, checking once it first runs the check) and
+tool calls: writing once it first writes the script, checking once it first runs the check; each
+step keeps the stage it shows, and the list of steps has a labelled line where a stage starts) and
 its songs from the start (a line for each asked for, its title once built; `src/jobs/job-songs.ts`); a running job also has one line above the songs list and on the
 home page, and the Jobs tab turns while one runs. The runner (`server/job-runner.ts`) takes one job at a time through its
 phases:

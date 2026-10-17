@@ -127,7 +127,7 @@ export function startJobRunner(jobs: JobStore, store: Store, isResuming: boolean
       const resumed = resuming.shift();
       if (resumed) {
         const note = 'the server restarted; going on where it stopped';
-        addNotes(jobs, resumed.id, [{ text: note, tokens: null }]);
+        addNotes(jobs, resumed.id, [{ text: note, tokens: null, stage: null }]);
         await buildAndRender(jobs, store, resumed.id);
       } else if (watch && jobs.jobs.get(watch.jobId)?.phase === 'cancelled') {
         watch = null;
@@ -296,7 +296,9 @@ async function buildAndRender(jobs: JobStore, store: Store, jobId: string): Prom
       rescanStore(store);
     } catch (error) {
       songs = songs.map((song, index) => (index === i ? { ...song, state: 'failed' } : song));
-      addNotes(jobs, jobId, [{ text: `${plan.title} failed: ${getMessage(error)}`, tokens: null }]);
+      addNotes(jobs, jobId, [
+        { text: `${plan.title} failed: ${getMessage(error)}`, tokens: null, stage: null },
+      ]);
     }
     updateJob(jobs, jobId, { songs });
   }

@@ -53,6 +53,7 @@ test('thinking, a file being written, then the note of the write', () => {
   const written = readLogNews(logFile, writing, PROJECT);
   assert.equal(written.notes.length, 1);
   assert.equal(written.notes[0]?.text, 'writing the script (3 lines)');
+  assert.equal(written.notes[0]?.stage, 'writing', 'a write of the script shows the job writing');
   assert.ok((written.notes[0]?.tokens ?? 0) > 750, 'the tool call has the tokens of its input');
   assert.equal(written.now, null);
 });
@@ -74,7 +75,7 @@ test('a stretch of thinking becomes a note once it ends, its tokens beside its t
     { type: 'assistant', message: { content: [{ type: 'thinking', thinking: '' }] } },
   ]);
   const news = readLogNews(logFile, LOG_START, PROJECT);
-  assert.deepEqual(news.notes, [{ text: 'thinking it over', tokens: 3550 }]);
+  assert.deepEqual(news.notes, [{ text: 'thinking it over', tokens: 3550, stage: null }]);
   assert.equal(news.now, null);
 });
 
@@ -86,7 +87,9 @@ test('thinking whose text the log has is its first sentence', () => {
     { type: 'assistant', message: { content: [{ type: 'thinking', thinking }] } },
   ]);
   const news = readLogNews(logFile, LOG_START, PROJECT);
-  assert.deepEqual(news.notes, [{ text: 'The bass should walk in fifths.', tokens: 120 }]);
+  assert.deepEqual(news.notes, [
+    { text: 'The bass should walk in fifths.', tokens: 120, stage: null },
+  ]);
 });
 
 test("a run's tokens add up from its messages, and its result gives the exact total", () => {

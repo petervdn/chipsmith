@@ -5,11 +5,22 @@
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import type { SentGuide } from '../shared/guide.types.ts';
-import type { Job, JobPhase, NewNote } from '../shared/job.types.ts';
+import type { Job, JobPhase, JobStageId, NewNote } from '../shared/job.types.ts';
 import { JOB_IDS, claimId } from '../make/ids.ts';
 import { writeJsonAtomically } from './store.ts';
 import type { SentHarmony } from '../shared/harmony.types.ts';
 import type { SentStructure } from '../shared/structure.types.ts';
+
+/** The stage a phase starts; null for one that starts none (waiting, or the end of a failed job). */
+const PHASE_STAGES = {
+  queued: null,
+  composing: 'preparing',
+  building: 'building',
+  rendering: 'rendering',
+  done: 'done',
+  failed: null,
+  cancelled: null,
+} satisfies Record<JobPhase, JobStageId | null>;
 
 /** The notes a job keeps; older ones are dropped. */
 const MOST_NOTES = 200;
@@ -44,7 +55,11 @@ export function openJobs(root: string): JobStore {
         nowTokens: job.nowTokens ?? null,
         songCount: job.songCount ?? null,
         composeStep: job.composeStep ?? null,
-        notes: job.notes.map((note) => ({ ...note, tokens: note.tokens ?? null })),
+        notes: job.notes.map((note) => ({
+          ...note,
+          tokens: note.tokens ?? null,
+          stage: note.stage ?? null,
+        })),
       });
     } catch {
       /* a job.json that does not read is left; jobs are a log, not data */
@@ -173,7 +188,7 @@ export function setPhase(store: JobStore, jobId: string, phase: JobPhase, note: 
     phaseStarted: now,
     ...(isEnd ? { finished: now } : {}),
   });
-  return addNotes(store, job.id, [{ text: note, tokens: null }]);
+  return addNotes(store, job.id, [{ text: note, tokens: null, stage: PHASE_STAGES[phase] }]);
 }
 
 /**

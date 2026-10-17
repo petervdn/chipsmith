@@ -1,6 +1,6 @@
 /* The look of JobSteps.tsx: the current step on one line with the toggle at its right; every step
-   in a grid of time, bar, tokens and text, the text wrapping beside them; nothing scrolls inside
-   it. */
+   in a grid of time, bar, tokens and text, the text wrapping beside them, a stage's name on a rule
+   where it starts; nothing scrolls inside it. */
 
 .job-steps-current {
   display: flex;
@@ -63,6 +63,29 @@
   align-items: start;
   gap: 8px;
   padding: 1px 0;
+}
+
+.job-steps-list li.job-steps-stage {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  padding-bottom: 2px;
+  color: var(--muted);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.job-steps-list li.job-steps-stage:first-child {
+  margin-top: 4px;
+}
+
+.job-steps-list li.job-steps-stage::after {
+  content: '';
+  flex: 1;
+  border-top: var(--border-width) solid var(--line);
 }
 
 .job-steps-time,

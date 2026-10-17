@@ -29,7 +29,12 @@ const JOB: Job = {
   removed: null,
 };
 
-const NOTE = { at: '2026-10-17T10:00:01.000Z', text: 'Claude starts composing', tokens: null };
+const NOTE = {
+  at: '2026-10-17T10:00:01.000Z',
+  text: 'Claude starts composing',
+  tokens: null,
+  stage: null,
+};
 
 function getStates(job: Partial<Job>): string {
   return getJobStages({ ...JOB, ...job })

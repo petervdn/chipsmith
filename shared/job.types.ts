@@ -20,6 +20,19 @@ export type ComposeStep = 'writing' | 'checking';
 /** The compose steps in the order they come. */
 export const COMPOSE_STEPS: ComposeStep[] = ['writing', 'checking'];
 
+/** A job's stages from start to end, as the page groups its steps and shows its way through them. */
+export type JobStageId = 'preparing' | ComposeStep | 'building' | 'rendering' | 'done';
+
+/** The stages in the order they come. */
+export const JOB_STAGES: JobStageId[] = [
+  'preparing',
+  'writing',
+  'checking',
+  'building',
+  'rendering',
+  'done',
+];
+
 /** What happened in a job, as it happened: Claude's notes and the steps after it. */
 export type JobNote = {
   at: string;
@@ -29,6 +42,11 @@ export type JobNote = {
    * from its length; null for a step of the app's own, or from before steps kept their tokens.
    */
   tokens: number | null;
+  /**
+   * The stage this step shows the job in: a phase's start, or a write or check of the script; null
+   * for a step that does not say, or from before steps kept their stage.
+   */
+  stage: JobStageId | null;
 };
 
 /** A note to add to a job: its text and its tokens, without the time it is added. */

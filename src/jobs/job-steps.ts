@@ -1,10 +1,11 @@
 /**
  * A job's steps as the page shows them: each alike, a capital first and no full stop last, whatever
  * the server wrote; and how long each took, with its share of the job: a step lasts from
- * its note to the next one, the last until the job finished (or now, while it runs). Knows nothing
- * of the page.
+ * its note to the next one, the last until the job finished (or now, while it runs); and where in
+ * them each stage of the job starts. Knows nothing of the page.
  */
-import type { JobNote } from '../../shared/job.types.ts';
+import type { JobNote, JobStageId } from '../../shared/job.types.ts';
+import { JOB_STAGES } from '../../shared/job.types.ts';
 
 /** A step's length, in seconds, and its share of the whole job, 0 to 1. */
 export type StepLength = { seconds: number; share: number };
@@ -45,4 +46,21 @@ const FULL_STOPS = /(?<!\.)\.+$/;
 export function getStepText(text: string): string {
   const words = text.trim().replace(FULL_STOPS, '');
   return words.charAt(0).toUpperCase() + words.slice(1);
+}
+
+/**
+ * Returns where each stage of a job starts among its steps: at the first step that shows the job in
+ * a stage later than any before it. A step back (writing again after a check) starts none.
+ *
+ * @param notes - The job's notes, a note per step, in order.
+ * @returns Per note, the stage it starts, or null for one that starts none.
+ */
+export function getStageStarts(notes: JobNote[]): (JobStageId | null)[] {
+  let reached = -1;
+  return notes.map(({ stage }) => {
+    const place = stage ? JOB_STAGES.indexOf(stage) : -1;
+    if (!stage || place <= reached) return null;
+    reached = place;
+    return stage;
+  });
 }

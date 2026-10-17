@@ -94,18 +94,22 @@ export function readLogNews(logFile: string, place: LogPlace, projectFolder: str
     if (!event || event['parent_tool_use_id']) continue;
     if (event['type'] === 'assistant') {
       if (progress.kind === 'thinking') {
-        notes.push({ text: describeThought(getThinking(event)), tokens: progress.tokens });
+        const text = describeThought(getThinking(event));
+        notes.push({ text, tokens: progress.tokens, stage: null });
       }
+      let eventStep: ComposeStep | null = null;
+      for (const { name, input } of getToolUses(event)) {
+        eventStep = getLaterStep(eventStep, getComposeStep(name, input, projectFolder));
+      }
+      composeStep = getLaterStep(composeStep, eventStep);
       const blockTokens = progress.kind === 'thinking' ? null : getProgressTokens(progress) || null;
       notes.push(
         ...getAssistantNotes(event, projectFolder).map((text, i) => ({
           text,
           tokens: i === 0 ? blockTokens : null,
+          stage: eventStep,
         })),
       );
-      for (const { name, input } of getToolUses(event)) {
-        composeStep = getLaterStep(composeStep, getComposeStep(name, input, projectFolder));
-      }
       progress = { kind: 'idle' };
     }
     if (event['type'] === 'system' && event['subtype'] === 'thinking_tokens') {

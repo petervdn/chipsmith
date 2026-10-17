@@ -1,11 +1,13 @@
 // A job's steps: while it runs, its current step (labelled, with a spinner, its text shimmering),
 // and on demand every step, each with its time, a bar of its share of the job's time, and the
-// tokens Claude wrote in it before its text; the last is the current step, Claude's live one while
-// it is in the middle of something that is not a step yet.
-import { useState } from 'react';
+// tokens Claude wrote in it before its text, a labelled line where a stage of the job starts; the
+// last is the current step, Claude's live one while it is in the middle of something that is not a
+// step yet.
+import { Fragment, useState } from 'react';
 import type { Job } from '../../shared/job.types.ts';
 import { formatSeconds, formatTokenCount, formatTokens } from '../format.ts';
-import { getStepLengths, getStepText } from './job-steps.ts';
+import { getStageName } from './job-stages.ts';
+import { getStageStarts, getStepLengths, getStepText } from './job-steps.ts';
 import './JobSteps.css';
 
 type JobStepsProps = {
@@ -34,6 +36,7 @@ export function JobSteps({ job, isRunning, elapsed, now }: JobStepsProps) {
     job.created,
     job.finished ?? Date.parse(job.created) + elapsed * 1000,
   );
+  const stageStarts = getStageStarts(job.notes);
   return (
     <div className="job-steps">
       <div className="job-steps-current">
@@ -61,34 +64,38 @@ export function JobSteps({ job, isRunning, elapsed, now }: JobStepsProps) {
             const length = lengths[i];
             const { tokens } = note;
             const isCurrent = isRunning && !live && i === job.notes.length - 1;
+            const stageStart = stageStarts[i];
             return (
-              <li key={`${note.at}-${i}`} className={isCurrent ? 'is-current' : ''}>
-                <span className="job-steps-time">
-                  {formatSeconds((Date.parse(note.at) - Date.parse(job.created)) / 1000)}
-                </span>
-                <span
-                  className="job-steps-length"
-                  data-tooltip={
-                    length
-                      ? `${formatSeconds(length.seconds)}, ${Math.round(length.share * 100)}% of the job`
-                      : ''
-                  }
-                >
-                  <span style={{ width: `${(length?.share ?? 0) * 100}%` }} />
-                </span>
-                <span
-                  className="job-steps-tokens"
-                  data-tooltip={
-                    tokens ? `${formatTokens(tokens)} Claude wrote in this step (estimated)` : ''
-                  }
-                >
-                  {tokens ? formatTokenCount(tokens) : ''}
-                </span>
-                <span className="job-steps-text">
-                  {isCurrent && <span className="jobs-spinner" aria-label="in progress" />}
-                  <span className="job-steps-words">{getStepText(note.text)}</span>
-                </span>
-              </li>
+              <Fragment key={`${note.at}-${i}`}>
+                {stageStart && <li className="job-steps-stage">{getStageName(stageStart)}</li>}
+                <li className={isCurrent ? 'is-current' : ''}>
+                  <span className="job-steps-time">
+                    {formatSeconds((Date.parse(note.at) - Date.parse(job.created)) / 1000)}
+                  </span>
+                  <span
+                    className="job-steps-length"
+                    data-tooltip={
+                      length
+                        ? `${formatSeconds(length.seconds)}, ${Math.round(length.share * 100)}% of the job`
+                        : ''
+                    }
+                  >
+                    <span style={{ width: `${(length?.share ?? 0) * 100}%` }} />
+                  </span>
+                  <span
+                    className="job-steps-tokens"
+                    data-tooltip={
+                      tokens ? `${formatTokens(tokens)} Claude wrote in this step (estimated)` : ''
+                    }
+                  >
+                    {tokens ? formatTokenCount(tokens) : ''}
+                  </span>
+                  <span className="job-steps-text">
+                    {isCurrent && <span className="jobs-spinner" aria-label="in progress" />}
+                    <span className="job-steps-words">{getStepText(note.text)}</span>
+                  </span>
+                </li>
+              </Fragment>
             );
           })}
           {live && (
