@@ -10,6 +10,7 @@ import type { Plugin } from 'vite';
 import type {
   CatalogueChange,
   ClipListing,
+  ClipOpened,
   ProgramCheck,
   SongDeletion,
   SongDetail,
@@ -46,6 +47,7 @@ import { routeJobs } from './job-routes.ts';
 import type { StructureStore } from './structures.ts';
 import { openStructures } from './structures.ts';
 import { getSplitCount } from '../shared/clip-channels.ts';
+import { openClipInFurnace, sendClipFur, sendClipText } from './clip-files.ts';
 
 /**
  * Checks the programs the app calls, and warns in the server's log of each one that cannot be used.
@@ -167,6 +169,12 @@ async function route(
     sendClipAudio(store, request, response, id);
     return;
   }
+  if (area === 'media' && kind === 'clips' && id && file === 'source.fur' && parts.length === 4) {
+    return sendClipFur(store, request, response, id);
+  }
+  if (area === 'media' && kind === 'clips' && id && file === 'source.txt' && parts.length === 4) {
+    return sendClipText(store, response, id);
+  }
   if (area !== 'api') return sendError(response, 404, 'not found');
   if (kind === 'jobs') {
     return routeJobs({ store, jobs, guides }, request, response, { id, file, method });
@@ -220,6 +228,12 @@ async function route(
     saveSong(store, { ...song, tracks, updated: new Date().toISOString() });
     startRenderingMissingAudio(store);
     return sendJson(response, getSongDetail(store, id));
+  }
+  if (kind === 'clips' && id && file === 'open' && method === 'POST') {
+    const copy = openClipInFurnace(store, id);
+    if (!copy) return sendError(response, 404, `no .fur for ${id}`);
+    const opened: ClipOpened = { file: copy };
+    return sendJson(response, opened);
   }
   if (kind === 'clips' && id && method === 'PATCH') {
     const clip = store.clips.get(id);

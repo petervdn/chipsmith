@@ -52,7 +52,10 @@ a song waiting for its audio shows … for ▶ and its list is read again until 
 
 Routes: `GET /api/songs`, `GET /api/songs/<id>`, `PATCH /api/songs/<id>` (status, tags),
 `DELETE /api/songs/<id>` (with the clips only it played), `PUT /api/songs/<id>/tracks` (the
-arrangement, saved from the editor), `POST /api/songs/<id>/split`, `GET /api/clips`, `PATCH /api/clips/<id>`, and `GET /media/clips/<id>/audio.flac` with byte ranges.
+arrangement, saved from the editor), `POST /api/songs/<id>/split`, `GET /api/clips`, `PATCH /api/clips/<id>`, and `GET /media/clips/<id>/audio.flac` with byte ranges, `GET /media/clips/<id>/source.fur` (a
+download) and `source.txt` (the .fur as tracker text, `fur/tracker-text.ts`), and
+`POST /api/clips/<id>/open` (a copy in the system's temporary folder opened in Furnace,
+`server/clip-files.ts`, so the clip never changes).
 What they answer is typed in `shared/api.types.ts`.
 
 ## The pages
@@ -78,7 +81,8 @@ page but Home starts with breadcrumbs, the last its heading (Songs › Seven Tee
   as the page's content (as the top bar's), the clips' column out in the margin left of it and
   the selected block's or track's details in the margin right of it where there is room (else beside
   and under it), and the selected block's
-  clip with its prompt and versions. Editing (0022): drag a block to move it (to another track too),
+  clip with its prompt and versions, and its .fur to look at (open in Furnace, download, view as
+  text). Editing (0022): drag a block to move it (to another track too),
   its edges to trim it, drag a clip from the song's clips onto a track as a new block, snapped to a grid; repeat, duplicate, untrim, remove; add, rename and remove tracks; a fader per
   track (saved, heard in playback only; one undo step per move); mute and solo (not saved); a mixer
   under the timeline, switched in the editor bar: a strip per track (its fader, meter, M and S, the

@@ -1,0 +1,41 @@
+/* The look of ClipFileLinks.tsx: a small label, then the three as small buttons alike (the links
+   too), wrapping on a phone. */
+
+.clip-file-links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.clip-file-links-label {
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.clip-file-links button,
+.clip-file-links a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--pill);
+  padding: 0 10px;
+  border: var(--border-width) solid var(--line);
+  border-radius: var(--radius);
+  background: var(--raised);
+  color: var(--fg);
+  font-size: 0.8125rem;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.clip-file-links button:disabled {
+  color: var(--muted);
+  cursor: default;
+}
+
+.clip-file-links .error {
+  flex-basis: 100%;
+  margin: 0;
+}

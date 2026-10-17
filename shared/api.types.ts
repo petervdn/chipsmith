@@ -52,3 +52,6 @@ export type ProgramCheck = {
   /** Why it cannot be used, or null. */
   error: string | null;
 };
+
+/** What `POST /api/clips/<id>/open` answers: the copy of the clip's .fur file Furnace opened. */
+export type ClipOpened = { file: string };

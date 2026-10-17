@@ -14,4 +14,5 @@ layout, one subsong, NES / SCC / SCC+ / SID). The port of the old project's Pyth
 - `pattern.ts`: a pattern's rows, packed and unpacked
 - `read.ts`: a .fur file read into memory
 - `sid.ts`: a SID instrument's settings (its `64` feature), written and read
+- `tracker-text.ts`: a whole .fur file as text, as the tracker shows it: orders of patterns side by side
 - `write.ts`: what is in memory written as a .fur file

@@ -1,6 +1,6 @@
 /**
- * Answering a request: JSON, an error, a file with byte ranges (a browser seeks in audio by asking
- * for ranges), and reading a JSON body. Knows nothing of clips or songs.
+ * Answering a request: JSON, plain text, an error, a file with byte ranges (a browser seeks in audio
+ * by asking for ranges) or as a download, and reading a JSON body. Knows nothing of clips or songs.
  */
 import { createReadStream, statSync } from 'node:fs';
 import type { IncomingMessage, ServerResponse } from 'node:http';
@@ -15,6 +15,17 @@ import type { IncomingMessage, ServerResponse } from 'node:http';
 export function sendJson(response: ServerResponse, value: unknown, status = 200): void {
   response.writeHead(status, { 'Content-Type': 'application/json; charset=utf-8' });
   response.end(JSON.stringify(value));
+}
+
+/**
+ * Sends plain text, which a browser shows as it is.
+ *
+ * @param response - The response.
+ * @param text - The text.
+ */
+export function sendText(response: ServerResponse, text: string): void {
+  response.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8' });
+  response.end(text);
 }
 
 /**
@@ -49,12 +60,14 @@ export async function readJsonBody(request: IncomingMessage): Promise<unknown> {
  * @param response - The response to send the file on.
  * @param file - The path of the file.
  * @param contentType - The file's media type.
+ * @param downloadName - The name to save it as, which makes it a download; none to show or play it.
  */
 export function sendFile(
   request: IncomingMessage,
   response: ServerResponse,
   file: string,
   contentType: string,
+  downloadName?: string,
 ): void {
   const size = statSync(file).size;
   const range = /^bytes=(\d*)-(\d*)$/.exec(request.headers.range ?? '');
@@ -66,6 +79,9 @@ export function sendFile(
     'Accept-Ranges': 'bytes',
     'Cache-Control': 'no-cache',
   };
+  if (downloadName) {
+    headers['Content-Disposition'] = `attachment; filename="${downloadName.replaceAll('"', '')}"`;
+  }
   const [, rangeStart = '', rangeEnd = ''] = range ?? [];
   if (rangeStart || rangeEnd) {
     if (rangeStart) {

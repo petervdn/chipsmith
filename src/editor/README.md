@@ -6,6 +6,8 @@ saved, playing from a cursor, the zoom, and the selected block's clip or track.
 - `block-drag.ts`: where a dragged block goes: moved on the grid and between tracks, or trimmed
 - `BlockDetails.css`: the look of BlockDetails.tsx
 - `BlockDetails.tsx`: the selected block: where it plays, its clip, its prompt and versions
+- `ClipFileLinks.css`: the look of ClipFileLinks.tsx
+- `ClipFileLinks.tsx`: a clip's .fur to look at: opened in Furnace (a copy), downloaded, or as text
 - `clip-peaks.ts`: a clip's waveform as peaks, from its samples
 - `ControlGroup.css`: the look of ControlGroup.tsx
 - `ControlGroup.tsx`: controls grouped under a very small label over a line

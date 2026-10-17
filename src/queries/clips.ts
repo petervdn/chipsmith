@@ -1,6 +1,6 @@
-/** The clips from the server: the pool, and changing a clip's status. */
+/** The clips from the server: the pool, changing a clip's status, and opening its .fur in Furnace. */
 import { useMutation, useQuery } from '@tanstack/react-query';
-import type { ClipListing } from '../../shared/api.types.ts';
+import type { ClipListing, ClipOpened } from '../../shared/api.types.ts';
 import type { Status } from '../../shared/catalogue.types.ts';
 import { getQueryKey, queryClient } from './client.ts';
 import { requestJson, sendJson } from './request.ts';
@@ -27,5 +27,17 @@ export function useSetClipStatus() {
     mutationFn: ({ clipId, status }: { clipId: string; status: Status }) =>
       sendJson<ClipListing>(`/api/clips/${encodeURIComponent(clipId)}`, 'PATCH', { status }),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: getQueryKey({ type: 'clips' }) }),
+  });
+}
+
+/**
+ * Asks the server to open a copy of a clip's .fur file in the Furnace app on its computer.
+ *
+ * @returns The mutation, called with the clip's id.
+ */
+export function useOpenClipInFurnace() {
+  return useMutation({
+    mutationFn: (clipId: string) =>
+      sendJson<ClipOpened>(`/api/clips/${encodeURIComponent(clipId)}/open`, 'POST', null),
   });
 }

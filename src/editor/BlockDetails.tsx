@@ -1,5 +1,6 @@
-// The selected block's details: where it plays, its clip (what it is, its facts, the prompt and
-// guides it was made with) and the versions of the clip; ▶ plays the song from the block.
+// The selected block's details: where it plays, its clip (what it is, its facts, its .fur file to
+// look at, the prompt and guides it was made with) and the versions of the clip; ▶ plays the song
+// from the block.
 import { Minus, Play, Plus } from 'lucide-react';
 import type { Clip } from '../../shared/clip.types.ts';
 import { getTicksPerSecond } from '../../shared/song-length.ts';
@@ -9,6 +10,7 @@ import { formatSeconds } from '../format.ts';
 import type { BlockSpan } from './timeline.ts';
 import { getTicksPerBar } from './timeline.ts';
 import { getChannelName } from '../../shared/clip-channels.ts';
+import { ClipFileLinks } from './ClipFileLinks.tsx';
 import './BlockDetails.css';
 
 type BlockDetailsProps = {
@@ -118,6 +120,7 @@ export function BlockDetails({
               ` · ${clip.channels.length === 1 ? 'channel' : `${clip.channels.length} channels`}: ${clip.channels.map((channel) => getChannelName(clip.chips, channel)).join(', ')}`}{' '}
             · made {clip.created.slice(0, 10)}
           </p>
+          <ClipFileLinks clipId={clip.id} />
           <p className="block-details-prompt">{clip.prompt || 'No prompt.'}</p>
           {clip.guides.length > 0 && (
             <p className="block-details-guides">

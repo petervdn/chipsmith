@@ -8,9 +8,10 @@ back to its file (docs/adr/0006).
 - `claude-log.ts`: a Claude run's log read as it grows: notes, what it is doing now, its result
 - `claude-words.ts`: what Claude does said in a step's words: a tool call, a stretch of thinking
 - `claude-run.ts`: Claude Code started headless for a job, detached, its output into claude.log
+- `clip-files.ts`: a clip's .fur given out: downloaded, as tracker text, or a copy opened in Furnace
 - `examples.ts`: the example songs copied into an empty data folder
 - `guides.ts`: the style guides in memory and in guides/<id>/guide.json
-- `http.ts`: answering a request: JSON, a file with byte ranges, an error
+- `http.ts`: answering a request: JSON, plain text, a file with byte ranges or as a download, an error
 - `job-routes.ts`: `/api/jobs`: the jobs listed, a prompt sent as a job, a job cancelled or removed
 - `job-runner.ts`: a job's way from prompt to songs: compose, build, render
 - `jobs.ts`: the jobs in memory and in jobs/<id>/job.json
