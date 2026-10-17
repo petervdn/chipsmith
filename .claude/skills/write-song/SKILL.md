@@ -15,7 +15,8 @@ skill is the music; the others are how it is written down:
 
 - The prompt's own words come first. **Style guides** come with it, each under its name: they are
   the user's taste and win over any default here.
-- "For the NES and the SCC" names the chips; read each chip's skill before writing for it.
+- "For the NES and the SCC" names the chips; read each chip's skill before writing for it. "Two
+  SCCs" asks for the chip twice: twice its channels, in one song (furnace-song, `chips`).
 - `Based on <title> [<id>]: …` changes an existing song: furnace-song, "A prompt based on a song".
 - Before each step, say in one short line what you are about to do; the user sees these lines live.
 - End with a short reply: what you made and anything the user should know.

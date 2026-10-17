@@ -11,13 +11,38 @@ import type { Clip } from './clip.types.ts';
  *
  * @param chips - The clip's chips, by name, in order ("NES", "SCC+").
  * @param channel - The channel's number, counted over the chips in order.
- * @returns Its name, like "Triangle" or "SCC 2"; "Channel 7" past the chips known.
+ * @returns Its name, like "Triangle" or "SCC 2"; "Channel 7" past the chips known. A chip that comes
+ *   again numbers on ("SCC 6" for the second SCC's first), or, with channels not numbered, has its
+ *   count after the name ("Pulse 1 (NES 2)").
  */
 export function getChannelName(chips: string[], channel: number): string {
-  const names = chips.flatMap(
-    (name) => FURNACE_CHIPS.find((chip) => chip.name === name)?.channelNames ?? [],
-  );
+  const names = chips.flatMap((name, i) => {
+    const channelNames = FURNACE_CHIPS.find((chip) => chip.name === name)?.channelNames ?? [];
+    const before = chips.slice(0, i).filter((other) => other === name).length;
+    return before === 0 ? channelNames : getRepeatedNames(name, channelNames, before);
+  });
   return names[channel] ?? `Channel ${channel + 1}`;
+}
+
+/** A channel's name that ends in its number: `SCC 3`. */
+const NUMBERED_NAME = /^(.*) (\d+)$/;
+
+/**
+ * Returns the channel names of a chip that comes again.
+ *
+ * @param chipName - The chip's name.
+ * @param channelNames - Its channels' names.
+ * @param before - How many times it came before.
+ * @returns The names numbered on past those before, or with the chip's count after them.
+ */
+function getRepeatedNames(chipName: string, channelNames: string[], before: number): string[] {
+  return channelNames.map((name) => {
+    const numbered = NUMBERED_NAME.exec(name);
+    if (numbered?.[1] && numbered[2]) {
+      return `${numbered[1]} ${Number(numbered[2]) + before * channelNames.length}`;
+    }
+    return `${name} (${chipName} ${before + 1})`;
+  });
 }
 
 /**

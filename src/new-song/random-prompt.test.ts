@@ -6,6 +6,7 @@ import type { ChipName } from '../../shared/chips.ts';
 import {
   fitParts,
   getChipsText,
+  getToggledChips,
   getPartValues,
   getPromptText,
   rollChips,
@@ -86,4 +87,13 @@ test('one chip, or now and then two, never the same twice', () => {
 test('the chips in words', () => {
   assert.equal(getChipsText(['nes']), 'for the NES');
   assert.equal(getChipsText(['nes', 'scc']), 'for the NES and the SCC');
+  assert.equal(getChipsText(['scc', 'scc', 'sid']), 'for two SCCs and the SID');
+});
+
+test('a chip switch goes off, once, twice, off; the last chip never goes off', () => {
+  assert.deepEqual(getToggledChips(['sid'], 'scc'), ['scc', 'sid']);
+  assert.deepEqual(getToggledChips(['scc', 'sid'], 'scc'), ['scc', 'scc', 'sid']);
+  assert.deepEqual(getToggledChips(['scc', 'scc', 'sid'], 'scc'), ['sid']);
+  assert.deepEqual(getToggledChips(['scc', 'scc'], 'scc'), ['scc']);
+  assert.deepEqual(getToggledChips(['scc'], 'scc'), ['scc', 'scc']);
 });

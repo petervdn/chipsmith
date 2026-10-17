@@ -6,7 +6,9 @@ description: Writing for the Konami SCC / SCC+ in Furnace for chipsmith songs - 
 # The Konami SCC+
 
 Chip `0xB4` in Furnace, 5 independent wavetable channels: `chips: ['scc']` alone (channels 0-4), or
-after the NES's with `['nes', 'scc']` (channels 5-9). On the plain SCC (`0xA1`) channels 4 and 5
+after the NES's with `['nes', 'scc']` (channels 5-9). Two SCCs, `['scc', 'scc']`, give 10 channels
+(SCC 1-10, the second's after the first's), as two SCC cartridges in an MSX's two slots; each
+channel has its own wave either way, so the second SCC is for more voices, not another sound. On the plain SCC (`0xA1`) channels 4 and 5
 share a waveform; we write the SCC+. An instrument is `makeInstrument(name, 18, macros)` with a
 `wave` macro holding the wavetable's index; waves are `makeWavetable(samples)`, 32 samples 0-255,
 given to `buildFurFile` in `wavetables`. Macros and effects in general: **furnace-song**.

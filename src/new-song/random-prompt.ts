@@ -11,6 +11,12 @@ import { CHIP_NAMES, CHIPS } from '../../shared/chips.ts';
 import type { Piece, Rhythm } from './prompt-words.ts';
 import { IDEAS, MOODS, PIECES, RHYTHMS } from './prompt-words.ts';
 
+/** The most times a song may ask for one chip. */
+const MOST_OF_A_CHIP = 2;
+
+/** A chip's count in words, when a prompt asks for it more than once. */
+const COUNT_WORDS = ['', '', 'two'];
+
 /** How often a roll picks two chips instead of one. */
 const TWO_CHIPS_CHANCE = 1 / 3;
 
@@ -18,7 +24,7 @@ const TWO_CHIPS_CHANCE = 1 / 3;
 export type PromptParts = {
   mood: string;
   piece: string;
-  /** The chips, one or more, in the order of CHIP_NAMES. */
+  /** The chips, one or more, in the order of CHIP_NAMES; a chip asked for twice is in it twice. */
   chips: ChipName[];
   rhythm: string;
   idea: string;
@@ -178,13 +184,40 @@ export function rollChips(getRandom: () => number): ChipName[] {
 }
 
 /**
+ * Returns the chips after a chip's switch is tapped: off to once, once to twice, twice to off. The
+ * last chip on is never switched off: twice goes back to once.
+ *
+ * @param chips - The chips on, a chip asked for twice in it twice.
+ * @param chip - The chip whose switch is tapped.
+ * @returns The chips, in the order of CHIP_NAMES.
+ */
+export function getToggledChips(chips: ChipName[], chip: ChipName): ChipName[] {
+  const count = chips.filter((other) => other === chip).length;
+  const isOnlyChip = chips.every((other) => other === chip);
+  const next = count >= MOST_OF_A_CHIP ? (isOnlyChip ? 1 : 0) : count + 1;
+  return CHIP_NAMES.flatMap((name) =>
+    name === chip
+      ? Array.from({ length: next }, () => name)
+      : chips.filter((other) => other === name),
+  );
+}
+
+/**
  * Returns the chips in words, as the prompt says them.
  *
- * @param chips - The chips.
- * @returns "for the NES", "for the NES and the SCC", "for the NES, the SCC and the SID".
+ * @param chips - The chips, a chip asked for twice in it twice.
+ * @returns "for the NES", "for the NES and the SCC", "for two SCCs and the SID".
  */
 export function getChipsText(chips: ChipName[]): string {
-  const names = chips.map((chip) => `the ${CHIPS[chip].label}`);
+  const names = CHIP_NAMES.flatMap((chip) => {
+    const count = chips.filter((other) => other === chip).length;
+    if (count === 0) return [];
+    return [
+      count === 1
+        ? `the ${CHIPS[chip].label}`
+        : `${COUNT_WORDS[count] ?? count} ${CHIPS[chip].label}s`,
+    ];
+  });
   const last = names.pop() ?? '';
   return `for ${names.length > 0 ? `${names.join(', ')} and ${last}` : last}`;
 }

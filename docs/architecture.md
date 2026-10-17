@@ -99,7 +99,8 @@ page but Home starts with breadcrumbs, the last its heading (Songs › Seven Tee
 - **Clips** (`/clips`): the pool, with the same filter bar; not in the top bar (0029), opened by its
   address.
 - **Guides** (`/guides`): the style guides, made, edited and deleted.
-- **New** (`/new`): a prompt for Claude in a box, a prompt builder under it (the chips as switches, one or more; a part per row, rolled
+- **New** (`/new`): a prompt for Claude in a box, a prompt builder under it (the chips as switches, one or more, each off, once or
+  twice (0034); a part per row, rolled
   at random or picked, each with a lock, the sentence they make on top; "Use" fills the box, which is otherwise its own),
   the Structure panel (AABA chosen at first; none, a preset, a saved structure or your own: written short and as tiles
   as wide as their bars, a section edited when tapped; between two tiles the gap, how one section

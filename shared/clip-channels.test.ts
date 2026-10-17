@@ -14,3 +14,11 @@ test('channels are named from the chips, counted over them in order', () => {
     ['Pulse 1', 'DPCM', 'SID 1', 'SID 3', 'Channel 9'],
   );
 });
+
+test('a chip that comes again numbers its channels on', () => {
+  assert.deepEqual(
+    [4, 5, 9, 10].map((channel) => getChannelName(['SCC+', 'SCC+', 'SID'], channel)),
+    ['SCC 5', 'SCC 6', 'SCC 10', 'SID 1'],
+  );
+  assert.equal(getChannelName(['NES', 'NES'], 7), 'Triangle (NES 2)');
+});

@@ -67,18 +67,22 @@ export function PromptBuilder({ isOpen, onToggle, onUse }: PromptBuilderProps) {
           onRoll={() => rollOne('chips')}
           onToggleLock={() => toggleLock('chips')}
         >
-          {CHIP_NAMES.map((chip) => (
-            <button
-              key={chip}
-              type="button"
-              className={`list-chip${parts.chips.includes(chip) ? ' is-on' : ''}`}
-              onClick={() => toggleChip(chip)}
-              aria-pressed={parts.chips.includes(chip)}
-              data-tooltip="switch this chip on or off (one stays on)"
-            >
-              {CHIPS[chip].label}
-            </button>
-          ))}
+          {CHIP_NAMES.map((chip) => {
+            const count = parts.chips.filter((other) => other === chip).length;
+            return (
+              <button
+                key={chip}
+                type="button"
+                className={`list-chip${count > 0 ? ' is-on' : ''}`}
+                onClick={() => toggleChip(chip)}
+                aria-pressed={count > 0}
+                data-tooltip="tap: this chip on, twice (its channels twice over), off; one stays on"
+              >
+                {CHIPS[chip].label}
+                {count > 1 && ` ×${count}`}
+              </button>
+            );
+          })}
         </PartRow>
         {PROMPT_PARTS.map(({ name, label }) => (
           <PartRow

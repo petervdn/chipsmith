@@ -4,15 +4,14 @@
 // the rest is picked again), and the sentence they make. Kept while the page is open.
 import { useState } from 'react';
 import type { ChipName } from '../../shared/chips.ts';
-import { CHIP_NAMES } from '../../shared/chips.ts';
 import type { ListPartName, PartName, PromptParts } from './random-prompt.ts';
-import { fitParts, getPromptText, rollPart, rollParts } from './random-prompt.ts';
+import { fitParts, getPromptText, getToggledChips, rollPart, rollParts } from './random-prompt.ts';
 
 /**
  * Keeps the prompt builder's parts and locks.
  *
  * @returns The parts, the locked part names, the sentence they make, `roll` (picks the unlocked
- *   parts again), `rollOne` (picks one part again, locked or not), `pick` (sets a part and locks it), `toggleChip` (switches a chip on or off, never
+ *   parts again), `rollOne` (picks one part again, locked or not), `pick` (sets a part and locks it), `toggleChip` (a chip off, once, twice, off again, never
  *   the last one off, and locks the chips) and `toggleLock`.
  */
 export function usePromptBuilder() {
@@ -32,14 +31,9 @@ export function usePromptBuilder() {
       lock(name);
     },
     toggleChip: (chip: ChipName) => {
-      setParts((current) => {
-        const isOn = current.chips.includes(chip);
-        if (isOn && current.chips.length === 1) return current;
-        const chips = CHIP_NAMES.filter((name) =>
-          name === chip ? !isOn : current.chips.includes(name),
-        );
-        return fitParts({ ...current, chips }, Math.random);
-      });
+      setParts((current) =>
+        fitParts({ ...current, chips: getToggledChips(current.chips, chip) }, Math.random),
+      );
       lock('chips');
     },
     toggleLock: (name: PartName) =>

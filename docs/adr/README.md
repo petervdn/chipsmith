@@ -47,3 +47,4 @@ Consequences.
 | [0031](0031-the-loop-is-whole-bars-in-a-row-of-its-own.md) | The editor's loop is whole bars, drawn in a row of its own under the ruler | accepted |
 | [0032](0032-a-title-is-unique-its-length-chosen-at-random.md) | A song's title is unique, in a number of words chosen at random | accepted |
 | [0033](0033-references-are-their-own-kind.md) | Furnace's demos are references: their own kind, listened to and noted, never songs | accepted |
+| [0034](0034-a-song-may-use-a-chip-twice.md) | A song may use a chip twice | accepted |

@@ -65,3 +65,18 @@ test('the chips come NES first whatever their order, and a song can be SCC only'
   assert.deepEqual(scc.song.chipFlags, [null]);
   assert.throws(() => buildFurFile({ ...draft, chips: [], channels: [] }));
 });
+
+test('a chip can come twice, its channels after the first', () => {
+  const twice = buildFurFile({
+    title: 't',
+    bpm: 120,
+    beatsPerBar: 4,
+    instruments: [],
+    chips: ['sid', 'scc', 'scc'],
+    channels: Array.from({ length: 13 }, () => []),
+  });
+  assert.equal(twice.song.systemName, 'SCC+ + SCC+ + SID');
+  assert.deepEqual(twice.song.chips, [0xb4, 0xb4, 0x47]);
+  assert.equal(twice.song.channelCount, 13);
+  assert.deepEqual(twice.song.chipFlags, [null, null, 'clockSel=1\n']);
+});

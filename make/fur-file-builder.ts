@@ -11,7 +11,10 @@ import type { FurFile, FurSong, Row } from '../fur/fur.types.ts';
 export type FurFileDraft = {
   title: string;
   comment?: string;
-  /** The chips, each once; their channels come in the order of CHIP_NAMES (NES first). */
+  /**
+   * The chips; their channels come in the order of CHIP_NAMES (NES first). A chip may come more
+   * than once (`['scc', 'scc', 'sid']`): the second's channels come after the first's.
+   */
   chips: ChipName[];
   bpm: number;
   beatsPerBar: number;
@@ -21,13 +24,13 @@ export type FurFileDraft = {
   patternLength?: number;
   /**
    * One list of rows per chip channel, all as long as the song, chip by chip in the order of
-   * CHIP_NAMES (NES: pulse 1, pulse 2, triangle, noise, DPCM; SCC+: 5; SID: 3). `null` is an
-   * empty row.
+   * CHIP_NAMES (NES: pulse 1, pulse 2, triangle, noise, DPCM; SCC+: 5; SID: 3), a chip that comes
+   * twice twice over. `null` is an empty row.
    */
   channels: (Row | null)[][];
   instruments: Uint8Array[];
   wavetables?: Uint8Array[];
-  /** Each chip's volume, NES first. */
+  /** Each chip's volume, in the order the chips' channels come. */
   chipVolumes?: number[];
   /**
    * A name per channel for what it plays ("Bass", "Lead", "Drums"), in the order of `channels`;
@@ -57,7 +60,7 @@ const CHIP_FLAGS = {
  * @param draft - What the script wrote for the song.
  * @param draft.title - The song's name.
  * @param draft.comment - The song's comment; empty if left out.
- * @param draft.chips - The chips the song plays on, each once, in any order.
+ * @param draft.chips - The chips the song plays on, in any order; a chip may come more than once.
  * @param draft.bpm - The song's tempo, in beats a minute.
  * @param draft.beatsPerBar - Beats to a bar.
  * @param draft.rowsPerBeat - Rows to a beat; 4 if left out, which makes a row a 16th note.
@@ -65,7 +68,8 @@ const CHIP_FLAGS = {
  * @param draft.channels - One list of rows per chip channel; there must be as many as the chips have.
  * @param draft.instruments - The instruments, as Furnace's bytes.
  * @param draft.wavetables - The wavetables, as Furnace's bytes; none if left out.
- * @param draft.chipVolumes - Each chip's volume, in the order of CHIP_NAMES; 1 for each if left out.
+ * @param draft.chipVolumes - Each chip's volume, in the order their channels come; 1 for each if left
+ *   out.
  * @param draft.channelNames - A name per channel for what it plays; none if left out.
  * @returns The .fur file.
  */
@@ -83,7 +87,8 @@ export function buildFurFile({
   chipVolumes,
   channelNames = [],
 }: FurFileDraft): FurFile {
-  const furnaceChips = CHIP_NAMES.filter((name) => chips.includes(name)).map((name) => {
+  const ordered = CHIP_NAMES.flatMap((name) => chips.filter((chip) => chip === name));
+  const furnaceChips = ordered.map((name) => {
     const chip = getFurnaceChip(CHIPS[name].furnaceId);
     if (!chip) throw new Error(`no Furnace chip for ${name}`);
     return { ...chip, flags: CHIP_FLAGS[name] };

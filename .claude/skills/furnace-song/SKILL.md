@@ -45,10 +45,12 @@ export default function makeSongs(): SongPlan[] {
 - **`key`**: e.g. `"D minor"`, or null.
 - **`tags`**: from the list below, a style and what stands out (two to four).
 - **`furFile`**: from `buildFurFile` (`make/fur-file-builder.ts`): `chips`, the chips the prompt
-  names (`['nes']`, `['sid']`, `['nes', 'scc']`; "for the NES and the SCC" is both), `bpm`,
+  names (`['nes']`, `['sid']`, `['nes', 'scc']`; "for the NES and the SCC" is both; a chip twice
+  for more voices of it, "two SCCs and the SID" is `['scc', 'scc', 'sid']`), `bpm`,
   `beatsPerBar`, `rowsPerBeat` (4: a row is a 16th), and `channels`: one list of rows per chip
-  channel for the whole song, chip by chip as NES, SCC, SID whatever order `chips` is in (each
-  chip's channels: its skill). `chipVolumes` follow the same order. Repeated stretches are reused as patterns.
+  channel for the whole song, chip by chip as NES, SCC, SID whatever order `chips` is in, a chip
+  that comes twice twice over (each chip's channels: its skill). `chipVolumes` follow the same
+  order, one per chip. Repeated stretches are reused as patterns.
 - **`channelNames`**: a short name per channel for what it plays, in the order of `channels`
   (`['Lead', 'Harmony', 'Bass', 'Drums', '']`): one or two words, a role, never the chip's own name
   ("Pulse 1", "SID 2"); `''` for a channel that stays silent. Furnace shows them over the channels,
