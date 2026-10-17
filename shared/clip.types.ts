@@ -4,6 +4,7 @@
  * (docs/adr/0004); its audio and source never change once made (docs/adr/0005).
  */
 import type { Status, Tag } from './catalogue.types.ts';
+import type { SentGuide } from './guide.types.ts';
 
 /** The bars a clip covers, from the first to the one after the last; null in a Clip is the whole piece. */
 export type BarRange = { from: number; to: number };
@@ -23,6 +24,8 @@ export type Clip = {
   created: string;
   /** The prompt the clip was made with, as written. */
   prompt: string;
+  /** The style guides sent with the prompt, as they were then (docs/adr/0019). */
+  guides: SentGuide[];
   /** Shared by the clips one prompt made together; a label, never looked up. */
   promptId: string;
   name: ClipName;

@@ -2,6 +2,7 @@
   "id": "c0002",
   "created": "2026-10-16T22:09:37.230Z",
   "prompt": "A fast hook-based fugue for the NES alone, in D minor at 164 bpm. A larger form instead of one motif answered all the way through: A B A C B A, with B in F. Drums change per section: jungle in A, half-time in B, breakbeat in C. Free voices in driving 16ths, an octave-pulse bass.",
+  "guides": [],
   "promptId": "example",
   "name": {
     "section": null,

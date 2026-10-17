@@ -12,6 +12,7 @@ const CLIP: Clip = {
   id: 'c0001',
   created: '2026-10-16T23:00:00',
   prompt: 'a funk groove',
+  guides: [],
   promptId: 'p0001',
   name: { section: 'A', stem: 'Bass' },
   bars: { from: 0, to: 8 },
@@ -38,6 +39,7 @@ const SONG: Song = {
   tags: [],
   status: 'new',
   prompt: '',
+  guides: [],
   promptedFrom: null,
   tracks: [
     { id: 't1', name: 'Bass', blocks: [{ clip: 'c0001', start: 0, trim: null, repeats: 2 }] },

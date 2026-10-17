@@ -36,6 +36,12 @@ export function getNumber(value: unknown, path: string): number {
   return value;
 }
 
+/** The value as a boolean. */
+export function getBoolean(value: unknown, path: string): boolean {
+  if (typeof value !== 'boolean') throw new Error(`${path}: not true or false`);
+  return value;
+}
+
 /** The value as an array, each item checked by `getItem`. */
 export function getArray<Item>(
   value: unknown,

@@ -7,6 +7,7 @@ import { spawn } from 'node:child_process';
 import { PROJECT_FOLDER, getSettings } from '../config/settings.ts';
 import { existsSync, readFileSync } from 'node:fs';
 import { isAbsolute, join, relative } from 'node:path';
+import type { SentGuide } from '../shared/guide.types.ts';
 import type { Job, JobSong } from '../shared/job.types.ts';
 import type { BuiltPlan } from '../make/build-script.ts';
 import { makeSong } from '../make/make-song.ts';
@@ -52,6 +53,16 @@ function getProjectPath(path: string): string {
   return fromProject.startsWith('..') || isAbsolute(fromProject) ? path : fromProject;
 }
 
+/** The style guides sent with the prompt, as part of it: each under its name (docs/adr/0019). */
+function getGuideLines(guides: SentGuide[]): string[] {
+  if (guides.length === 0) return [];
+  return [
+    '',
+    'Style guides sent with the prompt (follow them; the prompt itself wins where they differ):',
+    ...guides.flatMap(({ name, text }) => ['', `## ${name}`, '', text.trim()]),
+  ];
+}
+
 /** What the runner keeps of the Claude run of the job in its composing phase. */
 type ClaudeWatch = { jobId: string; pid: number | undefined; position: number };
 
@@ -94,11 +105,12 @@ function startComposing(jobs: JobStore, job: Job): ClaudeWatch {
     projectFolder: PROJECT_FOLDER,
     prompt: [
       `Job ${job.id}. Write the script to ${getProjectPath(join(folder, 'script.ts'))}.`,
-      `The data folder (songs/, clips/, guidance/) is ${getProjectPath(jobs.root)}.`,
+      `The data folder (songs/, clips/) is ${getProjectPath(jobs.root)}.`,
       `The script imports the project's modules from ${relative(folder, PROJECT_FOLDER)}/ (e.g. ${relative(folder, PROJECT_FOLDER)}/make/module-builder.ts).`,
       '',
       "The user's prompt:",
       job.prompt,
+      ...getGuideLines(job.guides),
     ].join('\n'),
     systemPrompt: SYSTEM_PROMPT,
     allowedTools: getAllowedTools(folder),
@@ -166,6 +178,7 @@ async function buildAndRender(jobs: JobStore, store: Store, jobId: string): Prom
         title: plan.title,
         module: readModule(readFileSync(join(buildFolder, plan.furFile))),
         prompt: job?.prompt ?? '',
+        guides: job?.guides ?? [],
         promptId: jobId,
         scriptFile,
         tags: plan.tags.map((name) => ({ name, by: 'claude' })),

@@ -17,6 +17,7 @@
   ],
   "status": "new",
   "prompt": "An NES funk groove at 112 bpm in the form A A B A A. B is A brought two semitones down, then back up. Within each four-bar repeat a variation alternates with the base bar (base, v1, base, v1), and the last bar before a change has a fill: a roll and toms.",
+  "guides": [],
   "promptedFrom": null,
   "tracks": [
     {

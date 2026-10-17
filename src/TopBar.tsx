@@ -1,4 +1,4 @@
-// The bar at the top of every page: Songs, Clips and New (with how many jobs are on their way), the
+// The bar at the top of every page: Songs, Clips, Guides and New (with how many jobs are on their way), the
 // one open marked, and in a song the song's title.
 import type { Job } from '../shared/job.types.ts';
 import { isJobRunning } from './queries/jobs.ts';
@@ -19,6 +19,13 @@ export function TopBar({ route, jobs }: TopBarProps) {
         </a>
         <a href="/clips" className={`top-link${route.page === 'clips' ? ' is-on' : ''}`}>
           Clips
+        </a>
+        <a
+          href="/guides"
+          className={`top-link${route.page === 'guides' ? ' is-on' : ''}`}
+          title="style guides, sent along with a prompt"
+        >
+          Guides
         </a>
         <a
           href="/new"

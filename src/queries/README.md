@@ -5,6 +5,7 @@ Everything the page reads from or sends to the server, as TanStack Query queries
 
 - `client.ts`: the query client and `getQueryKey`, the one typed factory of its keys
 - `clips.ts`: the clip pool, and changing a clip's status
+- `guides.ts`: the style guides, and making, changing and deleting one
 - `jobs.ts`: the jobs, polled while one runs, and sending a prompt
 - `programs.ts`: the check of the programs the app calls
 - `request.ts`: a route read as JSON or a change sent

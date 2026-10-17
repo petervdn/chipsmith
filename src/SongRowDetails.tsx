@@ -1,4 +1,5 @@
-// What a song's row shows when it is opened: the prompt the song was made from, with a copy button,
+// What a song's row shows when it is opened: the prompt the song was made from (and the names of the
+// style guides sent with it), with a copy button,
 // links to prompt it again or to use the song as the base of a new prompt, and a warning when the
 // song has changed since; the song's facts; and the songs it was prompted from or prompted again as.
 import { useState } from 'react';
@@ -67,6 +68,11 @@ export function SongRowDetails({ listing, titlesById }: SongRowDetailsProps) {
         </div>
       </div>
       <p className="row-facts">{facts.join(' · ')}</p>
+      {song.guides.length > 0 && (
+        <p className="row-facts">
+          style guides: {song.guides.map((guide) => guide.name).join(', ')}
+        </p>
+      )}
       {song.tags.length > 0 && (
         <p className="row-facts">tags: {song.tags.map((tag) => tag.name).join(', ')}</p>
       )}

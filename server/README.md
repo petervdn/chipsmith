@@ -7,6 +7,7 @@ back to its file (docs/adr/0006).
 - `api.ts`: the Vite plugin: the routes of `/api/` and `/media/`
 - `claude-run.ts`: Claude Code run headless for a job, and its log read as notes
 - `examples.ts`: the example songs copied into an empty data folder
+- `guides.ts`: the style guides in memory and in guides/<id>/guide.json
 - `http.ts`: answering a request: JSON, a file with byte ranges, an error
 - `job-runner.ts`: a job's way from prompt to songs: compose, build, render
 - `jobs.ts`: the jobs in memory and in jobs/<id>/job.json

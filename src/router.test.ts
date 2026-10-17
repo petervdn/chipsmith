@@ -6,6 +6,7 @@ import { getRoute } from './router.ts';
 test('addresses read as their pages', () => {
   assert.deepEqual(getRoute('/'), { page: 'songs' });
   assert.deepEqual(getRoute('/clips'), { page: 'clips' });
+  assert.deepEqual(getRoute('/guides'), { page: 'guides' });
   assert.deepEqual(getRoute('/new'), { page: 'new' });
   assert.deepEqual(getRoute('/new?from=s0031'), { page: 'new' });
   assert.deepEqual(getRoute('/songs/s0031'), { page: 'song', songId: 's0031' });

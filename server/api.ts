@@ -21,13 +21,22 @@ import type { Song } from '../shared/song.types.ts';
 import { getSongSeconds } from '../shared/song-length.ts';
 import { sendError, sendFile, sendJson, readJsonBody } from './http.ts';
 import type { Job } from '../shared/job.types.ts';
-import { getObject, getString, getStringOrNull } from './json-checks.ts';
+import { getArray, getObject, getString, getStringOrNull } from './json-checks.ts';
 import { startJobRunner } from './job-runner.ts';
 import type { JobStore } from './jobs.ts';
 import { createJob, openJobs } from './jobs.ts';
 import { copyExamplesIfEmpty } from './examples.ts';
 import { isAudioMissing, renderMissingAudio } from './missing-audio.ts';
-import { checkStatus, checkTags } from './model-checks.ts';
+import { checkGuideDraft, checkStatus, checkTags } from './model-checks.ts';
+import type { GuideStore } from './guides.ts';
+import {
+  createGuide,
+  deleteGuide,
+  getSentGuides,
+  listGuides,
+  openGuides,
+  updateGuide,
+} from './guides.ts';
 import type { Store } from './store.ts';
 import {
   getClipFolder,
@@ -79,6 +88,7 @@ export function chiptuneServer(root: string): Plugin {
       for (const { file, error } of store.unreadable) console.warn(`unreadable ${file}: ${error}`);
       startRenderingMissingAudio(store);
       const jobs = openJobs(root);
+      const guides = openGuides(root);
       let programChecks = checkProgramsAndWarn();
       // one runner: a restart of the server (Vite restarts it when a server file changes) replaces it
       globalThis.chiptuneStopJobRunner?.();
@@ -97,7 +107,7 @@ export function chiptuneServer(root: string): Plugin {
           );
           return;
         }
-        route(store, jobs, request, response, path).catch((error: unknown) => {
+        route({ store, jobs, guides }, request, response, path).catch((error: unknown) => {
           sendError(response, 400, error instanceof Error ? error.message : String(error));
         });
       });
@@ -105,9 +115,11 @@ export function chiptuneServer(root: string): Plugin {
   };
 }
 
+/** What the routes read and change: the clips and songs, the jobs, the guides. */
+type Stores = { store: Store; jobs: JobStore; guides: GuideStore };
+
 async function route(
-  store: Store,
-  jobs: JobStore,
+  { store, jobs, guides }: Stores,
   request: IncomingMessage,
   response: ServerResponse,
   path: string,
@@ -128,8 +140,11 @@ async function route(
     const fromSong = getStringOrNull(body['fromSong'] ?? null, 'body.fromSong');
     const song = fromSong ? store.songs.get(fromSong) : null;
     if (fromSong && !song) return sendError(response, 400, `no song ${fromSong}`);
-    return sendJson(response, createJob(jobs, prompt, song ? song.id : null));
+    const guideIds = getArray(body['guideIds'] ?? [], 'body.guideIds', getString);
+    const sent = getSentGuides(guides, guideIds);
+    return sendJson(response, createJob(jobs, prompt, sent, song ? song.id : null));
   }
+  if (kind === 'guides') return routeGuides(guides, request, response, { id, method });
   if (kind === 'rescan' && method === 'POST') {
     rescanStore(store);
     return sendJson(response, { songs: store.songs.size, clips: store.clips.size });
@@ -153,6 +168,25 @@ async function route(
     return sendJson(response, { clip: store.clips.get(id), usedBy: getSongsUsingClip(store, id) });
   }
   sendError(response, 404, 'not found');
+}
+
+/** `/api/guides`: the list, a new guide, a guide changed or deleted; each answers with the list. */
+async function routeGuides(
+  guides: GuideStore,
+  request: IncomingMessage,
+  response: ServerResponse,
+  { id, method }: { id: string | undefined; method: string },
+): Promise<void> {
+  if (!id && method === 'POST') {
+    createGuide(guides, checkGuideDraft(await readJsonBody(request), 'body'));
+  } else if (id && method === 'PATCH') {
+    updateGuide(guides, id, checkGuideDraft(await readJsonBody(request), 'body'));
+  } else if (id && method === 'DELETE') {
+    deleteGuide(guides, id);
+  } else if (id || method !== 'GET') {
+    return sendError(response, 404, 'not found');
+  }
+  sendJson(response, listGuides(guides));
 }
 
 /** The jobs, newest first: those not finished, and the finished ones of the last hour. */

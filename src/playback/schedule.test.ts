@@ -17,6 +17,7 @@ test('repeats follow each other and trims become offsets', () => {
     tags: [],
     status: 'new',
     prompt: '',
+    guides: [],
     promptedFrom: null,
     tracks: [
       {
@@ -52,6 +53,7 @@ const SOME_CLIP: Clip = {
   id: '',
   created: '',
   prompt: '',
+  guides: [],
   promptId: '',
   name: { section: null, stem: null },
   bars: null,

@@ -5,9 +5,11 @@
  */
 import type { Status, Tag } from '../shared/catalogue.types.ts';
 import type { BarRange, Clip, ClipName, ClipParent } from '../shared/clip.types.ts';
+import type { Guide, GuideDraft, SentGuide } from '../shared/guide.types.ts';
 import type { Block, BlockTrim, Song, Track } from '../shared/song.types.ts';
 import {
   getArray,
+  getBoolean,
   getNumber,
   getObject,
   getOneOf,
@@ -35,6 +37,41 @@ export function checkTags(value: unknown, path: string): Tag[] {
   });
 }
 
+/** The guides sent with a prompt; a file from before guides has none. */
+export function checkSentGuides(value: unknown, path: string): SentGuide[] {
+  return getArray(value ?? [], path, (item, itemPath) => {
+    const guide = getObject(item, itemPath);
+    return {
+      id: getString(guide['id'], `${itemPath}.id`),
+      name: getString(guide['name'], `${itemPath}.name`),
+      text: getString(guide['text'], `${itemPath}.text`),
+    };
+  });
+}
+
+/** A guide.json's content. */
+export function checkGuide(value: unknown, path: string): Guide {
+  const guide = getObject(value, path);
+  return {
+    id: getString(guide['id'], `${path}.id`),
+    ...checkGuideDraft(guide, path),
+    created: getString(guide['created'], `${path}.created`),
+    updated: getString(guide['updated'], `${path}.updated`),
+  };
+}
+
+/** A guide's name, text and default, as a request sends them; the name is not empty. */
+export function checkGuideDraft(value: unknown, path: string): GuideDraft {
+  const draft = getObject(value, path);
+  const name = getString(draft['name'], `${path}.name`).trim();
+  if (!name) throw new Error(`${path}.name is empty`);
+  return {
+    name,
+    text: getString(draft['text'], `${path}.text`),
+    isDefault: getBoolean(draft['isDefault'], `${path}.isDefault`),
+  };
+}
+
 /** A clip.json's content. */
 export function checkClip(value: unknown, path: string): Clip {
   const clip = getObject(value, path);
@@ -42,6 +79,7 @@ export function checkClip(value: unknown, path: string): Clip {
     id: getString(clip['id'], `${path}.id`),
     created: getString(clip['created'], `${path}.created`),
     prompt: getString(clip['prompt'], `${path}.prompt`),
+    guides: checkSentGuides(clip['guides'], `${path}.guides`),
     promptId: getString(clip['promptId'], `${path}.promptId`),
     name: checkClipName(clip['name'], `${path}.name`),
     bars: clip['bars'] === null ? null : checkBarRange(clip['bars'], `${path}.bars`),
@@ -73,6 +111,7 @@ export function checkSong(value: unknown, path: string): Song {
     tags: checkTags(song['tags'], `${path}.tags`),
     status: checkStatus(song['status'], `${path}.status`),
     prompt: getString(song['prompt'], `${path}.prompt`),
+    guides: checkSentGuides(song['guides'], `${path}.guides`),
     promptedFrom: getStringOrNull(song['promptedFrom'] ?? null, `${path}.promptedFrom`),
     tracks: getArray(song['tracks'], `${path}.tracks`, checkTrack),
   };

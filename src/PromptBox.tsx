@@ -1,8 +1,11 @@
-// The box on the New page where a prompt is written and sent; the job it makes shows below it at once.
+// The box on the New page where a prompt is written and sent, with the style guides chosen as chips;
+// the job it makes shows below it at once.
 // Opened from a song's "Prompt again", it starts with that song's prompt and notes the song, until
 // the note is cleared.
 import { useState } from 'react';
+import { GuideChips } from './GuideChips.tsx';
 import { useSendPrompt } from './queries/jobs.ts';
+import { useGuideChoice } from './use-guide-choice.ts';
 
 /** The song a prompt is sent again from: its id, its title, and whether it changed after its prompt. */
 export type PromptSource = { songId: string; title: string; isChangedAfterPrompt: boolean };
@@ -18,14 +21,16 @@ export function PromptBox({ initialText, source, onClearSource }: PromptBoxProps
   const [text, setText] = useState(initialText);
   const isFocusAtEnd = initialText.endsWith(': ');
   const { mutate: sendPrompt, isPending: isSending, error } = useSendPrompt();
+  const { guides, chosenIds, toggleGuide, resetChoice } = useGuideChoice();
 
   function send(): void {
     if (!text.trim() || isSending) return;
     sendPrompt(
-      { prompt: text, fromSong: source?.songId ?? null },
+      { prompt: text, fromSong: source?.songId ?? null, guideIds: chosenIds },
       {
         onSuccess: () => {
           setText('');
+          resetChoice();
           onClearSource();
         },
       },
@@ -72,6 +77,7 @@ export function PromptBox({ initialText, source, onClearSource }: PromptBoxProps
           if (event.key === 'Enter' && (event.metaKey || event.ctrlKey)) send();
         }}
       />
+      <GuideChips guides={guides} chosenIds={chosenIds} onToggle={toggleGuide} />
       <button type="submit" className="prompt-send" disabled={!text.trim() || isSending}>
         {isSending ? 'Sending…' : 'Make'}
       </button>

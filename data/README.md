@@ -8,7 +8,7 @@ repository of its own. Another folder can be used instead with `CHIPSMITH_DATA` 
 - `clips/<id>/`: a clip: `clip.json`, its `source.fur`, the `script.ts` that wrote it, its `audio.flac`
 - `songs/<id>/song.json`: a song's arrangement of clips
 - `jobs/<id>/`: a prompt's job: `job.json`, Claude's log, its script and the modules it built
-- `guidance/`: your taste and feedback (Markdown), read by Claude before it composes
+- `guides/<id>/guide.json`: a style guide (Guides page), sent along with a prompt when chosen
 
 When this folder has no clips and no songs, the app starts it with the examples (`examples/`). Audio
 that is missing is rendered when the app starts.

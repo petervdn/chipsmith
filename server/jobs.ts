@@ -4,6 +4,7 @@
  */
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
+import type { SentGuide } from '../shared/guide.types.ts';
 import type { Job, JobPhase } from '../shared/job.types.ts';
 import { JOB_IDS, claimId } from '../make/ids.ts';
 import { writeJsonAtomically } from './store.ts';
@@ -24,7 +25,8 @@ export function openJobs(root: string): JobStore {
     if (!existsSync(file)) continue;
     try {
       const job: Job = JSON.parse(readFileSync(file, 'utf8'));
-      store.jobs.set(job.id, job);
+      // a job from before style guides has none
+      store.jobs.set(job.id, { ...job, guides: job.guides ?? [] });
     } catch {
       /* a job.json that does not read is left; jobs are a log, not data */
     }
@@ -37,13 +39,19 @@ export function getJobFolder(store: JobStore, jobId: string): string {
   return join(store.root, 'jobs', jobId);
 }
 
-/** Makes a new job for a prompt, queued. */
-export function createJob(store: JobStore, prompt: string, promptedFrom: string | null): Job {
+/** Makes a new job for a prompt and the guides chosen with it, queued. */
+export function createJob(
+  store: JobStore,
+  prompt: string,
+  guides: SentGuide[],
+  promptedFrom: string | null,
+): Job {
   const id = claimId(store.root, JOB_IDS);
   const now = new Date().toISOString();
   const job: Job = {
     id,
     prompt,
+    guides,
     created: now,
     phase: 'queued',
     phaseStarted: now,

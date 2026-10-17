@@ -2,6 +2,7 @@
  * A job: one prompt on its way to songs, visible from the moment it is sent. Its phases: Claude
  * composes a script, the script builds a module per song, each song is rendered; then done or failed.
  */
+import type { SentGuide } from './guide.types.ts';
 
 /** Where a job is. */
 export type JobPhase = 'queued' | 'composing' | 'building' | 'rendering' | 'done' | 'failed';
@@ -20,6 +21,8 @@ export type JobSong = {
 export type Job = {
   id: string;
   prompt: string;
+  /** The style guides chosen with the prompt, copied when it was sent. */
+  guides: SentGuide[];
   created: string;
   phase: JobPhase;
   /** When the phase began. */

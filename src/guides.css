@@ -1,0 +1,106 @@
+/* The Guides page (the list and the editor) and the guide chips under the prompt box. Uses the tokens
+   of style.css. */
+
+.guides-page {
+  max-width: 720px;
+  margin: 0 auto;
+}
+.guides-intro {
+  color: var(--muted);
+  font-size: 14px;
+}
+.guide-new,
+.guide-save {
+  min-height: var(--touch);
+  padding: 0 16px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--accent);
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+.guide-save:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.guide-new {
+  margin: 4px 0 12px;
+}
+
+/* a guide's row: its name, "default", and the start of its text on one line */
+.guide-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 10px;
+  width: 100%;
+  min-height: var(--touch);
+  padding: 10px 4px;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.guide-default {
+  color: var(--accent);
+  font-size: 12px;
+}
+.guide-preview {
+  flex: 1 1 100%;
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 13px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.guide-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px 0;
+}
+.guide-name,
+.guide-text {
+  padding: 10px 12px;
+  font-size: 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--card);
+  color: inherit;
+}
+.guide-text {
+  min-height: 30vh;
+  resize: vertical;
+}
+.guide-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.guide-delete {
+  margin-left: auto;
+}
+
+/* the chips under the prompt box */
+.guide-chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+.guide-chips-label {
+  color: var(--muted);
+  font-size: 13px;
+}
+.guide-chips-edit {
+  font-size: 13px;
+}
+.job-guides {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+}

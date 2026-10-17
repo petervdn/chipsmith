@@ -36,8 +36,15 @@ export function useJobs(): Job[] {
 /** Sends a prompt (with the song it is sent again from, if so); the jobs are read again at once. */
 export function useSendPrompt() {
   return useMutation({
-    mutationFn: ({ prompt, fromSong }: { prompt: string; fromSong: string | null }) =>
-      sendJson<Job>('/api/jobs', 'POST', { prompt, fromSong }),
+    mutationFn: ({
+      prompt,
+      fromSong,
+      guideIds,
+    }: {
+      prompt: string;
+      fromSong: string | null;
+      guideIds: string[];
+    }) => sendJson<Job>('/api/jobs', 'POST', { prompt, fromSong, guideIds }),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: getQueryKey({ type: 'jobs' }) }),
   });
 }

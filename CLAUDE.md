@@ -22,7 +22,7 @@ for the format and the list). A decision made in a conversation is not done unti
   is any piece of audio, whole or cut by bars and chip **channels** (a channel is only ever the
   chip's).
 - **A clip never changes** once made, and holds all of its own information. A change is a new clip.
-- **What is made is never in git**: songs, clips, jobs and the user's guidance are in the data folder
+- **What is made is never in git**: songs, clips, jobs and style guides are in the data folder
   (`data/`, docs/adr/0018). The repository holds the app and five example songs (`examples/`), and no
   one's name, prompts or taste.
 - **`npm run check`** (types, lint, tests, formatting) passes before a commit.
@@ -34,8 +34,8 @@ for the format and the list). A decision made in a conversation is not done unti
 
 - `notes/making-songs.md`: how a job's Claude makes songs from a prompt.
 - `notes/furnace-facts.md`: verified Furnace facts and sound recipes.
-- The user's taste and feedback per style: `data/guidance/` (not in git; the composing Claude is told
-  where it is).
+- The user's taste is in their **style guides** (`data/guides/`, the Guides page): chosen per prompt,
+  sent with it, and kept with what it made (docs/adr/0019).
 - `references/furnace/demos/`: Furnace's demo songs, for checking how Furnace itself writes things.
 
 ## Working rules

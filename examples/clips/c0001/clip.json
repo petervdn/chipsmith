@@ -2,6 +2,7 @@
   "id": "c0001",
   "created": "2026-10-16T22:09:15.390Z",
   "prompt": "A four-voice fugue with drums in 3/4 at 160 bpm, in A minor, NES + SCC+. Every layer and the drums play from the start. Subject: quarters, then falling eighths; free voices in flowing eighths; an octave-pulse bass in eighths. Voices enter alto, soprano, tenor, bass. Drums: a fast oom-pah-pah, with rolls and toms as fills.",
+  "guides": [],
   "promptId": "example",
   "name": {
     "section": null,

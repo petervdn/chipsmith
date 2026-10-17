@@ -30,7 +30,7 @@ clips/<id>/audio.flac     its audio (rendered from source.fur when the server st
 clips/<id>/source.fur     its own Furnace module
 clips/<id>/script.ts      its own copy of the script that wrote it
 songs/<id>/song.json      a song's arrangement (shared/song.types.ts)
-guidance/*.md             the user's taste and feedback, read by the composing Claude
+guides/<id>/guide.json    a style guide (shared/guide.types.ts), sent with a prompt when chosen
 ```
 
 The files are the data (0006). Ids are a letter and a number: `c0001` for clips, `s0001` for songs.
@@ -51,14 +51,16 @@ What they answer is typed in `shared/api.types.ts`.
 
 ## The pages
 
-`src/`, React (0013). One top bar on every page: Songs | Clips | New, and in a song the song's title.
+`src/`, React (0013). One top bar on every page: Songs | Clips | Guides | New, and in a song the song's title.
 
 - **Songs** (`/`): every song, with the filter bar (words, tags, rejected or not), its facts, ▶,
   ★ / ✕, and ⌄ to open the row: its prompt (copy, prompt again), its facts and its prompt links.
 - **Song** (`/songs/<id>`): the song opened. Now: its tracks and the clips they play. To come: the
   timeline, playback, the selected block's clip with its prompt and versions, a prompt box.
 - **Clips** (`/clips`): the pool, with the same filter bar.
-- **New** (`/new`): a prompt for Claude in a box that takes the screen, and the cards of its jobs.
+- **Guides** (`/guides`): the style guides, made, edited and deleted.
+- **New** (`/new`): a prompt for Claude in a box that takes the screen, the style guides as chips to
+  send with it, and the cards of its jobs.
 
 The page is laid out for a phone first (one column, rows that wrap, 40 px touch targets) and a
 desktop (rows on one line), in `src/style.css`.
@@ -112,8 +114,12 @@ row and song page has ▶.
 
 ## Prompts and jobs
 
-A prompt is written on the New page (`/new`) and becomes a job (`server/jobs.ts`,
-`jobs/<id>/job.json`, out of git) the moment it arrives. Its card shows on the New page (running ones,
+A prompt is written on the New page (`/new`), with the style guides chosen as chips (the default ones
+to start with; nothing is carried over from another song), and becomes a job (`server/jobs.ts`,
+`jobs/<id>/job.json`, out of git) the moment it arrives. The chosen guides (`server/guides.ts`) are
+copied into the job, given to Claude as part of the prompt, and copied into every song and clip it
+makes (`guides` beside `prompt`), so a later change to a guide does not change what they were made
+from (0019). Its card shows on the New page (running ones,
 then those of the last hour, until hidden); a running job also has one line above the songs list,
 and the New tab in the top bar counts the running ones. The runner (`server/job-runner.ts`) takes one job at a time through its
 phases:

@@ -7,6 +7,7 @@ import { copyFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import type { Status, Tag } from '../shared/catalogue.types.ts';
 import type { Clip } from '../shared/clip.types.ts';
+import type { SentGuide } from '../shared/guide.types.ts';
 import type { Song } from '../shared/song.types.ts';
 import type { FurModule } from '../fur/fur.types.ts';
 import { getFurFile } from '../fur/write.ts';
@@ -23,6 +24,8 @@ export type NewSong = {
   module: FurModule;
   /** The prompt as written, or what the song was made from. */
   prompt: string;
+  /** The style guides sent with the prompt, copied. */
+  guides: SentGuide[];
   promptId: string;
   /** The script that wrote the module, copied into the clip. */
   scriptFile: string;
@@ -42,6 +45,7 @@ export async function makeSong({
   title,
   module,
   prompt,
+  guides,
   promptId,
   scriptFile,
   tags,
@@ -62,6 +66,7 @@ export async function makeSong({
     id: clipId,
     created,
     prompt,
+    guides,
     promptId,
     name: { section: null, stem: null },
     bars: null,
@@ -87,6 +92,7 @@ export async function makeSong({
     tags,
     status,
     prompt,
+    guides,
     promptedFrom,
     tracks: [
       { id: 't1', name: 'Whole', blocks: [{ clip: clipId, start: 0, trim: null, repeats: 1 }] },

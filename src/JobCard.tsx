@@ -64,6 +64,9 @@ export function JobCard({ job, onHide }: JobCardProps) {
         )}
       </header>
       <p className="job-prompt">{job.prompt}</p>
+      {job.guides.length > 0 && (
+        <p className="job-guides">with {job.guides.map((guide) => guide.name).join(', ')}</p>
+      )}
       {isRunning && <p className="job-now">{lastNote}</p>}
       {job.songs.length > 0 && (
         <ul className="job-songs">

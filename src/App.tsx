@@ -1,6 +1,7 @@
 // The app: the top bar, a warning when a program it calls is missing, the page the address is, and
 // the player bar.
 import { ClipsPage } from './pages/ClipsPage.tsx';
+import { GuidesPage } from './pages/GuidesPage.tsx';
 import { NewPage } from './pages/NewPage.tsx';
 import { SongPage } from './pages/SongPage.tsx';
 import { SongsPage } from './pages/SongsPage.tsx';
@@ -21,6 +22,7 @@ export function App() {
       <main className="page">
         {route.page === 'songs' && <SongsPage jobs={jobs} />}
         {route.page === 'clips' && <ClipsPage />}
+        {route.page === 'guides' && <GuidesPage />}
         {route.page === 'new' && <NewPage jobs={jobs} />}
         {route.page === 'song' && <SongPage key={route.songId} songId={route.songId} />}
       </main>

@@ -20,7 +20,7 @@ export async function requestJson<Answer>(path: string, init?: RequestInit): Pro
 /** Sends JSON to a route with a method. */
 export function sendJson<Answer>(
   path: string,
-  method: 'POST' | 'PATCH',
+  method: 'POST' | 'PATCH' | 'DELETE',
   body: unknown,
 ): Promise<Answer> {
   return requestJson<Answer>(path, {

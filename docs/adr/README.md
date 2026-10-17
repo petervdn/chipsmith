@@ -32,3 +32,4 @@ Consequences.
 | [0016](0016-a-song-keeps-the-prompt-it-was-made-from.md) | A song keeps the prompt it was made from; prompting it again sends only that | accepted |
 | [0017](0017-where-state-lives.md) | Where state lives: local first, then lifted, then a store; the server's in TanStack Query | accepted |
 | [0018](0018-what-is-made-is-not-in-git.md) | What is made is never in git; five examples are, and missing audio is rendered on start | accepted |
+| [0019](0019-style-guides-are-part-of-the-prompt.md) | Style guides are part of the prompt: chosen per prompt, copied into what it makes | accepted |

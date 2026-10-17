@@ -16,6 +16,7 @@ export type QueryKeyParams =
   | { type: 'song'; songId: string }
   | { type: 'clips' }
   | { type: 'jobs' }
+  | { type: 'guides' }
   | { type: 'programs' };
 
 /**
@@ -32,6 +33,8 @@ export function getQueryKey(params: QueryKeyParams): QueryKey {
       return ['clips'];
     case 'jobs':
       return ['jobs'];
+    case 'guides':
+      return ['guides'];
     case 'programs':
       return ['programs'];
     default:

@@ -1,12 +1,15 @@
 /**
- * New ids for clips, songs and jobs: a letter and the next free number (`c0001`, `s0001`). The id's folder
+ * New ids for clips, songs, jobs and guides: a letter and the next free number (`c0001`, `s0001`). The id's folder
  * is made at once and fails if it is there, so two makers never get the same id.
  */
 import { existsSync, mkdirSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 
 /** The id of a kind: its letter and its folder under the data root. */
-export type IdKind = { letter: 'c' | 's' | 'j'; folder: 'clips' | 'songs' | 'jobs' };
+export type IdKind = {
+  letter: 'c' | 's' | 'j' | 'g';
+  folder: 'clips' | 'songs' | 'jobs' | 'guides';
+};
 
 /** Clips: `clips/c0001/`. */
 export const CLIP_IDS: IdKind = { letter: 'c', folder: 'clips' };
@@ -14,6 +17,8 @@ export const CLIP_IDS: IdKind = { letter: 'c', folder: 'clips' };
 export const SONG_IDS: IdKind = { letter: 's', folder: 'songs' };
 /** Jobs: `jobs/j0001/`. */
 export const JOB_IDS: IdKind = { letter: 'j', folder: 'jobs' };
+/** Style guides: `guides/g0001/`. */
+export const GUIDE_IDS: IdKind = { letter: 'g', folder: 'guides' };
 const DIGITS = 4;
 
 /** Makes the folder of the next free id under `root` and gives the id. */
