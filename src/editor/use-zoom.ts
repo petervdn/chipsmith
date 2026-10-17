@@ -1,10 +1,9 @@
-// How wide a bar is drawn: the song itself fitted to the timeline's width (the bars after it
-// scrolled to) until zoomed, then a step in or out at a
-// time, within bounds.
+// How wide a bar is drawn: the whole timeline (the song and the bars after it) fitted to its width
+// until zoomed, then a step in or out at a time, within bounds.
 import { useState } from 'react';
 import type { Clip } from '../../shared/clip.types.ts';
 import type { Song } from '../../shared/song.types.ts';
-import { getBlockSpans, getSongBars, getTicksPerBar } from './timeline.ts';
+import { getBlockSpans, getTicksPerBar, getTimelineBars } from './timeline.ts';
 
 /** The narrowest and widest a bar is drawn, in pixels. */
 const LEAST_PIXELS = 4;
@@ -23,11 +22,11 @@ export const TRACK_NAME_WIDTH = 120;
  * @param timeline.clips - The clips the song's blocks play.
  * @param timeline.width - The timeline's width, in pixels, which the bars are fitted to.
  * @returns `pixelsPerBar`, how wide a bar is drawn; `zoomIn` and `zoomOut`, which zoom a step; and
- * `fit`, which fits the song to the width again; `zoomTo`, which sets the width of a bar.
+ * `fit`, which fits the timeline to the width again; `zoomTo`, which sets the width of a bar.
  */
 export function useZoom({ song, clips, width }: { song: Song; clips: Clip[]; width: number }) {
   const [zoomed, setZoomed] = useState<number | null>(null);
-  const bars = getSongBars(getBlockSpans(song, clips), getTicksPerBar(song));
+  const bars = getTimelineBars(getBlockSpans(song, clips), getTicksPerBar(song));
   const fitted = Math.max(LEAST_PIXELS, (width - TRACK_NAME_WIDTH) / bars);
   const pixelsPerBar = zoomed ?? fitted;
   function zoomTo(pixels: number): void {

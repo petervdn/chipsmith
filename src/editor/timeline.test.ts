@@ -7,7 +7,6 @@ import type { Song } from '../../shared/song.types.ts';
 import {
   getBarLabelStep,
   getBlockSpans,
-  getSongBars,
   getTicksPerBar,
   getTimelineBars,
   getTrackColor,
@@ -80,12 +79,6 @@ test('the timeline shows the song and four bars after it', () => {
   const spans = getBlockSpans(SONG, [CLIP]);
   assert.equal(getTicksPerBar(SONG), 384);
   assert.equal(getTimelineBars(spans, 384), 12);
-});
-
-test('fitting shows the song itself, without the bars after it', () => {
-  const spans = getBlockSpans(SONG, [CLIP]);
-  assert.equal(getSongBars(spans, 384), 8);
-  assert.equal(getSongBars([], 384), 1);
 });
 
 test('narrow bars are numbered every fourth or eighth', () => {
