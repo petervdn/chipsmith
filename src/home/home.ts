@@ -7,7 +7,13 @@ import type { SongListing } from '../../shared/api.types.ts';
 /** How many songs there are, kept, and not heard yet (the rejected left out). */
 export type SongCounts = { songCount: number; keeperCount: number; newCount: number };
 
-/** The `count` songs made last, the rejected left out. */
+/**
+ * Returns the songs made last, the rejected left out.
+ *
+ * @param listings - Every song's listing.
+ * @param count - How many songs to give at most.
+ * @returns Up to `count` listings, the newest first.
+ */
 export function getLatestSongs(listings: SongListing[], count: number): SongListing[] {
   return listings
     .filter(({ song }) => song.status !== 'rejected')
@@ -15,7 +21,12 @@ export function getLatestSongs(listings: SongListing[], count: number): SongList
     .slice(0, count);
 }
 
-/** How many songs there are of each kind. */
+/**
+ * Counts the songs of each kind, the rejected left out.
+ *
+ * @param listings - Every song's listing.
+ * @returns How many songs there are, how many are kept and how many are not heard yet.
+ */
 export function getSongCounts(listings: SongListing[]): SongCounts {
   const statuses = listings
     .map(({ song }) => song.status)

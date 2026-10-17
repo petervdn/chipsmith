@@ -22,7 +22,13 @@ import './SongsPage.css';
 
 type SongsPageProps = { jobs: Job[] };
 
-/** The songs list, with a line for each job on its way above it. */
+/**
+ * Shows the songs list, newest first, with a line for each job on its way above it.
+ *
+ * @param props - The component's props.
+ * @param props.jobs - Every job, of which those on their way get a line.
+ * @returns The page's section element.
+ */
 export function SongsPage({ jobs }: SongsPageProps) {
   const { data: listings, error } = useSongs();
   const { mutateAsync: sendStatus } = useSetSongStatus();

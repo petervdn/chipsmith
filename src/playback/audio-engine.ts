@@ -26,7 +26,10 @@ let endTimer: ReturnType<typeof setTimeout> | null = null;
 /** Counts plays, so a play that is still loading knows when it was stopped or replaced. */
 let playCount = 0;
 
-/** Wakes the audio; called from a tap, as phone browsers only start audio from one. */
+/**
+ * Wakes the audio; called from a tap, as phone browsers only start audio from one. It waits at most
+ * a second and a half for the audio to wake.
+ */
 export async function unlockAudio(): Promise<void> {
   const audio = getContext();
   if (audio.state !== 'running') {
@@ -35,8 +38,17 @@ export async function unlockAudio(): Promise<void> {
 }
 
 /**
- * Plays stretches from a second of the song. Reports how much has loaded while it waits, and calls
- * `onEnd` when the song has played to its end. Gives false when stopped before it could start.
+ * Plays stretches from a second of the song, after stopping what plays. It loads the clips' audio
+ * first, reporting how much has loaded while it waits.
+ *
+ * @param stretches - The stretches the song plays.
+ * @param getUrl - Returns the URL of a clip's audio from its id.
+ * @param from - The second of the song to play from.
+ * @param end - The song's end, in seconds, at which it stops.
+ * @param onProgress - Called with the share of the clips loaded, 0 to 1, as each one loads.
+ * @param onEnd - Called when the song has played to its end.
+ * @returns True when it started playing; false when it was stopped or replaced before it could
+ * start.
  */
 export async function playStretches(
   stretches: Stretch[],
@@ -106,7 +118,11 @@ export function stopPlaying(): void {
   songZero = null;
 }
 
-/** The second of the song now playing, or null when nothing plays. */
+/**
+ * Returns the second of the song now playing.
+ *
+ * @returns The second, or null when nothing plays.
+ */
 export function getSongPosition(): number | null {
   if (songZero === null || !context) return null;
   return Math.max(0, context.currentTime - songZero);
@@ -130,7 +146,13 @@ function getOutput(): GainNode {
   return output;
 }
 
-/** A clip's audio, decoded; fetched once, a few at a time, given up after LOAD_TIMEOUT. */
+/**
+ * Loads a clip's audio, decoded: fetched once, a few at a time, and given up after LOAD_TIMEOUT. A
+ * load that fails is forgotten, so the next one tries again.
+ *
+ * @param url - The URL of the clip's audio.
+ * @returns The decoded audio.
+ */
 export function loadAudio(url: string): Promise<AudioBuffer> {
   let buffer = buffers.get(url);
   if (!buffer) {

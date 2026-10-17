@@ -13,7 +13,12 @@ import { useJobs } from './queries/jobs.ts';
 import { useRoute } from './router.ts';
 import { TopBar } from './top-bar/TopBar.tsx';
 
-/** The whole page. */
+/**
+ * Shows the whole page: the top bar, the program warning, the page the address is, and the player
+ * bar.
+ *
+ * @returns The app's element.
+ */
 export function App() {
   const route = useRoute();
   const jobs = useJobs();

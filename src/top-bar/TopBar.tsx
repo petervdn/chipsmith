@@ -15,7 +15,14 @@ const LOGO_SIZE = 32;
 
 type TopBarProps = { route: Route; jobs: Job[] };
 
-/** The top bar. */
+/**
+ * Shows the top bar.
+ *
+ * @param props - The component's props.
+ * @param props.route - The page open, whose tab is marked (and, in a song, whose title is shown).
+ * @param props.jobs - Every job, for the Jobs tab's count and whether it turns.
+ * @returns The top bar's header element.
+ */
 export function TopBar({ route, jobs }: TopBarProps) {
   const isSongs = route.page === 'songs' || route.page === 'song';
   const isAnyRunning = jobs.some(isJobRunning);
@@ -62,14 +69,25 @@ export function TopBar({ route, jobs }: TopBarProps) {
   );
 }
 
-/** " (12)" after a tab's name, or nothing while its count is not known. */
+/**
+ * Returns the count shown after a tab's name, such as "(12)".
+ *
+ * @param count - The tab's count, or null while it is not known.
+ * @returns The count in brackets, or an empty string while it is not known.
+ */
 function getCountText(count: number | null): string {
   return count === null ? '' : `(${count})`;
 }
 
 type SongCrumbProps = { songId: string };
 
-/** "› title" of the song open, from the cache the song page reads too. */
+/**
+ * Shows "› title" of the song open, from the cache the song page reads too.
+ *
+ * @param props - The component's props.
+ * @param props.songId - The id of the song open, shown until its title has been read.
+ * @returns The crumb's element.
+ */
 function SongCrumb({ songId }: SongCrumbProps) {
   const { data: detail } = useSong(songId);
   return (

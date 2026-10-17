@@ -15,7 +15,14 @@ import './SongEditor.css';
 
 type SongEditorProps = { detail: SongDetail };
 
-/** The song editor. */
+/**
+ * Shows an opened song in the editor: ▶ / ■ from the cursor and the zoom above the timeline, the
+ * timeline, and the selected block's details below it.
+ *
+ * @param props - The component's props.
+ * @param props.detail - The opened song, with its clips.
+ * @returns The song editor element.
+ */
 export function SongEditor({ detail }: SongEditorProps) {
   const [selected, setSelected] = useState<BlockPlace | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);

@@ -7,7 +7,13 @@ import './SongPage.css';
 
 type SongPageProps = { songId: string };
 
-/** The song page. */
+/**
+ * Shows the song page: the song's title and facts, and the editor.
+ *
+ * @param props - The component's props.
+ * @param props.songId - The id of the song opened.
+ * @returns The page's section element, or a paragraph while it loads or when it could not be read.
+ */
 export function SongPage({ songId }: SongPageProps) {
   const { data: detail, error } = useSong(songId);
   usePageTitle(detail?.song.title ?? songId);

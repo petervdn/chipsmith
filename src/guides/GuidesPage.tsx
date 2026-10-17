@@ -12,7 +12,11 @@ import './GuidesPage.css';
 /** What is open: a guide by id, a new one, or nothing. */
 type OpenGuide = { guideId: string } | 'new' | null;
 
-/** The Guides page. */
+/**
+ * Shows the Guides page: the style guides, one of them or a new one open to edit.
+ *
+ * @returns The page's section element.
+ */
 export function GuidesPage() {
   const [open, setOpen] = useState<OpenGuide>(null);
   const { data: guides, error } = useGuides();

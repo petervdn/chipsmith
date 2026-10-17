@@ -11,7 +11,16 @@ type FilterBarProps = {
   placeholder: string;
 };
 
-/** The filter bar. */
+/**
+ * Shows the filter bar: words to find, a switch for the rejected and the list's tags to pick from.
+ *
+ * @param props - The component's props.
+ * @param props.filter - The filter shown.
+ * @param props.onChange - Called with the changed filter.
+ * @param props.tagCounts - The tags in the list and how many items have each.
+ * @param props.placeholder - The text in the words field while it is empty.
+ * @returns The filter bar's element.
+ */
 export function FilterBar({ filter, onChange, tagCounts, placeholder }: FilterBarProps) {
   function toggleTag(name: string): void {
     const tags = filter.tags.includes(name)

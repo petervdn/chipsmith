@@ -21,8 +21,11 @@ export type QueryKeyParams =
   | { type: 'peaks'; clipId: string };
 
 /**
- * The key of a cached read. A song's key starts with the songs list's, so the list's key with
- * `exact: false` reaches every song too.
+ * Returns the key a read is cached by. A song's key starts with the songs list's, so the list's key
+ * with `exact: false` reaches every song too.
+ *
+ * @param params - The kind of read, and what it reads (a song's or a clip's id) where it needs one.
+ * @returns The query key.
  */
 export function getQueryKey(params: QueryKeyParams): QueryKey {
   switch (params.type) {
@@ -45,7 +48,11 @@ export function getQueryKey(params: QueryKeyParams): QueryKey {
   }
 }
 
-/** A case the switch above does not handle is a type error. */
+/**
+ * Throws for a kind of read the switch above does not handle; called with one, it is a type error.
+ *
+ * @param params - The kind of read not handled.
+ */
 function getUnknownKey(params: never): never {
   throw new Error(`no query key for ${JSON.stringify(params)}`);
 }

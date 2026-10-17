@@ -2,7 +2,11 @@
 import { useLook } from './use-look.ts';
 import './LookSwitcher.css';
 
-/** The light / dark switch. */
+/**
+ * Shows the switch between the light and the dark look.
+ *
+ * @returns The switch's button element.
+ */
 export function LookSwitcher() {
   const { look, showNextLook } = useLook();
   const isDark = look.id === 'dark';

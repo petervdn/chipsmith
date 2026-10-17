@@ -12,7 +12,16 @@ type GuideChipsProps = {
   onToggle: (guideId: string) => void;
 };
 
-/** The guide chips. */
+/**
+ * Shows the style guides as chips to choose for a prompt, the text of each to read, and a link
+ * to the Guides page.
+ *
+ * @param props - The component's props.
+ * @param props.guides - Every style guide.
+ * @param props.chosenIds - The ids of the guides chosen to go along with the prompt.
+ * @param props.onToggle - Called with a guide's id when its chip is tapped.
+ * @returns The chips' fieldset element.
+ */
 export function GuideChips({ guides, chosenIds, onToggle }: GuideChipsProps) {
   return (
     <fieldset className="guide-chips">

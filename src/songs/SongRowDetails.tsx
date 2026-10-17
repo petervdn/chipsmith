@@ -10,7 +10,15 @@ import './SongRowDetails.css';
 
 type SongRowDetailsProps = { listing: SongListing; titlesById: Map<string, string> };
 
-/** The details of a song's row. */
+/**
+ * Shows the details of a song's opened row: its prompt with copy, prompt again and use as base, its
+ * facts, and the songs it was prompted from or prompted again as.
+ *
+ * @param props - The component's props.
+ * @param props.listing - The song's listing.
+ * @param props.titlesById - Every song's title by its id, for the links to other songs.
+ * @returns The details' element.
+ */
 export function SongRowDetails({ listing, titlesById }: SongRowDetailsProps) {
   const { song, isChangedAfterPrompt, key, chips, clipCount, promptedAgainAs } = listing;
   const [copyResult, setCopyResult] = useState<boolean | null>(null);
@@ -100,7 +108,12 @@ export function SongRowDetails({ listing, titlesById }: SongRowDetailsProps) {
   );
 }
 
-/** "16 Oct 22:09" for an ISO date. */
+/**
+ * Returns a date as day, month and time, such as "16 Oct 22:09".
+ *
+ * @param iso - The date, in ISO form.
+ * @returns The date as it is shown, or the text as given when it is not a date.
+ */
 function formatDate(iso: string): string {
   const date = new Date(iso);
   if (Number.isNaN(date.getTime())) return iso;

@@ -115,7 +115,13 @@ const IDEAS = [
   'with the melody doubled in octaves',
 ];
 
-/** A prompt made up at random; `getRandom` gives numbers from 0 up to 1, as Math.random does. */
+/**
+ * Makes up a prompt at random from its parts: how many songs, a mood, a kind of piece, the chips, a
+ * rhythm and one thing to build it around.
+ *
+ * @param getRandom - Gives numbers from 0 up to 1, as Math.random does.
+ * @returns The prompt, one sentence.
+ */
 export function getRandomPrompt(getRandom: () => number): string {
   function pick(parts: string[]): string {
     return parts[Math.floor(getRandom() * parts.length)] ?? parts[0] ?? '';

@@ -5,7 +5,15 @@
  */
 import type { Clip } from '../../shared/clip.types.ts';
 
-/** The line of versions `clipId` is in, oldest first; just the clip when it has none. */
+/**
+ * Returns the line of versions a clip is in: the clip the line started from and every variation made
+ * from it since.
+ *
+ * @param clipId - The id of the clip.
+ * @param clips - The clip pool.
+ * @returns The versions, oldest first; just the clip when it has none, and none when the clip is not
+ * in the pool.
+ */
 export function getVersions(clipId: string, clips: Clip[]): Clip[] {
   const clipsById = new Map(clips.map((clip) => [clip.id, clip]));
   let root = clipsById.get(clipId);

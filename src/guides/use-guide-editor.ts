@@ -8,7 +8,16 @@ import { useDeleteGuide, useSaveGuide } from '../queries/guides.ts';
 
 const EMPTY_DRAFT: GuideDraft = { name: '', text: '', isDefault: false };
 
-/** The draft of `guide` (null: a new one), and saving it; `onDone` follows a save or a delete. */
+/**
+ * Keeps the draft of a style guide as it is typed, and saves or deletes it.
+ *
+ * @param guide - The guide edited, or null for a new one.
+ * @param onDone - Called after a save or a delete.
+ * @returns The draft (`draft`), a handler that changes fields of it (`changeDraft`), handlers that
+ *   save it (`save`) and delete the guide after asking (`remove`), whether it can be saved
+ *   (`canSave`: it has a name, differs from what is saved, and no save is on its way), and the
+ *   error of a save or a delete (`error`).
+ */
 export function useGuideEditor(guide: Guide | null, onDone: () => void) {
   const [draft, setDraft] = useState<GuideDraft>(() =>
     guide ? { name: guide.name, text: guide.text, isDefault: guide.isDefault } : EMPTY_DRAFT,

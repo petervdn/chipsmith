@@ -27,7 +27,12 @@ type PlayerStore = {
   seekSong: (to: number) => void;
 };
 
-/** The URL of a clip's audio. */
+/**
+ * Returns the URL of a clip's audio.
+ *
+ * @param clipId - The id of the clip.
+ * @returns The URL.
+ */
 export function getClipAudioUrl(clipId: string): string {
   return `/media/clips/${encodeURIComponent(clipId)}/audio.flac`;
 }

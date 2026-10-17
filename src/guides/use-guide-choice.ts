@@ -6,7 +6,13 @@ import { useState } from 'react';
 import type { Guide } from '../../shared/guide.types.ts';
 import { useGuides } from '../queries/guides.ts';
 
-/** The guides, which are chosen, toggling one, and going back to the defaults. */
+/**
+ * Keeps the style guides chosen for a prompt: the default ones until a chip is toggled, then
+ * what was toggled.
+ *
+ * @returns Every guide (`guides`), the ids of those chosen (`chosenIds`), a handler that toggles
+ *   one (`toggleGuide`), and one that goes back to the defaults (`resetChoice`).
+ */
 export function useGuideChoice(): {
   guides: Guide[];
   chosenIds: string[];

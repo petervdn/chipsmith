@@ -17,7 +17,18 @@ type BlockDetailsProps = {
   onPlayFrom: (seconds: number) => void;
 };
 
-/** The details of the selected block. */
+/**
+ * Shows the selected block's details: where it plays, its clip and the clip's versions, and ▶ to play
+ * the song from the block.
+ *
+ * @param props - The component's props.
+ * @param props.song - The song the block is in.
+ * @param props.span - The block, as the timeline draws it.
+ * @param props.clip - The block's clip, or undefined when it is missing.
+ * @param props.versions - The versions of the clip, oldest first.
+ * @param props.onPlayFrom - Called with the block's start, in seconds, to play the song from there.
+ * @returns The block details element.
+ */
 export function BlockDetails({ song, span, clip, versions, onPlayFrom }: BlockDetailsProps) {
   const ticksPerBar = getTicksPerBar(song);
   const trackName = song.tracks.find((track) => track.id === span.trackId)?.name ?? span.trackId;
@@ -79,7 +90,12 @@ export function BlockDetails({ song, span, clip, versions, onPlayFrom }: BlockDe
   );
 }
 
-/** A bar as the page counts it: from 1, with a fraction where it starts inside one. */
+/**
+ * Formats a bar as the page counts it: from 1, with a fraction where it starts inside one.
+ *
+ * @param bar - The bar, counted from 0.
+ * @returns The bar counted from 1, to two decimals at most.
+ */
 function formatBar(bar: number): string {
   const rounded = Math.round((bar + 1) * 100) / 100;
   return String(rounded);

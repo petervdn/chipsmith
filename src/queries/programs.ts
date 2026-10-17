@@ -4,7 +4,11 @@ import type { ProgramCheck } from '../../shared/api.types.ts';
 import { getQueryKey, queryClient } from './client.ts';
 import { requestJson } from './request.ts';
 
-/** The programs, as the server last checked them. */
+/**
+ * Reads the programs the app calls, as the server last checked them.
+ *
+ * @returns The query of the programs' checks.
+ */
 export function usePrograms() {
   return useQuery({
     queryKey: getQueryKey({ type: 'programs' }),
@@ -13,7 +17,12 @@ export function usePrograms() {
   });
 }
 
-/** Checks the programs again (after installing one or changing a setting). */
+/**
+ * Has the server check the programs again (after installing one or changing a setting); its answer
+ * becomes the cached checks.
+ *
+ * @returns The mutation, called with nothing.
+ */
 export function useCheckProgramsAgain() {
   return useMutation({
     mutationFn: () => requestJson<ProgramCheck[]>('/api/programs', { method: 'POST' }),

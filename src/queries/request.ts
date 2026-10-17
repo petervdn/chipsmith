@@ -3,7 +3,14 @@
  * `{ error }` as the error. Used by the queries and mutations beside it; knows nothing of React.
  */
 
-/** Reads a route, or sends to it, and gives the server's answer. */
+/**
+ * Reads a route, or sends to it, and gives the server's answer. An answer that is not OK is thrown
+ * as an error with the server's `{ error }`, or the status text when it has none.
+ *
+ * @param path - The route.
+ * @param init - The request's method, headers and body; a GET when left out.
+ * @returns The server's answer, read as JSON.
+ */
 export async function requestJson<Answer>(path: string, init?: RequestInit): Promise<Answer> {
   const response = await fetch(path, init);
   const answer: unknown = await response.json();
@@ -17,7 +24,14 @@ export async function requestJson<Answer>(path: string, init?: RequestInit): Pro
   return asAnswer<Answer>(answer);
 }
 
-/** Sends JSON to a route with a method. */
+/**
+ * Sends JSON to a route with a method.
+ *
+ * @param path - The route.
+ * @param method - The method.
+ * @param body - What is sent, written as JSON.
+ * @returns The server's answer, read as JSON.
+ */
 export function sendJson<Answer>(
   path: string,
   method: 'POST' | 'PATCH' | 'DELETE',
@@ -30,7 +44,12 @@ export function sendJson<Answer>(
   });
 }
 
-/** The server's answer is the route's type by contract (shared/api.types.ts). */
+/**
+ * Gives the server's answer the route's type, which it has by contract (shared/api.types.ts).
+ *
+ * @param answer - The server's answer, read as JSON.
+ * @returns The same answer, typed.
+ */
 function asAnswer<Answer>(answer: unknown): Answer {
   // eslint-disable-next-line typescript/consistent-type-assertions -- the server's routes are typed by shared/api.types.ts; checking each answer again would repeat server/model-checks.ts
   return answer as Answer;

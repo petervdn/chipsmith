@@ -17,7 +17,14 @@ const LOGO_SIZE = 96;
 
 type HomePageProps = { jobs: Job[] };
 
-/** The home page. */
+/**
+ * Shows the home page: the logo and what the app is, a button for a new song, the jobs on their
+ * way, how many songs there are and the songs made last.
+ *
+ * @param props - The component's props.
+ * @param props.jobs - Every job, of which those on their way get a line.
+ * @returns The page's section element.
+ */
 export function HomePage({ jobs }: HomePageProps) {
   const { data: listings, error } = useSongs();
   usePageTitle('Home');

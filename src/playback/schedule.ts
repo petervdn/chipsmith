@@ -17,7 +17,14 @@ export type Stretch = {
   duration: number;
 };
 
-/** The stretches a song plays; a block whose clip is not known plays nothing. */
+/**
+ * Returns the stretches a song plays: every block and each of its repeats. A block whose clip is not
+ * known plays nothing.
+ *
+ * @param song - The song.
+ * @param clips - The clips the song's blocks play.
+ * @returns The stretches, track by track, in seconds from the song's start.
+ */
 export function getStretches(song: Song, clips: Clip[]): Stretch[] {
   const secondsPerTick = 1 / getTicksPerSecond(song.bpm);
   const clipsById = new Map(clips.map((clip) => [clip.id, clip]));
@@ -42,7 +49,12 @@ export function getStretches(song: Song, clips: Clip[]): Stretch[] {
   return stretches;
 }
 
-/** Where the last stretch ends, in seconds. */
+/**
+ * Returns where the last stretch ends.
+ *
+ * @param stretches - The stretches a song plays.
+ * @returns The end, in seconds from the song's start; 0 when there are none.
+ */
 export function getEnd(stretches: Stretch[]): number {
   return stretches.reduce((end, { start, duration }) => Math.max(end, start + duration), 0);
 }

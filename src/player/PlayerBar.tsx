@@ -7,7 +7,12 @@ import { usePlayerStore } from '../stores/player-store.ts';
 import { usePreferencesStore } from '../stores/preferences-store.ts';
 import './PlayerBar.css';
 
-/** The player bar. */
+/**
+ * Shows the player bar while a song is in the player: ▶ / ■, the song's title, where it is, a
+ * slider to move in it, and the mute switch.
+ *
+ * @returns The bar's element, or null when no song is in the player.
+ */
 export function PlayerBar() {
   const player = usePlayerStore();
   const { playSong, seekSong, stopSong } = player;

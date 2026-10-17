@@ -26,7 +26,12 @@ const SONG_MARKS = {
 /** The card, and what to do when its job is removed (a job that is over), if it can be. */
 type JobCardProps = { job: Job; onRemove?: () => void };
 
-/** Seconds a job has been going, or went, kept current every second while it runs. */
+/**
+ * Keeps how long a job has been going, or went, current every second while it runs.
+ *
+ * @param job - The job.
+ * @returns The seconds from the job's start to now, or to its end when it is over.
+ */
 export function useElapsed(job: Job): number {
   const [now, setNow] = useState(() => Date.now());
   const isRunning = isJobRunning(job);
@@ -39,19 +44,42 @@ export function useElapsed(job: Job): number {
   return Math.max(0, (end - Date.parse(job.created)) / 1000);
 }
 
-/** What a job is doing, in a few words: "Rendering 2 of 5". */
+/**
+ * Returns what a job is doing in a few words, such as "Rendering 2 of 5".
+ *
+ * @param job - The job.
+ * @param job.phase - The phase the job is in.
+ * @param job.songs - The songs it makes, counted while it renders.
+ * @returns The phase's name, with which song of how many while it renders.
+ */
 export function getPhaseName({ phase, songs }: Job): string {
   if (phase !== 'rendering') return PHASE_NAMES[phase];
   const doneCount = songs.filter((song) => song.state === 'done').length;
   return `Rendering ${Math.min(doneCount + 1, songs.length)} of ${songs.length}`;
 }
 
-/** What a running job is doing now: what Claude is in the middle of, else its last note. */
+/**
+ * Returns what a running job is doing now.
+ *
+ * @param job - The job.
+ * @param job.now - What Claude is in the middle of, if anything.
+ * @param job.notes - The job's notes, of which the last is used otherwise.
+ * @returns What Claude is in the middle of, else the last note, else an empty string.
+ */
 export function getNowText({ now, notes }: Job): string {
   return now ?? notes.at(-1)?.text ?? '';
 }
 
-/** The card of a job. */
+/**
+ * Shows the card of a job: its phase, how long it has been going, what it is doing now, the songs
+ * it makes, how it ended, and its steps on demand.
+ *
+ * @param props - The component's props.
+ * @param props.job - The job shown.
+ * @param props.onRemove - Called when ✕ is pressed to remove the job, given only for a job that
+ *   is over; without it there is no ✕.
+ * @returns The card's section element.
+ */
 export function JobCard({ job, onRemove }: JobCardProps) {
   const [isShowingNotes, setShowingNotes] = useState(false);
   const isRunning = isJobRunning(job);

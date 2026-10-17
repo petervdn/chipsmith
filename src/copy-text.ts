@@ -4,7 +4,13 @@
  * and copy.
  */
 
-/** Copies text; gives whether it worked. */
+/**
+ * Copies text to the clipboard, with the clipboard API where the page may use it and by selecting a
+ * hidden text field otherwise.
+ *
+ * @param text - The text to copy.
+ * @returns Whether it was copied.
+ */
 export async function copyText(text: string): Promise<boolean> {
   if (navigator.clipboard && window.isSecureContext) {
     try {

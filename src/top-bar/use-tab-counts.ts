@@ -17,18 +17,34 @@ export type TabCounts = {
   jobCount: number | null;
 };
 
-/** How many of these an unfiltered list shows. */
+/**
+ * Counts how many items an unfiltered list shows, which leaves the rejected out.
+ *
+ * @param statuses - The items' statuses.
+ * @returns How many of them show.
+ */
 function getShownCount(statuses: Status[]): number {
   return statuses.filter((status) => isShown({ text: '', tags: [], status }, EMPTY_FILTER)).length;
 }
 
-/** How many jobs are on their way, or null when none is. */
+/**
+ * Counts the jobs that are on their way.
+ *
+ * @param jobs - Every job.
+ * @returns How many are on their way, or null when none is.
+ */
 function getRunningCount(jobs: Job[]): number | null {
   const count = jobs.filter(isJobRunning).length;
   return count > 0 ? count : null;
 }
 
-/** The counts of the top bar's tabs, from what the lists read. */
+/**
+ * Gives the counts of the top bar's tabs, from what the lists read.
+ *
+ * @param jobs - Every job, of which those on their way are counted.
+ * @returns The songs and clips an unfiltered list shows, the style guides and the jobs on their
+ *   way; each null while it has not been read, and the jobs null when none is on its way.
+ */
 export function useTabCounts(jobs: Job[]): TabCounts {
   const { data: songListings } = useSongs();
   const { data: clipListings } = useClips();

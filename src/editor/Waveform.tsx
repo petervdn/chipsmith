@@ -11,7 +11,17 @@ const MOST_PIXELS = 8192;
 
 type WaveformProps = { clipId: string; offset: number; duration: number; width: number };
 
-/** The waveform of `duration` seconds of a clip from `offset`, `width` pixels wide. */
+/**
+ * Shows a slice of a clip's waveform on a canvas, in the text colour of where it sits; drawn again
+ * when the look changes.
+ *
+ * @param props - The component's props.
+ * @param props.clipId - The id of the clip.
+ * @param props.offset - Where in the clip the slice starts, in seconds.
+ * @param props.duration - How long the slice is, in seconds.
+ * @param props.width - How wide it is drawn, in pixels.
+ * @returns The waveform's canvas element.
+ */
 export function Waveform({ clipId, offset, duration, width }: WaveformProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const { data: peaks } = useClipPeaks(clipId);

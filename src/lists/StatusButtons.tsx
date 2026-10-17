@@ -5,7 +5,14 @@ import './StatusButtons.css';
 
 type StatusButtonsProps = { status: Status; onChange: (status: Status) => void };
 
-/** ★ and ✕ for a status. */
+/**
+ * Shows ★ and ✕ for a status: each sets its status, and pressed again goes back to heard.
+ *
+ * @param props - The component's props.
+ * @param props.status - The status shown.
+ * @param props.onChange - Called with the status chosen.
+ * @returns The buttons' element.
+ */
 export function StatusButtons({ status, onChange }: StatusButtonsProps) {
   return (
     <span className="status-buttons">

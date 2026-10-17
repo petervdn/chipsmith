@@ -8,7 +8,13 @@ import { loadAudio } from '../playback/audio-engine.ts';
 import { getClipAudioUrl } from '../stores/player-store.ts';
 import { getQueryKey } from './client.ts';
 
-/** The peaks of a clip's audio, PEAKS_PER_SECOND to a second. */
+/**
+ * Reads the peaks of a clip's audio, once: the audio is decoded once, shared with the player, and
+ * never changes.
+ *
+ * @param clipId - The id of the clip.
+ * @returns The query of the peaks, PEAKS_PER_SECOND to a second.
+ */
 export function useClipPeaks(clipId: string) {
   return useQuery({
     queryKey: getQueryKey({ type: 'peaks', clipId }),

@@ -6,7 +6,12 @@ import { useLayoutEffect } from 'react';
 import { getLook, getNextLook } from './looks.ts';
 import { usePreferencesStore } from '../stores/preferences-store.ts';
 
-/** The look, and how to switch to the other one. */
+/**
+ * Keeps the page in the look kept in the preferences, put on <html> as `data-look` for style.css.
+ *
+ * @returns The look the page is in (`look`), and a handler that switches to the next one
+ *   (`showNextLook`).
+ */
 export function useLook() {
   const lookId = usePreferencesStore((state) => state.lookId);
   const setLookId = usePreferencesStore((state) => state.setLookId);

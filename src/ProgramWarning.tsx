@@ -3,7 +3,11 @@
 import { useCheckProgramsAgain, usePrograms } from './queries/programs.ts';
 import './ProgramWarning.css';
 
-/** The warning bar, shown only when a program is missing. */
+/**
+ * Shows the warning bar when a program the app calls is missing.
+ *
+ * @returns The warning bar element, or null when every program can be used.
+ */
 export function ProgramWarning() {
   const { data: checks } = usePrograms();
   const { mutate: checkAgain, isPending } = useCheckProgramsAgain();

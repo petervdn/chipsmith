@@ -8,7 +8,15 @@ import './GuideEditor.css';
 
 type GuideEditorProps = { guide: Guide | null; onDone: () => void };
 
-/** The guide editor. */
+/**
+ * Shows a style guide opened for editing, or a new one: its name, its text, whether it is chosen by
+ * default, Save, Cancel and (for a guide that exists) Delete.
+ *
+ * @param props - The component's props.
+ * @param props.guide - The guide edited, or null for a new one.
+ * @param props.onDone - Called after a save or a delete, and on Cancel.
+ * @returns The editor's form element.
+ */
 export function GuideEditor({ guide, onDone }: GuideEditorProps) {
   const { draft, changeDraft, save, remove, canSave, error } = useGuideEditor(guide, onDone);
   return (

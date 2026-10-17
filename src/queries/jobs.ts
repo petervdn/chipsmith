@@ -12,12 +12,23 @@ import { requestJson, sendJson } from './request.ts';
 const RUNNING_INTERVAL = 1000;
 const IDLE_INTERVAL = 5000;
 
-/** Whether a job is still on its way. */
+/**
+ * Tells whether a job is still on its way.
+ *
+ * @param job - The job.
+ * @param job.phase - The phase it is in.
+ * @returns True until it is done or has failed.
+ */
 export function isJobRunning({ phase }: Job): boolean {
   return phase !== 'done' && phase !== 'failed';
 }
 
-/** Every job, newest first. */
+/**
+ * Reads the jobs from the server, every second while one runs and every five when none does, and
+ * reads the songs list again whenever a job has made another song.
+ *
+ * @returns Every job, newest first; none until they are read.
+ */
 export function useJobs(): Job[] {
   const { data } = useQuery({
     queryKey: getQueryKey({ type: 'jobs' }),
@@ -33,7 +44,11 @@ export function useJobs(): Job[] {
   return jobs;
 }
 
-/** Takes a job that is over off the Jobs page. */
+/**
+ * Takes a job that is over off the Jobs page; the server's answer becomes the cached jobs.
+ *
+ * @returns The mutation, called with the job's id.
+ */
 export function useRemoveJob() {
   return useMutation({
     mutationFn: (jobId: string) =>
@@ -42,7 +57,12 @@ export function useRemoveJob() {
   });
 }
 
-/** Sends a prompt (with the song it is sent again from, if so); the jobs are read again at once. */
+/**
+ * Sends a prompt to the server as a new job; the jobs are read again at once.
+ *
+ * @returns The mutation, called with the `prompt`, the song it is sent again from (`fromSong`, or
+ * null) and the ids of the style guides sent with it (`guideIds`).
+ */
 export function useSendPrompt() {
   return useMutation({
     mutationFn: ({

@@ -2,7 +2,12 @@
 import { useEffect, useState } from 'react';
 import type { RefObject } from 'react';
 
-/** The width of `ref`'s element in pixels, 0 until it is on the page. */
+/**
+ * Returns the width of an element on the page, kept current as it changes.
+ *
+ * @param ref - The ref of the element.
+ * @returns The element's width in pixels, 0 until it is on the page.
+ */
 export function useElementWidth(ref: RefObject<HTMLElement | null>): number {
   const [width, setWidth] = useState(0);
   useEffect(() => {

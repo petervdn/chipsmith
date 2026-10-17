@@ -8,7 +8,13 @@ import './JobsPage.css';
 
 type JobsPageProps = { jobs: Job[] };
 
-/** The Jobs page. */
+/**
+ * Shows the Jobs page: the jobs on their way, then those done or failed, each with ✕.
+ *
+ * @param props - The component's props.
+ * @param props.jobs - Every job, newest first.
+ * @returns The page's section element.
+ */
 export function JobsPage({ jobs }: JobsPageProps) {
   usePageTitle('Jobs');
   const { mutate: removeJob } = useRemoveJob();

@@ -29,12 +29,25 @@ const BARS_AFTER_END = 4;
 /** The fewest bars the timeline shows. */
 const LEAST_BARS = 8;
 
-/** Ticks to a bar of the song. */
+/**
+ * Returns the ticks to a bar of a song.
+ *
+ * @param song - The song.
+ * @param song.beats - Beats to a bar.
+ * @returns Ticks to a bar.
+ */
 export function getTicksPerBar({ beats }: Song): number {
   return beats * TICKS_PER_BEAT;
 }
 
-/** Every block of the song as the timeline draws it, track by track. */
+/**
+ * Returns every block of a song as the timeline draws it, track by track. A block whose clip is
+ * unknown is drawn a beat long.
+ *
+ * @param song - The song.
+ * @param clips - The clips the song's blocks play.
+ * @returns The blocks' spans, track by track, each track's in the order of its blocks.
+ */
 export function getBlockSpans(song: Song, clips: Clip[]): BlockSpan[] {
   const ticksPerSecond = getTicksPerSecond(song.bpm);
   const clipsById = new Map(clips.map((clip) => [clip.id, clip]));
@@ -58,13 +71,24 @@ export function getBlockSpans(song: Song, clips: Clip[]): BlockSpan[] {
   );
 }
 
-/** How many bars the timeline shows: the song's, and some after it to place things. */
+/**
+ * Returns how many bars the timeline shows: the song's, and some after it to place things.
+ *
+ * @param spans - The song's blocks as the timeline draws them.
+ * @param ticksPerBar - Ticks to a bar of the song.
+ * @returns The number of bars, never fewer than LEAST_BARS.
+ */
 export function getTimelineBars(spans: BlockSpan[], ticksPerBar: number): number {
   const end = spans.reduce((last, span) => Math.max(last, span.end), 0);
   return Math.max(LEAST_BARS, Math.ceil(end / ticksPerBar) + BARS_AFTER_END);
 }
 
-/** Every how many bars the ruler shows a number, so the numbers do not run into each other. */
+/**
+ * Returns every how many bars the ruler shows a number, so the numbers do not run into each other.
+ *
+ * @param pixelsPerBar - How wide a bar is drawn, in pixels.
+ * @returns 1, 4 or 8: the narrower the bars, the more of them between numbers.
+ */
 export function getBarLabelStep(pixelsPerBar: number): number {
   if (pixelsPerBar >= 22) return 1;
   if (pixelsPerBar >= 10) return 4;

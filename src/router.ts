@@ -15,7 +15,12 @@ export type Route =
   | { page: 'new' }
   | { page: 'jobs' };
 
-/** The route of an address's path (a query after it is not the route's). */
+/**
+ * Returns the route of an address's path; a query after the path is not part of the route.
+ *
+ * @param address - The address's path, with or without a query.
+ * @returns The route, or the home page when the path is none of the others.
+ */
 export function getRoute(address: string): Route {
   const path = address.split('?')[0] ?? '';
   const song = /^\/songs\/([^/]+)\/?$/.exec(path);
@@ -28,14 +33,23 @@ export function getRoute(address: string): Route {
   return { page: 'home' };
 }
 
-/** Goes to a path of the app, keeping it in the browser's history. */
+/**
+ * Goes to a path of the app without reloading, keeping it in the browser's history; does nothing
+ * when the page is already there.
+ *
+ * @param path - The path to go to, with its query if it has one.
+ */
 export function navigate(path: string): void {
   if (path === window.location.pathname + window.location.search) return;
   window.history.pushState(null, '', path);
   window.dispatchEvent(new PopStateEvent('popstate'));
 }
 
-/** The current route, following back, forward and links within the app. */
+/**
+ * Keeps the current route, following back, forward and links within the app.
+ *
+ * @returns The route of the current address.
+ */
 export function useRoute(): Route {
   const [path, setPath] = useState(window.location.pathname + window.location.search);
   useEffect(() => {

@@ -16,7 +16,11 @@ type PreferencesStore = {
   setLookId: (lookId: string) => void;
 };
 
-/** Light or dark as the system is set, until the top bar's switch chooses. */
+/**
+ * Returns the look the system is set to, which the page is in until the top bar's switch chooses.
+ *
+ * @returns `dark` or `light`.
+ */
 function getSystemLookId(): string {
   return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 }

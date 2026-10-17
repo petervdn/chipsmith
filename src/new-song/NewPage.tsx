@@ -9,7 +9,12 @@ import { useSongs } from '../queries/songs.ts';
 import { usePageTitle } from '../use-page-title.ts';
 import './NewPage.css';
 
-/** The New page. */
+/**
+ * Shows the New page: the prompt box, starting with a song's prompt for `?from=<song>` or with
+ * "Based on <song> [<id>]: " for `?base=<song>`.
+ *
+ * @returns The page's section element.
+ */
 export function NewPage() {
   const [fromSongId] = useState(() => new URLSearchParams(window.location.search).get('from'));
   const [baseSongId] = useState(() => new URLSearchParams(window.location.search).get('base'));

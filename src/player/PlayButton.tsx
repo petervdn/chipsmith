@@ -8,7 +8,16 @@ import './PlayButton.css';
 
 type PlayButtonProps = { songId: string; isWaitingForAudio: boolean };
 
-/** The play button of a song. */
+/**
+ * Shows the play button of a song: it loads and plays the song from the start, or stops it when it
+ * is the one playing, and shows the share loaded while it loads.
+ *
+ * @param props - The component's props.
+ * @param props.songId - The id of the song it plays.
+ * @param props.isWaitingForAudio - Whether the server is still rendering the song's audio, which
+ *   shows … and cannot be pressed.
+ * @returns The button element.
+ */
 export function PlayButton({ songId, isWaitingForAudio }: PlayButtonProps) {
   const isThisSong = usePlayerStore(
     (player) => player.song?.song.id === songId && player.mode !== 'stopped',

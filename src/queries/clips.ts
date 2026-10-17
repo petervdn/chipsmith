@@ -5,7 +5,11 @@ import type { Status } from '../../shared/catalogue.types.ts';
 import { getQueryKey, queryClient } from './client.ts';
 import { requestJson, sendJson } from './request.ts';
 
-/** The clip pool. */
+/**
+ * Reads the clip pool from the server.
+ *
+ * @returns The query of the pool's clip listings.
+ */
 export function useClips() {
   return useQuery({
     queryKey: getQueryKey({ type: 'clips' }),
@@ -13,7 +17,11 @@ export function useClips() {
   });
 }
 
-/** Changes a clip's status; the pool is read again. */
+/**
+ * Changes a clip's status on the server; the pool is read again after.
+ *
+ * @returns The mutation, called with the clip's id (`clipId`) and its new `status`.
+ */
 export function useSetClipStatus() {
   return useMutation({
     mutationFn: ({ clipId, status }: { clipId: string; status: Status }) =>

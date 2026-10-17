@@ -26,7 +26,21 @@ type TimelineProps = {
   onMoveTo: (seconds: number) => void;
 };
 
-/** The timeline. */
+/**
+ * Shows the song's timeline: a ruler of bars, a row per track with its blocks, and the playhead. A
+ * tap on the ruler moves the play position there; a tap on a block selects it, and a tap beside the
+ * blocks selects none.
+ *
+ * @param props - The component's props.
+ * @param props.song - The song.
+ * @param props.clips - The clips the song's blocks play.
+ * @param props.pixelsPerBar - How wide a bar is drawn, in pixels.
+ * @param props.selected - The selected block, or null.
+ * @param props.cursor - The cursor, in seconds.
+ * @param props.onSelect - Called with the block tapped, or null when none is.
+ * @param props.onMoveTo - Called with the second tapped on the ruler.
+ * @returns The timeline element.
+ */
 export function Timeline({
   song,
   clips,
@@ -104,7 +118,18 @@ type TimelineBlockProps = {
   onSelect: () => void;
 };
 
-/** A block and its repeats, each the slice of its clip's waveform it plays. */
+/**
+ * Shows a block and its repeats, each drawn as the slice of its clip's waveform it plays, the repeats
+ * fainter.
+ *
+ * @param props - The component's props.
+ * @param props.span - The block, as the timeline draws it.
+ * @param props.clip - The block's clip, or undefined when it is missing.
+ * @param props.pixelsPerTick - How wide a tick is drawn, in pixels.
+ * @param props.isSelected - Whether the block is selected.
+ * @param props.onSelect - Called when the block or one of its repeats is tapped.
+ * @returns The block's elements, one for each play.
+ */
 function TimelineBlock({ span, clip, pixelsPerTick, isSelected, onSelect }: TimelineBlockProps) {
   const width = span.length * pixelsPerTick;
   const label = clip ? getClipLabel(clip) : `missing ${span.clipId}`;

@@ -12,13 +12,23 @@ import { UndoBar, useUndo } from '../lists/UndoBar.tsx';
 import { usePageTitle } from '../use-page-title.ts';
 import '../lists/lists.css';
 
-/** A clip's name as the list shows it: its section and stem, or "whole" for an unsplit clip. */
+/**
+ * Returns a clip's name as the list shows it.
+ *
+ * @param clip - The clip.
+ * @param clip.name - The clip's name, its section and stem.
+ * @returns The section and stem, or "whole" for an unsplit clip.
+ */
 export function getClipLabel({ name }: Clip): string {
   const label = [name.section, name.stem].filter(Boolean).join(' ');
   return label || 'whole';
 }
 
-/** The clips list. */
+/**
+ * Shows the clips list, newest first, with the filter bar above it and ★ / ✕ on each row.
+ *
+ * @returns The page's section element.
+ */
 export function ClipsPage() {
   const { data: listings, error } = useClips();
   const { mutateAsync: sendStatus } = useSetClipStatus();

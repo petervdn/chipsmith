@@ -13,7 +13,17 @@ export type FilterableItem = { text: string; tags: Tag[]; status: Status };
 /** A filter that shows everything but the rejected. */
 export const EMPTY_FILTER: ListFilter = { words: '', tags: [], isShowingRejected: false };
 
-/** Whether an item shows under the filter. */
+/**
+ * Tells whether an item shows under a filter: it is not rejected (unless the rejected show), it has
+ * every tag of the filter, and its text and tag names hold every word.
+ *
+ * @param item - What the filter reads of the item.
+ * @param item.text - The item's text, searched for the words.
+ * @param item.tags - The item's tags.
+ * @param item.status - The item's status.
+ * @param filter - The filter.
+ * @returns Whether the item shows.
+ */
 export function isShown({ text, tags, status }: FilterableItem, filter: ListFilter): boolean {
   if (status === 'rejected' && !filter.isShowingRejected) return false;
   const tagNames = tags.map((tag) => tag.name);
@@ -26,7 +36,12 @@ export function isShown({ text, tags, status }: FilterableItem, filter: ListFilt
     .every((word) => haystack.includes(word));
 }
 
-/** Every tag the items have, most used first. */
+/**
+ * Counts every tag the items have.
+ *
+ * @param items - The items of the list.
+ * @returns Each tag's name and how many items have it, most used first, then by name.
+ */
 export function getTagCounts(items: FilterableItem[]): { name: string; count: number }[] {
   const counts = new Map<string, number>();
   for (const item of items) {
@@ -37,7 +52,15 @@ export function getTagCounts(items: FilterableItem[]): { name: string; count: nu
     .sort((first, second) => second.count - first.count || first.name.localeCompare(second.name));
 }
 
-/** A filter as the address's query: `q` (words), `tags` (comma-separated), `rejected=1`. */
+/**
+ * Writes a filter as the address's query: `q` (words), `tags` (comma-separated), `rejected=1`.
+ *
+ * @param filter - The filter.
+ * @param filter.words - The words to find, left out when blank.
+ * @param filter.tags - The tags that must all be there.
+ * @param filter.isShowingRejected - Whether rejected items show.
+ * @returns The query with its leading "?", or an empty string for an empty filter.
+ */
 export function getFilterQuery({ words, tags, isShowingRejected }: ListFilter): string {
   const query = new URLSearchParams();
   if (words.trim()) query.set('q', words);
@@ -47,7 +70,12 @@ export function getFilterQuery({ words, tags, isShowingRejected }: ListFilter): 
   return text ? `?${text}` : '';
 }
 
-/** The filter an address's query holds; what it does not say is as in EMPTY_FILTER. */
+/**
+ * Reads the filter an address's query holds.
+ *
+ * @param search - The address's query.
+ * @returns The filter, with what the query does not say as in EMPTY_FILTER.
+ */
 export function getFilterFromQuery(search: string): ListFilter {
   const query = new URLSearchParams(search);
   return {

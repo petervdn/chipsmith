@@ -5,7 +5,15 @@ import type { SongDetail } from '../../shared/api.types.ts';
 import { getSongPosition } from '../playback/audio-engine.ts';
 import { usePlayerStore } from '../stores/player-store.ts';
 
-/** The cursor, whether this song is loading or playing, and how to play, stop and move. */
+/**
+ * Plays an opened song from its cursor, and keeps the cursor.
+ *
+ * @param detail - The opened song, with its clips.
+ * @returns The cursor, in seconds; the song's mode (stopped, loading or playing; stopped while
+ * another song plays); `togglePlaying`, which plays from the cursor, or stops and leaves the cursor
+ * where it stopped; `moveTo`, which moves the cursor to a second and plays on from there if the song
+ * is not stopped; and `playFrom`, which moves the cursor to a second and plays from there.
+ */
 export function useSongTransport(detail: SongDetail) {
   const [cursor, setCursor] = useState(0);
   const mode = usePlayerStore((state) =>

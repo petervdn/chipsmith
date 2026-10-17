@@ -11,7 +11,11 @@ import { requestJson, sendJson } from './request.ts';
 /** Milliseconds between reads while audio is being rendered. */
 const WAITING_INTERVAL = 3000;
 
-/** The songs list. */
+/**
+ * Reads the songs list from the server, again every few seconds while a song waits for its audio.
+ *
+ * @returns The query of the song listings.
+ */
 export function useSongs() {
   return useQuery({
     queryKey: getQueryKey({ type: 'songs' }),
@@ -21,7 +25,13 @@ export function useSongs() {
   });
 }
 
-/** One song with the clips it plays. */
+/**
+ * Reads one song with the clips it plays from the server, again every few seconds while it waits
+ * for its audio.
+ *
+ * @param songId - The id of the song.
+ * @returns The query of the song.
+ */
 export function useSong(songId: string) {
   return useQuery({
     queryKey: getQueryKey({ type: 'song', songId }),
@@ -30,7 +40,13 @@ export function useSong(songId: string) {
   });
 }
 
-/** One song, from the cache when it is fresh, else from the server (for code outside a component). */
+/**
+ * Fetches one song with the clips it plays: from the cache when it is fresh, else from the server.
+ * For code outside a component.
+ *
+ * @param songId - The id of the song.
+ * @returns The song.
+ */
 export function fetchSong(songId: string): Promise<SongDetail> {
   return queryClient.fetchQuery({
     queryKey: getQueryKey({ type: 'song', songId }),
@@ -38,7 +54,12 @@ export function fetchSong(songId: string): Promise<SongDetail> {
   });
 }
 
-/** Changes a song's status; the songs list and the song are read again. */
+/**
+ * Changes a song's status on the server; the server's answer becomes the cached song, and the songs
+ * list is read again.
+ *
+ * @returns The mutation, called with the song's id (`songId`) and its new `status`.
+ */
 export function useSetSongStatus() {
   return useMutation({
     mutationFn: ({ songId, status }: { songId: string; status: Status }) =>

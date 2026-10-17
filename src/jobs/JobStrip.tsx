@@ -8,7 +8,13 @@ import './JobStrip.css';
 
 type JobStripProps = { job: Job };
 
-/** The line of a running job. */
+/**
+ * Shows the line of a running job, which leads to the Jobs page.
+ *
+ * @param props - The component's props.
+ * @param props.job - The running job.
+ * @returns The line's link element.
+ */
 export function JobStrip({ job }: JobStripProps) {
   const elapsed = useElapsed(job);
   return (

@@ -6,7 +6,13 @@
 /** Peaks to a second of audio. */
 export const PEAKS_PER_SECOND = 200;
 
-/** The loudest sample, 0 to 1, of every 1/PEAKS_PER_SECOND s across the channels. */
+/**
+ * Returns the loudest sample of every 1/PEAKS_PER_SECOND of a second, across the channels.
+ *
+ * @param channels - Each channel's samples, from -1 to 1.
+ * @param sampleRate - Samples a second.
+ * @returns The peaks in order, each from 0 to 1; none when there are no samples.
+ */
 export function getPeaks(channels: Float32Array[], sampleRate: number): number[] {
   const length = channels[0]?.length ?? 0;
   const step = Math.max(1, Math.round(sampleRate / PEAKS_PER_SECOND));

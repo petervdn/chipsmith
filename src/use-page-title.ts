@@ -3,7 +3,11 @@ import { useEffect } from 'react';
 
 const APP_NAME = 'chipsmith';
 
-/** Sets the tab's title to `pageName – chipsmith` while the page is open. */
+/**
+ * Sets the browser tab's title to `pageName – chipsmith` while the page is open.
+ *
+ * @param pageName - The name of the page shown.
+ */
 export function usePageTitle(pageName: string) {
   useEffect(() => {
     document.title = `${pageName} – ${APP_NAME}`;

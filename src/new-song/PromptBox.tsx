@@ -20,7 +20,18 @@ type PromptBoxProps = {
   onClearSource: () => void;
 };
 
-/** The prompt box. */
+/**
+ * Shows the box where a prompt is written (or made up at random) and sent with the style guides
+ * chosen; a sent prompt leads to the Jobs page.
+ *
+ * @param props - The component's props.
+ * @param props.initialText - The text the box starts with; the cursor goes to its end when it ends
+ *   in ": ".
+ * @param props.source - The song the prompt is sent again from, or null.
+ * @param props.onClearSource - Called when the note of the song is cleared, and after a prompt is
+ *   sent.
+ * @returns The box's form element.
+ */
 export function PromptBox({ initialText, source, onClearSource }: PromptBoxProps) {
   const [text, setText] = useState(initialText);
   const isFocusAtEnd = initialText.endsWith(': ');

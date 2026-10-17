@@ -51,7 +51,13 @@ const ANVIL: PixelRun[] = [
 
 type LogoProps = { size: number };
 
-/** The logo, `size` pixels square on the page. */
+/**
+ * Draws the logo, a note above an anvil, in pixels.
+ *
+ * @param props - The component's props.
+ * @param props.size - How big the logo is on the page, in pixels square.
+ * @returns The logo's svg element.
+ */
 export function Logo({ size }: LogoProps) {
   return (
     <svg
