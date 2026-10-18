@@ -10,9 +10,13 @@ import type { Song } from '../../../shared/song.schema.ts';
 import { getSongSeconds } from '../../../shared/song-length.ts';
 import type { SentStructure } from '../../../shared/structure.schema.ts';
 import { formatDate, formatMeter, formatSeconds } from '../../format.ts';
+import { EMPTY_FILTER, getFilterQuery } from '../../lists/list-filter.ts';
 
-/** A fact shown with its label. */
-export type SongFact = { label: string; value: string };
+/** A link in a fact: its text and where it leads. */
+export type FactLink = { text: string; href: string };
+
+/** A fact shown with its label; its value as links instead, when it has them (a song's tags). */
+export type SongFact = { label: string; value: string; links?: FactLink[] };
 
 /** What the page shows of a song above the editor: its prompt, its facts, what the prompt was sent with. */
 export type SongSummary = { prompt: string; facts: SongFact[]; promptFacts: SongFact[] };
@@ -63,7 +67,7 @@ export function getSongFacts(song: Song, clips: Clip[]): SongFact[] {
 
 /**
  * Returns what the song's prompt was sent with, each with its label: the style guides, the
- * structure, the harmony, and the song's tags.
+ * structure, the harmony, and the song's tags, each a link to the songs that have it.
  *
  * @param song - The song.
  * @returns The facts; what it was not sent with is left out.
@@ -79,7 +83,14 @@ export function getPromptFacts(song: Song): SongFact[] {
       : null,
     harmony ? { label: 'harmony', value: harmony } : null,
     song.tags.length > 0
-      ? { label: 'tags', value: song.tags.map((tag) => tag.name).join(', ') }
+      ? {
+          label: 'tags',
+          value: song.tags.map((tag) => tag.name).join(', '),
+          links: song.tags.map(({ name }) => ({
+            text: name,
+            href: `/songs${getFilterQuery({ ...EMPTY_FILTER, tags: [name] })}`,
+          })),
+        }
       : null,
   ];
   return facts.filter((fact) => fact !== null);

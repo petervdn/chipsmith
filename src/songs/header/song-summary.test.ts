@@ -79,6 +79,20 @@ test('what the prompt was sent with, only what there was', () => {
   );
 });
 
+test('a tag leads to the songs that have it', () => {
+  const [tags] = getPromptFacts({
+    ...SONG,
+    tags: [
+      { name: 'fugue', by: 'user' },
+      { name: 'odd meter', by: 'user' },
+    ],
+  });
+  assert.deepEqual(tags?.links, [
+    { text: 'fugue', href: '/songs?tags=fugue' },
+    { text: 'odd meter', href: '/songs?tags=odd+meter' },
+  ]);
+});
+
 test('a structure in a few words', () => {
   const section = { bars: 8, role: null, energy: null, note: '', leadIn: [] };
   const text = getStructureText({

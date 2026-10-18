@@ -83,7 +83,7 @@ with its title alone, the Songs tab marked above it.
 - **Song** (`/songs/<id>`): ★ beside its title to keep it; under its title its header
   (`src/songs/header/`): its facts (tempo, meter, length, chips, key, tracks, clips, made, changed,
   id), the prompt it was made from (three lines until opened; copy) and what that was sent with (the
-  style guides, the structure, the harmony; and its tags), each with its label: the facts in a grid,
+  style guides, the structure, the harmony; and its tags, each a link to the songs that have it), each with its label: the facts in a grid,
   and under them the prompt at the left beside what it was sent with at the right; then
   the song opened in the editor (`src/editor/`): a timeline of its tracks
   (a ruler of bars; under it, switched in the editor bar, the structure the song was asked for as
