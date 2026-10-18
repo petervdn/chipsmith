@@ -14,6 +14,18 @@
   border-bottom: var(--border-width) solid var(--line);
 }
 
+/* a track's row brought into view (Show track): its colour, faint, held a moment, then fading */
+.timeline-row.is-flashing {
+  animation: timeline-row-flash 1.6s ease-out;
+}
+
+@keyframes timeline-row-flash {
+  0%,
+  20% {
+    background-color: color-mix(in srgb, var(--track-color) 22%, transparent);
+  }
+}
+
 /* the last track's line is the box's own; the head's last row keeps its line, over the tracks */
 .timeline:not(.timeline-head) > .timeline-row:has(+ .timeline-playhead) {
   border-bottom: 0;

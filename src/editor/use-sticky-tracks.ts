@@ -1,11 +1,14 @@
 // The tracks kept in view under the editor's head while the page scrolls down to what is under them
 // (docs/adr/0044): their box sticks (by its CSS, on a screen wide enough) and shrinks to one track's
 // row as the page goes past (tracks-window.ts), by its style alone, every scroll; and a track brought
-// into that row on request. Where the box does not stick, it is left as it is.
+// into that row on request, its row flashed. Where the box does not stick, it is left as it is.
 import { useEffect, useRef } from 'react';
 import type { RefObject } from 'react';
 import { LANE_TRACK_ATTRIBUTE } from './lane-position.ts';
 import { getTracksWindow } from './tracks-window.ts';
+
+/** The class that flashes a track's row when it is shown. */
+const FLASH_CLASS = 'is-flashing';
 
 /**
  * Keeps the tracks' box shrinking to one row as the page scrolls past it.
@@ -65,8 +68,8 @@ export function useStickyTracks(
   }, [boxRef, markRef, roomRef, rowHeight]);
 
   /**
-   * Scrolls the tracks inside the box so a track's row is at its top: the one row in view once
-   * the box has shrunk.
+   * Scrolls the tracks inside the box so a track's row is at its top (the one row in view once
+   * the box has shrunk), and flashes the row's background so the eye finds it.
    *
    * @param trackId - The track.
    */
@@ -75,7 +78,22 @@ export function useStickyTracks(
     const row = box?.querySelector(
       `[${LANE_TRACK_ATTRIBUTE}="${CSS.escape(trackId)}"]`,
     )?.parentElement;
-    if (box && row) box.scrollTop = row.offsetTop;
+    if (!box || !row) return;
+    box.scrollTop = row.offsetTop;
+    flashRow(row);
   }
   return { showTrack };
+}
+
+/**
+ * Flashes a track's row (Timeline.css, `is-flashing`), from the start again if it is flashing.
+ *
+ * @param row - The row's element.
+ */
+function flashRow(row: HTMLElement): void {
+  row.classList.remove(FLASH_CLASS);
+  // reading its size makes the browser take the removal in, so the animation starts over
+  void row.offsetWidth;
+  row.classList.add(FLASH_CLASS);
+  row.addEventListener('animationend', () => row.classList.remove(FLASH_CLASS), { once: true });
 }

@@ -100,7 +100,7 @@ with its title alone, the Songs tab marked above it.
   the timeline when open), the page (and the top bar with it) wider than the others, up to 1600 px,
   the timeline from the page's left, and under it, as wide, the details of what is selected, as sections each named by its kind (`src/editor/SelectionDetails.tsx`): a block selected
   shows the block's section as one bar (where it plays, the clip it plays, Show track (its track brought into the
-  one row the shrunk tracks show), Loop it (the block's bars looped and played) and solo for its track, repeats, duplicate, untrim, remove) with its clip's under it; a
+  one row the shrunk tracks show, its row flashed in its colour), Loop it (the block's bars looped and played) and solo for its track, repeats, duplicate, untrim, remove) with its clip's under it; a
   clip selected shows only the clip's; a track its own. The clip's section, in two columns (the clip
   and its takes at the left, Change this clip at the right) with the note grid under both when open: its facts, its .fur to
   look at (open in Furnace, download, view as text), its takes as pills (the original and every
