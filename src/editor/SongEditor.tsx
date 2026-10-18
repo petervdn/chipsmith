@@ -262,7 +262,7 @@ export function SongEditor({ detail }: SongEditorProps) {
           />
         </div>
         <SongClips
-          songClips={getSongClips(draft.tracks, clips)}
+          songClips={getSongClips(draft.tracks, clips, poolClips)}
           selectedClipId={selectedClipId}
           waitingClipIds={waitingClipIds}
           drag={clipDrag.drag}

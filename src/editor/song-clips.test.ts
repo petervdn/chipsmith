@@ -47,13 +47,68 @@ const TRACKS: Track[] = [
 ];
 
 test('in the order the song first plays them, with their blocks counted, unplayed last', () => {
-  const listed = getSongClips(TRACKS, [makeClip('c1'), makeClip('c2'), makeClip('c3')]);
+  const listed = getSongClips(TRACKS, [makeClip('c1'), makeClip('c2'), makeClip('c3')], []);
   assert.deepEqual(
     listed.map(({ clip, blockCount }) => [clip.id, blockCount]),
     [
       ['c3', 1],
       ['c2', 2],
       ['c1', 0],
+    ],
+  );
+});
+
+/**
+ * Returns a take of a clip, made a moment after it.
+ *
+ * @param id - The take's id.
+ * @param parentId - The clip it was made from.
+ * @param minute - When it was made, in minutes after the clips.
+ * @returns The take.
+ */
+function makeTake(id: string, parentId: string, minute: number): Clip {
+  return {
+    ...makeClip(id),
+    created: `2026-10-17T00:${String(minute).padStart(2, '0')}:00.000Z`,
+    parent: { clip: parentId, relation: 'variation' },
+    variationLabel: `take ${id}`,
+  };
+}
+
+test('a clip’s takes are under it, a take the song plays and one it does not alike', () => {
+  const played = makeTake('c3', 'c2', 1);
+  const pool = [makeClip('c1'), makeClip('c2'), played, makeTake('c4', 'c2', 2)];
+  const tracks: Track[] = [
+    {
+      id: 't1',
+      name: 'Bass',
+      volume: 0,
+      blocks: [{ clip: 'c3', start: 0, trim: null, repeats: 1 }],
+    },
+    {
+      id: 't2',
+      name: 'Lead',
+      volume: 0,
+      blocks: [{ clip: 'c1', start: 384, trim: null, repeats: 1 }],
+    },
+  ];
+  const listed = getSongClips(tracks, [makeClip('c1'), makeClip('c2'), played], pool);
+  assert.deepEqual(
+    listed.map(({ clip, blockCount, takes }) => [
+      clip.id,
+      blockCount,
+      takes.map((take) => [take.clip.id, take.blockCount]),
+    ]),
+    [
+      [
+        'c2',
+        0,
+        [
+          ['c3', 1],
+          ['c4', 0],
+        ],
+      ],
+      ['c1', 1, []],
     ],
   );
 });

@@ -85,13 +85,9 @@
   list-style: none;
 }
 
-.song-clips-clip {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
+.song-clips-clip,
+.song-clips-take {
   width: 100%;
-  min-height: var(--touch);
-  padding: 6px 10px;
   border: var(--border-width) solid var(--line);
   border-radius: var(--small-radius);
   background: var(--bg);
@@ -103,16 +99,27 @@
   -webkit-touch-callout: none;
 }
 
-.song-clips-clip:hover {
+.song-clips-clip {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-height: var(--touch);
+  padding: 6px 10px;
+}
+
+.song-clips-clip:hover,
+.song-clips-take:hover {
   border-color: var(--muted);
 }
 
-.song-clips-clip.is-selected {
+.song-clips-clip.is-selected,
+.song-clips-take.is-selected {
   border-color: var(--fg);
   box-shadow: 0 0 0 1px var(--fg);
 }
 
-.song-clips-clip.is-dragged {
+.song-clips-clip.is-dragged,
+.song-clips-take.is-dragged {
   opacity: 0.5;
 }
 
@@ -124,6 +131,37 @@
   color: var(--muted);
   font-size: 0.75rem;
   font-weight: 400;
+}
+
+/* a clip's takes, under it: indented along a line, smaller, each one line of its label and blocks */
+.song-clips-takes {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin: 3px 0 0 10px;
+  padding: 0 0 0 8px;
+  border-left: var(--border-width) solid var(--line);
+  list-style: none;
+}
+
+.song-clips-take {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 26px;
+  padding: 3px 8px;
+  font-size: 0.8125rem;
+}
+
+.song-clips-take-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.song-clips-take .song-clips-facts {
+  flex: none;
 }
 
 /* a phone: the open column lies over the timeline, out of the way while a clip is dragged */

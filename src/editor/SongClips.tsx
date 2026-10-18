@@ -1,5 +1,6 @@
 // The clips the song plays, in a column at the right of the timeline: each with its name, length,
-// channels and how many blocks play it. A tap selects the clip; a drag puts a new block of it on a
+// channels and how many blocks play it, and its takes under it, indented and smaller: each its label
+// and its blocks. A tap selects the clip; a drag puts a new block of it on a
 // track (a chip of it follows the pointer). » folds the column to a strip and « opens it again;
 // on a phone it starts folded, and open it lies over the timeline and steps aside while a clip is
 // dragged. It knows nothing of how a drop is placed.
@@ -30,7 +31,8 @@ type SongClipsProps = {
  * Shows the song's clips in a column, to select and to drag onto the timeline.
  *
  * @param props - The component's props.
- * @param props.songClips - The clips, in the order the song first plays them, with their blocks.
+ * @param props.songClips - The clips, in the order the song first plays them, with their blocks and
+ *   their takes.
  * @param props.selectedClipId - The clip selected, or null (a block's clip is not: a block is not its clip).
  * @param props.waitingClipIds - The clips whose audio is still being rendered.
  * @param props.drag - The clip being dragged, or null.
@@ -47,7 +49,18 @@ export function SongClips({
   onSelect,
 }: SongClipsProps) {
   const [isOpen, setOpen] = useState(() => window.matchMedia(WIDE_SCREEN).matches);
-  const dragged = songClips.find(({ clip }) => clip.id === drag?.clipId)?.clip;
+  const dragged = songClips
+    .flatMap(({ clip, takes }) => [clip, ...takes.map((take) => take.clip)])
+    .find((clip) => clip.id === drag?.clipId);
+  /**
+   * Returns the classes that mark a clip's row as selected or dragged.
+   *
+   * @param clipId - The clip's id.
+   * @returns The classes, each with a space before it, or nothing.
+   */
+  function getStateClasses(clipId: string): string {
+    return `${clipId === selectedClipId ? ' is-selected' : ''}${clipId === drag?.clipId ? ' is-dragged' : ''}`;
+  }
   if (!isOpen) {
     return (
       <aside className="song-clips is-folded">
@@ -83,11 +96,11 @@ export function SongClips({
         </header>
         <p className="song-clips-hint">Drag one onto a track to place it.</p>
         <ul className="song-clips-list">
-          {songClips.map(({ clip, blockCount }) => (
+          {songClips.map(({ clip, blockCount, takes }) => (
             <li key={clip.id}>
               <button
                 type="button"
-                className={`song-clips-clip${clip.id === selectedClipId ? ' is-selected' : ''}${clip.id === drag?.clipId ? ' is-dragged' : ''}`}
+                className={`song-clips-clip${getStateClasses(clip.id)}`}
                 onPointerDown={(event) => onPress(event, clip.id)}
                 onClick={() => onSelect(clip.id)}
               >
@@ -97,6 +110,30 @@ export function SongClips({
                   {waitingClipIds.includes(clip.id) ? 'rendering…' : getBlockCountText(blockCount)}
                 </span>
               </button>
+              {takes.length > 0 && (
+                <ul className="song-clips-takes" aria-label={`takes of ${getClipLabel(clip)}`}>
+                  {takes.map(({ clip: take, blockCount: takeBlockCount }) => (
+                    <li key={take.id}>
+                      <button
+                        type="button"
+                        className={`song-clips-take${getStateClasses(take.id)}`}
+                        onPointerDown={(event) => onPress(event, take.id)}
+                        onClick={() => onSelect(take.id)}
+                        data-tooltip={`a take of ${getClipLabel(clip)}`}
+                      >
+                        <span className="song-clips-take-label">
+                          {take.variationLabel ?? getClipLabel(take)}
+                        </span>
+                        <span className="song-clips-facts">
+                          {waitingClipIds.includes(take.id)
+                            ? 'rendering…'
+                            : getBlockCountText(takeBlockCount)}
+                        </span>
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </li>
           ))}
         </ul>

@@ -29,9 +29,9 @@ saved, playing from a cursor, the zoom, and the selected block's clip or track.
 - `grid.ts`: the snap grid: its steps, and a time snapped to one
 - `lane-position.ts`: the track's lane under a point, and the tick a point is at, read from the page
 - `song-edits.ts`: the edits of the arrangement: move, trim, repeat, duplicate, remove a block; tracks
-- `song-clips.ts`: the song's clips in the order it plays them, their blocks counted
+- `song-clips.ts`: the song's clips in the order it plays them, their blocks counted, each with its takes
 - `SongClips.css`: the look of SongClips.tsx
-- `SongClips.tsx`: the song's clips in a column left of the timeline, to select and drag onto a track
+- `SongClips.tsx`: the song's clips in a column right of the timeline, their takes under them, to select and drag onto a track
 - `loop-range.ts`: the loop in bars: the whole song's, where a drag puts it, and in seconds
 - `LoopLane.css`: the look of LoopLane.tsx
 - `LoopLane.tsx`: the loop as a row under the ruler while looping: drag its edges, move it, draw one
