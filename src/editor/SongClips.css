@@ -82,54 +82,6 @@
   list-style: none;
 }
 
-.song-clips-clip,
-.song-clips-take {
-  width: 100%;
-  border: var(--border-width) solid var(--line);
-  border-radius: var(--small-radius);
-  background: var(--bg);
-  text-align: left;
-  cursor: grab;
-  touch-action: pan-x pan-y;
-  user-select: none;
-  -webkit-user-select: none;
-  -webkit-touch-callout: none;
-}
-
-.song-clips-clip {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  min-height: var(--touch);
-  padding: 6px 10px;
-}
-
-.song-clips-clip:hover,
-.song-clips-take:hover {
-  border-color: var(--muted);
-}
-
-.song-clips-clip.is-selected,
-.song-clips-take.is-selected {
-  border-color: var(--fg);
-  box-shadow: 0 0 0 1px var(--fg);
-}
-
-.song-clips-clip.is-dragged,
-.song-clips-take.is-dragged {
-  opacity: 0.5;
-}
-
-.song-clips-name {
-  font-weight: 600;
-}
-
-.song-clips-facts {
-  color: var(--muted);
-  font-size: 0.75rem;
-  font-weight: 400;
-}
-
 /* a desktop: the column starts level with the ruler, so it has the ruler's height more */
 @media (min-width: 720px) {
   .song-clips-panel {
@@ -140,7 +92,7 @@
   }
 }
 
-/* a clip's takes, under it: indented along a line, smaller, each one line of its label and blocks */
+/* a clip's takes, under it: indented along a line, the same rows a little narrower */
 .song-clips-takes {
   display: flex;
   flex-direction: column;
@@ -154,41 +106,6 @@
 /* a take of a take, indented under the take it was made from (no deeper than three steps) */
 .song-clips-takes > li {
   margin-left: calc((min(var(--depth, 1), 3) - 1) * 12px);
-}
-
-.song-clips-take {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 8px;
-  min-height: 26px;
-  padding: 3px 8px;
-  font-size: 0.8125rem;
-}
-
-.song-clips-take-label {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-/* a take on its way: a dashed outline, muted, turning; not to select or drag yet */
-.song-clips-take.is-pending {
-  align-items: center;
-  border-style: dashed;
-  background: none;
-  color: var(--muted);
-  cursor: default;
-}
-
-.song-clips-take.is-pending .song-clips-take-label {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.song-clips-take .song-clips-facts {
-  flex: none;
 }
 
 /* a phone: the open column lies over the timeline, out of the way while a clip is dragged */
@@ -217,14 +134,7 @@
   top: 0;
   left: 0;
   z-index: 25;
-  margin: 8px 0 0 12px;
-  padding: 4px 10px;
-  border-radius: var(--radius);
-  background: var(--accent);
-  color: var(--on-accent);
+  border-radius: var(--small-radius);
   box-shadow: 0 4px 16px rgb(0 0 0 / 25%);
-  font-size: 0.8125rem;
-  font-weight: 600;
-  white-space: nowrap;
   pointer-events: none;
 }

@@ -95,7 +95,7 @@ with its title alone, the Songs tab marked above it.
   follow (the playhead kept in the middle), a loop (the whole song, or bars drawn in a row under the
   ruler; 0031), a metronome (on or off, its own
   volume; the first beat of a bar higher, `src/playback/metronome.ts`), zoom (and the tracks' height on a slider), the song's clips in a
-  column at its right, its top level with the ruler's, kept in view under the editor's bar (each with its blocks counted and its takes under it, indented and smaller, a take of a take under the take it was made from, those no block plays yet too, then the takes on their way, dashed and turning, with how far each is (`src/editor/pending-takes.ts`); tapped,
+  column at its right, its top level with the ruler's, kept in view under the editor's bar (each one row on one line, its name, length and how often the song uses it ("used 2x", "unused"; `src/editor/SongClipRow.tsx`), its takes under it as the same rows, indented, a take of a take under the take it was made from, those no block plays yet too, then the takes on their way, dashed and turning, with how far each is (`src/editor/pending-takes.ts`); tapped,
   the clip is selected, not a block; folded to a strip, and on a phone folded at first and laid over
   the timeline when open), the page (and the top bar with it) wider than the others, up to 1600 px,
   the timeline from the page's left, and under it, as wide, the details of what is selected, as sections each named by its kind (`src/editor/SelectionDetails.tsx`): a block selected
@@ -122,7 +122,7 @@ with its title alone, the Songs tab marked above it.
   `make/notes-take.ts`, `fur/channel-rows.ts`),
   and Change this clip (0037): a prompt for takes of it, quick asks a tap adds, 1 to 5 takes, the style guides to send along (the song's own chosen at first), and its jobs on
   their way (`src/editor/ClipPrompt.tsx`). Editing (0022): drag a block to move it (to another track too),
-  its edges to trim it, drag a clip from the song's clips onto a track as a new block, snapped to a grid; repeat, duplicate, untrim, remove; add, rename and remove tracks; mute and solo
+  its edges to trim it, drag a clip from the song's clips onto a track as a new block (a copy of its row held under the pointer where it was grabbed; the timeline scrolls at its edges only once the drag has been inside it), snapped to a grid; repeat, duplicate, untrim, remove; add, rename and remove tracks; mute and solo
   (not saved); a mixer, a row under the tracks opened and folded from its own head: a strip per track (its fader,
   saved and heard in playback only, one undo step per move; its meter, M and S, the same values as
   its row) and the master (the player's volume); undo and redo in the bar's edit group; Revert and Save at the right of the song's title row, quiet until there are changes, then Save lit in the accent (`src/editor/SaveButtons.tsx`). Split into channels (a song that is one whole clip

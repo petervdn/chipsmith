@@ -4,7 +4,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import type { Clip } from '../../shared/clip.schema.ts';
 import type { Track } from '../../shared/song.schema.ts';
-import { getEditorClips, getSongClips } from './song-clips.ts';
+import { getEditorClips, getSongClips, getUsageText } from './song-clips.ts';
 
 /**
  * Returns a clip with only what the list reads filled in.
@@ -123,4 +123,8 @@ test('the editor knows the song’s clips and the pool’s the draft plays besid
     known.map((clip) => clip.id),
     ['c2', 'c3'],
   );
+});
+
+test('how often a clip is used, in words', () => {
+  assert.deepEqual([0, 1, 3].map(getUsageText), ['unused', 'used 1x', 'used 3x']);
 });

@@ -9,11 +9,12 @@ import { ChevronsLeft, ChevronsRight } from 'lucide-react';
 import { useState } from 'react';
 import type { CSSProperties, PointerEvent as ReactPointerEvent } from 'react';
 import type { Clip } from '../../shared/clip.schema.ts';
-import { getChannelName } from '../../shared/clip-channels.ts';
 import { getClipLabel } from '../../shared/clip-label.ts';
 import { formatSeconds } from '../format.ts';
 import type { PendingTake } from './pending-takes.ts';
+import { SongClipRow } from './SongClipRow.tsx';
 import type { SongClip } from './song-clips.ts';
+import { getUsageText } from './song-clips.ts';
 import type { ClipDrag } from './use-clip-drag.ts';
 import '../jobs/jobs.css';
 import './SongClips.css';
@@ -27,7 +28,7 @@ type SongClipsProps = {
   selectedClipId: string | null;
   waitingClipIds: string[];
   drag: ClipDrag | null;
-  onPress: (event: ReactPointerEvent, clipId: string) => void;
+  onPress: (event: ReactPointerEvent<HTMLElement>, clipId: string) => void;
   onSelect: (clipId: string) => void;
 };
 
@@ -56,8 +57,20 @@ export function SongClips({
 }: SongClipsProps) {
   const [isOpen, setOpen] = useState(() => window.matchMedia(WIDE_SCREEN).matches);
   const dragged = songClips
-    .flatMap(({ clip, takes }) => [clip, ...takes.map((take) => take.clip)])
-    .find((clip) => clip.id === drag?.clipId);
+    .flatMap(({ clip, blockCount, takes }) => [{ clip, blockCount }, ...takes])
+    .find(({ clip }) => clip.id === drag?.clipId);
+  /**
+   * Returns what a clip's row says after its name: its length and how often the song uses it, or
+   * that its audio is still being rendered.
+   *
+   * @param clip - The clip.
+   * @param blockCount - How many blocks of the song play it.
+   * @returns The facts, in words.
+   */
+  function getFacts(clip: Clip, blockCount: number): string {
+    const usage = waitingClipIds.includes(clip.id) ? 'rendering…' : getUsageText(blockCount);
+    return `${formatSeconds(clip.seconds)} · ${usage}`;
+  }
   /**
    * Returns the classes that mark a clip's row as selected or dragged.
    *
@@ -106,54 +119,30 @@ export function SongClips({
             const pending = pendingTakes.filter((take) => take.clipId === clip.id);
             return (
               <li key={clip.id}>
-                <button
-                  type="button"
-                  className={`song-clips-clip${getStateClasses(clip.id)}`}
+                <SongClipRow
+                  label={getClipLabel(clip)}
+                  facts={getFacts(clip, blockCount)}
+                  stateClasses={getStateClasses(clip.id)}
                   onPointerDown={(event) => onPress(event, clip.id)}
                   onClick={() => onSelect(clip.id)}
-                >
-                  <span className="song-clips-name">{getClipLabel(clip)}</span>
-                  <span className="song-clips-facts">
-                    {formatSeconds(clip.seconds)} · {getChannelsText(clip)} ·{' '}
-                    {waitingClipIds.includes(clip.id)
-                      ? 'rendering…'
-                      : getBlockCountText(blockCount)}
-                  </span>
-                </button>
+                />
                 {takes.length + pending.length > 0 && (
                   <ul className="song-clips-takes" aria-label={`takes of ${getClipLabel(clip)}`}>
                     {takes.map(({ clip: take, blockCount: takeBlockCount, depth }) => (
                       <li key={take.id} style={getDepthStyle(depth)}>
-                        <button
-                          type="button"
-                          className={`song-clips-take${getStateClasses(take.id)}`}
+                        <SongClipRow
+                          label={getTakeLabel(take)}
+                          facts={getFacts(take, takeBlockCount)}
+                          stateClasses={getStateClasses(take.id)}
+                          tooltip={`a take of ${getClipLabel(clip)}`}
                           onPointerDown={(event) => onPress(event, take.id)}
                           onClick={() => onSelect(take.id)}
-                          data-tooltip={`a take of ${getClipLabel(clip)}`}
-                        >
-                          <span className="song-clips-take-label">
-                            {take.variationLabel ?? getClipLabel(take)}
-                          </span>
-                          <span className="song-clips-facts">
-                            {waitingClipIds.includes(take.id)
-                              ? 'rendering…'
-                              : getBlockCountText(takeBlockCount)}
-                          </span>
-                        </button>
+                        />
                       </li>
                     ))}
                     {pending.map(({ key, depth, label, stateText }) => (
-                      <li
-                        key={key}
-                        className="song-clips-take is-pending"
-                        style={getDepthStyle(depth)}
-                        aria-busy="true"
-                      >
-                        <span className="song-clips-take-label">
-                          <span className="jobs-spinner" aria-hidden="true" />
-                          {label}
-                        </span>
-                        <span className="song-clips-facts">{stateText}</span>
+                      <li key={key} style={getDepthStyle(depth)}>
+                        <SongClipRow label={label} facts={stateText} isPending />
                       </li>
                     ))}
                   </ul>
@@ -164,38 +153,24 @@ export function SongClips({
         </ul>
       </div>
       {drag && dragged && (
-        <span
+        <div
           className="song-clips-ghost"
-          style={{ transform: `translate(${drag.x}px, ${drag.y}px)` }}
+          style={{
+            width: drag.grab.width,
+            transform: `translate(${drag.x - drag.grab.x}px, ${drag.y - drag.grab.y}px)`,
+          }}
           aria-hidden="true"
         >
-          {getClipLabel(dragged)} {drag.preview ? '' : '· over a track to place it'}
-        </span>
+          <SongClipRow
+            label={
+              dragged.clip.variationLabel ? getTakeLabel(dragged.clip) : getClipLabel(dragged.clip)
+            }
+            facts={getFacts(dragged.clip, dragged.blockCount)}
+          />
+        </div>
       )}
     </aside>
   );
-}
-
-/**
- * Returns the channels a clip plays, in words.
- *
- * @param clip - The clip.
- * @returns Its channels' names, or how many there are when more than two.
- */
-function getChannelsText(clip: Clip): string {
-  if (clip.channels.length > 2) return `${clip.channels.length} channels`;
-  return clip.channels.map((channel) => getChannelName(clip.chips, channel)).join(', ');
-}
-
-/**
- * Returns how many blocks play a clip, in words.
- *
- * @param count - How many blocks play it.
- * @returns "1 block", "3 blocks", or "not placed".
- */
-function getBlockCountText(count: number): string {
-  if (count === 0) return 'not placed';
-  return `${count} ${count === 1 ? 'block' : 'blocks'}`;
 }
 
 /**
@@ -206,4 +181,14 @@ function getBlockCountText(count: number): string {
  */
 function getDepthStyle(depth: number): CSSProperties & Record<'--depth', string> {
   return { '--depth': String(depth) };
+}
+
+/**
+ * Returns a take's name in the column: its label, or the clip's own for a take without one.
+ *
+ * @param take - The take.
+ * @returns The name.
+ */
+function getTakeLabel(take: Clip): string {
+  return take.variationLabel ?? getClipLabel(take);
 }

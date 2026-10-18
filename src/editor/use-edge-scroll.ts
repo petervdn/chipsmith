@@ -1,6 +1,8 @@
 // While something is dragged over the timeline, the pointer near its left or right edge scrolls it
-// that way, faster the nearer the edge, so a block or clip can go past what is in view. Each step
-// of scrolling is told, so the drag can follow what moved under the pointer.
+// that way, faster the nearer the edge, so a block or clip can go past what is in view. Only inside
+// the timeline, and only once the drag has been in it away from the edges: a clip dragged in from
+// the clips column at its right crosses the right edge without scrolling. Each step of scrolling is
+// told, so the drag can follow what moved under the pointer.
 import { useEffect, useRef } from 'react';
 import type { RefObject } from 'react';
 
@@ -42,20 +44,20 @@ export function useEdgeScroll(
   useEffect(() => {
     const scroller = scrollRef.current;
     if (!isDragging || !scroller) return;
+    let isArmed = false;
     let frame = requestAnimationFrame(function step() {
       frame = requestAnimationFrame(step);
       const pointer = pointerRef.current;
       if (!pointer || !scroller) return;
       const box = scroller.getBoundingClientRect();
       if (pointer.y < box.top || pointer.y > box.bottom) return;
+      if (pointer.x < box.left || pointer.x > box.right) return;
       const fromLeft = pointer.x - (box.left + leftInset);
       const fromRight = box.right - pointer.x;
+      if (fromLeft >= EDGE && fromRight >= EDGE) isArmed = true;
+      if (!isArmed) return;
       const speed =
-        fromRight < EDGE
-          ? getSpeed(fromRight)
-          : fromLeft < EDGE && pointer.x > box.left
-            ? -getSpeed(fromLeft)
-            : 0;
+        fromRight < EDGE ? getSpeed(fromRight) : fromLeft < EDGE ? -getSpeed(fromLeft) : 0;
       if (speed === 0) return;
       const before = scroller.scrollLeft;
       scroller.scrollLeft += speed;

@@ -76,3 +76,13 @@ export function getEditorClips(tracks: Track[], songClips: Clip[], pool: Clip[])
   const known = new Set(songClips.map((clip) => clip.id));
   return [...songClips, ...pool.filter((clip) => played.has(clip.id) && !known.has(clip.id))];
 }
+
+/**
+ * Returns how often the song uses a clip, in words.
+ *
+ * @param blockCount - How many blocks of the song play it.
+ * @returns "used 1x", "used 3x", or "unused".
+ */
+export function getUsageText(blockCount: number): string {
+  return blockCount === 0 ? 'unused' : `used ${blockCount}x`;
+}

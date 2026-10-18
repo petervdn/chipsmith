@@ -1,0 +1,63 @@
+/* The look of SongClipRow.tsx: a clip of the column on one line, its name at the left (cut short
+   when the row is narrow) and its facts at the right; selected, dragged, or on its way (dashed). */
+
+.song-clip-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  min-height: var(--touch);
+  padding: 4px 10px;
+  border: var(--border-width) solid var(--line);
+  border-radius: var(--small-radius);
+  background: var(--bg);
+  color: var(--fg);
+  font-size: 0.8125rem;
+  text-align: left;
+  cursor: grab;
+  touch-action: pan-x pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+.song-clip-row-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  overflow: hidden;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.song-clip-row-facts {
+  flex: none;
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.song-clip-row.is-selected {
+  border-color: var(--fg);
+  box-shadow: 0 0 0 1px var(--fg);
+}
+
+.song-clip-row.is-dragged {
+  opacity: 0.5;
+}
+
+.song-clip-row.is-pending {
+  border-style: dashed;
+  background: none;
+  color: var(--muted);
+  cursor: default;
+}
+
+@media (hover: hover) {
+  button.song-clip-row:hover {
+    border-color: var(--muted);
+  }
+}
