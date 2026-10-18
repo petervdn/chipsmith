@@ -1,11 +1,14 @@
 /**
  * How a track's level meter moves, as a modern DAW's does: it jumps at once to a louder level and
  * eases back down from it, and a peak mark stays a while at the loudest before it falls, faster as
- * it goes. Levels are in decibels from full scale; knows no audio and no page.
+ * it goes. Levels are in decibels from full scale, with headroom above full scale at the top as a
+ * DAW's meter has; knows no audio and no page.
  */
 
 /** The quietest level shown, in decibels: the meter's bottom. */
 export const FLOOR_DECIBELS = -48;
+/** The loudest level shown, in decibels: the meter's top, above full scale so a level near it has room. */
+export const CEILING_DECIBELS = 6;
 /** Seconds in which the level eases most of the way (63%) down to a quieter one. */
 const RELEASE_SECONDS = 0.15;
 /** Seconds a peak mark stays where it is before it falls. */
@@ -69,10 +72,11 @@ export function stepMeter(meter: MeterState, input: number, seconds: number): Me
  * Returns how far up the meter a level is drawn.
  *
  * @param decibels - The level, in decibels.
- * @returns The share of the meter's height, 0 at the floor to 1 at full scale.
+ * @returns The share of the meter's height, 0 at the floor to 1 at the ceiling.
  */
 export function getMeterShare(decibels: number): number {
-  return Math.min(1, Math.max(0, (decibels - FLOOR_DECIBELS) / -FLOOR_DECIBELS));
+  const share = (decibels - FLOOR_DECIBELS) / (CEILING_DECIBELS - FLOOR_DECIBELS);
+  return Math.min(1, Math.max(0, share));
 }
 
 /**

@@ -1,6 +1,7 @@
 /* The look of TrackMeter.tsx: an upright bar in a dark well, the same in both looks, its level and
    peak mark placed by `--level` and `--peak` (shares of its height) as use-track-meter.ts sets
-   them; where it stands and how tall is the look of what holds it. */
+   them; where it stands and how tall is the look of what holds it. The colours follow its scale
+   (track-meter.ts, -48 to +6 dB): green to -12 dB, yellow from -6 dB, red from full scale. */
 
 .track-meter {
   --level: 0;
@@ -19,8 +20,10 @@
   background: linear-gradient(
     to top,
     var(--meter-level) 0%,
-    var(--meter-level) 70%,
-    var(--meter-hot) 88%,
+    var(--meter-level) 67%,
+    var(--meter-hot) 78%,
+    var(--meter-hot) 87%,
+    var(--meter-clip) 89%,
     var(--meter-clip) 100%
   );
   clip-path: inset(calc((1 - var(--level)) * 100%) 0 0 0);

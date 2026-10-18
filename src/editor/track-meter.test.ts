@@ -2,6 +2,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
+  CEILING_DECIBELS,
   FLOOR_DECIBELS,
   SILENT_METER,
   getDecibels,
@@ -56,6 +57,10 @@ test('a meter left in silence settles at its floor', () => {
   assert.equal(isSettled(runFrames(loud, FLOOR_DECIBELS, 300)), true);
 });
 
-test('the meter is drawn from the floor to full scale', () => {
-  assert.deepEqual([FLOOR_DECIBELS, FLOOR_DECIBELS / 2, 0, 3].map(getMeterShare), [0, 0.5, 1, 1]);
+test('the meter is drawn from the floor to its ceiling, full scale below the top', () => {
+  assert.deepEqual(
+    [FLOOR_DECIBELS - 6, FLOOR_DECIBELS, CEILING_DECIBELS, CEILING_DECIBELS + 3].map(getMeterShare),
+    [0, 0, 1, 1],
+  );
+  assert.ok(getMeterShare(0) < 0.9);
 });
