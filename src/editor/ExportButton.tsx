@@ -1,11 +1,14 @@
 // Export, among the song's actions beside its title (put there by SongEditor.tsx): it opens a
 // dialog to export the song as audio, as the editor plays it now (its unsaved edits and faders
-// too): the file type, the tracks when some are muted or soloed away, and Export, which asks where
+// too): the whole song or the loop drawn on the timeline (up to MOST_LOOP_TIMES times, offered but
+// off while there is none), the file type, the tracks when some are muted or soloed away, and Export, which asks where
 // the file goes where the browser can (use-song-export.ts). A mix that clipped is said before the
 // dialog closes.
+import { Minus, Plus } from 'lucide-react';
 import { useState } from 'react';
 import { EXPORT_FORMATS } from '../../shared/audio-export.ts';
 import { Dialog } from '../dialog/Dialog.tsx';
+import type { LoopRange } from './loop-range.ts';
 import type { ExportOutcome, ExportPhase, useSongExport } from './use-song-export.ts';
 import './ExportButton.css';
 
@@ -13,8 +16,12 @@ type ExportButtonProps = {
   songExport: ReturnType<typeof useSongExport>;
   trackCount: number;
   unheardCount: number;
+  loopRange: LoopRange | null;
   isWaitingForAudio: boolean;
 };
+
+/** The most times the loop can be exported, back to back. */
+const MOST_LOOP_TIMES = 5;
 
 /** What the dialog's Export button says while an export is on its way. */
 const PHASE_LABELS: Record<ExportPhase, string> = {
@@ -30,6 +37,7 @@ const PHASE_LABELS: Record<ExportPhase, string> = {
  * @param props.songExport - The export of the song, with what it is doing and what went wrong.
  * @param props.trackCount - How many tracks the song has.
  * @param props.unheardCount - How many of them mute and solo leave unheard now.
+ * @param props.loopRange - The loop drawn on the timeline, in bars, or null when none is.
  * @param props.isWaitingForAudio - Whether some clips' audio is still being rendered.
  * @returns The button and its dialog.
  */
@@ -37,14 +45,18 @@ export function ExportButton({
   songExport,
   trackCount,
   unheardCount,
+  loopRange,
   isWaitingForAudio,
 }: ExportButtonProps) {
   const [isOpen, setOpen] = useState(false);
   const [formatName, setFormatName] = useState(EXPORT_FORMATS[0]?.name ?? 'wav');
   const [isOnlyHeard, setOnlyHeard] = useState(true);
+  const [isLoopChosen, setLoopChosen] = useState(false);
+  const [loopTimes, setLoopTimes] = useState(1);
   const [clipped, setClipped] = useState<ExportOutcome | null>(null);
   const { phase, error } = songExport;
   const format = EXPORT_FORMATS.find((each) => each.name === formatName);
+  const isLoop = loopRange !== null && isLoopChosen;
   function close(): void {
     if (phase) return;
     setOpen(false);
@@ -57,6 +69,7 @@ export function ExportButton({
     const outcome = await songExport.exportSong({
       format,
       isOnlyHeard: unheardCount > 0 && isOnlyHeard,
+      loopTimes: isLoop ? loopTimes : null,
     });
     if (!outcome) return;
     if (outcome.decibelsOver === null) setOpen(false);
@@ -85,6 +98,63 @@ export function ExportButton({
           <p className="export-dialog-about">
             The song as the editor plays it now: its unsaved edits and the faders too.
           </p>
+          <fieldset className="export-dialog-group" disabled={phase !== null}>
+            <legend className="export-dialog-label">Length</legend>
+            <label className="export-dialog-option">
+              <input
+                type="radio"
+                name="export-length"
+                checked={!isLoop}
+                onChange={() => setLoopChosen(false)}
+              />
+              <span className="export-dialog-option-name">The whole song</span>
+              <span className="export-dialog-option-about">from its start to its end</span>
+            </label>
+            <label className={`export-dialog-option${loopRange ? '' : ' is-off'}`}>
+              <input
+                type="radio"
+                name="export-length"
+                checked={isLoop}
+                onChange={() => setLoopChosen(true)}
+                disabled={!loopRange}
+              />
+              <span className="export-dialog-option-name">The loop</span>
+              {loopRange ? (
+                <span className="export-dialog-option-about export-dialog-loop">
+                  bars {loopRange.startBar + 1}–{loopRange.endBar},
+                  <span className="export-dialog-times">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setLoopChosen(true);
+                        setLoopTimes(Math.max(1, loopTimes - 1));
+                      }}
+                      disabled={loopTimes <= 1}
+                      data-tooltip="once fewer"
+                      aria-label="once fewer"
+                    >
+                      <Minus />
+                    </button>
+                    <span className="export-dialog-times-number">{loopTimes}×</span>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setLoopChosen(true);
+                        setLoopTimes(Math.min(MOST_LOOP_TIMES, loopTimes + 1));
+                      }}
+                      disabled={loopTimes >= MOST_LOOP_TIMES}
+                      data-tooltip="once more"
+                      aria-label="once more"
+                    >
+                      <Plus />
+                    </button>
+                  </span>
+                </span>
+              ) : (
+                <span className="export-dialog-option-about">draw one on the timeline first</span>
+              )}
+            </label>
+          </fieldset>
           <fieldset className="export-dialog-group" disabled={phase !== null}>
             <legend className="export-dialog-label">File type</legend>
             {EXPORT_FORMATS.map((each) => (

@@ -91,8 +91,14 @@ export function SongEditor({ detail, actionSlot, saveSlot }: SongEditorProps) {
   const draftSong = { ...song, tracks: draft.tracks };
   useHeardTracks(draft.tracks, mix);
   const unheardTrackIds = getUnheardTrackIds(draft.tracks, mix);
-  const songExport = useSongExport({ song: draftSong, clips, unheardTrackIds });
   const loop = useLoop(draftSong, clips);
+  const drawnLoop = loop.isOn && !loop.isWhole ? loop : null;
+  const songExport = useSongExport({
+    song: draftSong,
+    clips,
+    unheardTrackIds,
+    loop: drawnLoop?.loop ?? null,
+  });
   const transport = useSongTransport({ ...detail, song: draftSong, clips }, loop.loop);
   useMetronome(transport.mode === 'playing', song);
   const width = useElementWidth(scrollRef);
@@ -192,6 +198,7 @@ export function SongEditor({ detail, actionSlot, saveSlot }: SongEditorProps) {
               songExport={songExport}
               trackCount={draft.tracks.length}
               unheardCount={unheardTrackIds.length}
+              loopRange={drawnLoop?.range ?? null}
               isWaitingForAudio={isWaitingForAudio}
             />
           </>,

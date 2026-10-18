@@ -4,7 +4,13 @@ import assert from 'node:assert/strict';
 import type { Clip } from '../../shared/clip.schema.ts';
 import type { Song } from '../../shared/song.schema.ts';
 import { TICKS_PER_BEAT } from '../../shared/ticks.ts';
-import { getEnd, getFittedStretches, getPieces, getStretches } from './schedule.ts';
+import {
+  getEnd,
+  getFittedStretches,
+  getLoopedPieces,
+  getPieces,
+  getStretches,
+} from './schedule.ts';
 
 test('repeats follow each other and trims become offsets', () => {
   const song: Song = {
@@ -89,4 +95,13 @@ test('fitted stretches end with their audio, and a clip with none plays nothing'
     clipId === 'c1' ? 3 : undefined,
   );
   assert.deepEqual(fitted, [{ ...stretch, duration: 2 }]);
+});
+
+test('a loop played twice is its pieces, the second pass straight after the first', () => {
+  const stretch = { clipId: 'c1', trackId: 't1', start: 0, offset: 0, duration: 10 };
+  const piece = { clipId: 'c1', trackId: 't1', duration: 2 };
+  assert.deepEqual(getLoopedPieces([stretch], { start: 4, end: 6 }, 2), [
+    { ...piece, at: 0, offset: 4 },
+    { ...piece, at: 2, offset: 4 },
+  ]);
 });

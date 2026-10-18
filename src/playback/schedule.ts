@@ -116,3 +116,25 @@ export function getPieces(stretches: Stretch[], from: number, to: number, shift:
     ];
   });
 }
+
+/**
+ * Returns the pieces of a loop played a number of times back to back, from second 0: each pass the
+ * stretches' parts between the loop's start and end, moved to follow the pass before.
+ *
+ * @param stretches - The stretches, each no longer than its clip's audio.
+ * @param loop - The loop's start and end, in seconds of the song.
+ * @param loop.start - Where it starts.
+ * @param loop.end - Where it ends.
+ * @param times - How many passes.
+ * @returns The pieces, pass by pass.
+ */
+export function getLoopedPieces(
+  stretches: Stretch[],
+  { start, end }: { start: number; end: number },
+  times: number,
+): Piece[] {
+  const length = end - start;
+  return [...Array(times).keys()].flatMap((pass) =>
+    getPieces(stretches, start, end, pass * length - start),
+  );
+}

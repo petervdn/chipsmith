@@ -77,6 +77,51 @@
   font-size: 0.8125rem;
 }
 
+.export-dialog-option.is-off {
+  opacity: 0.5;
+  cursor: default;
+}
+
+/* the loop's bars and how many times, − n× + */
+.export-dialog-loop {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.export-dialog-times {
+  display: flex;
+  align-items: center;
+}
+
+.export-dialog-times button {
+  display: grid;
+  place-items: center;
+  width: var(--touch);
+  height: var(--touch);
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--fg);
+  cursor: pointer;
+}
+
+.export-dialog-times button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.export-dialog-times svg {
+  width: 14px;
+  height: 14px;
+}
+
+.export-dialog-times-number {
+  min-width: 2em;
+  color: var(--fg);
+  text-align: center;
+}
+
 .export-dialog-clipped {
   margin: 0;
   padding: 10px 12px;

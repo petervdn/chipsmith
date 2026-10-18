@@ -5,6 +5,7 @@ import { useState } from 'react';
 import type { ExportFormat } from '../../shared/audio-export.ts';
 import type { Clip } from '../../shared/clip.schema.ts';
 import type { Song } from '../../shared/song.schema.ts';
+import type { Loop } from '../playback/loop.ts';
 import { renderMixdown } from '../playback/mixdown.ts';
 import { getStretches } from '../playback/schedule.ts';
 import { getPeak, getWavBytes } from '../playback/wav-file.ts';
@@ -27,7 +28,12 @@ export type ExportOutcome = {
 };
 
 /** The song to export, as the editor has it. */
-type SongExportArguments = { song: Song; clips: Clip[]; unheardTrackIds: string[] };
+type SongExportArguments = {
+  song: Song;
+  clips: Clip[];
+  unheardTrackIds: string[];
+  loop: Loop | null;
+};
 
 /**
  * Returns what the export dialog needs: the export, what it is doing and what went wrong.
@@ -36,9 +42,10 @@ type SongExportArguments = { song: Song; clips: Clip[]; unheardTrackIds: string[
  * @param songExport.song - The song with its tracks as edited, saved or not.
  * @param songExport.clips - The clips its blocks play.
  * @param songExport.unheardTrackIds - The tracks mute and solo leave unheard now.
+ * @param songExport.loop - The loop drawn on the timeline, which can be exported instead, or null.
  * @returns The export, its phase and its error.
  */
-export function useSongExport({ song, clips, unheardTrackIds }: SongExportArguments) {
+export function useSongExport({ song, clips, unheardTrackIds, loop }: SongExportArguments) {
   const [phase, setPhase] = useState<ExportPhase | null>(null);
   const [error, setError] = useState<string | null>(null);
   const { mutateAsync: encode } = useEncodeAudio();
@@ -48,14 +55,17 @@ export function useSongExport({ song, clips, unheardTrackIds }: SongExportArgume
    * @param choice - What was chosen in the dialog.
    * @param choice.format - The file type.
    * @param choice.isOnlyHeard - Whether the tracks not heard now are left out.
+   * @param choice.loopTimes - How many times the loop plays, or null for the whole song.
    * @returns What came of it, or null when it was cancelled or failed.
    */
   async function exportSong({
     format,
     isOnlyHeard,
+    loopTimes,
   }: {
     format: ExportFormat;
     isOnlyHeard: boolean;
+    loopTimes: number | null;
   }): Promise<ExportOutcome | null> {
     setError(null);
     const name = getExportFileName(song.title, format);
@@ -67,6 +77,7 @@ export function useSongExport({ song, clips, unheardTrackIds }: SongExportArgume
         stretches: getStretches(song, clips),
         getUrl: getClipAudioUrl,
         trackGains: getExportTrackGains(song.tracks, isOnlyHeard ? unheardTrackIds : []),
+        loop: loop && loopTimes ? { ...loop, times: loopTimes } : null,
       });
       const channels = [...Array(mix.numberOfChannels).keys()].map((channel) =>
         mix.getChannelData(channel),
