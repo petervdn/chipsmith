@@ -1,0 +1,56 @@
+/* The look of Dialog.tsx: a card in the middle of the page over a see-through black backdrop, and
+   the buttons the dialogs share, side by side at the right, the one that goes ahead last. */
+
+.dialog {
+  width: min(420px, calc(100% - 32px));
+  max-width: none;
+  margin: auto;
+  padding: 0;
+  border: var(--border-width) solid var(--line);
+  border-radius: calc(var(--radius) * 1.5);
+  background: var(--card);
+  color: var(--fg);
+  box-shadow: 0 8px 32px rgb(0 0 0 / 35%);
+}
+
+.dialog::backdrop {
+  background: rgb(0 0 0 / 60%);
+}
+
+.dialog-body {
+  padding: 20px;
+}
+
+.dialog-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.dialog-button {
+  min-width: var(--touch);
+  min-height: var(--touch);
+  padding: 0 16px;
+  border: var(--border-width) solid var(--line);
+  border-radius: var(--radius);
+  background: var(--raised);
+  cursor: pointer;
+}
+
+.dialog-button.is-yes {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--on-accent);
+  font-weight: 600;
+}
+
+.dialog-button.is-danger {
+  border-color: var(--reject);
+  background: var(--reject);
+  color: var(--on-reject);
+}
+
+.dialog-button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}

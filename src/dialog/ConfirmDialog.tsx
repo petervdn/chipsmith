@@ -1,8 +1,8 @@
 // The page's own confirm dialog, in place of the browser's: the question asked through
-// stores/confirm-store.ts over a see-through black backdrop, with Cancel (or the refusal asked
+// stores/confirm-store.ts, in the page's dialog (Dialog.tsx), with Cancel (or the refusal asked
 // for) and the answer. Escape, a tap beside it or Cancel says no. It knows nothing of what is asked or why.
-import { useEffect, useRef } from 'react';
 import { useConfirmStore } from '../stores/confirm-store.ts';
+import { Dialog } from './Dialog.tsx';
 import './ConfirmDialog.css';
 
 /**
@@ -11,44 +11,26 @@ import './ConfirmDialog.css';
  * @returns The dialog's element (closed when nothing is asked).
  */
 export function ConfirmDialog() {
-  const dialogRef = useRef<HTMLDialogElement>(null);
   const asked = useConfirmStore((state) => state.asked);
   const answerQuestion = useConfirmStore((state) => state.answerQuestion);
-  useEffect(() => {
-    const dialog = dialogRef.current;
-    if (!dialog) return;
-    if (asked && !dialog.open) dialog.showModal();
-    if (!asked && dialog.open) dialog.close();
-  }, [asked]);
   return (
-    <dialog
-      ref={dialogRef}
-      className="confirm-dialog"
-      aria-labelledby="confirm-dialog-question"
-      onCancel={(event) => {
-        event.preventDefault();
-        answerQuestion(false);
-      }}
-      onClick={(event) => {
-        if (event.target === event.currentTarget) answerQuestion(false);
-      }}
+    <Dialog
+      isOpen={asked !== null}
+      labelId="confirm-dialog-question"
+      onClose={() => answerQuestion(false)}
     >
       {asked && (
-        <div className="confirm-dialog-body">
+        <div className="dialog-body">
           <p id="confirm-dialog-question" className="confirm-dialog-question">
             {asked.question}
           </p>
-          <div className="confirm-dialog-buttons">
-            <button
-              type="button"
-              className="confirm-dialog-button"
-              onClick={() => answerQuestion(false)}
-            >
+          <div className="dialog-buttons">
+            <button type="button" className="dialog-button" onClick={() => answerQuestion(false)}>
               {asked.refusal ?? 'Cancel'}
             </button>
             <button
               type="button"
-              className={`confirm-dialog-button is-yes${asked.isDanger ? ' is-danger' : ''}`}
+              className={`dialog-button is-yes${asked.isDanger ? ' is-danger' : ''}`}
               onClick={() => answerQuestion(true)}
               autoFocus
             >
@@ -57,6 +39,6 @@ export function ConfirmDialog() {
           </div>
         </div>
       )}
-    </dialog>
+    </Dialog>
   );
 }

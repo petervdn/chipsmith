@@ -1,56 +1,6 @@
-/* The look of ConfirmDialog.tsx: a card in the middle of the page over a see-through black
-   backdrop; its buttons side by side, the answer on the right. */
-
-.confirm-dialog {
-  width: min(420px, calc(100% - 32px));
-  max-width: none;
-  margin: auto;
-  padding: 0;
-  border: var(--border-width) solid var(--line);
-  border-radius: calc(var(--radius) * 1.5);
-  background: var(--card);
-  color: var(--fg);
-  box-shadow: 0 8px 32px rgb(0 0 0 / 35%);
-}
-
-.confirm-dialog::backdrop {
-  background: rgb(0 0 0 / 60%);
-}
-
-.confirm-dialog-body {
-  padding: 20px;
-}
+/* The look of ConfirmDialog.tsx: the question above the buttons (Dialog.css). */
 
 .confirm-dialog-question {
   margin: 0 0 20px;
   line-height: var(--line-height);
-}
-
-.confirm-dialog-buttons {
-  display: flex;
-  justify-content: flex-end;
-  gap: 8px;
-}
-
-.confirm-dialog-button {
-  min-width: var(--touch);
-  min-height: var(--touch);
-  padding: 0 16px;
-  border: var(--border-width) solid var(--line);
-  border-radius: var(--radius);
-  background: var(--raised);
-  cursor: pointer;
-}
-
-.confirm-dialog-button.is-yes {
-  border-color: var(--accent);
-  background: var(--accent);
-  color: var(--on-accent);
-  font-weight: 600;
-}
-
-.confirm-dialog-button.is-danger {
-  border-color: var(--reject);
-  background: var(--reject);
-  color: var(--on-reject);
 }
