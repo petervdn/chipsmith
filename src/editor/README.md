@@ -44,6 +44,7 @@ saved, playing from a cursor, the zoom, and the selected block's clip or track.
 - `note-grid.ts`: the note grid's edits of a channel's rows: a note put in, moved, made longer or shorter, taken out; the pitches laid out
 - `NoteGrid.css`: the look of NoteGrid.tsx
 - `NoteGrid.tsx`: the note grid: one channel, time across and pitch up in a box that scrolls both ways, its notes edited and tried as a take
+- `pending-takes.ts`: the takes on their way, a line each under the clip the clips column lists them with
 - `MetronomeControls.css`: the look of MetronomeControls.tsx
 - `MetronomeControls.tsx`: the metronome's switch and its volume slider, in the editor bar
 - `structure-lane.ts`: where the structure a song was asked for lies on its timeline, from its start

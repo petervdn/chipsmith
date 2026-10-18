@@ -7,6 +7,8 @@ import { useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import type { SongDetail } from '../../shared/api.types.ts';
 import { useClips } from '../queries/clips.ts';
+import { isJobRunning, useJobs } from '../queries/jobs.ts';
+import { getPendingTakes } from './pending-takes.ts';
 import { useSplitSong } from '../queries/songs.ts';
 import { EditorBar } from './EditorBar.tsx';
 import { SaveButtons } from './SaveButtons.tsx';
@@ -69,11 +71,13 @@ export function SongEditor({ detail, saveSlot }: SongEditorProps) {
   useScrollSync(scrollRef, headScrollRef);
   const { song, isWaitingForAudio, waitingClipIds } = detail;
   const { data: pool } = useClips();
+  const runningJobs = useJobs().filter(isJobRunning);
   const poolClips = (pool ?? []).map((listing) => listing.clip);
   const { mutate: splitSong, isPending: isSplitting, error: splitError } = useSplitSong();
   const splitCount = getSongSplitCount(song, detail.clips);
   const draft = useSongDraft(detail);
   const clips = getEditorClips(draft.tracks, detail.clips, poolClips);
+  const songClips = getSongClips(draft.tracks, clips, poolClips);
   const { mix, toggleMute, toggleSolo } = useTrackMix();
   const draftSong = { ...song, tracks: draft.tracks };
   useHeardTracks(draft.tracks, mix);
@@ -266,7 +270,8 @@ export function SongEditor({ detail, saveSlot }: SongEditorProps) {
           />
         </div>
         <SongClips
-          songClips={getSongClips(draft.tracks, clips, poolClips)}
+          songClips={songClips}
+          pendingTakes={getPendingTakes(runningJobs, song.id, songClips)}
           selectedClipId={selectedClipId}
           waitingClipIds={waitingClipIds}
           drag={clipDrag.drag}

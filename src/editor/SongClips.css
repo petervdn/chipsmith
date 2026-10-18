@@ -167,6 +167,21 @@
   white-space: nowrap;
 }
 
+/* a take on its way: a dashed outline, muted, turning; not to select or drag yet */
+.song-clips-take.is-pending {
+  align-items: center;
+  border-style: dashed;
+  background: none;
+  color: var(--muted);
+  cursor: default;
+}
+
+.song-clips-take.is-pending .song-clips-take-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
 .song-clips-take .song-clips-facts {
   flex: none;
 }
