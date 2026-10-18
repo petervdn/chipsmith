@@ -4,8 +4,9 @@
  * its note to the next one, the last until the job finished (or now, while it runs); and where in
  * them each stage of the job starts. Knows nothing of the page.
  */
-import type { JobNote, JobStageId } from '../../shared/job.types.ts';
-import { JOB_STAGES } from '../../shared/job.types.ts';
+import type { JobNote } from '../../shared/job.types.ts';
+import type { JobStageId } from '../../shared/job-stages.ts';
+import { JOB_STAGES } from '../../shared/job-stages.ts';
 
 /** A step's length, in seconds, and its share of the whole job, 0 to 1. */
 export type StepLength = { seconds: number; share: number };

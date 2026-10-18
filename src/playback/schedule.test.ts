@@ -3,7 +3,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import type { Clip } from '../../shared/clip.types.ts';
 import type { Song } from '../../shared/song.types.ts';
-import { TICKS_PER_BEAT } from '../../shared/song.types.ts';
+import { TICKS_PER_BEAT } from '../../shared/ticks.ts';
 import { getEnd, getPieces, getStretches } from './schedule.ts';
 
 test('repeats follow each other and trims become offsets', () => {

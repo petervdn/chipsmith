@@ -6,33 +6,11 @@
 import type { SentGuide } from './guide.types.ts';
 import type { SentHarmony } from './harmony.types.ts';
 import type { SentStructure } from './structure.types.ts';
+import type { ComposeStep, JobStageId } from './job-stages.ts';
 
 /** Where a job is. */
 export type JobPhase =
   'queued' | 'composing' | 'building' | 'rendering' | 'done' | 'failed' | 'cancelled';
-
-/**
- * How far Claude has come while composing: `writing` once it first writes the job's script,
- * `checking` once it first runs the check on it. Before either it is preparing (reading the skills,
- * planning).
- */
-export type ComposeStep = 'writing' | 'checking';
-
-/** The compose steps in the order they come. */
-export const COMPOSE_STEPS: ComposeStep[] = ['writing', 'checking'];
-
-/** A job's stages from start to end, as the page groups its steps and shows its way through them. */
-export type JobStageId = 'preparing' | ComposeStep | 'building' | 'rendering' | 'done';
-
-/** The stages in the order they come. */
-export const JOB_STAGES: JobStageId[] = [
-  'preparing',
-  'writing',
-  'checking',
-  'building',
-  'rendering',
-  'done',
-];
 
 /** What happened in a job, as it happened: Claude's notes and the steps after it. */
 export type JobNote = {

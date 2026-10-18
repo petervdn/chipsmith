@@ -16,6 +16,7 @@ Nothing here reads files or touches the page.
 - `harmony-prompt.ts`: a harmony as the lines of a prompt that ask for it, and as one short line
 - `harmony-words.ts`: a harmony's feels and colours in plain words, and how a prompt asks for each
 - `harmony.types.ts`: a song's harmony as a prompt asks for it: scale, feel, colour, a progression kept per part
+- `job-stages.ts`: a job's compose steps and stages in order, values the page goes through at run time
 - `job.types.ts`: a job: a prompt on its way to songs, its phases and notes
 - `lead-ins.ts`: how one section can lead into the next (drums, bass, harmony, lead, all), and how a prompt asks for each
 - `modes.ts`: the notes and modes a key can be in, how each mode sounds, and its own chords
@@ -28,3 +29,4 @@ Nothing here reads files or touches the page.
 - `structure-presets.ts`: the structures every prompt can start from
 - `structure-prompt.ts`: a structure as the lines of a prompt that ask for it
 - `structure.types.ts`: a song's structure: its sections, saved and sent
+- `ticks.ts`: ticks to a beat, the grid a song's blocks are placed on

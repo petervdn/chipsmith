@@ -5,8 +5,8 @@
  */
 import type { NewNote } from '../shared/job.types.ts';
 import { closeSync, existsSync, openSync, readFileSync, readSync, statSync } from 'node:fs';
-import type { ComposeStep } from '../shared/job.types.ts';
-import { COMPOSE_STEPS } from '../shared/job.types.ts';
+import type { ComposeStep } from '../shared/job-stages.ts';
+import { COMPOSE_STEPS } from '../shared/job-stages.ts';
 import { describeThought, describeTool, getComposeStep, shorten } from './claude-words.ts';
 
 /**

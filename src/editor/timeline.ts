@@ -6,7 +6,7 @@
 import type { Clip } from '../../shared/clip.types.ts';
 import { getTicksPerSecond } from '../../shared/song-length.ts';
 import type { Song } from '../../shared/song.types.ts';
-import { TICKS_PER_BEAT } from '../../shared/song.types.ts';
+import { TICKS_PER_BEAT } from '../../shared/ticks.ts';
 import { getSplitCount } from '../../shared/clip-channels.ts';
 
 /** A block as the timeline draws it; `index` is its place in its track's blocks. */

@@ -4,8 +4,9 @@
  * Each is done, the current one, still to come, or where the job failed or was stopped. Given a
  * job, gives the stages; knows nothing of the page.
  */
-import type { Job, JobStageId } from '../../shared/job.types.ts';
-import { JOB_STAGES } from '../../shared/job.types.ts';
+import type { Job } from '../../shared/job.types.ts';
+import type { JobStageId } from '../../shared/job-stages.ts';
+import { JOB_STAGES } from '../../shared/job-stages.ts';
 
 /** Where a job is with a stage. */
 export type StageState = 'done' | 'current' | 'todo' | 'failed' | 'stopped';

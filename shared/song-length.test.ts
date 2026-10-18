@@ -2,7 +2,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import type { Song } from './song.types.ts';
-import { TICKS_PER_BEAT } from './song.types.ts';
+import { TICKS_PER_BEAT } from './ticks.ts';
 import { getSongSeconds } from './song-length.ts';
 
 test('the last block with its repeats sets the length', () => {

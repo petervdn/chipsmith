@@ -5,7 +5,8 @@
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import type { SentGuide } from '../shared/guide.types.ts';
-import type { Job, JobPhase, JobStageId, NewNote, TakesTarget } from '../shared/job.types.ts';
+import type { Job, JobPhase, NewNote, TakesTarget } from '../shared/job.types.ts';
+import type { JobStageId } from '../shared/job-stages.ts';
 import { JOB_IDS, claimId } from '../make/ids.ts';
 import { writeJsonAtomically } from './store.ts';
 import type { SentHarmony } from '../shared/harmony.types.ts';

@@ -2,7 +2,7 @@
  * The snap grid of the timeline: the steps a block snaps to when it is moved or trimmed, from a bar
  * down to a sixteenth, or none. Knows nothing of the page.
  */
-import { TICKS_PER_BEAT } from '../../shared/song.types.ts';
+import { TICKS_PER_BEAT } from '../../shared/ticks.ts';
 
 /** A step of the grid: its name and its length, in ticks; 0 is no snapping, null a whole bar. */
 export type GridStep = { id: string; name: string; ticks: number | null };

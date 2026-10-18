@@ -6,7 +6,7 @@
  * a full stop: the page makes them sentences. Knows nothing of the log.
  */
 import { relative, resolve } from 'node:path';
-import type { ComposeStep } from '../shared/job.types.ts';
+import type { ComposeStep } from '../shared/job-stages.ts';
 
 /** The longest step kept from a line of Claude's. */
 const NOTE_LENGTH = 200;

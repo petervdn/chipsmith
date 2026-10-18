@@ -7,9 +7,6 @@ import type { SentGuide } from './guide.types.ts';
 import type { SentHarmony } from './harmony.types.ts';
 import type { SentStructure } from './structure.types.ts';
 
-/** Ticks to a beat: a block's place and length are counted in them. */
-export const TICKS_PER_BEAT = 96;
-
 /** The part of a clip a block plays, in ticks from the clip's start; null in a Block is all of it. */
 export type BlockTrim = { offset: number; length: number };
 

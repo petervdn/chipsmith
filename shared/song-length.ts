@@ -1,6 +1,6 @@
 /** How long a song is: where its last block, with its trim and repeats, ends. Given numbers, gives numbers. */
 import type { Block, Song } from './song.types.ts';
-import { TICKS_PER_BEAT } from './song.types.ts';
+import { TICKS_PER_BEAT } from './ticks.ts';
 
 /**
  * Returns the number of ticks to a second at a tempo.
