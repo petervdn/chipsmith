@@ -1,5 +1,5 @@
-/* The look of ClipTakes.tsx: the takes as pills that wrap, the one in the block in the accent, the
-   name of the take in the block edited on a row of its own, and its trash can. */
+/* The look of ClipTakes.tsx: "Plays" and the takes as pills that wrap, the one in the block in the
+   accent. */
 
 .clip-takes {
   display: flex;
@@ -35,22 +35,4 @@
   background: var(--accent);
   color: var(--on-accent);
   font-weight: 600;
-}
-
-.clip-takes-rename,
-.clip-takes-delete,
-.clip-takes-name button {
-  min-width: var(--touch);
-  min-height: var(--touch);
-}
-
-.clip-takes-name {
-  display: flex;
-  gap: 6px;
-}
-
-.clip-takes-name input {
-  flex: 1;
-  min-width: 0;
-  min-height: var(--touch);
 }

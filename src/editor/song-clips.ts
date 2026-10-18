@@ -6,13 +6,19 @@
  */
 import type { Clip } from '../../shared/clip.schema.ts';
 import type { Track } from '../../shared/song.schema.ts';
-import { getVersions } from './versions.ts';
+import { getVersionTree } from './versions.ts';
 
 /** A clip, and how many blocks play it. */
 export type CountedClip = { clip: Clip; blockCount: number };
 
-/** A clip of the song, how many blocks play it, and its takes (docs/adr/0037), oldest first. */
-export type SongClip = CountedClip & { takes: CountedClip[] };
+/** A take, how many blocks play it, and how many takes deep it is (a take of the clip is 1). */
+export type CountedTake = CountedClip & { depth: number };
+
+/**
+ * A clip of the song, how many blocks play it, and its takes (docs/adr/0037) as a family tree: each
+ * under the take it was made from, the takes of one clip oldest first.
+ */
+export type SongClip = CountedClip & { takes: CountedTake[] };
 
 /**
  * Returns the song's clips in the order it first plays them, with how many blocks play each, and
@@ -41,11 +47,13 @@ export function getSongClips(tracks: Track[], clips: Clip[], pool: Clip[]): Song
   const groups: { songClip: SongClip; firstStart: number; order: number }[] = [];
   for (const [order, clip] of clips.entries()) {
     if (listed.has(clip.id)) continue;
-    const [head = clip, ...takes] = getVersions(clip.id, known);
-    for (const version of [head, ...takes]) listed.add(version.id);
+    const [headRow, ...takeRows] = getVersionTree(clip.id, known);
+    const head = headRow?.clip ?? clip;
+    const takes = takeRows.map((row) => ({ ...count(row.clip), depth: row.depth }));
+    for (const version of [head, ...takes.map((take) => take.clip)]) listed.add(version.id);
     groups.push({
-      songClip: { ...count(head), takes: takes.map(count) },
-      firstStart: getFirstStart([head, ...takes].map((version) => version.id)),
+      songClip: { ...count(head), takes },
+      firstStart: getFirstStart([head, ...takes.map((take) => take.clip)].map(({ id }) => id)),
       order,
     });
   }

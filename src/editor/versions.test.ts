@@ -1,9 +1,9 @@
 // A clip's versions are its line of variations, oldest first, whichever version is asked about; a
-// cut out of it is not one of them.
+// cut out of it is not one of them. As a tree, each take comes under the clip it was made from.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import type { Clip, ClipParent } from '../../shared/clip.schema.ts';
-import { getVersions } from './versions.ts';
+import { getVersions, getVersionTree } from './versions.ts';
 
 function getClip(id: string, seconds: number, created: string, parent: ClipParent | null): Clip {
   return {
@@ -46,5 +46,18 @@ test('a cut is not a version, and has its own line', () => {
   assert.deepEqual(
     getVersions('c4', CLIPS).map((clip) => clip.id),
     ['c4'],
+  );
+});
+
+test('the family tree puts each take under the clip it was made from, at its depth', () => {
+  const clips = [...CLIPS, getClip('c5', 10, '2026-10-05', { clip: 'c1', relation: 'variation' })];
+  assert.deepEqual(
+    getVersionTree('c3', clips).map(({ clip, depth }) => [clip.id, depth]),
+    [
+      ['c1', 0],
+      ['c2', 1],
+      ['c3', 2],
+      ['c5', 1],
+    ],
   );
 });

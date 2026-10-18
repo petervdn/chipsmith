@@ -9,8 +9,17 @@ import { getJobSongRows } from '../jobs/job-songs.ts';
 import type { JobSongRow } from '../jobs/job-songs.ts';
 import type { SongClip } from './song-clips.ts';
 
-/** A take on its way: the clip it is listed under, its label, and how far it is, in words. */
-export type PendingTake = { key: string; clipId: string; label: string; stateText: string };
+/**
+ * A take on its way: the clip it is listed under, how many takes deep it is (one more than the clip
+ * it is a take of), its label, and how far it is, in words.
+ */
+export type PendingTake = {
+  key: string;
+  clipId: string;
+  depth: number;
+  label: string;
+  stateText: string;
+};
 
 /** How far a take not made yet is, in words, by the state of its line in the job. */
 const STATE_TEXTS: Partial<Record<JobSongRow['state'], string>> = {
@@ -42,11 +51,14 @@ export function getPendingTakes(
         clip.id === takesOf.clip || takes.some((take) => take.clip.id === takesOf.clip),
     );
     if (!listedUnder) return [];
+    const parentDepth = listedUnder.takes.find((take) => take.clip.id === takesOf.clip)?.depth ?? 0;
     return getJobSongRows(job, true).flatMap((row, i) => {
       const stateText = STATE_TEXTS[row.state];
-      return stateText
-        ? [{ key: `${job.id}-${i}`, clipId: listedUnder.clip.id, label: row.title, stateText }]
-        : [];
+      if (!stateText) return [];
+      const clipId = listedUnder.clip.id;
+      return [
+        { key: `${job.id}-${i}`, clipId, depth: parentDepth + 1, label: row.title, stateText },
+      ];
     });
   });
 }

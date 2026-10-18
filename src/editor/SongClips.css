@@ -151,6 +151,11 @@
   list-style: none;
 }
 
+/* a take of a take, indented under the take it was made from (no deeper than three steps) */
+.song-clips-takes > li {
+  margin-left: calc((min(var(--depth, 1), 3) - 1) * 12px);
+}
+
 .song-clips-take {
   display: flex;
   align-items: baseline;

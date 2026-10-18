@@ -1,0 +1,23 @@
+/* The look of TakeActions.tsx: ✎ and the trash can, and the take's name edited on a row of its own. */
+
+.take-actions {
+  display: inline-flex;
+  gap: 6px;
+}
+
+.take-actions button,
+.take-actions-name button {
+  min-width: var(--touch);
+  min-height: var(--touch);
+}
+
+.take-actions-name {
+  display: flex;
+  gap: 6px;
+}
+
+.take-actions-name input {
+  flex: 1;
+  min-width: 0;
+  min-height: var(--touch);
+}

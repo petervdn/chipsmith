@@ -1,0 +1,62 @@
+/* The look of ClipFamily.tsx: the versions as a tree, each take indented under the clip it was made
+   from (no deeper than four steps), the one shown in the accent. */
+
+.clip-family {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  margin-top: 12px;
+}
+
+.clip-family-title {
+  margin: 0;
+  font-size: 0.875rem;
+}
+
+.clip-family-tree {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.clip-family-tree li {
+  padding-left: calc(min(var(--depth), 4) * 18px);
+}
+
+.clip-family-node {
+  justify-content: flex-start;
+  min-height: 28px;
+  padding: 0 10px;
+  border: var(--border-width) solid transparent;
+  border-radius: var(--small-radius);
+  background: none;
+  color: var(--fg);
+  text-align: left;
+  cursor: pointer;
+}
+
+.clip-family-node.is-current {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--on-accent);
+  font-weight: 600;
+  cursor: default;
+}
+
+.clip-family-mark {
+  color: var(--faint);
+}
+
+.clip-family-node.is-current .clip-family-mark {
+  color: inherit;
+}
+
+@media (hover: hover) {
+  .clip-family-node:not(.is-current):hover {
+    background: var(--raised);
+  }
+}

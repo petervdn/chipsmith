@@ -1,7 +1,7 @@
 // The selected clip's section of the details, for a clip selected in the song's clips or the clip of
-// the selected block: at the left what it is and its facts, its .fur file to look at, its takes to
-// put in its place and quick changes; at the right the prompt for more takes (docs/adr/0037); the
-// note grid, when open, under both.
+// the selected block: at the left what it is and its facts, its .fur file to look at, then for a
+// block the takes it can play ("Plays") and for a clip its family tree, and quick changes; at the
+// right the prompt for more takes (docs/adr/0037); the note grid, when open, under both.
 import { useState } from 'react';
 import type { Clip } from '../../shared/clip.schema.ts';
 import { getChannelName, isPitchedChannel } from '../../shared/clip-channels.ts';
@@ -10,17 +10,22 @@ import { formatSeconds } from '../format.ts';
 import { ClipFileLinks } from './ClipFileLinks.tsx';
 import { ClipOperations } from './ClipOperations.tsx';
 import { ClipPrompt } from './ClipPrompt.tsx';
+import { ClipFamily } from './ClipFamily.tsx';
 import { ClipTakes } from './ClipTakes.tsx';
 import { DetailsSection } from './DetailsSection.tsx';
 import { NoteGrid } from './NoteGrid.tsx';
+import type { VersionRow } from './versions.ts';
 import './ClipDetails.css';
 
 type ClipDetailsProps = {
   songId: string;
   clip: Clip;
   versions: Clip[];
+  familyRows: VersionRow[];
+  isForBlock: boolean;
   blockCount: number;
   onUseVersion: (clipId: string) => void;
+  onSelectClip: (clipId: string) => void;
   onReplaceClip: (fromClipId: string, toClipId: string) => void;
 };
 
@@ -31,8 +36,12 @@ type ClipDetailsProps = {
  * @param props.songId - The id of the song being edited.
  * @param props.clip - The clip.
  * @param props.versions - The versions of the clip, oldest first.
+ * @param props.familyRows - The versions as a family tree, each with its depth.
+ * @param props.isForBlock - Whether it is the selected block's clip (the takes to play in it are
+ *   shown) or a clip selected on its own (its family tree is).
  * @param props.blockCount - How many blocks of the song play it.
  * @param props.onUseVersion - Called with a take's id to put it in the clip's place.
+ * @param props.onSelectClip - Called with a version's id to show it.
  * @param props.onReplaceClip - Called with a clip's id and the one that replaces it (a take deleted
  *   or updated), to put it in the draft's blocks.
  * @returns The section element.
@@ -41,8 +50,11 @@ export function ClipDetails({
   songId,
   clip,
   versions,
+  familyRows,
+  isForBlock,
   blockCount,
   onUseVersion,
+  onSelectClip,
   onReplaceClip,
 }: ClipDetailsProps) {
   const [isGridOpen, setGridOpen] = useState(false);
@@ -60,12 +72,21 @@ export function ClipDetails({
             {blockCount === 1 ? 'block' : 'blocks'}
           </p>
           <ClipFileLinks clipId={clip.id} />
-          {versions.length > 1 && (
+          {isForBlock && versions.length > 1 && (
             <ClipTakes
               versions={versions}
               currentClipId={clip.id}
               songId={songId}
               onUse={onUseVersion}
+              onReplaceClip={onReplaceClip}
+            />
+          )}
+          {!isForBlock && familyRows.length > 1 && (
+            <ClipFamily
+              rows={familyRows}
+              currentClipId={clip.id}
+              songId={songId}
+              onSelect={onSelectClip}
               onReplaceClip={onReplaceClip}
             />
           )}

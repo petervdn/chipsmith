@@ -95,7 +95,7 @@ with its title alone, the Songs tab marked above it.
   follow (the playhead kept in the middle), a loop (the whole song, or bars drawn in a row under the
   ruler; 0031), a metronome (on or off, its own
   volume; the first beat of a bar higher, `src/playback/metronome.ts`), zoom (and the tracks' height on a slider), the song's clips in a
-  column at its right, its top level with the ruler's, kept in view under the editor's bar (each with its blocks counted and its takes under it, indented and smaller, those no block plays yet too, then the takes on their way, dashed and turning, with how far each is (`src/editor/pending-takes.ts`); tapped,
+  column at its right, its top level with the ruler's, kept in view under the editor's bar (each with its blocks counted and its takes under it, indented and smaller, a take of a take under the take it was made from, those no block plays yet too, then the takes on their way, dashed and turning, with how far each is (`src/editor/pending-takes.ts`); tapped,
   the clip is selected, not a block; folded to a strip, and on a phone folded at first and laid over
   the timeline when open), the page (and the top bar with it) wider than the others, up to 1600 px,
   the timeline from the page's left, and under it, as wide, the details of what is selected, as sections each named by its kind (`src/editor/SelectionDetails.tsx`): a block selected
@@ -103,11 +103,14 @@ with its title alone, the Songs tab marked above it.
   one row the shrunk tracks show, its row flashed in its colour), Loop it (the block's bars looped and played) and solo for its track, repeats, duplicate, untrim, remove) with its clip's under it; a
   clip selected shows only the clip's; a track its own. The clip's section, in two columns (the clip
   and its takes at the left, Change this clip at the right) with the note grid under both when open: its facts, its .fur to
-  look at (open in Furnace, download, view as text), its takes as pills (the original and every
-  variation by its label; a tap puts one in the block as an edit, heard at once if it plays, offered
-  to the other blocks of the same clip; with a clip selected, the take is selected and goes in the
-  blocks that play the clip only if the answer to the question asked is yes; the one in it renamed in place or deleted, asked first, its blocks going
-  back to the clip it was made from (0039); `src/editor/ClipTakes.tsx`), quick
+  look at (open in Furnace, download, view as text), for a block what it plays: its
+  clip's takes as pills under "Plays" (the original and every take by its label; a tap puts one in
+  the block as an edit, heard at once if it plays, offered to the other blocks of the same clip;
+  `src/editor/ClipTakes.tsx`); for a clip selected on its own its family tree instead (each take
+  under the clip it was made from, the one shown marked; a tap shows another, nothing in the song
+  changes; `src/editor/ClipFamily.tsx`, `getVersionTree`); the take shown renamed in place or
+  deleted, asked first, its blocks going back to the clip it was made from (0039;
+  `src/editor/TakeActions.tsx`), quick
   changes for a clip of pitched notes (an octave or a semitone up or down: a take made on the server
   without Claude and put in the block; `src/editor/ClipOperations.tsx`, `make/transpose-take.ts`),
   Edit notes (the note grid: one pitched channel at a time, time across as in the timeline and pitch up (0041), in a box

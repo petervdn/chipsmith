@@ -13,8 +13,10 @@ saved, playing from a cursor, the zoom, and the selected block's clip or track.
 - `clip-prompt.ts`: the prompt on a clip: its quick asks, how a tap adds one, the most takes
 - `ClipPrompt.css`: the look of ClipPrompt.tsx
 - `ClipPrompt.tsx`: the prompt on a clip: what to change, how many takes, Send, the jobs on their way
+- `ClipFamily.css`: the look of ClipFamily.tsx
+- `ClipFamily.tsx`: a selected clip's family tree: each take under the clip it was made from; a tap shows that one
 - `ClipTakes.css`: the look of ClipTakes.tsx
-- `ClipTakes.tsx`: the takes of a clip as pills: a tap puts one in its place; the one shown renamed or deleted
+- `ClipTakes.tsx`: what a selected block plays: its clip's takes as pills under "Plays", a tap puts one in the block
 - `ClipFileLinks.css`: the look of ClipFileLinks.tsx
 - `ClipFileLinks.tsx`: a clip's .fur to look at: opened in Furnace (a copy), downloaded, or as text
 - `ClipOperations.css`: the look of ClipOperations.tsx
@@ -71,6 +73,8 @@ saved, playing from a cursor, the zoom, and the selected block's clip or track.
 - `track-name-width.ts`: how wide the track names are drawn, and the bounds of dragging them
 - `ToggleButton.css`: the look of ToggleButton.tsx
 - `ToggleButton.tsx`: a switch in the editor bar: a button with a checkbox left of its label
+- `TakeActions.css`: the look of TakeActions.tsx
+- `TakeActions.tsx`: a take renamed in place or deleted
 - `TrackDetails.css`: the look of TrackDetails.tsx
 - `TrackDetails.tsx`: the selected track's section: its name, remove
 - `TransportButtons.css`: the look of TransportButtons.tsx

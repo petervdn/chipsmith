@@ -63,13 +63,17 @@ function makeClip(id: string): Clip {
 }
 
 const SONG_CLIPS: SongClip[] = [
-  { clip: makeClip('c1'), blockCount: 1, takes: [{ clip: makeClip('c5'), blockCount: 0 }] },
+  {
+    clip: makeClip('c1'),
+    blockCount: 1,
+    takes: [{ clip: makeClip('c5'), blockCount: 0, depth: 1 }],
+  },
 ];
 
 test('a line per take not made yet, under its clip', () => {
   assert.deepEqual(getPendingTakes([JOB], 's1', SONG_CLIPS), [
-    { key: 'j0001-1', clipId: 'c1', label: 'octave jumps', stateText: 'rendering…' },
-    { key: 'j0001-2', clipId: 'c1', label: 'Take 3', stateText: 'being written…' },
+    { key: 'j0001-1', clipId: 'c1', depth: 1, label: 'octave jumps', stateText: 'rendering…' },
+    { key: 'j0001-2', clipId: 'c1', depth: 1, label: 'Take 3', stateText: 'being written…' },
   ]);
 });
 
@@ -77,7 +81,10 @@ test("a take of a take is listed under the clip it was made from; another song's
   const ofTake: Job = { ...JOB, songCount: 1, songs: [], takesOf: { clip: 'c5', song: 's1' } };
   const elsewhere: Job = { ...JOB, takesOf: { clip: 'c1', song: 's2' } };
   assert.deepEqual(
-    getPendingTakes([ofTake, elsewhere], 's1', SONG_CLIPS).map(({ clipId }) => clipId),
-    ['c1'],
+    getPendingTakes([ofTake, elsewhere], 's1', SONG_CLIPS).map(({ clipId, depth }) => [
+      clipId,
+      depth,
+    ]),
+    [['c1', 2]],
   );
 });

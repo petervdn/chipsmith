@@ -1,12 +1,13 @@
 // The clips the song plays, in a column at the right of the timeline: each with its name, length,
 // channels and how many blocks play it, and its takes under it, indented and smaller: each its label
-// and its blocks, then the takes on their way, turning, with how far each is. A tap selects the clip; a drag puts a new block of it on a
-// track (a chip of it follows the pointer). » folds the column to a strip and « opens it again;
-// on a phone it starts folded, and open it lies over the timeline and steps aside while a clip is
+// and its blocks, a take of a take indented under the take it was made from; then the takes on their
+// way, turning, with how far each is. A tap selects the clip; a drag puts a new block of it on a
+// track (a chip of it follows the pointer). » folds the column to a strip and « opens it again; on a
+// phone it starts folded, and open it lies over the timeline and steps aside while a clip is
 // dragged. It knows nothing of how a drop is placed.
 import { ChevronsLeft, ChevronsRight } from 'lucide-react';
 import { useState } from 'react';
-import type { PointerEvent as ReactPointerEvent } from 'react';
+import type { CSSProperties, PointerEvent as ReactPointerEvent } from 'react';
 import type { Clip } from '../../shared/clip.schema.ts';
 import { getChannelName } from '../../shared/clip-channels.ts';
 import { getClipLabel } from '../../shared/clip-label.ts';
@@ -121,8 +122,8 @@ export function SongClips({
                 </button>
                 {takes.length + pending.length > 0 && (
                   <ul className="song-clips-takes" aria-label={`takes of ${getClipLabel(clip)}`}>
-                    {takes.map(({ clip: take, blockCount: takeBlockCount }) => (
-                      <li key={take.id}>
+                    {takes.map(({ clip: take, blockCount: takeBlockCount, depth }) => (
+                      <li key={take.id} style={getDepthStyle(depth)}>
                         <button
                           type="button"
                           className={`song-clips-take${getStateClasses(take.id)}`}
@@ -141,8 +142,13 @@ export function SongClips({
                         </button>
                       </li>
                     ))}
-                    {pending.map(({ key, label, stateText }) => (
-                      <li key={key} className="song-clips-take is-pending" aria-busy="true">
+                    {pending.map(({ key, depth, label, stateText }) => (
+                      <li
+                        key={key}
+                        className="song-clips-take is-pending"
+                        style={getDepthStyle(depth)}
+                        aria-busy="true"
+                      >
                         <span className="song-clips-take-label">
                           <span className="jobs-spinner" aria-hidden="true" />
                           {label}
@@ -190,4 +196,14 @@ function getChannelsText(clip: Clip): string {
 function getBlockCountText(count: number): string {
   if (count === 0) return 'not placed';
   return `${count} ${count === 1 ? 'block' : 'blocks'}`;
+}
+
+/**
+ * Returns the style that indents a take by how many takes deep it is.
+ *
+ * @param depth - How many takes deep it is: a take of the clip is 1.
+ * @returns The style, the depth as a custom property.
+ */
+function getDepthStyle(depth: number): CSSProperties & Record<'--depth', string> {
+  return { '--depth': String(depth) };
 }

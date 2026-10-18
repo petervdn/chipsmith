@@ -51,3 +51,11 @@ whether the audio engine can swap a block's clip while it plays.
 A takes job was sent with the song's style guides without showing them. Now Change this clip shows
 the guides as chips, as New does: the song's own (those that still exist) chosen at first, and only
 the ones chosen go along (`guideIds`, as for songs).
+
+## Addendum (2026-10-18): a clip selected shows its family, a block chooses its take
+A clip selected in the clips column showed the takes as pills, and a tap on one asked to put it in
+every block of the clip: looking at a clip changed the song. Now a clip selected shows what it is
+and its family tree (each take under the clip it was made from; a tap shows another, nothing in
+the song changes), and a take made of it (a transposition, edited notes) is only shown. Choosing
+the take a block plays is the block's: its pills, under "Plays". The clips column shows takes of
+takes indented under the take they were made from, as the clips record it (`parent`).

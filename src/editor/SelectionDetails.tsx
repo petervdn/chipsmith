@@ -22,7 +22,7 @@ import {
 import { getBlockSpans, getTicksPerBar } from './timeline.ts';
 import { TrackDetails } from './TrackDetails.tsx';
 import type { useSongDraft } from './use-song-draft.ts';
-import { getVersions } from './versions.ts';
+import { getVersions, getVersionTree } from './versions.ts';
 import './SelectionDetails.css';
 
 type SelectionDetailsProps = {
@@ -138,8 +138,11 @@ export function SelectionDetails({
           songId={song.id}
           clip={clip}
           versions={getVersions(clip.id, poolClips.length > 0 ? poolClips : clips)}
+          familyRows={getVersionTree(clip.id, poolClips.length > 0 ? poolClips : clips)}
+          isForBlock={selection.kind !== 'clip'}
           blockCount={getClipPlaces(song.tracks, clip.id).length}
           onUseVersion={onUseTake}
+          onSelectClip={(clipId) => draft.select({ kind: 'clip', clipId })}
           onReplaceClip={replaceClip}
         />
       )}
