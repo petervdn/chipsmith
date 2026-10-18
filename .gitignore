@@ -3,6 +3,9 @@
 data/*
 !data/README.md
 
+# songs exported by hand, outside the app
+exports/
+
 node_modules/
 dist/
 .DS_Store
