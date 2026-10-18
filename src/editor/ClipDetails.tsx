@@ -1,6 +1,7 @@
 // The selected clip's section of the details, for a clip selected in the song's clips or the clip of
 // the selected block: at the left what it is and its facts, its .fur file to look at, then for a
-// block the takes it can play ("Plays") and for a clip its family tree, and quick changes; at the
+// block the takes it can play ("Plays") and for a clip its family tree, quick changes, and its own
+// player (▶ and its waveform, played alone); at the
 // right the prompt for more takes (docs/adr/0037); the note grid, when open, under both.
 import { useState } from 'react';
 import type { Clip } from '../../shared/clip.schema.ts';
@@ -9,6 +10,7 @@ import { getClipLabel } from '../../shared/clip-label.ts';
 import { formatSeconds } from '../format.ts';
 import { ClipFileLinks } from './ClipFileLinks.tsx';
 import { ClipOperations } from './ClipOperations.tsx';
+import { ClipPlayer } from './ClipPlayer.tsx';
 import { ClipPrompt } from './ClipPrompt.tsx';
 import { ClipFamily } from './ClipFamily.tsx';
 import { ClipTakes } from './ClipTakes.tsx';
@@ -99,6 +101,7 @@ export function ClipDetails({
               onMade={onUseVersion}
             />
           )}
+          <ClipPlayer clip={clip} />
         </div>
         <div className="clip-details-column">
           <ClipPrompt clipId={clip.id} songId={songId} />

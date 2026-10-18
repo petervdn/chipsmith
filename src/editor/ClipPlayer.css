@@ -1,0 +1,46 @@
+/* The look of ClipPlayer.tsx: ▶ at the left, the waveform filling the rest of the row; two layers of
+   it, one over the other, the faint one whole and the played one cut at the playhead. */
+
+.clip-player {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.clip-player-play {
+  flex: none;
+  width: var(--touch);
+  height: var(--touch);
+  padding: 0;
+  border: var(--border-width) solid var(--line);
+  border-radius: 50%;
+  background: var(--card);
+  color: var(--fg);
+  cursor: pointer;
+}
+
+.clip-player-wave {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+.clip-player-layer {
+  position: absolute;
+  inset: 0;
+  color: var(--fg);
+}
+
+.clip-player-layer.is-faint {
+  opacity: 0.2;
+}
+
+.clip-player-layer.is-played {
+  clip-path: inset(0 100% 0 0);
+}

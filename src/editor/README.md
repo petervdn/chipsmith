@@ -13,6 +13,8 @@ saved, playing from a cursor, the zoom, and the selected block's clip or track.
 - `clip-prompt.ts`: the prompt on a clip: its quick asks, how a tap adds one, the most takes
 - `ClipPrompt.css`: the look of ClipPrompt.tsx
 - `ClipPrompt.tsx`: the prompt on a clip: what to change, how many takes, Send, the jobs on their way
+- `ClipPlayer.css`: the look of ClipPlayer.tsx
+- `ClipPlayer.tsx`: a clip's own player in its section: ▶ / ❚❚ and its waveform, the part played in full colour; a tap plays from there
 - `ClipFamily.css`: the look of ClipFamily.tsx
 - `ClipFamily.tsx`: a selected clip's family tree: each take under the clip it was made from; a tap shows that one
 - `ClipTakes.css`: the look of ClipTakes.tsx
@@ -85,6 +87,7 @@ saved, playing from a cursor, the zoom, and the selected block's clip or track.
 - `TransportButtons.tsx`: the transport, large: ■ stop (again: back to the start), ▶ / ❚❚ play or pause on one button, the time
 - `use-block-drag.ts`: dragging blocks: moving and trimming them
 - `use-clip-drag.ts`: dragging a clip onto a track's lane, as a new block
+- `use-clip-player.ts`: a clip played on its own: play, pause, play from a share of it; the waveform's played part kept at the playhead
 - `use-clip-prompt.ts`: the prompt on a clip kept, sent as takes, and the jobs of takes of it on their way
 - `use-edge-scroll.ts`: the timeline scrolled while a drag is near its left or right edge
 - `use-editor-keys.ts`: the editor's keys: Space, Delete, ⌘Z, ⇧⌘Z, ⌘S, Escape

@@ -102,7 +102,8 @@ with its title alone, the Songs tab marked above it.
   shows the block's section as one bar (where it plays, the clip it plays, Show track (its track brought into the
   one row the shrunk tracks show, its row flashed in its colour), Loop it (the block's bars looped and played) and solo for its track, repeats, duplicate, untrim, remove) with its clip's under it; a
   clip selected shows only the clip's; a track its own. The clip's section, in two columns (the clip
-  and its takes at the left, Change this clip at the right) with the note grid under both when open: its facts, its .fur to
+  and its takes at the left, its own player under them: ▶ / ❚❚ and its waveform, faint until
+  played, the clip alone, `src/editor/ClipPlayer.tsx`; Change this clip at the right) with the note grid under both when open: its facts, its .fur to
   look at (open in Furnace, download, view as text), for a block what it plays: its
   clip's takes as pills under "Plays" (the original and every take by its label; a tap puts one in
   the block as an edit, heard at once if it plays, offered to the other blocks of the same clip;

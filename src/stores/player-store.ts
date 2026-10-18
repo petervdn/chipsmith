@@ -1,10 +1,12 @@
 /**
- * The one player of the page (not persisted: a reload starts with nothing playing): which song,
- * whether it is loading, playing or stopped, where, and the loop it plays round, if any. Components read it with a selector and
+ * The one player of the page (not persisted: a reload starts with nothing playing): which song, or
+ * which clip played on its own, whether it is loading, playing or stopped, where, and the loop it
+ * plays round, if any. Components read it with a selector and
  * change it with its actions; the audio itself is playback/audio-engine.ts's.
  */
 import { create } from 'zustand';
 import type { SongDetail } from '../../shared/api.types.ts';
+import type { Clip } from '../../shared/clip.schema.ts';
 import { getEnd, getStretches } from '../playback/schedule.ts';
 import type { Stretch } from '../playback/schedule.ts';
 import { playStretches, stopPlaying, unlockAudio } from '../playback/audio-engine.ts';
@@ -17,6 +19,8 @@ export type PlayerMode = 'stopped' | 'loading' | 'playing';
 /** What the player is doing, and how to change it. */
 type PlayerStore = {
   song: SongDetail | null;
+  /** The clip played on its own (a clip's player on a song's page), or null. */
+  clipId: string | null;
   mode: PlayerMode;
   /** How much of the song's audio has loaded, 0 to 1, while loading. */
   loaded: number;
@@ -29,6 +33,8 @@ type PlayerStore = {
   error: string | null;
   /** Plays a song from a second, round a loop if given; call it from a tap. */
   playSong: (song: SongDetail, from?: number, loop?: Loop | null) => Promise<void>;
+  /** Plays a clip on its own from a second, instead of any song; call it from a tap. */
+  playClip: (clip: Clip, from?: number) => Promise<void>;
   /** Stops, keeping the place it stopped at. */
   stopSong: (at: number) => void;
   /** Moves to a second of the song, playing on from there (round the same loop) if it was playing. */
@@ -44,6 +50,9 @@ type PlayerStore = {
 export function getClipAudioUrl(clipId: string): string {
   return `/media/clips/${encodeURIComponent(clipId)}/audio.flac`;
 }
+
+/** The track a clip played on its own plays on, for its tap (playback/track-taps.ts). */
+const CLIP_TRACK_ID = 'clip';
 
 /** The player store. */
 export const usePlayerStore = create<PlayerStore>()((set, get) => {
@@ -80,6 +89,7 @@ export const usePlayerStore = create<PlayerStore>()((set, get) => {
 
   return {
     song: null,
+    clipId: null,
     mode: 'stopped',
     loaded: 0,
     from: 0,
@@ -93,6 +103,7 @@ export const usePlayerStore = create<PlayerStore>()((set, get) => {
       const start = loop ? getLoopFrom(from, loop) : from >= end ? 0 : from;
       set({
         song,
+        clipId: null,
         mode: 'loading',
         loaded: 0,
         from: start,
@@ -102,6 +113,30 @@ export const usePlayerStore = create<PlayerStore>()((set, get) => {
       });
       await unlocking;
       await play(stretches, getClipAudioUrl, start, loop);
+    },
+    playClip: async (clip, from = 0) => {
+      const unlocking = unlockAudio();
+      const end = clip.seconds;
+      const start = from >= end ? 0 : from;
+      const stretch = {
+        clipId: clip.id,
+        trackId: CLIP_TRACK_ID,
+        start: 0,
+        offset: 0,
+        duration: end,
+      };
+      set({
+        song: null,
+        clipId: clip.id,
+        mode: 'loading',
+        loaded: 0,
+        from: start,
+        end,
+        loop: null,
+        error: null,
+      });
+      await unlocking;
+      await play([stretch], getClipAudioUrl, start, null);
     },
     stopSong: (at) => {
       stopPlaying();
