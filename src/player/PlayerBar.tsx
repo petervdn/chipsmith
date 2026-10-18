@@ -73,7 +73,7 @@ export function PlayerBar() {
           type="range"
           min={0}
           max={player.end || 1}
-          step={0.1}
+          step="any"
           value={Math.min(position, player.end)}
           onChange={(event) => seekSong(Number(event.target.value))}
         />
