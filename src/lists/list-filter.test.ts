@@ -49,7 +49,7 @@ test('tags are counted, most used first', () => {
 test('a filter goes into the address and comes back the same', () => {
   const filter = { words: 'dark groove', tags: ['funk', 'bass'], isKeptOnly: true };
   const query = getFilterQuery(filter);
-  assert.equal(query, '?q=dark+groove&tags=funk,bass&kept=1');
+  assert.equal(query, '?q=dark+groove&tags=funk,bass&favorites=1');
   assert.deepEqual(getFilterFromQuery(query), filter);
   assert.equal(getFilterQuery(EMPTY_FILTER), '');
   assert.deepEqual(getFilterFromQuery(''), EMPTY_FILTER);

@@ -53,19 +53,19 @@ export function getTagCounts(items: FilterableItem[]): { name: string; count: nu
 }
 
 /**
- * Writes a filter as the address's query: `q` (words), `tags` (comma-separated) and `kept`.
+ * Writes a filter as the address's query: `q` (words), `tags` (comma-separated) and `favorites`.
  *
  * @param filter - The filter.
  * @param filter.words - The words to find, left out when blank.
  * @param filter.tags - The tags that must all be there.
- * @param filter.isKeptOnly - Whether only the kept show, `kept=1` when they do.
+ * @param filter.isKeptOnly - Whether only the favorites (the kept) show, `favorites=1` when they do.
  * @returns The query with its leading "?", or an empty string for an empty filter.
  */
 export function getFilterQuery({ words, tags, isKeptOnly }: ListFilter): string {
   const query = new URLSearchParams();
   if (words.trim()) query.set('q', words);
   if (tags.length > 0) query.set('tags', tags.join(','));
-  if (isKeptOnly) query.set('kept', '1');
+  if (isKeptOnly) query.set('favorites', '1');
   const text = query.toString().replaceAll('%2C', ',');
   return text ? `?${text}` : '';
 }
@@ -81,6 +81,6 @@ export function getFilterFromQuery(search: string): ListFilter {
   return {
     words: query.get('q') ?? '',
     tags: (query.get('tags') ?? '').split(',').filter(Boolean),
-    isKeptOnly: query.get('kept') === '1',
+    isKeptOnly: query.get('favorites') === '1',
   };
 }
