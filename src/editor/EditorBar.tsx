@@ -1,9 +1,9 @@
 // The editor's bar of controls above the timeline: the transport, large at its left (stop, play or
-// pause, the time), then the groups: play (follow, loop), the metronome, edit (undo, redo), snap,
-// tracks (split, when the song can be), zoom (in, out, fit, and the tracks' height on a slider),
-// view (the structure, when the song was asked for one), and the song (revert, save). It wraps on a
-// phone. It knows nothing of what the controls do: it is given the values and handlers, or keeps
-// them in the preferences.
+// pause, the time), then the groups: play (follow, loop), the metronome, edit (undo, redo, revert,
+// save: lit while there are changes), snap, tracks (split, when the song can be), zoom (in, out,
+// fit, and the tracks' height on a slider), view (the structure, when the song was asked for one).
+// It wraps on a phone. It knows nothing of what the controls do: it is given the values and
+// handlers, or keeps them in the preferences.
 import { Minus, Plus, Redo2, Undo2 } from 'lucide-react';
 import type { useSongDraft } from './use-song-draft.ts';
 import type { useSongTransport } from './use-song-transport.ts';
@@ -107,6 +107,24 @@ export function EditorBar({
           >
             <Redo2 />
           </button>
+          <button
+            type="button"
+            className="editor-bar-button"
+            onClick={draft.revert}
+            disabled={!draft.hasChanges || draft.isSaving}
+            data-tooltip="go back to the song as it was saved"
+          >
+            Revert
+          </button>
+          <button
+            type="button"
+            className="editor-bar-button is-primary"
+            onClick={draft.save}
+            disabled={!draft.hasChanges || draft.isSaving}
+            data-tooltip="save the song as it is now (⌘S)"
+          >
+            {draft.isSaving ? 'Saving…' : 'Save'}
+          </button>
         </ControlGroup>
         <ControlGroup label="snap">
           <select
@@ -180,23 +198,6 @@ export function EditorBar({
             />
           </ControlGroup>
         )}
-        <ControlGroup label="song" isAtEnd>
-          {draft.hasChanges && <span className="editor-bar-unsaved">unsaved changes</span>}
-          {draft.hasChanges && (
-            <button type="button" className="editor-bar-button" onClick={draft.revert}>
-              Revert
-            </button>
-          )}
-          <button
-            type="button"
-            className="editor-bar-button is-primary"
-            onClick={draft.save}
-            disabled={!draft.hasChanges || draft.isSaving}
-            data-tooltip="save the song as it is now (⌘S)"
-          >
-            {draft.isSaving ? 'Saving…' : 'Save'}
-          </button>
-        </ControlGroup>
       </div>
     </div>
   );
