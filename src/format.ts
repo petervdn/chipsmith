@@ -1,4 +1,7 @@
-/** How numbers are shown on the page: a length in minutes and seconds, a meter, tokens. */
+/**
+ * How numbers and dates are shown on the page: a length in minutes and seconds, a meter, tokens, a
+ * date.
+ */
 
 /**
  * Returns a length in minutes and seconds: "1:05" for 65 seconds.
@@ -46,4 +49,18 @@ export function formatTokenCount(tokens: number): string {
  */
 export function formatTokens(tokens: number): string {
   return `${formatTokenCount(tokens)} tokens`;
+}
+
+/**
+ * Returns a date as day, month and time, such as "16 Oct 22:09".
+ *
+ * @param iso - The date, in ISO form.
+ * @returns The date as it is shown, or the text as given when it is not a date.
+ */
+export function formatDate(iso: string): string {
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return iso;
+  const day = date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+  const time = date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+  return `${day} ${time}`;
 }

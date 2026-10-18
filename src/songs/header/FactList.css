@@ -1,0 +1,103 @@
+/* The look of FactList.tsx: the labels small, in capitals and muted, the values in the page's text;
+   tiles, rows, pills, a grid, or a few large. */
+
+.fact-list {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0;
+}
+
+.fact-list dt {
+  color: var(--muted);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.fact-list dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+/* tiles: each fact boxed, its value large */
+.fact-list.is-tiles {
+  gap: 8px;
+}
+
+.fact-list.is-tiles .fact-list-fact {
+  min-width: 88px;
+  padding: 8px 12px;
+  border: var(--border-width) solid var(--line);
+  border-radius: var(--radius);
+  background: var(--card);
+}
+
+.fact-list.is-tiles dd {
+  font-size: 1.0625rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+/* rows: a table, the label at the left, a hairline between */
+.fact-list.is-rows {
+  flex-direction: column;
+}
+
+.fact-list.is-rows .fact-list-fact {
+  display: grid;
+  grid-template-columns: 8em minmax(0, 1fr);
+  gap: 8px;
+  padding: 6px 0;
+  border-bottom: var(--border-width) solid var(--line);
+}
+
+.fact-list.is-rows .fact-list-fact:last-child {
+  border-bottom: 0;
+}
+
+.fact-list.is-rows dt {
+  padding-top: 0.2em;
+}
+
+/* pills: the label and its value in a rounded chip */
+.fact-list.is-pills {
+  gap: 6px;
+}
+
+.fact-list.is-pills .fact-list-fact {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--raised);
+}
+
+.fact-list.is-pills dd {
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+/* a grid: the label over its value, in columns as many as fit */
+.fact-list.is-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 12px 20px;
+}
+
+.fact-list.is-grid dd {
+  font-weight: 600;
+}
+
+/* large: a few facts side by side in big figures */
+.fact-list.is-large {
+  gap: 28px;
+}
+
+.fact-list.is-large dd {
+  font-size: 1.75rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}

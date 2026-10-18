@@ -1,0 +1,31 @@
+/* The look of TableHeader.tsx: two cards side by side on a desktop, the prompt's the wider; one
+   column on a phone. */
+
+.table-header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+@media (min-width: 900px) {
+  .table-header {
+    grid-template-columns: minmax(0, 3fr) minmax(280px, 2fr);
+    align-items: start;
+  }
+}
+
+.table-header-card {
+  padding: 12px 16px;
+  border: var(--border-width) solid var(--line);
+  border-radius: var(--radius);
+  background: var(--card);
+}
+
+.table-header-card .song-prompt {
+  margin: 0;
+}
+
+.table-header-sent {
+  margin-top: 16px;
+}

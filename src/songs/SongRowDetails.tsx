@@ -3,6 +3,7 @@
 // links to prompt it again or to use the song as the base of a new prompt, and a warning when the
 // song has changed since; the song's facts; and the songs it was prompted from or prompted again as.
 import type { SongListing } from '../../shared/api.types.ts';
+import { formatDate } from '../format.ts';
 import '../lists/lists.css';
 import './SongRowDetails.css';
 import { useCopyText } from './use-copy-text.ts';
@@ -105,18 +106,4 @@ export function SongRowDetails({ listing, titlesById }: SongRowDetailsProps) {
       )}
     </div>
   );
-}
-
-/**
- * Returns a date as day, month and time, such as "16 Oct 22:09".
- *
- * @param iso - The date, in ISO form.
- * @returns The date as it is shown, or the text as given when it is not a date.
- */
-function formatDate(iso: string): string {
-  const date = new Date(iso);
-  if (Number.isNaN(date.getTime())) return iso;
-  const day = date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
-  const time = date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
-  return `${day} ${time}`;
 }

@@ -1,0 +1,24 @@
+/* The look of CardHeader.tsx: on the page itself, no card around it; the large facts in big figures beside the grid of the
+   others (under it on a phone), a hairline, the prompt. */
+
+.card-header {
+  margin-bottom: 16px;
+}
+
+.card-header-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px 40px;
+}
+
+.card-header-rest {
+  flex: 1 1 320px;
+}
+
+.card-header-prompt {
+  max-width: 80ch;
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: var(--border-width) solid var(--line);
+}

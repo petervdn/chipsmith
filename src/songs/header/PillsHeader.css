@@ -1,0 +1,20 @@
+/* The look of PillsHeader.tsx: the pills, then the prompt set off by a bar in the accent at its
+   left. */
+
+.pills-header {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.pills-header-quote {
+  max-width: 80ch;
+  margin: 0;
+  padding: 2px 0 2px 14px;
+  border-left: 3px solid var(--accent);
+}
+
+.pills-header-quote .song-prompt {
+  margin-bottom: 10px;
+}

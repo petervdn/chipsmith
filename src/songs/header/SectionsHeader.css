@@ -1,0 +1,16 @@
+/* The look of SectionsHeader.tsx: the sections one under another, a hairline over each, room
+   between them. */
+
+.sections-header {
+  margin-bottom: 16px;
+}
+
+.sections-header-section {
+  padding: 12px 0;
+  border-top: var(--border-width) solid var(--line);
+}
+
+.sections-header-section .song-prompt {
+  max-width: 80ch;
+  margin: 0;
+}

@@ -2,6 +2,7 @@
 
 The songs list and a song opened.
 
+- `header/`: a song's header on its page: its facts, its prompt and what it was sent with, in layouts to compare
 - `SongPage.css`: the look of SongPage.tsx
 - `SongPage.tsx`: one song, opened
 - `SongPrompt.css`: the look of SongPrompt.tsx
