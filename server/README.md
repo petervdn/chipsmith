@@ -9,6 +9,7 @@ back to its file (docs/adr/0006).
 - `claude-words.ts`: what Claude does said in a step's words: a tool call, a stretch of thinking
 - `claude-run.ts`: Claude Code started headless for a job, detached, its output into claude.log
 - `clip-files.ts`: a clip's .fur given out: downloaded, as tracker text, or a copy opened in Furnace
+- `clip-routes.ts`: `/api/clips`: the pool listed, a clip's record changed, its .fur opened in Furnace
 - `examples.ts`: the example songs copied into an empty data folder
 - `guides.ts`: the style guides in memory and in guides/<id>/guide.json
 - `http.ts`: answering a request: JSON, plain text, a file with byte ranges or as a download, an error

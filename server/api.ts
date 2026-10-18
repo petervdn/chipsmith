@@ -7,14 +7,7 @@ import { existsSync } from 'node:fs';
 import type { IncomingMessage, ServerResponse } from 'node:http';
 import { join } from 'node:path';
 import type { Plugin } from 'vite';
-import type {
-  ClipListing,
-  ClipOpened,
-  ProgramCheck,
-  SongDeletion,
-  SongDetail,
-  SongListing,
-} from '../shared/api.types.ts';
+import type { ProgramCheck, SongDeletion, SongDetail, SongListing } from '../shared/api.types.ts';
 import { checkPrograms } from '../config/programs.ts';
 import { PROJECT_FOLDER, getSettings } from '../config/settings.ts';
 import type { Clip } from '../shared/clip.types.ts';
@@ -28,24 +21,11 @@ import { openJobs } from './jobs.ts';
 import { copyExamplesIfEmpty } from './examples.ts';
 import { splitSong } from '../make/split-song.ts';
 import { isAudioMissing, renderMissingAudio } from './missing-audio.ts';
-import {
-  checkCatalogueChange,
-  checkClipChange,
-  checkGuideDraft,
-  checkTracks,
-} from './model-checks.ts';
+import { checkCatalogueChange, checkGuideDraft, checkTracks } from './model-checks.ts';
 import type { GuideStore } from './guides.ts';
 import { createGuide, deleteGuide, listGuides, openGuides, updateGuide } from './guides.ts';
 import type { Store } from './store.ts';
-import {
-  deleteSong,
-  getClipFolder,
-  getSongsUsingClip,
-  openStore,
-  rescanStore,
-  saveClip,
-  saveSong,
-} from './store.ts';
+import { deleteSong, getClipFolder, openStore, rescanStore, saveSong } from './store.ts';
 import { routeStructures } from './structure-routes.ts';
 import { routeJobs } from './job-routes.ts';
 import { routeReferences } from './reference-routes.ts';
@@ -55,7 +35,8 @@ import type { StructureStore } from './structures.ts';
 import { openStructures } from './structures.ts';
 import { getSplitCount } from '../shared/clip-channels.ts';
 import { hasVariationInLineage } from '../shared/clip-lineage.ts';
-import { openClipInFurnace, sendClipFur, sendClipText } from './clip-files.ts';
+import { sendClipFur, sendClipText } from './clip-files.ts';
+import { routeClips } from './clip-routes.ts';
 
 /**
  * Checks the programs the app calls, and warns in the server's log of each one that cannot be used.
@@ -207,7 +188,6 @@ async function route(
     return sendJson(response, { songs: store.songs.size, clips: store.clips.size });
   }
   if (kind === 'songs' && !id && method === 'GET') return sendJson(response, listSongs(store));
-  if (kind === 'clips' && !id && method === 'GET') return sendJson(response, listClips(store));
   if (kind === 'songs' && id && method === 'GET') {
     return sendJson(response, getSongDetail(store, id));
   }
@@ -248,18 +228,7 @@ async function route(
     startRenderingMissingAudio(store);
     return sendJson(response, getSongDetail(store, id));
   }
-  if (kind === 'clips' && id && file === 'open' && method === 'POST') {
-    const copy = openClipInFurnace(store, id);
-    if (!copy) return sendError(response, 404, `no .fur for ${id}`);
-    const opened: ClipOpened = { file: copy };
-    return sendJson(response, opened);
-  }
-  if (kind === 'clips' && id && method === 'PATCH') {
-    const clip = store.clips.get(id);
-    if (!clip) return sendError(response, 404, `no clip ${id}`);
-    saveClip(store, { ...clip, ...checkClipChange(await readJsonBody(request), clip) });
-    return sendJson(response, { clip: store.clips.get(id), usedBy: getSongsUsingClip(store, id) });
-  }
+  if (kind === 'clips') return routeClips(store, request, response, { id, file, method });
   sendError(response, 404, 'not found');
 }
 
@@ -332,13 +301,6 @@ function getSongClips(store: Store, song: Song): Clip[] {
     const clip = store.clips.get(clipId);
     return clip ? [clip] : [];
   });
-}
-
-function listClips(store: Store): ClipListing[] {
-  return [...store.clips.values()].map((clip) => ({
-    clip,
-    usedBy: getSongsUsingClip(store, clip.id),
-  }));
 }
 
 function getSongDetail(store: Store, songId: string): SongDetail {
