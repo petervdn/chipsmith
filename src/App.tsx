@@ -1,5 +1,6 @@
 // The app: the top bar, a warning when a program it calls is missing, the page the address is, the
-// player bar, and the page's own confirm dialog and tooltip.
+// player bar (but on a song's page, where the editor's transport plays), and the page's own confirm
+// dialog and tooltip; a song that starts to play is marked heard, whichever page played it.
 import { ClipsPage } from './clips/ClipsPage.tsx';
 import { ConfirmDialog } from './dialog/ConfirmDialog.tsx';
 import { GuidesPage } from './guides/GuidesPage.tsx';
@@ -11,6 +12,7 @@ import { ReferencesPage } from './references/ReferencesPage.tsx';
 import { SongPage } from './songs/SongPage.tsx';
 import { SongsPage } from './songs/SongsPage.tsx';
 import { PlayerBar } from './player/PlayerBar.tsx';
+import { useMarkHeard } from './player/use-mark-heard.ts';
 import { ProgramWarning } from './ProgramWarning.tsx';
 import { useJobs } from './queries/jobs.ts';
 import { useRoute } from './router.ts';
@@ -18,14 +20,15 @@ import { Tooltip } from './tooltip/Tooltip.tsx';
 import { TopBar } from './top-bar/TopBar.tsx';
 
 /**
- * Shows the whole page: the top bar, the program warning, the page the address is, the player bar,
- * the confirm dialog and the tooltip.
+ * Shows the whole page: the top bar, the program warning, the page the address is, the player bar
+ * (not on a song's page), the confirm dialog and the tooltip.
  *
  * @returns The app's element.
  */
 export function App() {
   const route = useRoute();
   const jobs = useJobs();
+  useMarkHeard();
   return (
     <div className="app">
       <TopBar route={route} jobs={jobs} />
@@ -43,7 +46,7 @@ export function App() {
           <ReferencePage key={route.referenceId} referenceId={route.referenceId} />
         )}
       </main>
-      <PlayerBar />
+      {route.page !== 'song' && <PlayerBar />}
       <ConfirmDialog />
       <Tooltip />
     </div>

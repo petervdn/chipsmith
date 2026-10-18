@@ -9,6 +9,7 @@ import {
   getBlockSpans,
   getTicksPerBar,
   getTimelineBars,
+  getTimelineSizes,
   getTrackColor,
   getSongSplitCount,
 } from './timeline.ts';
@@ -79,6 +80,12 @@ test('the timeline shows the song and four bars after it', () => {
   const spans = getBlockSpans(SONG, [CLIP]);
   assert.equal(getTicksPerBar(SONG), 384);
   assert.equal(getTimelineBars(spans, 384), 12);
+});
+
+test('the lanes are as wide as the bars shown, at the zoom', () => {
+  const sizes = getTimelineSizes({ pixelsPerBar: 40, bars: 12, trackNameWidth: 120 });
+  assert.equal(sizes['--lane-width'], '480px');
+  assert.equal(sizes['--track-name-width'], '120px');
 });
 
 test('narrow bars are numbered every fourth or eighth', () => {

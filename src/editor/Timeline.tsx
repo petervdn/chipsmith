@@ -1,27 +1,22 @@
-// The song's timeline: a ruler of bars, the loop (while looping), the structure the song was asked
-// for (when shown), a row per track (its name, which selects it, mute and solo, and its level
-// meter; the names' right edge drags them wider) with its blocks, and
-// the playhead. A tap or drag on the ruler moves the play position; a tap on a block selects it;
-// blocks are dragged to move and trim them.
-import { Plus } from 'lucide-react';
-import { useRef, useState } from 'react';
+// The song's tracks on the timeline, under its head (TimelineHead.tsx): a row per track (its name,
+// which selects it, mute and solo, and its level meter; the names' right edge drags them wider) with
+// its blocks, room under them to drag, and the playhead. A tap on a block selects it; blocks are
+// dragged to move and trim them.
+import { useRef } from 'react';
 import type { CSSProperties, PointerEvent as ReactPointerEvent } from 'react';
 import type { Clip } from '../../shared/clip.schema.ts';
 import { getTicksPerSecond } from '../../shared/song-length.ts';
 import type { Song } from '../../shared/song.schema.ts';
-import type { Section } from '../../shared/structure.schema.ts';
 import type { DragMode } from './block-drag.ts';
 import type { BlockPlace } from './song-edits.ts';
+import type { TimelineSizes } from './timeline.ts';
 import {
-  getBarLabelStep,
   getBlockSpans,
   getTicksPerBar,
   getTimelineBars,
+  getTimelineSizes,
   getTrackColor,
 } from './timeline.ts';
-import { LoopLane } from './LoopLane.tsx';
-import type { LoopRange } from './loop-range.ts';
-import { StructureLane } from './StructureLane.tsx';
 import { TimelineBlock } from './TimelineBlock.tsx';
 import { TrackMeter } from './TrackMeter.tsx';
 import { TrackMixButtons } from './TrackMixButtons.tsx';
@@ -33,18 +28,8 @@ import { usePlayheadLine } from './use-playhead-line.ts';
 import './Timeline.css';
 import { LANE_TRACK_ATTRIBUTE } from './lane-position.ts';
 
-/** The loop as the timeline draws and changes it. */
-export type TimelineLoop = {
-  range: LoopRange;
-  isWhole: boolean;
-  onChange: (range: LoopRange) => void;
-  onWhole: () => void;
-};
-
 type TimelineProps = {
   song: Song;
-  structure: Section[] | null;
-  loop: TimelineLoop | null;
   clips: Clip[];
   pixelsPerBar: number;
   trackHeight: number;
@@ -53,25 +38,21 @@ type TimelineProps = {
   selection: Selection;
   mix: TrackMix;
   cursor: number;
+  scrub: number | null;
   onSelect: (selection: Selection) => void;
-  onMoveTo: (seconds: number) => void;
   onPress: (event: ReactPointerEvent, place: BlockPlace, mode: DragMode) => void;
   onToggleMute: (trackId: string) => void;
   onToggleSolo: (trackId: string) => void;
-  onAddTrack: () => void;
   onPanStart: (event: ReactPointerEvent) => void;
   wasDragged: () => boolean;
   waitingClipIds: string[];
 };
 
 /**
- * Shows the timeline of a song.
+ * Shows the tracks of a song on the timeline.
  *
  * @param props - The component's props.
  * @param props.song - The song, with the tracks to draw (the draft, or a drag's preview).
- * @param props.structure - The sections of the structure the song was asked for, drawn above its
- *   tracks, or null to draw none.
- * @param props.loop - The loop, drawn in a row under the ruler, or null while not looping.
  * @param props.clips - The clips its blocks play.
  * @param props.pixelsPerBar - How wide a bar is drawn.
  * @param props.trackHeight - How tall a track's row is drawn, in pixels.
@@ -80,22 +61,19 @@ type TimelineProps = {
  * @param props.selection - The block or track selected, or null.
  * @param props.mix - The tracks muted and soloed; a track not heard is drawn faint.
  * @param props.cursor - Where play starts, in seconds, shown by the playhead while stopped.
+ * @param props.scrub - Where the play position goes while the ruler is dragged, or null.
  * @param props.onSelect - Called with what a tap selects, or null for a tap on empty space.
- * @param props.onMoveTo - Called with the second a tap on the ruler points at.
  * @param props.onPress - Called on a press on a block or one of its edges.
  * @param props.onToggleMute - Called with a track's id to mute or unmute it.
  * @param props.onToggleSolo - Called with a track's id to solo it or stop soloing it.
- * @param props.onAddTrack - Called to add an empty track at the bottom.
  * @param props.onPanStart - Called on a press on empty space (a lane's, the room under the tracks),
  *   which may drag the timeline sideways.
  * @param props.wasDragged - Tells whether a drag just ended, so its click selects nothing.
  * @param props.waitingClipIds - The clips whose audio is still being rendered.
- * @returns The timeline element.
+ * @returns The tracks' element.
  */
 export function Timeline({
   song,
-  structure,
-  loop,
   clips,
   pixelsPerBar,
   trackHeight,
@@ -104,32 +82,26 @@ export function Timeline({
   selection,
   mix,
   cursor,
+  scrub,
   onSelect,
-  onMoveTo,
   onPress,
   onToggleMute,
   onToggleSolo,
-  onAddTrack,
   onPanStart,
   wasDragged,
   waitingClipIds,
 }: TimelineProps) {
   const lineRef = useRef<HTMLDivElement>(null);
-  const [scrub, setScrub] = useState<number | null>(null);
   const ticksPerBar = getTicksPerBar(song);
   const pixelsPerTick = pixelsPerBar / ticksPerBar;
   const pixelsPerSecond = pixelsPerTick * getTicksPerSecond(song.bpm);
   usePlayheadLine(lineRef, { songId: song.id, cursor, pixelsPerSecond });
   const spans = getBlockSpans(song, clips);
   const bars = getTimelineBars(spans, ticksPerBar);
-  const labelStep = getBarLabelStep(pixelsPerBar);
   const clipsById = new Map(clips.map((clip) => [clip.id, clip]));
-  const style: CSSProperties &
-    Record<'--bar-width' | '--lane-width' | '--row-height' | '--track-name-width', string> = {
-    '--bar-width': `${pixelsPerBar}px`,
-    '--lane-width': `${bars * pixelsPerBar}px`,
+  const style: CSSProperties & TimelineSizes & Record<'--row-height', string> = {
+    ...getTimelineSizes({ pixelsPerBar, bars, trackNameWidth }),
     '--row-height': `${trackHeight}px`,
-    '--track-name-width': `${trackNameWidth}px`,
   };
   const nameEdge = (
     <span
@@ -140,56 +112,6 @@ export function Timeline({
   );
   return (
     <div className="timeline" style={style}>
-      <div className="timeline-row timeline-ruler-row">
-        <div className="timeline-corner">
-          <button
-            type="button"
-            className="timeline-add-track"
-            onClick={onAddTrack}
-            data-tooltip="add a track"
-            aria-label="add a track"
-          >
-            <Plus />
-          </button>
-          {nameEdge}
-        </div>
-        <div
-          className="timeline-ruler"
-          onPointerDown={(event) => {
-            event.currentTarget.setPointerCapture(event.pointerId);
-            setScrub(getRulerSeconds(event, pixelsPerSecond));
-          }}
-          onPointerMove={(event) => {
-            if (scrub !== null) setScrub(getRulerSeconds(event, pixelsPerSecond));
-          }}
-          onPointerUp={(event) => {
-            if (scrub === null) return;
-            onMoveTo(getRulerSeconds(event, pixelsPerSecond));
-            setScrub(null);
-          }}
-          onPointerCancel={() => setScrub(null)}
-          data-tooltip="tap or drag to move the play position"
-        >
-          {Array.from({ length: bars }, (_unused, bar) =>
-            bar % labelStep === 0 ? (
-              <span key={bar} className="timeline-bar-number" style={{ left: bar * pixelsPerBar }}>
-                {bar + 1}
-              </span>
-            ) : null,
-          )}
-        </div>
-      </div>
-      {loop && (
-        <LoopLane
-          range={loop.range}
-          isWhole={loop.isWhole}
-          pixelsPerBar={pixelsPerBar}
-          bars={bars}
-          onChange={loop.onChange}
-          onWhole={loop.onWhole}
-        />
-      )}
-      {structure && <StructureLane sections={structure} pixelsPerBar={pixelsPerBar} />}
       {song.tracks.map((track, trackIndex) => {
         const isTrackSelected = selection?.kind === 'track' && selection.trackId === track.id;
         const rowStyle: CSSProperties & Record<'--track-color', string> = {
@@ -275,16 +197,4 @@ export function Timeline({
       </div>
     </div>
   );
-}
-
-/**
- * Returns the second of the song a pointer on the ruler points at.
- *
- * @param event - The pointer event on the ruler.
- * @param pixelsPerSecond - How wide a second is drawn.
- * @returns The second, never before the start.
- */
-function getRulerSeconds(event: ReactPointerEvent<HTMLElement>, pixelsPerSecond: number): number {
-  const left = event.currentTarget.getBoundingClientRect().left;
-  return Math.max(0, (event.clientX - left) / pixelsPerSecond);
 }

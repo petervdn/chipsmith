@@ -32,7 +32,7 @@ saved, playing from a cursor, the zoom, and the selected block's clip or track.
 - `LoopLane.css`: the look of LoopLane.tsx
 - `LoopLane.tsx`: the loop as a row under the ruler while looping: drag its edges, move it, draw one
 - `Mixer.css`: the look of Mixer.tsx
-- `Mixer.tsx`: the mixer under the timeline: a strip per track and the master (the player's volume)
+- `Mixer.tsx`: the mixer under the timeline: a strip per track and the master (the player's volume, and mute)
 - `MixerStrip.css`: the look of MixerStrip.tsx
 - `MixerStrip.tsx`: a track's strip: its name, fader beside its meter, level, M and S
 - `note-grid.ts`: the note grid's edits of a channel's rows: a note put in, moved, made longer or shorter, taken out; the pitches laid out
@@ -44,10 +44,11 @@ saved, playing from a cursor, the zoom, and the selected block's clip or track.
 - `StructureLane.css`: the look of StructureLane.tsx
 - `StructureLane.tsx`: the structure a song was asked for, as a thin row of tiles above its first track
 - `SongEditor.css`: the look of SongEditor.tsx
-- `SongEditor.tsx`: the editor: its bar of controls, the timeline, the mixer, the song's clips, the selected block's or track's details
-- `Timeline.css`: the look of Timeline.tsx
+- `SongEditor.tsx`: the editor: its bar of controls and the timeline's head kept in view, the timeline, the mixer, the song's clips, the selected block's or track's details
+- `Timeline.css`: the look of Timeline.tsx and TimelineHead.tsx
 - `timeline.ts`: where blocks lie in ticks, the bars shown, which bars are numbered
-- `Timeline.tsx`: the ruler, the structure when shown, a row per track with its blocks, room under them to drag, the playhead
+- `Timeline.tsx`: the tracks: a row per track with its blocks, room under them to drag, the playhead
+- `TimelineHead.tsx`: the timeline's head, kept in view: the ruler, the loop, the structure when shown, the playhead
 - `TimelineBlock.css`: the look of TimelineBlock.tsx
 - `TimelineBlock.tsx`: a block and its repeats on the timeline, dragged and trimmed
 - `track-meter.ts`: how a track's level meter moves: up at once, eased down, its peak mark held
@@ -79,6 +80,7 @@ saved, playing from a cursor, the zoom, and the selected block's clip or track.
 - `use-note-grid.ts`: the note grid's state: the notes read, the channel, the edits and their undo, Save as new take
 - `use-playhead-line.ts`: the playhead moved every frame while the song plays
 - `use-press-drag.ts`: a press that becomes a drag: a mouse at once, a finger after holding still
+- `use-scroll-sync.ts`: the timeline's head and its tracks kept scrolled sideways to the same place
 - `use-song-draft.ts`: the song being edited: a draft with undo and redo, the selection, save and revert
 - `use-song-transport.ts`: playing the song from its cursor, stopping, moving the cursor
 - `use-take-deletion.ts`: the take a block plays deleted, asked first, its clip's parent put in its blocks

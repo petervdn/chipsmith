@@ -1,7 +1,7 @@
 /**
  * Where a song's blocks lie on the timeline, in ticks: each block's start, the length of one play
- * and its repeats; the bars of the song; which bars the ruler numbers at a zoom. Given a song and
- * its clips, gives numbers; knows nothing of the page.
+ * and its repeats; the bars of the song; which bars the ruler numbers at a zoom; the sizes it is
+ * drawn at. Given a song and its clips, gives numbers; knows nothing of the page.
  */
 import type { Clip } from '../../shared/clip.schema.ts';
 import { getTicksPerSecond } from '../../shared/song-length.ts';
@@ -137,4 +137,33 @@ export function getBarLabelStep(pixelsPerBar: number): number {
   if (pixelsPerBar >= 22) return 1;
   if (pixelsPerBar >= 10) return 4;
   return 8;
+}
+
+/** The sizes the timeline is drawn at across, as the custom properties its CSS reads. */
+export type TimelineSizes = Record<'--bar-width' | '--lane-width' | '--track-name-width', string>;
+
+/**
+ * Returns the sizes the timeline is drawn at across, for the style of its tracks and of the head
+ * above them alike, so the two line up.
+ *
+ * @param sizes - The sizes, in pixels and bars.
+ * @param sizes.pixelsPerBar - How wide a bar is drawn.
+ * @param sizes.bars - How many bars the timeline shows.
+ * @param sizes.trackNameWidth - How wide the track names are drawn.
+ * @returns The custom properties, in pixels.
+ */
+export function getTimelineSizes({
+  pixelsPerBar,
+  bars,
+  trackNameWidth,
+}: {
+  pixelsPerBar: number;
+  bars: number;
+  trackNameWidth: number;
+}): TimelineSizes {
+  return {
+    '--bar-width': `${pixelsPerBar}px`,
+    '--lane-width': `${bars * pixelsPerBar}px`,
+    '--track-name-width': `${trackNameWidth}px`,
+  };
 }

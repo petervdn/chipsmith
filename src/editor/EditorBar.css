@@ -3,7 +3,6 @@
    something to save. */
 
 .editor-bar {
-  --transport-size: 56px;
   display: flex;
   align-items: center;
   gap: 8px 20px;

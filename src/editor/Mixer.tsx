@@ -1,6 +1,8 @@
 // The mixer, opened under the timeline: a strip per track in the timeline's order and colours, and
-// at the end the master, which is the player's volume. What it shows and changes is the tracks'
+// at the end the master, which is the player's volume and its mute (for testing; on a song's page
+// there is no player bar to hold it). What it shows and changes is the tracks'
 // own (levels, mute and solo), so their rows on the timeline follow it.
+import { Volume2, VolumeX } from 'lucide-react';
 import type { Track } from '../../shared/song.schema.ts';
 import { formatVolume, LOUDEST_DB } from '../player/volume.ts';
 import { usePreferencesStore } from '../stores/preferences-store.ts';
@@ -48,6 +50,8 @@ export function Mixer({
 }: MixerProps) {
   const volume = usePreferencesStore((state) => state.volume);
   const setVolume = usePreferencesStore((state) => state.setVolume);
+  const isMuted = usePreferencesStore((state) => state.isMuted);
+  const setMuted = usePreferencesStore((state) => state.setMuted);
   return (
     <div className="mixer" role="group" aria-label="mixer">
       {tracks.map((track, i) => (
@@ -77,6 +81,15 @@ export function Mixer({
           />
         </div>
         <span className="mixer-master-value">{formatVolume(volume)}</span>
+        <button
+          type="button"
+          className={`mixer-master-mute${isMuted ? ' is-on' : ''}`}
+          onClick={() => setMuted(!isMuted)}
+          aria-label={isMuted ? 'muted (for testing); press to hear' : 'mute'}
+          data-tooltip={isMuted ? 'muted (for testing); press to hear' : 'mute'}
+        >
+          {isMuted ? <VolumeX /> : <Volume2 />}
+        </button>
       </div>
     </div>
   );

@@ -83,7 +83,9 @@ page but Home starts with breadcrumbs, the last its heading (Songs › Seven Tee
   opened; copy), then the song opened in the editor (`src/editor/`): a timeline of its tracks
   (a ruler of bars; under it, switched in the editor bar, the structure the song was asked for as
   tiles from bar 1, as it was sent and never following edits (0030); each block drawn as the slice
-  of its clip's waveform it plays, repeats after it, a playhead), ▶ / ❚❚ from a cursor set on the ruler and ■ back to it (■ again: back to the start), large at the left of the editor bar with the time,
+  of its clip's waveform it plays, repeats after it, a playhead), ▶ / ❚❚ from a cursor set on the ruler and ■ back to it (■ again: back to the start), large at the left of the editor bar with the time, the bar and the ruler (with the loop and
+  structure rows) kept in view at the top while the page scrolls (on a phone only the transport and
+  the ruler; 0043),
   follow (the playhead kept in the middle), a loop (the whole song, or bars drawn in a row under the
   ruler; 0031), a metronome (on or off, its own
   volume; the first beat of a bar higher, `src/playback/metronome.ts`), zoom (and the tracks' height on a slider), the song's clips in a
@@ -196,9 +198,12 @@ git, all 1,534 of its .fur files were checked so.)
 `audio-engine.ts` plays them with Web Audio, each on the audio clock, loading a few clips at a time;
 round a loop, each pass is scheduled while the one before plays (`loop.ts`).
 The player's state is a Zustand store (`src/stores/player-store.ts`). The player bar
-(`src/player/PlayerBar.tsx`) sits at the bottom of every page: ▶ / ■ (the share loaded while loading), the
-title, a slider to move in the song, and a mute switch for testing (the preferences store). Every song
-row and song page has ▶.
+(`src/player/PlayerBar.tsx`) sits at the bottom of every page but a song's: ▶ / ■ (the share loaded
+while loading), the title, a slider to move in the song, and a mute switch for testing (the
+preferences store). Every song row has ▶. A song's page has no player bar (0043): it opens with
+nothing playing (`src/songs/use-stop-on-open.ts`), the editor's transport and the timeline's head
+(`src/editor/TimelineHead.tsx`, kept scrolled sideways with the tracks by `use-scroll-sync.ts`)
+stick under the top bar, and mute is in the mixer's master strip.
 
 ## Prompts and jobs
 

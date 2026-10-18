@@ -1,6 +1,6 @@
-// The bar at the bottom of every page while a song (or a reference's audio) is in the player: ▶ / ■
-// (the share loaded while it loads), its title, where it is, a slider to move in it, and the mute
-// switch for testing.
+// The bar at the bottom of every page but a song's while a song (or a reference's audio) is in the
+// player: ▶ / ■ (the share loaded while it loads), its title, where it is, a slider to move in it,
+// and the mute switch for testing.
 import { Play, Square } from 'lucide-react';
 import { formatSeconds } from '../format.ts';
 import { getSongPosition } from '../playback/audio-engine.ts';
@@ -8,7 +8,6 @@ import { usePlayerStore } from '../stores/player-store.ts';
 import { usePreferencesStore } from '../stores/preferences-store.ts';
 import { LOUDEST_DB, QUIETEST_DB, formatVolume } from './volume.ts';
 import { useLivePosition } from './use-live-position.ts';
-import { useMarkHeard } from './use-mark-heard.ts';
 import './PlayerBar.css';
 
 /**
@@ -19,7 +18,6 @@ import './PlayerBar.css';
  */
 export function PlayerBar() {
   const player = usePlayerStore();
-  useMarkHeard();
   const { playSong, playReference, seekSong, stopSong } = player;
   const isMuteOn = usePreferencesStore((preferences) => preferences.isMuted);
   const setMuted = usePreferencesStore((preferences) => preferences.setMuted);

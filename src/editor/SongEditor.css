@@ -1,18 +1,65 @@
-/* The look of SongEditor.tsx: the song's clips in a column at the left of the timeline, and the
-   selected block's or track's details in a column at its right where there is room, else under it.
-   The timeline scrolls sideways inside its box, never the page. */
+/* The look of SongEditor.tsx: the bar and the timeline's head kept in view at the top; the song's
+   clips in a column at the left of the timeline, and the selected block's or track's details in a
+   column at its right where there is room, else under it. The timeline scrolls sideways inside its
+   box, never the page. */
 
-.song-editor-body {
-  position: relative;
+/* the editor's columns, shared by its head and its body (subgrid), so the ruler's strip lies over
+   the tracks exactly: the song's clips, the timeline, and from 1440 px the details */
+.song-editor {
+  --transport-size: 56px;
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
+  column-gap: 12px;
+}
+
+.song-editor > * {
+  grid-column: 1 / -1;
+}
+
+/* the bar and the ruler's strip, kept in view under the top bar while the page scrolls */
+.song-editor-head {
+  position: sticky;
+  top: var(--top-bar-height, 0px);
+  z-index: 5;
+  display: grid;
+  grid-template-columns: subgrid;
+  padding-top: 8px;
+  background: var(--bg);
+}
+
+.song-editor-head > .editor-bar {
+  grid-column: 1 / -1;
+}
+
+/* the timeline's head: scrolled sideways with the tracks under it, its own scrollbar hidden; one box
+   with theirs */
+.song-editor-head-scroll {
+  grid-column: 2;
+  overflow-x: auto;
+  scrollbar-width: none;
+  border: var(--border-width) solid var(--line);
+  border-bottom: 0;
+  border-radius: var(--radius) var(--radius) 0 0;
+  background: var(--card);
+}
+
+.song-editor-head-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.song-editor-body {
+  display: grid;
+  grid-template-columns: subgrid;
   align-items: start;
-  gap: 12px;
+}
+
+.song-editor-main {
+  grid-column: 2;
 }
 
 /* room at the right for the selected block's or track's details, beside the timeline */
 @media (min-width: 1440px) {
-  .song-editor-body {
+  .song-editor {
     grid-template-columns: auto minmax(0, 1fr) 240px;
   }
 
@@ -30,10 +77,40 @@
   }
 }
 
+/* a phone, where the bar's groups wrap to rows: only the transport and the ruler's strip stay in
+   view, each sticking on its own, and the groups scroll away under them */
+@media (max-width: 719px) {
+  .song-editor-head,
+  .song-editor-head > .editor-bar {
+    display: contents;
+  }
+
+  .song-editor .transport-buttons,
+  .song-editor .editor-bar-groups {
+    grid-column: 1 / -1;
+  }
+
+  .song-editor .transport-buttons {
+    position: sticky;
+    top: var(--top-bar-height, 0px);
+    z-index: 5;
+    padding: 8px 0;
+    background: var(--bg);
+  }
+
+  .song-editor-head-scroll {
+    position: sticky;
+    top: calc(var(--top-bar-height, 0px) + var(--transport-size) + 16px);
+    z-index: 5;
+    margin-top: 8px;
+  }
+}
+
 .song-editor-scroll {
   overflow-x: auto;
   border: var(--border-width) solid var(--line);
-  border-radius: var(--radius);
+  border-top: 0;
+  border-radius: 0 0 var(--radius) var(--radius);
   background: var(--card);
 }
 

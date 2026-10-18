@@ -1,5 +1,5 @@
 /* The look of Mixer.tsx: the strips side by side in a card as the timeline's, scrolling sideways
-   when they do not fit; the master at the end, set apart. */
+   when they do not fit; the master at the end, set apart, its mute under it. */
 
 .mixer {
   display: flex;
@@ -43,4 +43,29 @@
   color: var(--muted);
   font-size: 0.6875rem;
   font-variant-numeric: tabular-nums;
+}
+
+.mixer-master-mute {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 24px;
+  padding: 0;
+  border: var(--border-width) solid var(--line);
+  border-radius: calc(var(--radius) * 0.5);
+  background: var(--card);
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.mixer-master-mute > svg {
+  width: 16px;
+  height: 16px;
+}
+
+.mixer-master-mute.is-on {
+  border-color: var(--fg);
+  background: var(--fg);
+  color: var(--bg);
 }

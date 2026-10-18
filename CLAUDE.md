@@ -28,8 +28,8 @@ for the format and the list). A decision made in a conversation is not done unti
 - **`npm run check`** (types, lint, tests, formatting) passes before a commit, and a change is
   committed when it is done, one subject to a commit (docs/code-guidelines.md, "Commits").
 - **The app**: `npm run dev`, port 6502, on the local network too.
-- Test the page silently: switch on the player bar's mute (or set localStorage `chiptune.mute` to
-  `"1"`) before playing anything in the browser.
+- Test the page silently: switch on the player bar's mute (the mixer's on a song's page; or set
+  localStorage `chiptune.mute` to `"1"`) before playing anything in the browser.
 
 ## Where the knowledge is
 

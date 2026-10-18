@@ -1,5 +1,6 @@
 // An opened song in the editor: the bar of controls (play, undo and redo, the grid, a new track,
-// zoom, save and revert), the timeline of the draft, and the selected block's or track's details,
+// zoom, save and revert) and the timeline's head under it, which stay in view at the top, the
+// timeline of the draft, and the selected block's or track's details,
 // a take swapped into the selected block among its edits.
 import { useRef, useState } from 'react';
 import type { SongDetail } from '../../shared/api.types.ts';
@@ -21,6 +22,7 @@ import {
 } from './song-edits.ts';
 import type { BlockPlace } from './song-edits.ts';
 import { Timeline } from './Timeline.tsx';
+import { TimelineHead } from './TimelineHead.tsx';
 import { getBlockSpans, getClipTicks, getSongSplitCount, getTicksPerBar } from './timeline.ts';
 import { SongClips } from './SongClips.tsx';
 import { getEditorClips, getFirstBlockPlace, getSongClips } from './song-clips.ts';
@@ -39,6 +41,7 @@ import { useSongTransport } from './use-song-transport.ts';
 import { useLoop } from './use-loop.ts';
 import { Mixer } from './Mixer.tsx';
 import { useMetronome } from './use-metronome.ts';
+import { useScrollSync } from './use-scroll-sync.ts';
 import { useTimelinePan } from './use-timeline-pan.ts';
 import { useTrackMix } from './use-track-mix.ts';
 import { useTrackNameResize } from './use-track-name-resize.ts';
@@ -62,7 +65,10 @@ type SongEditorProps = { detail: SongDetail };
  */
 export function SongEditor({ detail }: SongEditorProps) {
   const [step, setStep] = useState(BAR_STEP);
+  const [scrub, setScrub] = useState<number | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const headScrollRef = useRef<HTMLDivElement>(null);
+  useScrollSync(scrollRef, headScrollRef);
   const { song, isWaitingForAudio, waitingClipIds } = detail;
   const { data: pool } = useClips();
   const poolClips = (pool ?? []).map((listing) => listing.clip);
@@ -86,6 +92,7 @@ export function SongEditor({ detail }: SongEditorProps) {
     trackNameWidth,
   });
   useWheelZoom(scrollRef, { pixelsPerBar, trackNameWidth, zoomTo });
+  useWheelZoom(headScrollRef, { pixelsPerBar, trackNameWidth, zoomTo });
   const ticksPerBar = getTicksPerBar(song);
   function getPlaceTicks(place: BlockPlace): number {
     return getClipTicks(clips, getBlock(draft.tracks, place)?.clip ?? '', song.bpm);
@@ -161,24 +168,6 @@ export function SongEditor({ detail }: SongEditorProps) {
   const shownSong = preview ? { ...song, tracks: preview.tracks } : draftSong;
   return (
     <div className="song-editor">
-      <EditorBar
-        transport={transport}
-        isWaitingForAudio={isWaitingForAudio}
-        draft={draft}
-        loop={loop}
-        step={step}
-        onStep={setStep}
-        splitCount={splitCount}
-        hasStructure={structure !== null}
-        isSplitting={isSplitting}
-        onSplit={async () => {
-          const question = getSplitQuestion(splitCount);
-          if (!(await askToConfirm({ question, answer: 'Split' }))) return;
-          transport.stop();
-          splitSong(song.id);
-        }}
-        zoom={{ zoomIn, zoomOut, fit }}
-      />
       {draft.saveError && <p className="error">{draft.saveError.message}</p>}
       {splitError && <p className="error">{splitError.message}</p>}
       {waitingClipIds.length > 0 && (
@@ -188,6 +177,51 @@ export function SongEditor({ detail }: SongEditorProps) {
           play once all are rendered.
         </p>
       )}
+      <div className="song-editor-head">
+        <EditorBar
+          transport={transport}
+          isWaitingForAudio={isWaitingForAudio}
+          draft={draft}
+          loop={loop}
+          step={step}
+          onStep={setStep}
+          splitCount={splitCount}
+          hasStructure={structure !== null}
+          isSplitting={isSplitting}
+          onSplit={async () => {
+            const question = getSplitQuestion(splitCount);
+            if (!(await askToConfirm({ question, answer: 'Split' }))) return;
+            transport.stop();
+            splitSong(song.id);
+          }}
+          zoom={{ zoomIn, zoomOut, fit }}
+        />
+        <div ref={headScrollRef} className="song-editor-head-scroll">
+          <TimelineHead
+            song={shownSong}
+            structure={isStructureShown ? structure : null}
+            loop={
+              loop.isOn
+                ? {
+                    range: loop.range,
+                    isWhole: loop.isWhole,
+                    onChange: loop.setRange,
+                    onWhole: loop.setWhole,
+                  }
+                : null
+            }
+            clips={clips}
+            pixelsPerBar={pixelsPerBar}
+            trackNameWidth={trackNameWidth}
+            resizeHandlers={resizeHandlers}
+            cursor={transport.cursor}
+            scrub={scrub}
+            onScrub={setScrub}
+            onMoveTo={transport.moveTo}
+            onAddTrack={() => draft.changeTracks(addTrack)}
+          />
+        </div>
+      </div>
       <div className="song-editor-body">
         <SongClips
           songClips={getSongClips(draft.tracks, clips)}
@@ -205,17 +239,6 @@ export function SongEditor({ detail }: SongEditorProps) {
           <div ref={scrollRef} className="song-editor-scroll">
             <Timeline
               song={shownSong}
-              structure={isStructureShown ? structure : null}
-              loop={
-                loop.isOn
-                  ? {
-                      range: loop.range,
-                      isWhole: loop.isWhole,
-                      onChange: loop.setRange,
-                      onWhole: loop.setWhole,
-                    }
-                  : null
-              }
               clips={clips}
               pixelsPerBar={pixelsPerBar}
               trackHeight={trackHeight}
@@ -224,13 +247,12 @@ export function SongEditor({ detail }: SongEditorProps) {
               selection={selection}
               mix={mix}
               cursor={transport.cursor}
+              scrub={scrub}
               onSelect={draft.select}
-              onMoveTo={transport.moveTo}
               onPress={drag.startPress}
               wasDragged={() => drag.wasDragged() || pan.wasPanned()}
               onToggleMute={toggleMute}
               onToggleSolo={toggleSolo}
-              onAddTrack={() => draft.changeTracks(addTrack)}
               onPanStart={pan.startPan}
               waitingClipIds={waitingClipIds}
             />
