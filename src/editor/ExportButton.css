@@ -1,5 +1,5 @@
 /* The look of ExportButton.tsx: the button quiet and outlined like Split; in its dialog (Dialog.css)
-   the choices as options stacked, the one chosen in inverted colours, its name and what it is for. */
+   each choice a row of a radio, its name and what it is for. */
 
 .export-button {
   min-height: var(--touch);
@@ -33,52 +33,48 @@
   font-size: 1.125rem;
 }
 
-.export-dialog-about,
-.export-dialog-where {
+.export-dialog-about {
   margin: 0;
   color: var(--muted);
   font-size: 0.875rem;
   line-height: var(--line-height);
 }
 
+/* a group's options in three columns, so the radios, the names and what each is for line up */
 .export-dialog-group {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+  display: grid;
+  grid-template-columns: auto auto 1fr;
+  column-gap: 10px;
+  margin: 0;
+  padding: 0;
+  border: 0;
 }
 
 .export-dialog-label {
+  grid-column: 1 / -1;
+  margin-bottom: 2px;
+  padding: 0;
   color: var(--muted);
   font-size: 0.8125rem;
 }
 
 .export-dialog-option {
-  display: flex;
-  align-items: baseline;
-  gap: 10px;
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
+  align-items: center;
   min-height: var(--touch);
-  padding: 0 12px;
-  border: var(--border-width) solid var(--line);
-  border-radius: var(--radius);
-  background: transparent;
-  color: var(--fg);
-  text-align: left;
   cursor: pointer;
 }
 
-.export-dialog-option.is-on {
-  border-color: var(--fg);
-  background: var(--fg);
-  color: var(--bg);
-}
-
-.export-dialog-option-name {
-  font-weight: 600;
+.export-dialog-option input {
+  margin: 0;
+  accent-color: var(--fg);
 }
 
 .export-dialog-option-about {
+  color: var(--muted);
   font-size: 0.8125rem;
-  opacity: 0.7;
 }
 
 .export-dialog-clipped {

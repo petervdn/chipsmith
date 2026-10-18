@@ -45,7 +45,6 @@ export function ExportButton({
   const [clipped, setClipped] = useState<ExportOutcome | null>(null);
   const { phase, error } = songExport;
   const format = EXPORT_FORMATS.find((each) => each.name === formatName);
-  const canChoosePlace = 'showSaveFilePicker' in window;
   function close(): void {
     if (phase) return;
     setOpen(false);
@@ -86,26 +85,24 @@ export function ExportButton({
           <p className="export-dialog-about">
             The song as the editor plays it now: its unsaved edits and the faders too.
           </p>
-          <div className="export-dialog-group" role="radiogroup" aria-label="file type">
-            <span className="export-dialog-label">File type</span>
+          <fieldset className="export-dialog-group" disabled={phase !== null}>
+            <legend className="export-dialog-label">File type</legend>
             {EXPORT_FORMATS.map((each) => (
-              <button
-                key={each.name}
-                type="button"
-                role="radio"
-                aria-checked={each.name === formatName}
-                className={`export-dialog-option${each.name === formatName ? ' is-on' : ''}`}
-                onClick={() => setFormatName(each.name)}
-                disabled={phase !== null}
-              >
+              <label key={each.name} className="export-dialog-option">
+                <input
+                  type="radio"
+                  name="export-format"
+                  checked={each.name === formatName}
+                  onChange={() => setFormatName(each.name)}
+                />
                 <span className="export-dialog-option-name">{each.label}</span>
                 <span className="export-dialog-option-about">{each.about}</span>
-              </button>
+              </label>
             ))}
-          </div>
+          </fieldset>
           {unheardCount > 0 && (
-            <div className="export-dialog-group" role="radiogroup" aria-label="tracks">
-              <span className="export-dialog-label">Tracks</span>
+            <fieldset className="export-dialog-group" disabled={phase !== null}>
+              <legend className="export-dialog-label">Tracks</legend>
               {[
                 {
                   isOn: true,
@@ -114,20 +111,18 @@ export function ExportButton({
                 },
                 { isOn: false, name: `All ${trackCount}`, about: 'mute and solo left out' },
               ].map((each) => (
-                <button
-                  key={each.name}
-                  type="button"
-                  role="radio"
-                  aria-checked={each.isOn === isOnlyHeard}
-                  className={`export-dialog-option${each.isOn === isOnlyHeard ? ' is-on' : ''}`}
-                  onClick={() => setOnlyHeard(each.isOn)}
-                  disabled={phase !== null}
-                >
+                <label key={each.name} className="export-dialog-option">
+                  <input
+                    type="radio"
+                    name="export-tracks"
+                    checked={each.isOn === isOnlyHeard}
+                    onChange={() => setOnlyHeard(each.isOn)}
+                  />
                   <span className="export-dialog-option-name">{each.name}</span>
                   <span className="export-dialog-option-about">{each.about}</span>
-                </button>
+                </label>
               ))}
-            </div>
+            </fieldset>
           )}
           {error && <p className="error">{error}</p>}
           {clipped && (
@@ -137,11 +132,6 @@ export function ExportButton({
               export it again.
             </p>
           )}
-          <p className="export-dialog-where">
-            {canChoosePlace
-              ? 'You choose where it is saved.'
-              : 'It downloads: this browser cannot ask where to save it.'}
-          </p>
           <div className="dialog-buttons">
             <button
               type="button"
