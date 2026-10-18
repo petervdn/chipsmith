@@ -1,4 +1,26 @@
-/* The look of ClipDetails.tsx: its facts faint under its title. */
+/* The look of ClipDetails.tsx: two columns, the clip and its takes at the left and the prompt at
+   the right with a line between, one under the other where there is no room; its facts faint. */
+
+.clip-details-columns {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 0 24px;
+}
+
+.clip-details-column {
+  min-width: 0;
+}
+
+.clip-details-column + .clip-details-column {
+  padding-left: 24px;
+  border-left: var(--border-width) solid var(--line);
+}
+
+/* the prompt's own rule above it is the column's line here */
+.clip-details-column > .clip-prompt {
+  padding-top: 0;
+  border-top: 0;
+}
 
 .clip-details-facts {
   margin: 8px 0;

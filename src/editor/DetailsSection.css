@@ -1,5 +1,5 @@
 /* The look of DetailsSection.tsx: a card as the timeline's; its kind very small and in lower case
-   over the title, as the editor bar's group labels are. */
+   over the title, as the editor bar's group labels are; as a bar, all on one row that wraps. */
 
 .details-section {
   padding: 12px 16px;
@@ -34,4 +34,16 @@
   margin: 0;
   font-size: 1.125rem;
   overflow-wrap: anywhere;
+}
+
+.details-section.is-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+  padding: 8px 16px;
+}
+
+.details-section.is-bar .details-section-title {
+  font-size: 1rem;
 }

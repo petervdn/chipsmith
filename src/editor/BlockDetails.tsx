@@ -1,7 +1,7 @@
-// The selected block's section of the details: where it plays (its track and bars), which clip it
-// plays and how much of it; ▶ plays the song from the block, Loop it plays its bars round, solo
-// leaves its track alone; its repeats, Duplicate, Untrim and Remove. The clip itself is its own
-// section (ClipDetails.tsx).
+// The selected block's section of the details, as one bar: where it plays (its track and bars),
+// which clip it plays and how much of it; ▶ plays the song from the block, Loop it plays its bars
+// round, solo leaves its track alone; its repeats, Duplicate, Untrim and Remove. The clip itself is
+// its own section (ClipDetails.tsx), under it.
 import { Minus, Play, Plus, Repeat } from 'lucide-react';
 import type { Clip } from '../../shared/clip.schema.ts';
 import { getClipLabel } from '../../shared/clip-label.ts';
@@ -67,25 +67,16 @@ export function BlockDetails({
   const isTrimmed =
     clip !== undefined && span.slice !== null && span.slice.duration < clip.seconds - 0.01;
   return (
-    <DetailsSection
-      kind="block"
-      title={`${trackName} · bar ${fromBar} – ${toBar}`}
-      aside={
-        <button
-          type="button"
-          className="block-details-play"
-          onClick={() => onPlayFrom(startSeconds)}
-        >
-          <Play fill="currentColor" /> from here
-        </button>
-      }
-    >
+    <DetailsSection kind="block" title={`${trackName} · bar ${fromBar} – ${toBar}`} isBar>
       <p className="block-details-facts">
         plays {clip ? getClipLabel(clip) : `${span.clipId}, which is missing`}
         {isTrimmed && span.slice && ` (${formatSeconds(span.slice.duration)} of it)`}
         {span.repeats > 1 && `, ×${span.repeats}`}
       </p>
       <div className="block-details-actions">
+        <button type="button" onClick={() => onPlayFrom(startSeconds)}>
+          <Play fill="currentColor" /> from here
+        </button>
         <button type="button" onClick={onLoop} data-tooltip="play the bars of this block round">
           <Repeat /> Loop it
         </button>

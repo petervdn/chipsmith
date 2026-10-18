@@ -1,10 +1,8 @@
-// Changes to the selected clip (or the selected block's) made without Claude (docs/adr/0037): an octave or a semitone
-// up or down, and Edit notes, which opens the note grid. Each makes a take, rendered on the server,
-// and puts it in the block; it is listed with the clip's other takes. On a take, the note grid can
-// update it instead (docs/adr/0039). Shown only for a clip that plays pitched notes.
-import { useState } from 'react';
+// Changes to the selected clip (or the selected block's) made without Claude (docs/adr/0037): an
+// octave or a semitone up or down, each a take rendered on the server and put in the clip's place;
+// it is listed with the clip's other takes. Edit notes opens the note grid, which the clip's section
+// lays out under it. Shown only for a clip that plays pitched notes.
 import { useTransposeClip } from '../queries/clips.ts';
-import { NoteGrid } from './NoteGrid.tsx';
 import '../jobs/jobs.css';
 import './ClipOperations.css';
 
@@ -19,9 +17,9 @@ const STEPS = [
 type ClipOperationsProps = {
   clipId: string;
   songId: string;
-  isTake: boolean;
+  isGridOpen: boolean;
+  onToggleGrid: () => void;
   onMade: (clipId: string) => void;
-  onReplaceClip: (fromClipId: string, toClipId: string) => void;
 };
 
 /**
@@ -30,20 +28,18 @@ type ClipOperationsProps = {
  * @param props - The component's props.
  * @param props.clipId - The clip changed.
  * @param props.songId - The song it is changed in.
- * @param props.isTake - Whether the clip is a take, which the note grid can update.
- * @param props.onMade - Called with the take's id once it is made, to put it in the block.
- * @param props.onReplaceClip - Called with a take and the take that updates it, to put it in the
- *   draft's blocks.
+ * @param props.isGridOpen - Whether the note grid is open.
+ * @param props.onToggleGrid - Called to open or close the note grid.
+ * @param props.onMade - Called with the take's id once it is made, to put it in the clip's place.
  * @returns The quick changes' element.
  */
 export function ClipOperations({
   clipId,
   songId,
-  isTake,
+  isGridOpen,
+  onToggleGrid,
   onMade,
-  onReplaceClip,
 }: ClipOperationsProps) {
-  const [isGridOpen, setGridOpen] = useState(false);
   const { mutate: transpose, isPending, error } = useTransposeClip();
   return (
     <div className="clip-operations">
@@ -64,7 +60,7 @@ export function ClipOperations({
           type="button"
           className={isGridOpen ? 'is-open' : ''}
           aria-expanded={isGridOpen}
-          onClick={() => setGridOpen(!isGridOpen)}
+          onClick={onToggleGrid}
           data-tooltip="move, add or take out notes yourself"
         >
           Edit notes
@@ -76,16 +72,6 @@ export function ClipOperations({
         )}
       </div>
       {error && <p className="error">{error.message}</p>}
-      {isGridOpen && (
-        <NoteGrid
-          key={clipId}
-          clipId={clipId}
-          songId={songId}
-          isTake={isTake}
-          onMade={onMade}
-          onUpdated={onReplaceClip}
-        />
-      )}
     </div>
   );
 }

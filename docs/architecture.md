@@ -93,9 +93,10 @@ page but Home starts with breadcrumbs, the last its heading (Songs › Seven Tee
   the clip is selected, not a block; folded to a strip, and on a phone folded at first and laid over
   the timeline when open), the page (and the top bar with it) wider than the others, up to 1800 px,
   the timeline from the page's left, and under it, as wide, the details of what is selected, as sections each named by its kind (`src/editor/SelectionDetails.tsx`): a block selected
-  shows the block's section (where it plays, the clip it plays, Loop it (the block's bars looped and
+  shows the block's section as one bar (where it plays, the clip it plays, Loop it (the block's bars looped and
   played) and solo for its track, repeats, duplicate, untrim, remove) with its clip's under it; a
-  clip selected shows only the clip's; a track its own. The clip's section: its facts, its .fur to
+  clip selected shows only the clip's; a track its own. The clip's section, in two columns (the clip
+  and its takes at the left, Change this clip at the right) with the note grid under both when open: its facts, its .fur to
   look at (open in Furnace, download, view as text), its takes as pills (the original and every
   variation by its label; a tap puts one in the block as an edit, heard at once if it plays, offered
   to the other blocks of the same clip; with a clip selected, the take is selected and goes in the

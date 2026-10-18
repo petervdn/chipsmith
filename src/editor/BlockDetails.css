@@ -1,20 +1,7 @@
-/* The look of BlockDetails.tsx: ▶ from here beside the title, the clip it plays faint under it,
-   its buttons in rows. */
-
-.block-details-play {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  min-height: var(--touch);
-  padding: 0 14px;
-  border: var(--border-width) solid var(--line);
-  border-radius: var(--radius);
-  background: var(--raised);
-  cursor: pointer;
-}
+/* The look of BlockDetails.tsx: on its bar, the clip it plays faint, then its buttons in groups. */
 
 .block-details-facts {
-  margin: 8px 0 0;
+  margin: 0;
   color: var(--muted);
   font-size: 0.8125rem;
 }
@@ -24,10 +11,12 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 8px;
-  margin-top: 10px;
 }
 
 .block-details-actions button {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   min-width: var(--touch);
   min-height: var(--touch);
   padding: 0 14px;

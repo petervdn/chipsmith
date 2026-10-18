@@ -5,11 +5,11 @@ saved, playing from a cursor, the zoom, and the selected block's clip or track.
 
 - `block-drag.ts`: where a dragged block goes: moved on the grid and between tracks, or trimmed
 - `BlockDetails.css`: the look of BlockDetails.tsx
-- `BlockDetails.tsx`: the selected block's section: where it plays, the clip it plays, Loop it, solo, repeats, duplicate, untrim, remove
+- `BlockDetails.tsx`: the selected block's section, one bar: where it plays, the clip it plays, Loop it, solo, repeats, duplicate, untrim, remove
 - `ClipDetails.css`: the look of ClipDetails.tsx
-- `ClipDetails.tsx`: a clip's section: its facts, its .fur, its takes, quick changes, the prompt for takes of it
+- `ClipDetails.tsx`: a clip's section: its facts, its .fur, its takes, quick changes; the prompt for takes of it beside them; the note grid under
 - `DetailsSection.css`: the look of DetailsSection.tsx
-- `DetailsSection.tsx`: a section of the details as a card: its kind (block, clip, track) over its title
+- `DetailsSection.tsx`: a section of the details as a card, or a bar: its kind (block, clip, track) over its title
 - `clip-prompt.ts`: the prompt on a clip: its quick asks, how a tap adds one, the most takes
 - `ClipPrompt.css`: the look of ClipPrompt.tsx
 - `ClipPrompt.tsx`: the prompt on a clip: what to change, how many takes, Send, the jobs on their way
