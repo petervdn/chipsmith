@@ -7,7 +7,7 @@ import type { Job } from '../../shared/job.schema.ts';
 import { Logo } from './Logo.tsx';
 import { LookSwitcher } from './LookSwitcher.tsx';
 import { isJobRunning } from '../queries/jobs.ts';
-import { useTopBarHeight } from './use-top-bar-height.ts';
+import { useHeightProperty } from '../use-height-property.ts';
 import type { Route } from '../router.ts';
 import '../jobs/jobs.css';
 import './TopBar.css';
@@ -29,7 +29,7 @@ export function TopBar({ route, jobs }: TopBarProps) {
   const isReferences = route.page === 'references' || route.page === 'reference';
   const runningCount = jobs.filter(isJobRunning).length;
   const barRef = useRef<HTMLElement>(null);
-  useTopBarHeight(barRef);
+  useHeightProperty(barRef, '--top-bar-height');
   return (
     <header ref={barRef} className="top-bar">
       <a href="/" className="top-bar-logo">
