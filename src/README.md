@@ -22,7 +22,7 @@ At the top: the app's shell and what every area uses.
 - `player/`: ▶ and the player bar
 - `ProgramWarning.css`: the look of ProgramWarning.tsx
 - `ProgramWarning.tsx`: a bar when a program the app calls is missing
-- `project-links.ts`: where the project is on GitHub: its source and its README
+- `project-links.ts`: where the project is on GitHub: its source, its README and its part on a headless Furnace
 - `queries/`: everything read from or sent to the server (TanStack Query)
 - `router.ts`: which page the address is, and moving between them
 - `songs/`: the songs list and a song opened

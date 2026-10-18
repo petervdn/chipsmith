@@ -5,3 +5,6 @@ export const SOURCE_URL = 'https://github.com/petervdn/chipsmith';
 
 /** The project's README on GitHub: what it needs, setting it up, its settings. */
 export const README_URL = `${SOURCE_URL}#readme`;
+
+/** The README's part on building a Furnace without its window, to render with. */
+export const HEADLESS_FURNACE_URL = `${SOURCE_URL}#a-headless-furnace`;

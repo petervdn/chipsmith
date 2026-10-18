@@ -2,7 +2,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import type { ProgramCheck, ProgramName } from '../../shared/api.types.ts';
-import { getProgramRows } from './program-rows.ts';
+import { getProgramRows, hasTwoFurnaces } from './program-rows.ts';
 
 function getCheck({ name, path }: { name: ProgramName; path: string }): ProgramCheck {
   return {
@@ -40,4 +40,5 @@ test('a headless Furnace beside the app is a row each, named by what each does',
     rows.map(({ label }) => label),
     ['Furnace renderer', 'Furnace app'],
   );
+  assert.equal(hasTwoFurnaces([getCheck({ name: 'furnace', path: '/build/furnace' })]), false);
 });

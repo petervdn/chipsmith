@@ -1,9 +1,11 @@
 // What the app needs: each program it runs, as the server last looked for it (when it started, or
-// when asked here), what it is for, and the version found, or why it cannot be used and the setting that points to it; and a
-// button to look for them again, beside when it last looked and what it found.
+// when asked here), what it is for, and the version found, or why it cannot be used and the setting
+// that points to it; why there are two Furnaces when there are; and a button to look for them
+// again, beside when it last looked and what it found.
 import { Check, RefreshCw, X } from 'lucide-react';
 import { formatTime } from '../format.ts';
-import { getProgramRows } from './program-rows.ts';
+import { getProgramRows, hasTwoFurnaces } from './program-rows.ts';
+import { HEADLESS_FURNACE_URL } from '../project-links.ts';
 import { useCheckProgramsAgain, usePrograms } from '../queries/programs.ts';
 import './HomePrograms.css';
 
@@ -55,6 +57,15 @@ export function HomePrograms() {
           )}
         </tbody>
       </table>
+      {checks && hasTwoFurnaces(checks) && (
+        <p className="home-page-note">
+          Two Furnaces are set here. The renderer turns the songs into audio: a build of its own (
+          <code>CHIPSMITH_FURNACE</code>), best one without its window,{' '}
+          <a href={HEADLESS_FURNACE_URL}>as the README shows</a>. The app opens a clip's .fur for
+          you to look at (<code>CHIPSMITH_FURNACE_APP</code>). With only the Furnace app installed,
+          it does both and is one row.
+        </p>
+      )}
       <p className="home-page-note">
         Claude Code also has to be logged in: run <code>claude</code>, then <code>/login</code>.
       </p>

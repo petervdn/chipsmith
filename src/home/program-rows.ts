@@ -25,12 +25,11 @@ const PROGRAM_LABELS = {
  * @returns A row per program, Furnace's two as one when they have one path.
  */
 export function getProgramRows(checks: ProgramCheck[]): ProgramRow[] {
-  const renderer = checks.find((check) => check.name === 'furnace');
   const app = checks.find((check) => check.name === 'furnaceApp');
-  const isOneFurnace = renderer !== undefined && app !== undefined && renderer.path === app.path;
+  const isOneFurnace = !hasTwoFurnaces(checks);
   return checks.flatMap((check): ProgramRow[] => {
     if (isOneFurnace && check.name === 'furnaceApp') return [];
-    if (isOneFurnace && check.name === 'furnace') {
+    if (isOneFurnace && check.name === 'furnace' && app) {
       return [
         {
           ...check,
@@ -42,4 +41,17 @@ export function getProgramRows(checks: ProgramCheck[]): ProgramRow[] {
     }
     return [{ ...check, label: PROGRAM_LABELS[check.name] }];
   });
+}
+
+/**
+ * Tells whether the Furnace that renders and the one that opens files are two programs (a build of
+ * its own set to render, beside the app).
+ *
+ * @param checks - The programs' checks, as the server gives them.
+ * @returns Whether both are checked and their paths differ.
+ */
+export function hasTwoFurnaces(checks: ProgramCheck[]): boolean {
+  const renderer = checks.find((check) => check.name === 'furnace');
+  const app = checks.find((check) => check.name === 'furnaceApp');
+  return renderer !== undefined && app !== undefined && renderer.path !== app.path;
 }
