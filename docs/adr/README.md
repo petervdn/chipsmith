@@ -59,3 +59,4 @@ Consequences.
 | [0044](0044-the-song-page-is-laid-out-around-the-timeline.md) | The song page is laid out around the timeline; the tracks shrink to one row in view | accepted |
 | [0045](0045-a-song-playing-plays-on-into-its-page.md) | A song playing when its page opens plays on in the editor | accepted |
 | [0046](0046-the-top-bar-is-full-width.md) | The top bar is the window's full width; each page keeps its own width | accepted |
+| [0047](0047-a-song-prompt-changes-its-song.md) | A song prompt changes its song as a proposal; the clip prompt stays with the clip until then | accepted (not built yet) |

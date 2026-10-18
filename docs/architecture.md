@@ -263,3 +263,8 @@ a variation) instead of a song; `make/check-script.ts --takes-of <clip>` checks 
 3. More chips: any chip Furnace has, in two tiers (written; known, with a skill), and a job that
    names a chip not written stops with the reason instead of writing for another. The plan and
    what is open: docs/more-chips.md.
+4. A prompt about the whole song (0047): one prompt place on the song's page, always visible, its
+   target the song with nothing selected and the clip with one selected. What a song prompt makes
+   (new parts on new tracks, takes of its clips) comes back as a proposal, heard as unsaved edits
+   and then saved or reverted; it never makes a new song. Until then the clip prompt stays in the
+   clip's section.
