@@ -1,6 +1,6 @@
-// Layout 4 of a song's header: three sections, each under its heading and a hairline: the song (its
-// facts in columns), and under it side by side the prompt at the left and what the prompt was sent
-// with (as rows) at the right.
+// Layout 4 of a song's header: three sections, each under a hairline: the song's facts in columns
+// (no heading, the labels say enough), and under it side by side the prompt under its heading at
+// the left and what the prompt was sent with (as rows, no heading) at the right.
 import { SongPrompt } from '../SongPrompt.tsx';
 import { FactList } from './FactList.tsx';
 import type { SongSummary } from './song-summary.ts';
@@ -19,7 +19,6 @@ export function SectionsHeader({ summary }: SectionsHeaderProps) {
   return (
     <div className="sections-header">
       <section className="sections-header-section">
-        <h2 className="song-header-label">Song</h2>
         <FactList facts={summary.facts} look="grid" />
       </section>
       <div className="sections-header-pair">
@@ -29,7 +28,6 @@ export function SectionsHeader({ summary }: SectionsHeaderProps) {
         </section>
         {summary.promptFacts.length > 0 && (
           <section className="sections-header-section">
-            <h2 className="song-header-label">Sent with the prompt</h2>
             <FactList facts={summary.promptFacts} look="rows" />
           </section>
         )}
