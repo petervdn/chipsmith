@@ -1,5 +1,5 @@
-/* The look of SongPage.tsx: ★ beside the title, the header's layout switch at the right; the page,
-   and the top bar with it, as wide as the editor can use. */
+/* The look of SongPage.tsx: ★ beside the title; the page, and the top bar with it, as wide as the
+   editor can use. */
 
 .app:has(.song-page) {
   --page-width: var(--wide-page-width);

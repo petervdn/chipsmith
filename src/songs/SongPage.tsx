@@ -1,14 +1,12 @@
 // One song, opened: its title with ★ to keep it, its header (its facts, the prompt it was made from
-// and what that was sent with, in a layout chosen by prev and next), and the editor
+// and what that was sent with), and the editor
 // (editor/SongEditor.tsx), with nothing but the song itself playing when it opens.
-import { useState } from 'react';
 import { SongEditor } from '../editor/SongEditor.tsx';
 import { StatusButtons } from '../lists/StatusButtons.tsx';
 import { useSetSongStatus, useSong } from '../queries/songs.ts';
 import { usePageTitle } from '../use-page-title.ts';
 import { Breadcrumbs } from '../Breadcrumbs.tsx';
-import { HeaderLayoutSwitch } from './header/HeaderLayoutSwitch.tsx';
-import { SONG_HEADER_LAYOUTS, SongHeader } from './header/SongHeader.tsx';
+import { CardHeader } from './header/CardHeader.tsx';
 import { getSongSummary } from './header/song-summary.ts';
 import { useStopOnOpen } from './use-stop-on-open.ts';
 import './SongPage.css';
@@ -23,7 +21,6 @@ type SongPageProps = { songId: string };
  * @returns The page's section element, or a paragraph while it loads or when it could not be read.
  */
 export function SongPage({ songId }: SongPageProps) {
-  const [layoutIndex, setLayoutIndex] = useState(0);
   const { data: detail, error } = useSong(songId);
   const { mutate: setStatus } = useSetSongStatus();
   useStopOnOpen(songId);
@@ -39,13 +36,8 @@ export function SongPage({ songId }: SongPageProps) {
           status={song.status}
           onChange={(status) => setStatus({ songId: song.id, status })}
         />
-        <HeaderLayoutSwitch
-          names={SONG_HEADER_LAYOUTS.map((layout) => layout.name)}
-          index={layoutIndex}
-          onChange={setLayoutIndex}
-        />
       </div>
-      <SongHeader summary={getSongSummary(song, detail.clips)} layoutIndex={layoutIndex} />
+      <CardHeader summary={getSongSummary(song, detail.clips)} />
       {/* other tracks from the server (split, one added or removed) start the editor afresh; a new
           arrangement of the same tracks is taken in by its draft (editor/use-song-draft.ts) */}
       <SongEditor

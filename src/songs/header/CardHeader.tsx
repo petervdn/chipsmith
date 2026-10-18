@@ -1,10 +1,11 @@
-// Layout 5 of a song's header: on the page, no card around it. At its top the tempo, meter and length large, the other
+// A song's header, between its title and the editor: on the page, no card around it. At its top the tempo, meter and length large, the other
 // facts and what the prompt was sent with (its tags too) in a grid beside them; under a hairline
 // only the prompt.
 import { SongPrompt } from '../SongPrompt.tsx';
 import { FactList } from './FactList.tsx';
 import type { SongSummary } from './song-summary.ts';
 import './CardHeader.css';
+import './SongHeader.css';
 
 /** How many of the facts, from the first, are shown large. */
 const LARGE_FACT_COUNT = 3;

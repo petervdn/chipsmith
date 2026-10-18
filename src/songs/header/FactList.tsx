@@ -1,12 +1,10 @@
-// Facts with their labels, as a list of terms: tiles (the label over its value, boxed), rows (a
-// table, the label at the left), pills (the label and its value in a rounded chip), a grid (the
-// label over its value, in columns) or large (a few, in big figures side by side). It knows
-// nothing of what the facts are.
+// Facts with their labels, as a list of terms: a grid (the label over its value, in columns) or
+// large (a few, in big figures side by side). It knows nothing of what the facts are.
 import type { SongFact } from './song-summary.ts';
 import './FactList.css';
 
 /** How the facts are laid out. */
-export type FactListLook = 'tiles' | 'rows' | 'pills' | 'grid' | 'large';
+export type FactListLook = 'grid' | 'large';
 
 type FactListProps = { facts: SongFact[]; look: FactListLook };
 
