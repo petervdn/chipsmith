@@ -21,7 +21,7 @@
    through it */
 .song-editor-head {
   position: sticky;
-  top: var(--top-bar-height, 0px);
+  top: var(--sticky-top, var(--top-bar-height, 0px));
   z-index: 5;
   display: grid;
   grid-template-columns: subgrid;
@@ -69,14 +69,15 @@
    top level with the ruler's, kept in view under the editor's bar */
 .song-editor-body > .song-clips {
   position: sticky;
-  top: calc(var(--top-bar-height, 0px) + var(--editor-head-height, 0px) + 8px);
+  top: calc(var(--sticky-top, var(--top-bar-height, 0px)) + var(--editor-head-height, 0px) + 8px);
   grid-column: 2;
 }
 
 @media (min-width: 720px) {
   .song-editor-body > .song-clips {
     top: calc(
-      var(--top-bar-height, 0px) + var(--editor-head-height, 0px) - var(--editor-ruler-height, 0px)
+      var(--sticky-top, var(--top-bar-height, 0px)) + var(--editor-head-height, 0px) -
+        var(--editor-ruler-height, 0px)
     );
     margin-top: calc(-1 * var(--editor-ruler-height, 0px));
   }
@@ -97,7 +98,7 @@
 
   .song-editor .transport-buttons {
     position: sticky;
-    top: var(--top-bar-height, 0px);
+    top: var(--sticky-top, var(--top-bar-height, 0px));
     z-index: 5;
     padding: 8px 0;
     background: var(--bg);
@@ -105,7 +106,7 @@
 
   .song-editor-head-scroll {
     position: sticky;
-    top: calc(var(--top-bar-height, 0px) + var(--transport-size) + 16px);
+    top: calc(var(--sticky-top, var(--top-bar-height, 0px)) + var(--transport-size) + 16px);
     z-index: 5;
     margin-top: 8px;
   }
@@ -125,7 +126,7 @@
 @media (min-width: 720px) {
   .song-editor-scroll {
     position: sticky;
-    top: calc(var(--top-bar-height, 0px) + var(--editor-head-height, 0px));
+    top: calc(var(--sticky-top, var(--top-bar-height, 0px)) + var(--editor-head-height, 0px));
     z-index: 4;
   }
 }

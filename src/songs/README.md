@@ -9,6 +9,8 @@ The songs list and a song opened.
 - `SongPrompt.tsx`: a song's prompt on its page, cut to a few lines until opened, with copy
 - `SongRowDetails.css`: the look of SongRowDetails.tsx
 - `SongRowDetails.tsx`: a song's row opened: its prompt (copy, prompt again) and details
+- `SongTitleRow.css`: the look of SongTitleRow.tsx
+- `SongTitleRow.tsx`: a song's title row, kept in view: its title, ★, and the editor's Split, Revert and Save
 - `SongsPage.css`: the look of SongsPage.tsx
 - `SongsPage.tsx`: the songs list, all of them or only the favorites
 - `SongsTabs.css`: the look of SongsTabs.tsx

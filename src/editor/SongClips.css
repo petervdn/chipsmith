@@ -29,7 +29,9 @@
 .song-clips-panel {
   display: flex;
   flex-direction: column;
-  max-height: calc(100vh - var(--top-bar-height, 0px) - var(--editor-head-height, 0px) - 24px);
+  max-height: calc(
+    100vh - var(--sticky-top, var(--top-bar-height, 0px)) - var(--editor-head-height, 0px) - 24px
+  );
   border: var(--border-width) solid var(--line);
   border-radius: var(--radius);
   background: var(--card);
@@ -86,7 +88,7 @@
 @media (min-width: 720px) {
   .song-clips-panel {
     max-height: calc(
-      100vh - var(--top-bar-height, 0px) - var(--editor-head-height, 0px) +
+      100vh - var(--sticky-top, var(--top-bar-height, 0px)) - var(--editor-head-height, 0px) +
         var(--editor-ruler-height, 0px) - 16px
     );
   }

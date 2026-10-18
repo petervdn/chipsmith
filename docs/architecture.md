@@ -125,7 +125,7 @@ with its title alone, the Songs tab marked above it.
   its edges to trim it, drag a clip from the song's clips onto a track as a new block (a copy of its row held under the pointer where it was grabbed; the timeline scrolls at its edges only once the drag has been inside it), snapped to a grid; repeat, duplicate, untrim, remove; add, rename and remove tracks; mute and solo
   (not saved); a mixer, a row under the tracks opened and folded from its own head: a strip per track (its fader,
   saved and heard in playback only, one undo step per move; its meter, M and S, the same values as
-  its row) and the master (the player's volume); undo and redo in the bar's edit group; Revert and Save at the right of the song's title row, quiet until there are changes, then Save lit in the accent (`src/editor/SaveButtons.tsx`). Split into channels, left of Revert and Save with a gap (`src/editor/SplitButton.tsx`; a song that is one whole clip
+  its row) and the master (the player's volume); undo and redo in the bar's edit group; Revert and Save at the right of the song's title row, which stays in view under the top bar with the editor's sticky rows under it (`src/songs/SongTitleRow.tsx`, `--sticky-top`), quiet until there are changes, then Save lit in the accent (`src/editor/SaveButtons.tsx`). Split into channels, left of Revert and Save with a gap (`src/editor/SplitButton.tsx`; a song that is one whole clip
   of more than one channel; what cutting does to the sound: docs/splitting.md): a track per channel
   that plays, each one block of a new clip, the whole song on that channel alone, rendered in the
   background and shown striped until its audio is in (`fur/cut.ts`, `make/split-song.ts`,

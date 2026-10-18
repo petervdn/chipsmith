@@ -1,26 +1,10 @@
-/* The look of SongPage.tsx: ★ beside the title and Split, Revert and Save at the right, level with
-   it; the page as wide as the editor can use. */
+/* The look of SongPage.tsx: the page as wide as the editor can use, and where the editor's rows
+   that stay in view start: under the top bar and the song's title row (SongTitleRow.css). */
 
 .app:has(.song-page) {
   --page-width: var(--wide-page-width);
 }
 
-.song-page-head {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  gap: 4px;
-}
-
-/* ★, and Revert and Save at the right, level with the middle of the title's capitals, which sit
-   below the middle of its line */
-.song-page-head .status-buttons,
-.song-page-save {
-  margin-top: 5px;
-}
-
-.song-page-save {
-  display: flex;
-  align-items: center;
-  margin-left: auto;
+.song-page {
+  --sticky-top: calc(var(--top-bar-height, 0px) + var(--song-title-height, 0px));
 }
