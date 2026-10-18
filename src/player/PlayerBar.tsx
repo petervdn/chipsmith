@@ -1,7 +1,7 @@
 // The bar at the bottom of every page but a song's while a song (or a reference's audio) is in the
-// player: ▶ / ■ (the share loaded while it loads), its title, where it is, a slider to move in it,
-// and the mute switch for testing.
-import { Play, Square, Volume2, VolumeX } from 'lucide-react';
+// player: ▶ / ■ (the share loaded while it loads), its title (a link to its editor, or to the
+// reference's page), where it is, a slider to move in it, and the mute switch for testing.
+import { ArrowUpRight, Play, Square, Volume2, VolumeX } from 'lucide-react';
 import { formatSeconds } from '../format.ts';
 import { getSongPosition } from '../playback/audio-engine.ts';
 import { usePlayerStore } from '../stores/player-store.ts';
@@ -27,11 +27,16 @@ export function PlayerBar() {
   const position = player.mode === 'playing' ? (livePosition ?? player.from) : player.from;
   const { song, reference } = player;
   const playing = song
-    ? { title: song.song.title, href: `/songs/${encodeURIComponent(song.song.id)}` }
+    ? {
+        title: song.song.title,
+        href: `/songs/${encodeURIComponent(song.song.id)}`,
+        opens: 'open in the editor',
+      }
     : reference
       ? {
           title: reference.title,
           href: `/references/${encodeURIComponent(reference.referenceId)}`,
+          opens: 'open the reference',
         }
       : null;
   if (!playing) return null;
@@ -59,8 +64,9 @@ export function PlayerBar() {
         )}
       </button>
       <div className="player-bar-middle">
-        <a className="player-bar-title" href={playing.href}>
-          {playing.title}
+        <a className="player-bar-title" href={playing.href} data-tooltip={playing.opens}>
+          <span className="player-bar-title-text">{playing.title}</span>
+          <ArrowUpRight />
         </a>
         <input
           className="player-bar-seek"

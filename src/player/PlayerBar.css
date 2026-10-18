@@ -38,12 +38,30 @@
   min-width: 0;
 }
 
+/* the title, a link to the song's editor (or the reference's page), the arrow saying so */
 .player-bar-title {
+  justify-content: flex-start;
+  align-self: flex-start;
+  max-width: 100%;
+  gap: 2px;
   font-weight: 600;
+  text-decoration: none;
+}
+
+.player-bar-title-text {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  text-decoration: none;
+}
+
+.player-bar-title .lucide {
+  color: var(--muted);
+}
+
+@media (hover: hover) {
+  .player-bar-title:hover .player-bar-title-text {
+    text-decoration: underline;
+  }
 }
 
 .player-bar-seek {
