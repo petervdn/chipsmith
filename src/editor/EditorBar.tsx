@@ -1,5 +1,5 @@
-// The editor's bar of controls above the timeline, in groups: play (stop, play or pause), the
-// metronome, edit (undo, redo), snap, tracks (split, when the song can be), zoom (in, out, fit, and
+// The editor's bar of controls above the timeline: the transport, large at its left (stop, play or
+// pause, the time), then the groups: play (follow, loop), the metronome, edit (undo, redo), snap, tracks (split, when the song can be), zoom (in, out, fit, and
 // the tracks' height on a slider), view (the mixer, and the structure when the song was asked for
 // one), and the song (revert, save). It wraps on a phone. It knows nothing of what the controls do: it is given the
 // values and handlers, or keeps them in the preferences.
@@ -34,7 +34,7 @@ type EditorBarProps = {
  * Shows the editor's bar of controls.
  *
  * @param props - The component's props.
- * @param props.transport - Playing the song: its mode, pause, stop and play.
+ * @param props.transport - Playing the song: its mode, cursor and length, stop and play.
  * @param props.isWaitingForAudio - Whether the song's audio is still being rendered, so it cannot play.
  * @param props.draft - The song being edited: undo, redo, revert and save, and whether it changed.
  * @param props.loop - Looping: whether it is on, and switching it.
@@ -72,126 +72,139 @@ export function EditorBar({
   const setTrackHeight = usePreferencesStore((state) => state.setTrackHeight);
   return (
     <div className="editor-bar">
-      <TransportButtons
-        mode={transport.mode}
-        isPaused={transport.isPaused}
-        isWaitingForAudio={isWaitingForAudio}
-        onStop={transport.stop}
-        onTogglePlaying={transport.togglePlaying}
-        isFollowing={isFollowing}
-        onToggleFollowing={() => setFollowing(!isFollowing)}
-        isLooping={loop.isOn}
-        onToggleLooping={loop.toggle}
-      />
-      <MetronomeControls />
-      <ControlGroup label="edit">
-        <button
-          type="button"
-          onClick={draft.undo}
-          disabled={!draft.canUndo}
-          data-tooltip="undo (⌘Z)"
-          aria-label="undo (⌘Z)"
-        >
-          <Undo2 />
-        </button>
-        <button
-          type="button"
-          onClick={draft.redo}
-          disabled={!draft.canRedo}
-          data-tooltip="redo (⇧⌘Z)"
-          aria-label="redo (⇧⌘Z)"
-        >
-          <Redo2 />
-        </button>
-      </ControlGroup>
-      <ControlGroup label="snap">
-        <select
-          className="editor-bar-grid"
-          value={step.id}
-          onChange={(event) =>
-            onStep(GRID_STEPS.find((candidate) => candidate.id === event.target.value) ?? BAR_STEP)
-          }
-          data-tooltip="what blocks snap to when dragged (Alt: no snapping)"
-        >
-          {GRID_STEPS.map((candidate) => (
-            <option key={candidate.id} value={candidate.id}>
-              {candidate.name}
-            </option>
-          ))}
-        </select>
-      </ControlGroup>
-      {splitCount > 0 && (
-        <ControlGroup label="tracks">
+      <TransportButtons transport={transport} isWaitingForAudio={isWaitingForAudio} />
+      <div className="editor-bar-groups">
+        <ControlGroup label="play">
+          <ToggleButton
+            label="follow"
+            isOn={isFollowing}
+            onToggle={() => setFollowing(!isFollowing)}
+            tooltip="keep the playhead in the middle of the view while playing"
+          />
+          <ToggleButton
+            label="loop"
+            isOn={loop.isOn}
+            onToggle={loop.toggle}
+            tooltip="play round the whole song, or a loop drawn in the row under the ruler"
+          />
+        </ControlGroup>
+        <MetronomeControls />
+        <ControlGroup label="edit">
           <button
             type="button"
-            className="editor-bar-button"
-            onClick={onSplit}
-            disabled={draft.hasChanges || isSplitting}
-            data-tooltip={
-              draft.hasChanges
-                ? 'save or revert the changes first'
-                : 'make a track per channel, each the whole song on that channel alone'
-            }
+            onClick={draft.undo}
+            disabled={!draft.canUndo}
+            data-tooltip="undo (⌘Z)"
+            aria-label="undo (⌘Z)"
           >
-            {isSplitting ? 'Splitting…' : `Split into ${splitCount} channels`}
+            <Undo2 />
+          </button>
+          <button
+            type="button"
+            onClick={draft.redo}
+            disabled={!draft.canRedo}
+            data-tooltip="redo (⇧⌘Z)"
+            aria-label="redo (⇧⌘Z)"
+          >
+            <Redo2 />
           </button>
         </ControlGroup>
-      )}
-      <ControlGroup label="zoom">
-        <button type="button" onClick={zoom.zoomOut} data-tooltip="zoom out" aria-label="zoom out">
-          <Minus />
-        </button>
-        <button type="button" onClick={zoom.fit} data-tooltip="fit the song to the screen">
-          fit
-        </button>
-        <button type="button" onClick={zoom.zoomIn} data-tooltip="zoom in" aria-label="zoom in">
-          <Plus />
-        </button>
-        <input
-          type="range"
-          className="editor-bar-track-height"
-          min={LEAST_TRACK_HEIGHT}
-          max={MOST_TRACK_HEIGHT}
-          step={1}
-          value={trackHeight}
-          onChange={(event) => setTrackHeight(Number(event.target.value))}
-          aria-label="track height"
-          data-tooltip={`track height: ${trackHeight} px`}
-        />
-      </ControlGroup>
-      <ControlGroup label="view">
-        <ToggleButton
-          label="mixer"
-          isOn={isMixerOpen}
-          onToggle={() => setMixerOpen(!isMixerOpen)}
-          tooltip="open the mixer under the timeline: a fader, meter, mute and solo per track"
-        />
-        {hasStructure && (
-          <ToggleButton
-            label="structure"
-            isOn={isStructureShown}
-            onToggle={() => setStructureShown(!isStructureShown)}
-            tooltip="show the structure the song was asked for, above its tracks"
-          />
+        <ControlGroup label="snap">
+          <select
+            className="editor-bar-grid"
+            value={step.id}
+            onChange={(event) =>
+              onStep(
+                GRID_STEPS.find((candidate) => candidate.id === event.target.value) ?? BAR_STEP,
+              )
+            }
+            data-tooltip="what blocks snap to when dragged (Alt: no snapping)"
+          >
+            {GRID_STEPS.map((candidate) => (
+              <option key={candidate.id} value={candidate.id}>
+                {candidate.name}
+              </option>
+            ))}
+          </select>
+        </ControlGroup>
+        {splitCount > 0 && (
+          <ControlGroup label="tracks">
+            <button
+              type="button"
+              className="editor-bar-button"
+              onClick={onSplit}
+              disabled={draft.hasChanges || isSplitting}
+              data-tooltip={
+                draft.hasChanges
+                  ? 'save or revert the changes first'
+                  : 'make a track per channel, each the whole song on that channel alone'
+              }
+            >
+              {isSplitting ? 'Splitting…' : `Split into ${splitCount} channels`}
+            </button>
+          </ControlGroup>
         )}
-      </ControlGroup>
-      <ControlGroup label="song" isAtEnd>
-        {draft.hasChanges && <span className="editor-bar-unsaved">unsaved changes</span>}
-        {draft.hasChanges && (
-          <button type="button" className="editor-bar-button" onClick={draft.revert}>
-            Revert
+        <ControlGroup label="zoom">
+          <button
+            type="button"
+            onClick={zoom.zoomOut}
+            data-tooltip="zoom out"
+            aria-label="zoom out"
+          >
+            <Minus />
           </button>
-        )}
-        <button
-          type="button"
-          className="editor-bar-button is-primary"
-          onClick={draft.save}
-          disabled={!draft.hasChanges || draft.isSaving}
-          data-tooltip="save the song as it is now (⌘S)"
-        >
-          {draft.isSaving ? 'Saving…' : 'Save'}
-        </button>
-      </ControlGroup>
+          <button type="button" onClick={zoom.fit} data-tooltip="fit the song to the screen">
+            fit
+          </button>
+          <button type="button" onClick={zoom.zoomIn} data-tooltip="zoom in" aria-label="zoom in">
+            <Plus />
+          </button>
+          <input
+            type="range"
+            className="editor-bar-track-height"
+            min={LEAST_TRACK_HEIGHT}
+            max={MOST_TRACK_HEIGHT}
+            step={1}
+            value={trackHeight}
+            onChange={(event) => setTrackHeight(Number(event.target.value))}
+            aria-label="track height"
+            data-tooltip={`track height: ${trackHeight} px`}
+          />
+        </ControlGroup>
+        <ControlGroup label="view">
+          <ToggleButton
+            label="mixer"
+            isOn={isMixerOpen}
+            onToggle={() => setMixerOpen(!isMixerOpen)}
+            tooltip="open the mixer under the timeline: a fader, meter, mute and solo per track"
+          />
+          {hasStructure && (
+            <ToggleButton
+              label="structure"
+              isOn={isStructureShown}
+              onToggle={() => setStructureShown(!isStructureShown)}
+              tooltip="show the structure the song was asked for, above its tracks"
+            />
+          )}
+        </ControlGroup>
+        <ControlGroup label="song" isAtEnd>
+          {draft.hasChanges && <span className="editor-bar-unsaved">unsaved changes</span>}
+          {draft.hasChanges && (
+            <button type="button" className="editor-bar-button" onClick={draft.revert}>
+              Revert
+            </button>
+          )}
+          <button
+            type="button"
+            className="editor-bar-button is-primary"
+            onClick={draft.save}
+            disabled={!draft.hasChanges || draft.isSaving}
+            data-tooltip="save the song as it is now (⌘S)"
+          >
+            {draft.isSaving ? 'Saving…' : 'Save'}
+          </button>
+        </ControlGroup>
+      </div>
     </div>
   );
 }

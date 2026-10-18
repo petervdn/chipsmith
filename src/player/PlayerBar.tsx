@@ -2,12 +2,12 @@
 // (the share loaded while it loads), its title, where it is, a slider to move in it, and the mute
 // switch for testing.
 import { Play, Square } from 'lucide-react';
-import { useEffect, useState } from 'react';
 import { formatSeconds } from '../format.ts';
 import { getSongPosition } from '../playback/audio-engine.ts';
 import { usePlayerStore } from '../stores/player-store.ts';
 import { usePreferencesStore } from '../stores/preferences-store.ts';
 import { LOUDEST_DB, QUIETEST_DB, formatVolume } from './volume.ts';
+import { useLivePosition } from './use-live-position.ts';
 import { useMarkHeard } from './use-mark-heard.ts';
 import './PlayerBar.css';
 
@@ -25,16 +25,7 @@ export function PlayerBar() {
   const setMuted = usePreferencesStore((preferences) => preferences.setMuted);
   const volume = usePreferencesStore((preferences) => preferences.volume);
   const setVolume = usePreferencesStore((preferences) => preferences.setVolume);
-  const [livePosition, setLivePosition] = useState<number | null>(null);
-  useEffect(() => {
-    if (player.mode !== 'playing') return;
-    let frame = requestAnimationFrame(follow);
-    function follow(): void {
-      setLivePosition(getSongPosition());
-      frame = requestAnimationFrame(follow);
-    }
-    return () => cancelAnimationFrame(frame);
-  }, [player.mode]);
+  const livePosition = useLivePosition(player.mode === 'playing');
   const position = player.mode === 'playing' ? (livePosition ?? player.from) : player.from;
   const { song, reference } = player;
   const playing = song

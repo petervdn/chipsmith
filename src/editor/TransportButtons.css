@@ -1,12 +1,47 @@
-/* The look of TransportButtons.tsx: the editor bar's buttons, the symbols a little larger, play lit
-   while it plays. */
+/* The look of TransportButtons.tsx: two large buttons, as tall as the bar's groups and more, play lit
+   while it plays; the time beside them in figures that keep their width. */
 
-.transport-buttons-button {
-  font-size: 1rem;
+.transport-buttons {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.editor-bar .transport-buttons-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--transport-size);
+  height: var(--transport-size);
+  padding: 0;
+}
+
+.transport-buttons-button > svg {
+  width: 22px;
+  height: 22px;
+}
+
+.transport-buttons-button.is-play > svg {
+  width: 28px;
+  height: 28px;
 }
 
 .editor-bar .transport-buttons-button.is-on {
   border-color: var(--accent);
   background: var(--accent);
   color: var(--on-accent);
+}
+
+.transport-buttons-time {
+  min-width: 6.5em;
+  padding-left: 6px;
+  font-size: 1.125rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.transport-buttons-end {
+  color: var(--muted);
+  font-weight: 400;
 }

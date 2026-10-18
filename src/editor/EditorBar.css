@@ -1,12 +1,21 @@
-/* The look of EditorBar.tsx: its groups side by side, wrapping on a phone; its buttons alike, a
-   disabled one clearly off, Save lit while there is something to save. */
+/* The look of EditorBar.tsx: the transport large at the left, the groups side by side beside it,
+   wrapping on a phone; its buttons alike, a disabled one clearly off, Save lit while there is
+   something to save. */
 
 .editor-bar {
+  --transport-size: 56px;
   display: flex;
+  align-items: center;
+  gap: 8px 20px;
+  margin-bottom: 8px;
+}
+
+.editor-bar-groups {
+  display: flex;
+  flex: 1;
   flex-wrap: wrap;
   align-items: flex-end;
   gap: 8px 16px;
-  margin-bottom: 8px;
 }
 
 .editor-bar button,

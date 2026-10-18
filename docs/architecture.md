@@ -83,7 +83,7 @@ page but Home starts with breadcrumbs, the last its heading (Songs › Seven Tee
   opened; copy), then the song opened in the editor (`src/editor/`): a timeline of its tracks
   (a ruler of bars; under it, switched in the editor bar, the structure the song was asked for as
   tiles from bar 1, as it was sent and never following edits (0030); each block drawn as the slice
-  of its clip's waveform it plays, repeats after it, a playhead), ▶ / ❚❚ from a cursor set on the ruler and ■ back to it,
+  of its clip's waveform it plays, repeats after it, a playhead), ▶ / ❚❚ from a cursor set on the ruler and ■ back to it (■ again: back to the start), large at the left of the editor bar with the time,
   follow (the playhead kept in the middle), a loop (the whole song, or bars drawn in a row under the
   ruler; 0031), a metronome (on or off, its own
   volume; the first beat of a bar higher, `src/playback/metronome.ts`), zoom (and the tracks' height on a slider), the song's clips in a

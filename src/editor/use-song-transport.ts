@@ -1,10 +1,11 @@
 // Playing an opened song from its cursor: ▶ plays from there, ❚❚ pauses where it is and ▶ plays on
-// from there, ■ stops and goes back to the cursor. A new place plays on from there while playing, or
+// from there, ■ stops and goes back to the cursor, and ■ again goes back to the start. A new place plays on from there while playing, or
 // moves the cursor (and forgets a pause) while not. With a loop it plays round it. An edit, or a
 // change of the loop, made while it plays is heard at once: it plays on, as changed, from where it is.
 import { useEffect, useRef, useState } from 'react';
 import type { SongDetail } from '../../shared/api.types.ts';
 import { getSongPosition } from '../playback/audio-engine.ts';
+import { getEnd, getStretches } from '../playback/schedule.ts';
 import type { Loop } from '../playback/loop.ts';
 import { usePlayerStore } from '../stores/player-store.ts';
 
@@ -15,8 +16,10 @@ import { usePlayerStore } from '../stores/player-store.ts';
  * @param loop - The loop to play round, or null to play to the end.
  * @returns Where the playhead stands while not playing (`cursor`, in seconds: where it paused, or
  * the cursor); the song's mode (stopped, loading or playing; stopped while another song plays);
- * `isPaused`; `togglePlaying`, which plays from the pause or the cursor, or pauses; `stop`, which
- * stops and goes back to the cursor; `moveTo`, which moves the cursor to a second and plays on from
+ * `isPaused`; `canStop`, whether ■ has anything to do (it plays, is paused, or the cursor is not at
+ * the start); `togglePlaying`, which plays from the pause or the cursor, or pauses; `stop`, which
+ * stops and goes back to the cursor, or, stopped there already, goes back to the start; `end`, the
+ * song's length in seconds; `moveTo`, which moves the cursor to a second and plays on from
  * there if the song plays; and `playFrom`, which moves the cursor to a second and plays from there.
  */
 export function useSongTransport(detail: SongDetail, loop: Loop | null) {
@@ -46,6 +49,7 @@ export function useSongTransport(detail: SongDetail, loop: Loop | null) {
     setPausedAt(position);
   }
   function stop(): void {
+    if (mode === 'stopped' && pausedAt === null) setCursor(0);
     if (mode !== 'stopped') stopSong(cursor);
     setPausedAt(null);
   }
@@ -71,8 +75,10 @@ export function useSongTransport(detail: SongDetail, loop: Loop | null) {
     cursor: mode === 'stopped' && pausedAt !== null ? pausedAt : cursor,
     mode,
     isPaused,
+    canStop: mode !== 'stopped' || pausedAt !== null || cursor > 0,
     togglePlaying,
     stop,
+    end: getEnd(getStretches(detail.song, detail.clips)),
     moveTo,
     playFrom,
   };

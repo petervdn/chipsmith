@@ -19,7 +19,7 @@ saved, playing from a cursor, the zoom, and the selected block's clip or track.
 - `ControlGroup.css`: the look of ControlGroup.tsx
 - `ControlGroup.tsx`: controls grouped under a very small label over a line
 - `EditorBar.css`: the look of EditorBar.tsx
-- `EditorBar.tsx`: the bar of controls above the timeline, in groups
+- `EditorBar.tsx`: the bar of controls above the timeline: the transport, then the groups
 - `Fader.css`: the look of Fader.tsx
 - `Fader.tsx`: a level's fader in decibels, standing in the mixer
 - `grid.ts`: the snap grid: its steps, and a time snapped to one
@@ -63,7 +63,7 @@ saved, playing from a cursor, the zoom, and the selected block's clip or track.
 - `TrackDetails.css`: the look of TrackDetails.tsx
 - `TrackDetails.tsx`: the selected track: its name, remove
 - `TransportButtons.css`: the look of TransportButtons.tsx
-- `TransportButtons.tsx`: ■ stop, ▶ / ❚❚ play or pause on one button, follow, and loop
+- `TransportButtons.tsx`: the transport, large: ■ stop (again: back to the start), ▶ / ❚❚ play or pause on one button, the time
 - `use-block-drag.ts`: dragging blocks: moving and trimming them
 - `use-clip-drag.ts`: dragging a clip onto a track's lane, as a new block
 - `use-clip-prompt.ts`: the prompt on a clip kept, sent as takes, and the jobs of takes of it on their way

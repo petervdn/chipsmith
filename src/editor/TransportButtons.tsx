@@ -1,83 +1,56 @@
-// The editor's ■ and ▶ / ❚❚: stop (back to the cursor), only while playing or paused; play or
-// pause on one button; follow, switching whether the timeline scrolls with the playhead; and loop,
-// switching whether it plays round its loop. It knows nothing of how the song is played.
+// The editor's transport, large at the left of its bar: ■ stop (back to the cursor, and again back to
+// the start), ▶ / ❚❚ play or pause on one button, and where the song is of how long it is. It knows
+// nothing of how the song is played.
 import { LoaderCircle, Pause, Play, Square } from 'lucide-react';
-import { ControlGroup } from './ControlGroup.tsx';
-import { ToggleButton } from './ToggleButton.tsx';
+import { formatSeconds } from '../format.ts';
+import { useLivePosition } from '../player/use-live-position.ts';
 import type { PlayerMode } from '../stores/player-store.ts';
+import type { useSongTransport } from './use-song-transport.ts';
 import './TransportButtons.css';
 
 type TransportButtonsProps = {
-  mode: PlayerMode;
-  isPaused: boolean;
+  transport: ReturnType<typeof useSongTransport>;
   isWaitingForAudio: boolean;
-  onStop: () => void;
-  onTogglePlaying: () => void;
-  isFollowing: boolean;
-  onToggleFollowing: () => void;
-  isLooping: boolean;
-  onToggleLooping: () => void;
 };
 
 /**
- * Shows stop, and play or pause.
+ * Shows stop, play or pause, and the time.
  *
  * @param props - The component's props.
- * @param props.mode - The song's mode: stopped, loading or playing.
- * @param props.isPaused - Whether the song is paused.
+ * @param props.transport - Playing the song: its mode, cursor and length, stop and play.
  * @param props.isWaitingForAudio - Whether its audio is still being rendered, so it cannot play.
- * @param props.onStop - Called to stop and go back to the cursor.
- * @param props.onTogglePlaying - Called to play, or to pause while playing.
- * @param props.isFollowing - Whether the timeline follows the playhead.
- * @param props.onToggleFollowing - Called to switch following on or off.
- * @param props.isLooping - Whether the song plays round its loop.
- * @param props.onToggleLooping - Called to switch looping on or off.
- * @returns The buttons' element.
+ * @returns The transport's element.
  */
-export function TransportButtons({
-  mode,
-  isPaused,
-  isWaitingForAudio,
-  onStop,
-  onTogglePlaying,
-  isFollowing,
-  onToggleFollowing,
-  isLooping,
-  onToggleLooping,
-}: TransportButtonsProps) {
+export function TransportButtons({ transport, isWaitingForAudio }: TransportButtonsProps) {
+  const { mode, isPaused, canStop, cursor, end } = transport;
+  const livePosition = useLivePosition(mode === 'playing');
   return (
-    <ControlGroup label="play">
+    <div className="transport-buttons" role="group" aria-label="transport">
       <button
         type="button"
         className="transport-buttons-button"
-        onClick={onStop}
-        disabled={mode === 'stopped' && !isPaused}
-        aria-label="stop, back to the cursor"
+        onClick={transport.stop}
+        disabled={!canStop}
+        data-tooltip={getStopLabel({ mode, isPaused })}
+        aria-label={getStopLabel({ mode, isPaused })}
       >
         <Square fill="currentColor" />
       </button>
       <button
         type="button"
-        className={`transport-buttons-button${mode === 'stopped' ? '' : ' is-on'}`}
-        onClick={onTogglePlaying}
+        className={`transport-buttons-button is-play${mode === 'stopped' ? '' : ' is-on'}`}
+        onClick={transport.togglePlaying}
         disabled={isWaitingForAudio}
+        data-tooltip={getPlayLabel({ mode, isPaused })}
         aria-label={getPlayLabel({ mode, isPaused })}
       >
         {getPlayIcon(mode)}
       </button>
-      <ToggleButton
-        label="follow"
-        isOn={isFollowing}
-        onToggle={onToggleFollowing}
-        tooltip="keep the playhead in the middle of the view while playing"
-      />
-      <ToggleButton
-        label="loop"
-        isOn={isLooping}
-        onToggle={onToggleLooping}
-        tooltip="play round the whole song, or a loop drawn in the row under the ruler"
-      />
-    </ControlGroup>
+      <span className="transport-buttons-time">
+        {formatSeconds(livePosition ?? cursor)}
+        <span className="transport-buttons-end"> / {formatSeconds(end)}</span>
+      </span>
+    </div>
   );
 }
 
@@ -93,7 +66,7 @@ function getPlayIcon(mode: PlayerMode) {
 }
 
 /**
- * Returns what the play button is called for screen readers: what pressing it does.
+ * Returns what the play button does, for its tooltip and screen readers.
  *
  * @param state - The song's state.
  * @param state.mode - The song's mode.
@@ -103,4 +76,16 @@ function getPlayIcon(mode: PlayerMode) {
 function getPlayLabel({ mode, isPaused }: { mode: PlayerMode; isPaused: boolean }): string {
   if (mode !== 'stopped') return 'pause (Space)';
   return isPaused ? 'play on from the pause (Space)' : 'play from the cursor (Space)';
+}
+
+/**
+ * Returns what the stop button does, for its tooltip and screen readers.
+ *
+ * @param state - The song's state.
+ * @param state.mode - The song's mode.
+ * @param state.isPaused - Whether it is paused.
+ * @returns The words.
+ */
+function getStopLabel({ mode, isPaused }: { mode: PlayerMode; isPaused: boolean }): string {
+  return mode !== 'stopped' || isPaused ? 'stop, back to the cursor' : 'back to the start';
 }
