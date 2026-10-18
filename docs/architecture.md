@@ -76,7 +76,7 @@ are on their way, turning while one runs), and at the right + New song (an actio
 page but Home starts with breadcrumbs, the last its heading (Songs › Seven Teeth).
 
 - **Home** (`/`): what the app is: the logo and a line, + New song, the running jobs; what it is
-  and how it works (prompt, compose, render, listen and shape); what it needs, the programs as the
+  and how it works (prompt, style guides, compose, render, listen and shape); what it needs, the programs as the
   server checked them (found with their versions or not, with "Check again"); where to start (the
   examples, New, Guides, References); how many songs there are (kept, not heard yet) and the five
   made last with ▶; and a line linking the README and the source on GitHub (`src/project-links.ts`).

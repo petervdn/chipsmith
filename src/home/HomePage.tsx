@@ -17,7 +17,11 @@ const LOGO_SIZE = 96;
 const STEPS = [
   {
     name: 'Prompt',
-    text: 'On New, say what you want in words, and pick the chips, a structure, the harmony and your style guides to send with it.',
+    text: 'On New, say what you want in words, and pick the chips, a structure and the harmony.',
+  },
+  {
+    name: 'Style guides',
+    text: 'Optionally add reusable style guides that Claude can follow: your taste, written once on Guides and chosen with a prompt.',
   },
   {
     name: 'Compose',
@@ -37,7 +41,7 @@ const STEPS = [
 const STARTS = [
   { href: '/songs', name: 'Songs', text: 'five example songs to listen to and take apart' },
   { href: '/new', name: 'New song', text: 'write a prompt and send it' },
-  { href: '/guides', name: 'Guides', text: 'write down your taste, sent with every prompt' },
+  { href: '/guides', name: 'Guides', text: 'write down your taste, to send with a prompt' },
   { href: '/references', name: 'References', text: "Furnace's demo songs, channel by channel" },
 ];
 
