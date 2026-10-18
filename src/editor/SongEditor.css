@@ -65,18 +65,19 @@
   grid-column: 1;
 }
 
-/* the song's clips, their top level with the ruler's, kept in view under the editor's bar while the
-   page scrolls */
+/* the song's clips, kept in view under the editor's head while the page scrolls; on a desktop their
+   top level with the ruler's, kept in view under the editor's bar */
 .song-editor-body > .song-clips {
   position: sticky;
-  top: calc(
-    var(--top-bar-height, 0px) + var(--editor-head-height, 0px) - var(--editor-ruler-height, 0px)
-  );
+  top: calc(var(--top-bar-height, 0px) + var(--editor-head-height, 0px) + 8px);
   grid-column: 2;
 }
 
 @media (min-width: 720px) {
   .song-editor-body > .song-clips {
+    top: calc(
+      var(--top-bar-height, 0px) + var(--editor-head-height, 0px) - var(--editor-ruler-height, 0px)
+    );
     margin-top: calc(-1 * var(--editor-ruler-height, 0px));
   }
 }

@@ -29,10 +29,7 @@
 .song-clips-panel {
   display: flex;
   flex-direction: column;
-  max-height: calc(
-    100vh - var(--top-bar-height, 0px) - var(--editor-head-height, 0px) +
-      var(--editor-ruler-height, 0px) - 16px
-  );
+  max-height: calc(100vh - var(--top-bar-height, 0px) - var(--editor-head-height, 0px) - 24px);
   border: var(--border-width) solid var(--line);
   border-radius: var(--radius);
   background: var(--card);
@@ -131,6 +128,16 @@
   color: var(--muted);
   font-size: 0.75rem;
   font-weight: 400;
+}
+
+/* a desktop: the column starts level with the ruler, so it has the ruler's height more */
+@media (min-width: 720px) {
+  .song-clips-panel {
+    max-height: calc(
+      100vh - var(--top-bar-height, 0px) - var(--editor-head-height, 0px) +
+        var(--editor-ruler-height, 0px) - 16px
+    );
+  }
 }
 
 /* a clip's takes, under it: indented along a line, smaller, each one line of its label and blocks */
