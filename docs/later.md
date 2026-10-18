@@ -48,3 +48,21 @@ song; each later one told the songs made before it (title, tempo, meter, key, gr
 from them. Weighed against: more tokens (1.3-1.5× by the jobs so far, from two jobs of three songs),
 and the variety one Claude gets by writing the songs of a set together. Undecided; an ADR when it is.
 Set aside 2026-10-17.
+
+## Jobs side by side
+
+Jobs run one at a time: a takes job sent while a job of four songs runs waits for all of it. What
+running several would take, found 2026-10-18:
+- **Composing in parallel** is possible: each job is its own `claude -p` in its own folder, and ids
+  are claimed by making their folder. The runner (`server/job-runner.ts`) would watch several runs,
+  up to a limit (2 or 3).
+- **Rendering stays one at a time**: Furnace fails after many quick launches (above), so building
+  and rendering would go through one shared queue.
+- **Claude's check renders too** (`make/check-script.ts`), so two composing jobs can start Furnace
+  at once, outside that queue. The retries may cover it (not verified); else one render lock the
+  check respects as well.
+- **Tokens** are the same per job, but spent at the same time, so the rate limit comes sooner.
+- **A cheaper middle way**: one at a time, but a takes job goes before queued song jobs, as it is
+  small and waited for in the editor.
+
+Not needed for now: the queue is fine. An ADR when it is decided. Set aside 2026-10-18.
