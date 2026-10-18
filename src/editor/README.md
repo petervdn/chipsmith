@@ -47,8 +47,8 @@ saved, playing from a cursor, the zoom, and the selected block's clip or track.
 - `SongEditor.tsx`: the editor: its bar of controls and the timeline's head kept in view, the timeline, the mixer, the song's clips, the selected block's or track's details
 - `Timeline.css`: the look of Timeline.tsx and TimelineHead.tsx
 - `timeline.ts`: where blocks lie in ticks, the bars shown, which bars are numbered
-- `Timeline.tsx`: the tracks: a row per track with its blocks, room under them to drag, the playhead
-- `TimelineHead.tsx`: the timeline's head, kept in view: the ruler, the loop, the structure when shown, the playhead
+- `Timeline.tsx`: the tracks: a row per track with its blocks, the playhead
+- `TimelineHead.tsx`: the timeline's head, kept in view: the ruler, the drag strip, the loop, the structure when shown, the playhead
 - `TimelineBlock.css`: the look of TimelineBlock.tsx
 - `TimelineBlock.tsx`: a block and its repeats on the timeline, dragged and trimmed
 - `track-meter.ts`: how a track's level meter moves: up at once, eased down, its peak mark held

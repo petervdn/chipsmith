@@ -1,6 +1,6 @@
 // The song's tracks on the timeline, under its head (TimelineHead.tsx): a row per track (its name,
 // which selects it, mute and solo, and its level meter; the names' right edge drags them wider) with
-// its blocks, room under them to drag, and the playhead. A tap on a block selects it; blocks are
+// its blocks, and the playhead. A tap on a block selects it; blocks are
 // dragged to move and trim them.
 import { useRef } from 'react';
 import type { CSSProperties, PointerEvent as ReactPointerEvent } from 'react';
@@ -66,8 +66,8 @@ type TimelineProps = {
  * @param props.onPress - Called on a press on a block or one of its edges.
  * @param props.onToggleMute - Called with a track's id to mute or unmute it.
  * @param props.onToggleSolo - Called with a track's id to solo it or stop soloing it.
- * @param props.onPanStart - Called on a press on empty space (a lane's, the room under the tracks),
- *   which may drag the timeline sideways.
+ * @param props.onPanStart - Called on a press on a lane's empty space, which may drag the timeline
+ *   sideways.
  * @param props.wasDragged - Tells whether a drag just ended, so its click selects nothing.
  * @param props.waitingClipIds - The clips whose audio is still being rendered.
  * @returns The tracks' element.
@@ -176,16 +176,6 @@ export function Timeline({
           </div>
         );
       })}
-      <div className="timeline-row timeline-room-row">
-        <div className="timeline-corner" />
-        <div
-          className="timeline-lane"
-          onPointerDown={onPanStart}
-          onClick={() => {
-            if (!wasDragged()) onSelect(null);
-          }}
-        />
-      </div>
       <div className="timeline-playhead">
         <div ref={lineRef} className="timeline-playhead-line" />
         {scrub !== null && (

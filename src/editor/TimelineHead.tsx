@@ -1,5 +1,6 @@
 // The head of the song's timeline, drawn apart from its tracks so it can stay in view at the top
-// while the page scrolls: the ruler of bars (a tap or drag moves the play position), the loop (while
+// while the page scrolls: the ruler of bars (a tap or drag moves the play position), the strip under
+// it that a mouse drags to scroll the timeline (a tap there clears the selection), the loop (while
 // looping), the structure the song was asked for (when shown), and the playhead over them. Its
 // corner adds a track, and its right edge drags the track names wider, as theirs does.
 import { Plus } from 'lucide-react';
@@ -45,6 +46,9 @@ type TimelineHeadProps = {
   onScrub: (seconds: number | null) => void;
   onMoveTo: (seconds: number) => void;
   onAddTrack: () => void;
+  onPanStart: (event: ReactPointerEvent) => void;
+  wasPanned: () => boolean;
+  onClearSelection: () => void;
 };
 
 /**
@@ -64,6 +68,10 @@ type TimelineHeadProps = {
  * @param props.onScrub - Called with where a drag on the ruler points, or null when it ends.
  * @param props.onMoveTo - Called with the second a tap or drag on the ruler ends at.
  * @param props.onAddTrack - Called to add an empty track at the bottom.
+ * @param props.onPanStart - Called on a press on the drag strip, which may drag the timeline
+ *   sideways.
+ * @param props.wasPanned - Tells whether a drag just ended, so its click clears nothing.
+ * @param props.onClearSelection - Called on a tap on the drag strip.
  * @returns The head's element.
  */
 export function TimelineHead({
@@ -79,6 +87,9 @@ export function TimelineHead({
   onScrub,
   onMoveTo,
   onAddTrack,
+  onPanStart,
+  wasPanned,
+  onClearSelection,
 }: TimelineHeadProps) {
   const lineRef = useRef<HTMLDivElement>(null);
   const ticksPerBar = getTicksPerBar(song);
@@ -135,6 +146,17 @@ export function TimelineHead({
             ) : null,
           )}
         </div>
+      </div>
+      <div className="timeline-row timeline-drag-row">
+        <div className="timeline-corner" />
+        <div
+          className="timeline-lane timeline-drag-lane"
+          onPointerDown={onPanStart}
+          onClick={() => {
+            if (!wasPanned()) onClearSelection();
+          }}
+          data-tooltip="drag to scroll the timeline"
+        />
       </div>
       {loop && (
         <LoopLane

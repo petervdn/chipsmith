@@ -14,6 +14,11 @@
   border-bottom: var(--border-width) solid var(--line);
 }
 
+/* the last track's line is the box's own; the head's last row keeps its line, over the tracks */
+.timeline:not(.timeline-head) > .timeline-row:has(+ .timeline-playhead) {
+  border-bottom: 0;
+}
+
 .timeline-ruler-row {
   height: var(--touch);
 }
@@ -142,7 +147,8 @@
   font-variant-numeric: tabular-nums;
 }
 
-/* a lane's empty space and the room under the tracks: dragged with a mouse, the timeline scrolls */
+/* a lane's empty space and the drag strip under the ruler: dragged with a mouse, the timeline
+   scrolls */
 .timeline-lane {
   cursor: grab;
 }
@@ -151,9 +157,19 @@
   cursor: grabbing;
 }
 
-.timeline-room-row {
-  height: 32px;
-  border-bottom: 0;
+/* the drag strip: a thin row under the ruler, shaded so it reads as something to grab */
+.timeline-drag-row {
+  height: 16px;
+}
+
+.timeline-drag-lane {
+  background-color: var(--raised);
+}
+
+@media (pointer: coarse) {
+  .timeline-drag-row {
+    height: 24px;
+  }
 }
 
 /* the playhead: a line over the lanes, moved by its transform */

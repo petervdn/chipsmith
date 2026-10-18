@@ -219,6 +219,9 @@ export function SongEditor({ detail }: SongEditorProps) {
             onScrub={setScrub}
             onMoveTo={transport.moveTo}
             onAddTrack={() => draft.changeTracks(addTrack)}
+            onPanStart={pan.startPan}
+            wasPanned={pan.wasPanned}
+            onClearSelection={() => draft.select(null)}
           />
         </div>
       </div>

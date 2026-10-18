@@ -1,5 +1,5 @@
 // Dragging the timeline itself with a mouse, where there is no block (a lane's empty space, the
-// strip under the tracks), scrolls it, the lanes following the pointer. A touch screen scrolls it
+// drag strip under the ruler), scrolls it, the lanes following the pointer. A touch screen scrolls it
 // with a swipe already, so only a mouse is followed here.
 import type { PointerEvent as ReactPointerEvent, RefObject } from 'react';
 import { usePressDrag } from './use-press-drag.ts';
