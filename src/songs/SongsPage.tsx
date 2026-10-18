@@ -51,6 +51,7 @@ export function SongsPage({ jobs }: SongsPageProps) {
     listing,
     text: listing.song.title,
     tags: listing.song.tags,
+    isKept: listing.song.status === 'keeper',
   }));
   const shown = items
     .filter((item) => isShown(item, filter))

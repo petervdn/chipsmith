@@ -16,8 +16,9 @@ const FUNK_BASS: FilterableItem = {
     { name: 'funk', by: 'claude' },
     { name: 'bass', by: 'user' },
   ],
+  isKept: true,
 };
-const FUGUE: FilterableItem = { text: 'Fugue', tags: [] };
+const FUGUE: FilterableItem = { text: 'Fugue', tags: [], isKept: false };
 
 test('every chosen tag must be there', () => {
   assert.equal(isShown(FUNK_BASS, { ...EMPTY_FILTER, tags: ['funk', 'bass'] }), true);
@@ -27,6 +28,12 @@ test('every chosen tag must be there', () => {
 test('every word is found, in the text or the tags', () => {
   assert.equal(isShown(FUNK_BASS, { ...EMPTY_FILTER, words: 'groove bass' }), true);
   assert.equal(isShown(FUNK_BASS, { ...EMPTY_FILTER, words: 'groove lead' }), false);
+});
+
+test('only the kept show when asked', () => {
+  assert.equal(isShown(FUNK_BASS, { ...EMPTY_FILTER, isKeptOnly: true }), true);
+  assert.equal(isShown(FUGUE, { ...EMPTY_FILTER, isKeptOnly: true }), false);
+  assert.equal(isShown(FUGUE, EMPTY_FILTER), true);
 });
 
 test('tags are counted, most used first', () => {
@@ -40,9 +47,9 @@ test('tags are counted, most used first', () => {
 });
 
 test('a filter goes into the address and comes back the same', () => {
-  const filter = { words: 'dark groove', tags: ['funk', 'bass'] };
+  const filter = { words: 'dark groove', tags: ['funk', 'bass'], isKeptOnly: true };
   const query = getFilterQuery(filter);
-  assert.equal(query, '?q=dark+groove&tags=funk,bass');
+  assert.equal(query, '?q=dark+groove&tags=funk,bass&kept=1');
   assert.deepEqual(getFilterFromQuery(query), filter);
   assert.equal(getFilterQuery(EMPTY_FILTER), '');
   assert.deepEqual(getFilterFromQuery(''), EMPTY_FILTER);
