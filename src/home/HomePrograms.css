@@ -1,43 +1,71 @@
 /* The look of HomePrograms.tsx. */
 
-/* the programs the app calls, a row each: found or not, the name, the version, what it is for */
-.home-programs-list {
-  margin: 0 0 8px;
-  padding: 0;
-  list-style: none;
+/* not as wide as the column it is in: a short table reads across without a gap */
+.home-programs {
+  max-width: 26rem;
 }
 
-.home-programs-row {
-  display: grid;
-  grid-template-columns: auto 9em 1fr;
-  align-items: baseline;
-  gap: 0 8px;
+/* the programs the app runs, a row each: found or not, its name and what it is for, the version
+   found at the right */
+.home-programs-table {
+  width: 100%;
+  margin-bottom: 8px;
+  border-collapse: collapse;
+}
+
+.home-programs-table th {
+  padding: 0 0 4px;
+  border-bottom: var(--border-width) solid var(--line);
+  color: var(--muted);
+  font-size: 0.8125rem;
+  font-weight: 400;
+  text-align: left;
+}
+
+.home-programs-table td {
   padding: 6px 0;
   border-bottom: var(--border-width) solid var(--line);
+  vertical-align: top;
 }
 
-.home-programs-row .lucide {
-  align-self: center;
+.home-programs-table td:first-child {
+  width: 28px;
+}
+
+.home-programs-table th:last-child,
+.home-programs-version {
+  padding-left: 12px;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.home-programs-version {
+  font-variant-numeric: tabular-nums;
+}
+
+.home-programs-table .lucide {
   color: var(--fg);
 }
 
-.home-programs-row.is-missing .lucide {
+.is-missing .lucide,
+.is-missing .home-programs-version,
+.home-programs-problem {
   color: var(--reject);
 }
 
 .home-programs-name {
+  display: block;
   font-weight: 600;
 }
 
-.home-programs-state {
-  overflow-wrap: anywhere;
-  font-variant-numeric: tabular-nums;
+.home-programs-note,
+.home-programs-problem {
+  display: block;
+  font-size: 0.8125rem;
 }
 
-.home-programs-for {
-  grid-column: 2 / -1;
+.home-programs-note {
   color: var(--muted);
-  font-size: 0.8125rem;
 }
 
 /* looking for the programs again, when it last looked and what it found beside it */
