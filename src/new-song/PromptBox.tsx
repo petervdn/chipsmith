@@ -113,7 +113,7 @@ export function PromptBox({ initialText, source, onClearSource }: PromptBoxProps
               if (isFocusAtEnd) event.target.setSelectionRange(text.length, text.length);
             }}
             className="prompt-box-text"
-            placeholder="What should Claude make? (e.g. three dark NES funk grooves in odd meters)"
+            placeholder="Describe what Claude should create"
             value={text}
             onChange={(event) => setText(event.target.value)}
             onKeyDown={(event) => {
