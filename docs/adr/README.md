@@ -41,7 +41,7 @@ Consequences.
 | [0025](0025-song-knowledge-is-skills.md) | How songs and instruments are made is in skills, one per subject and chip | accepted |
 | [0026](0026-the-page-shows-its-own-pop-ups.md) | The page shows its own dialogs and tooltips, never the browser's | accepted |
 | [0027](0027-icons-from-lucide.md) | The page's icons come from Lucide | accepted |
-| [0028](0028-a-song-not-wanted-is-deleted.md) | A song not wanted is deleted, not rejected | accepted |
+| [0028](0028-a-song-not-wanted-is-deleted.md) | A song not wanted is deleted, not rejected | accepted; a take's trash can by 0039 |
 | [0029](0029-clips-are-not-in-the-top-bar.md) | Clips are not in the top bar; the page stays at its address | accepted |
 | [0030](0030-the-structure-asked-for-is-shown-as-sent.md) | The structure a song was asked for is shown as it was sent, above its tracks | accepted |
 | [0031](0031-the-loop-is-whole-bars-in-a-row-of-its-own.md) | The editor's loop is whole bars, drawn in a row of its own under the ruler | accepted |
@@ -52,3 +52,4 @@ Consequences.
 | [0036](0036-a-clip-keeps-no-prompt.md) | A clip keeps no prompt; a variation says what it changed | accepted |
 | [0037](0037-a-change-to-a-clip-is-a-take.md) | A change to a clip is a take, swapped into its block | accepted |
 | [0038](0038-zod-schemas-are-the-source-of-truth.md) | Data that is validated is a Zod schema, and its type is inferred from it | accepted |
+| [0039](0039-a-take-not-wanted-is-deleted.md) | A take not wanted is deleted; the take in a block can be updated | accepted |

@@ -262,6 +262,7 @@ export function SongEditor({ detail }: SongEditorProps) {
               }}
               onToggleSolo={() => toggleSolo(span.trackId)}
               onUseVersion={(clipId) => void putTake(clipId)}
+              onReplaceClip={draft.replaceClip}
               onRepeats={(repeats) => draft.edit((tracks) => setRepeats(tracks, place, repeats))}
               onDuplicate={() =>
                 draft.edit((tracks) => duplicateBlock(tracks, place, getPlaceTicks(place)))

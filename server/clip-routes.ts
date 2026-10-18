@@ -1,15 +1,16 @@
 /**
  * `/api/clips`: the pool listed, a clip's record changed (status, tags, a variation's label), a copy
  * of its .fur opened in Furnace, and its notes for the note grid; a take of it made by transposing
- * it or from its notes as edited (docs/adr/0037).
+ * it or from its notes as edited (docs/adr/0037), and a take deleted (docs/adr/0039).
  */
 import type { IncomingMessage, ServerResponse } from 'node:http';
-import type { ClipListing, ClipOpened, TakeMade } from '../shared/api.types.ts';
+import type { ClipListing, ClipOpened, TakeDeleted, TakeMade } from '../shared/api.types.ts';
 import { makeTransposedTake } from '../make/transpose-take.ts';
 import { makeNotesTake, readClipNotes } from '../make/notes-take.ts';
 import {
   clipChangeSchema,
   notesRequestSchema,
+  takeDeletionRequestSchema,
   transposeRequestSchema,
 } from '../shared/api-requests.schema.ts';
 import { parseChecked } from '../shared/schema-parse.ts';
@@ -17,10 +18,11 @@ import { openClipInFurnace } from './clip-files.ts';
 import { readJsonBody, sendError, sendJson } from './http.ts';
 import type { Store } from './store.ts';
 import { getSongsUsingClip, rescanStore, saveClip } from './store.ts';
+import { getTakeDeletionProblem, replaceTake } from './take-deletion.ts';
 
 /**
- * Answers a request to `/api/clips`, `/api/clips/<id>`, `/api/clips/<id>/open`,
- * `/api/clips/<id>/transpose` or `/api/clips/<id>/notes`.
+ * Answers a request to `/api/clips`, `/api/clips/<id>` (changed, or a take deleted),
+ * `/api/clips/<id>/open`, `/api/clips/<id>/transpose` or `/api/clips/<id>/notes`.
  *
  * @param store - The clips and songs.
  * @param request - The request.
@@ -91,6 +93,19 @@ export async function routeClips(
     }
     saveClip(store, { ...clip, ...change });
     return sendJson(response, { clip: store.clips.get(id), usedBy: getSongsUsingClip(store, id) });
+  }
+  if (!file && method === 'DELETE') {
+    const { song: songId } = parseChecked(
+      takeDeletionRequestSchema,
+      await readJsonBody(request),
+      'body',
+    );
+    const problem = getTakeDeletionProblem(store, id, songId);
+    const parentId = store.clips.get(id)?.parent?.clip;
+    if (problem || !parentId) return sendError(response, 409, problem ?? `no clip ${id}`);
+    replaceTake(store, id, parentId);
+    const deleted: TakeDeleted = { replacedBy: parentId };
+    return sendJson(response, deleted);
   }
   sendError(response, 404, 'not found');
 }

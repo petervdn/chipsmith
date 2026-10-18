@@ -60,7 +60,7 @@ a song waiting for its audio shows … for ▶ and its list is read again until 
 
 Routes: `GET /api/songs`, `GET /api/songs/<id>`, `PATCH /api/songs/<id>` (status, tags),
 `DELETE /api/songs/<id>` (with the clips only it played), `PUT /api/songs/<id>/tracks` (the
-arrangement, saved from the editor), `POST /api/songs/<id>/split`, `GET /api/clips`, `PATCH /api/clips/<id>` (status, tags, a variation's label), and `GET /media/clips/<id>/audio.flac` with byte ranges, `GET /media/clips/<id>/source.fur` (a
+arrangement, saved from the editor), `POST /api/songs/<id>/split`, `GET /api/clips`, `PATCH /api/clips/<id>` (status, tags, a variation's label), `DELETE /api/clips/<id>` (a take, 0039), and `GET /media/clips/<id>/audio.flac` with byte ranges, `GET /media/clips/<id>/source.fur` (a
 download) and `source.txt` (the .fur as tracker text, `fur/tracker-text.ts`), and
 `POST /api/clips/<id>/transpose` (a take of it transposed, 0037), `GET` and `POST
 /api/clips/<id>/notes` (its notes for the note grid, and a take of them as edited), `POST /api/clips/<id>/open` (a copy in the system's temporary folder opened in Furnace,
@@ -95,7 +95,8 @@ page but Home starts with breadcrumbs, the last its heading (Songs › Seven Tee
   clip, its .fur to look at (open in Furnace, download, view as text), Loop it (the block's bars
   looped and played) and solo for its track, its takes as pills (the original and every variation by
   its label; a tap puts one in the block as an edit, heard at once if it plays, offered to the other
-  blocks of the same clip; the one in it renamed in place; `src/editor/ClipTakes.tsx`), quick
+  blocks of the same clip; the one in it renamed in place or deleted, asked first, its blocks going
+  back to the clip it was made from (0039); `src/editor/ClipTakes.tsx`), quick
   changes for a clip of pitched notes (an octave or a semitone up or down: a take made on the server
   without Claude and put in the block; `src/editor/ClipOperations.tsx`, `make/transpose-take.ts`),
   Edit notes (the note grid: one pitched channel at a time, time down and pitch across, an octave

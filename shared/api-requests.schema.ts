@@ -77,5 +77,11 @@ export const notesRequestSchema = z.object({
 /** A take of a clip asked from one channel's rows. */
 export type NotesRequest = z.input<typeof notesRequestSchema>;
 
+/** A take deleted from the song it is edited in (docs/adr/0039). */
+export const takeDeletionRequestSchema = z.object({ song: z.string() });
+
+/** A take deleted from the song it is edited in. */
+export type TakeDeletionRequest = z.input<typeof takeDeletionRequestSchema>;
+
 /** A reference's notes, written as the user types. */
 export const referenceNotesSchema = z.object({ notes: z.string() });

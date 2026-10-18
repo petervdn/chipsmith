@@ -80,6 +80,7 @@ saved, playing from a cursor, the zoom, and the selected block's clip or track.
 - `use-press-drag.ts`: a press that becomes a drag: a mouse at once, a finger after holding still
 - `use-song-draft.ts`: the song being edited: a draft with undo and redo, the selection, save and revert
 - `use-song-transport.ts`: playing the song from its cursor, stopping, moving the cursor
+- `use-take-deletion.ts`: the take a block plays deleted, asked first, its clip's parent put in its blocks
 - `use-take-swap.ts`: a take put in the selected block, and in the other blocks of its clip if asked
 - `use-timeline-pan.ts`: dragging empty space with a mouse scrolls the timeline
 - `use-track-mix.ts`: the tracks muted and soloed while editing

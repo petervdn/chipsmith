@@ -9,7 +9,7 @@ back to its file (docs/adr/0006).
 - `claude-words.ts`: what Claude does said in a step's words: a tool call, a stretch of thinking
 - `claude-run.ts`: Claude Code started headless for a job, detached, its output into claude.log
 - `clip-files.ts`: a clip's .fur given out: downloaded, as tracker text, or a copy opened in Furnace
-- `clip-routes.ts`: `/api/clips`: the pool listed, a clip's record changed, its .fur opened in Furnace
+- `clip-routes.ts`: `/api/clips`: the pool listed, a clip's record changed, its .fur opened in Furnace, a take deleted
 - `examples.ts`: the example songs copied into an empty data folder
 - `guides.ts`: the style guides in memory and in guides/<id>/guide.json
 - `http.ts`: answering a request: JSON, plain text, a file with byte ranges or as a download, an error
@@ -23,3 +23,4 @@ back to its file (docs/adr/0006).
 - `store.ts`: the clips and songs in memory, read from their folders and written back to them
 - `structure-routes.ts`: `/api/structures`: the saved structures listed, made, changed, deleted
 - `structures.ts`: the saved structures in memory and in structures/<id>/structure.json
+- `take-deletion.ts`: deleting a take: whether it can go, and it replaced in songs and as a parent, then deleted

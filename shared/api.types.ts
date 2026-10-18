@@ -43,6 +43,9 @@ export type SongDeletion = { clipIds: string[] };
 /** A take made of a clip without Claude (a transpose): the new clip's id. */
 export type TakeMade = { clipId: string };
 
+/** A take deleted (docs/adr/0039): the clip that now plays where it did. */
+export type TakeDeleted = { replacedBy: string };
+
 /** A program the app calls (config/settings.ts). */
 export type ProgramName = 'furnace' | 'ffmpeg' | 'claude' | 'node';
 

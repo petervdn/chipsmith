@@ -1,5 +1,5 @@
-/* The look of ClipTakes.tsx: the takes as pills that wrap, the one in the block in the accent, and
-   the name of the take in the block edited on a row of its own. */
+/* The look of ClipTakes.tsx: the takes as pills that wrap, the one in the block in the accent, the
+   name of the take in the block edited on a row of its own, and its trash can. */
 
 .clip-takes {
   display: flex;
@@ -38,6 +38,7 @@
 }
 
 .clip-takes-rename,
+.clip-takes-delete,
 .clip-takes-name button {
   min-width: var(--touch);
   min-height: var(--touch);

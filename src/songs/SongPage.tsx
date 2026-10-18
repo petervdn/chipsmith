@@ -39,8 +39,12 @@ export function SongPage({ songId }: SongPageProps) {
         {song.tracks.length === 1 ? 'track' : 'tracks'}
       </p>
       <SongPrompt prompt={song.prompt} />
-      {/* a new arrangement from the server (saved, split) starts a fresh draft; ★ or a tag does not */}
-      <SongEditor key={JSON.stringify(song.tracks)} detail={detail} />
+      {/* other tracks from the server (split, one added or removed) start the editor afresh; a new
+          arrangement of the same tracks is taken in by its draft (editor/use-song-draft.ts) */}
+      <SongEditor
+        key={[song.id, ...song.tracks.map((track) => track.id)].join(' ')}
+        detail={detail}
+      />
     </section>
   );
 }

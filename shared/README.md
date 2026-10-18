@@ -5,6 +5,7 @@ Nothing here reads files or touches the page.
 
 - `api-requests.schema.ts`: what a request sends in its body, a schema each, parsed where it comes in
 - `api.types.ts`: what the server's routes answer with
+- `block-clips.ts`: the clip a song's blocks play, replaced in all of them at once
 - `catalogue.schema.ts`: the status and the tags songs and clips share
 - `chips.ts`: the chips a song can be made for, by name, in the order their channels come
 - `chord-numerals.ts`: a chord as a Roman numeral (♭VI, ii7), read, written and named in a key

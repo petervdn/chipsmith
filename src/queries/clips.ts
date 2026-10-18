@@ -1,11 +1,15 @@
 /**
  * The clips from the server: the pool, changing a clip's status or a variation's label, a clip's
- * notes for the note grid, a take made by transposing a clip or from its notes as edited, and
- * opening its .fur in Furnace.
+ * notes for the note grid, a take made by transposing a clip or from its notes as edited, a take
+ * deleted, and opening its .fur in Furnace.
  */
 import { useMutation, useQuery } from '@tanstack/react-query';
-import type { ClipListing, ClipOpened, TakeMade } from '../../shared/api.types.ts';
-import type { NotesRequest, TransposeRequest } from '../../shared/api-requests.schema.ts';
+import type { ClipListing, ClipOpened, TakeDeleted, TakeMade } from '../../shared/api.types.ts';
+import type {
+  NotesRequest,
+  TakeDeletionRequest,
+  TransposeRequest,
+} from '../../shared/api-requests.schema.ts';
 import type { Status } from '../../shared/catalogue.schema.ts';
 import type { ChannelRow, ClipNotes } from '../../shared/clip-notes.schema.ts';
 import { getQueryKey, queryClient } from './client.ts';
@@ -122,6 +126,36 @@ export function useSaveNotes() {
       );
       await queryClient.invalidateQueries({ queryKey: getQueryKey({ type: 'clips' }) });
       return made.clipId;
+    },
+  });
+}
+
+/**
+ * Deletes a take from the song it is edited in (docs/adr/0039): the saved song's blocks that played
+ * it play the clip it was made from. The page is told before the pool and the song are read again,
+ * so it can put that clip in its own blocks while the take is still among the clips.
+ *
+ * @param onDeleted - Called with the take's id and the clip that replaced it, once it is deleted.
+ * @returns The mutation, called with the take's id (`clipId`) and the song (`songId`).
+ */
+export function useDeleteTake(onDeleted: (takeId: string, replacedBy: string) => void) {
+  return useMutation({
+    mutationFn: async ({ clipId, songId }: { clipId: string; songId: string }) => {
+      const body: TakeDeletionRequest = { song: songId };
+      const deleted = await sendJson<TakeDeleted>(
+        `/api/clips/${encodeURIComponent(clipId)}`,
+        'DELETE',
+        body,
+      );
+      return deleted.replacedBy;
+    },
+    onSuccess: async (replacedBy, { clipId, songId }) => {
+      onDeleted(clipId, replacedBy);
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: getQueryKey({ type: 'clips' }) }),
+        queryClient.invalidateQueries({ queryKey: getQueryKey({ type: 'song', songId }) }),
+        queryClient.invalidateQueries({ queryKey: getQueryKey({ type: 'songs' }) }),
+      ]);
     },
   });
 }

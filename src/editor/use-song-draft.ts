@@ -1,8 +1,11 @@
 // The song being edited: its tracks as a draft in the page, with undo and redo, the block or track
-// selected, and saving the draft to the server or going back to the saved song. A draft that is not
-// saved is lost when the page is left (to be solved later).
+// selected, and saving the draft to the server or going back to the saved song. A new arrangement
+// from the server (saved, or a take deleted on it) starts a fresh draft unless the draft has edits
+// of its own; a clip replaced (a take deleted or updated) is replaced in every step of the draft. A
+// draft that is not saved is lost when the page is left (to be solved later).
 import { useState } from 'react';
 import type { SongDetail } from '../../shared/api.types.ts';
+import { replaceBlockClip } from '../../shared/block-clips.ts';
 import type { Track } from '../../shared/song.schema.ts';
 import { useSaveTracks } from '../queries/songs.ts';
 import type { BlockPlace, Edited } from './song-edits.ts';
@@ -22,20 +25,25 @@ type History = { past: Track[][]; present: Track[]; future: Track[][]; stepKey: 
  *
  * @param detail - The song as saved, with its clips.
  * @returns The draft's tracks and selection; `edit` and `changeTracks` to change them (an undo
- *   step each; changes given the same step key in a row, as a fader's moves, make one step), `undo` and `redo`, whether there are changes, `save` and `revert`, and whether a
- *   save is under way or failed.
+ *   step each; changes given the same step key in a row, as a fader's moves, make one step), `undo`
+ *   and `redo`, `replaceClip` (no step), whether there are changes, `save` and `revert`, and whether
+ *   a save is under way or failed.
  */
 export function useSongDraft(detail: SongDetail) {
-  const [history, setHistory] = useState<History>(() => ({
-    past: [],
-    present: detail.song.tracks,
-    future: [],
-    stepKey: null,
-  }));
+  const [history, setHistory] = useState<History>(() => startHistory(detail.song.tracks));
   const [selection, setSelection] = useState<Selection>(null);
+  const [savedTracks, setSavedTracks] = useState(detail.song.tracks);
   const { mutate: saveTracks, isPending: isSaving, error: saveError } = useSaveTracks();
   const tracks = history.present;
-  const hasChanges = JSON.stringify(tracks) !== JSON.stringify(detail.song.tracks);
+  const savedJson = JSON.stringify(detail.song.tracks);
+  const hasChanges = JSON.stringify(tracks) !== savedJson;
+  if (JSON.stringify(savedTracks) !== savedJson) {
+    setSavedTracks(detail.song.tracks);
+    if (!hasChanges || JSON.stringify(tracks) === JSON.stringify(savedTracks)) {
+      setHistory(startHistory(detail.song.tracks));
+      setSelection(null);
+    }
+  }
 
   function keep(next: Track[], stepKey: string | null = null): void {
     setHistory(({ past, present, stepKey: lastKey }) =>
@@ -79,6 +87,14 @@ export function useSongDraft(detail: SongDetail) {
     });
     setSelection(null);
   }
+  function replaceClip(fromClipId: string, toClipId: string): void {
+    setHistory(({ past, present, future, stepKey }) => ({
+      past: past.map((step) => replaceBlockClip(step, fromClipId, toClipId)),
+      present: replaceBlockClip(present, fromClipId, toClipId),
+      future: future.map((step) => replaceBlockClip(step, fromClipId, toClipId)),
+      stepKey,
+    }));
+  }
   function save(): void {
     if (hasChanges) saveTracks({ songId: detail.song.id, tracks });
   }
@@ -96,10 +112,21 @@ export function useSongDraft(detail: SongDetail) {
     redo,
     canUndo: history.past.length > 0,
     canRedo: history.future.length > 0,
+    replaceClip,
     hasChanges,
     save,
     revert,
     isSaving,
     saveError,
   };
+}
+
+/**
+ * Returns the history of a draft that starts at the saved tracks, with nothing to undo or redo.
+ *
+ * @param tracks - The saved tracks.
+ * @returns The fresh history.
+ */
+function startHistory(tracks: Track[]): History {
+  return { past: [], present: tracks, future: [], stepKey: null };
 }

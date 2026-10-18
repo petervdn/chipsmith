@@ -1,6 +1,6 @@
 # 0028. A song not wanted is deleted, not rejected
 
-- Status: accepted
+- Status: accepted; a take's trash can added by 0039
 - Date: 2026-10-17
 
 ## Context

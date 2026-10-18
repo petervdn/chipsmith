@@ -27,6 +27,7 @@ type BlockDetailsProps = {
   onLoop: () => void;
   onToggleSolo: () => void;
   onUseVersion: (clipId: string) => void;
+  onReplaceClip: (fromClipId: string, toClipId: string) => void;
   onRepeats: (repeats: number) => void;
   onDuplicate: () => void;
   onUntrim: () => void;
@@ -46,6 +47,8 @@ type BlockDetailsProps = {
  * @param props.onLoop - Called to loop the block's bars and play them.
  * @param props.onToggleSolo - Called to solo the block's track, or stop soloing it.
  * @param props.onUseVersion - Called with a take's id to put it in the block.
+ * @param props.onReplaceClip - Called with a clip's id and the one that replaces it (a take deleted),
+ *   to put it in the draft's blocks.
  * @param props.onRepeats - Called with how many times the block should play.
  * @param props.onDuplicate - Called to place a copy right after the block.
  * @param props.onUntrim - Called to let the block play its whole clip again.
@@ -63,6 +66,7 @@ export function BlockDetails({
   onLoop,
   onToggleSolo,
   onUseVersion,
+  onReplaceClip,
   onRepeats,
   onDuplicate,
   onUntrim,
@@ -149,7 +153,13 @@ export function BlockDetails({
           </p>
           <ClipFileLinks clipId={clip.id} />
           {versions.length > 1 && (
-            <ClipTakes versions={versions} currentClipId={clip.id} onUse={onUseVersion} />
+            <ClipTakes
+              versions={versions}
+              currentClipId={clip.id}
+              songId={song.id}
+              onUse={onUseVersion}
+              onReplaceClip={onReplaceClip}
+            />
           )}
           {clip.channels.some((channel) => isPitchedChannel(clip.chips, channel)) && (
             <ClipOperations clipId={clip.id} songId={song.id} onMade={onUseVersion} />
