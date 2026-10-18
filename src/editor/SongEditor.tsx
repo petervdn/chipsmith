@@ -31,6 +31,7 @@ import { useLoop } from './use-loop.ts';
 import { Mixer } from './Mixer.tsx';
 import { useMetronome } from './use-metronome.ts';
 import { useScrollSync } from './use-scroll-sync.ts';
+import { useStickyTracks } from './use-sticky-tracks.ts';
 import { useTimelinePan } from './use-timeline-pan.ts';
 import { useTrackMix } from './use-track-mix.ts';
 import { useTrackNameResize } from './use-track-name-resize.ts';
@@ -58,6 +59,8 @@ export function SongEditor({ detail }: SongEditorProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const headScrollRef = useRef<HTMLDivElement>(null);
   const headRef = useRef<HTMLDivElement>(null);
+  const tracksMarkRef = useRef<HTMLDivElement>(null);
+  const tracksRoomRef = useRef<HTMLDivElement>(null);
   useHeightProperty(headRef, '--editor-head-height');
   useScrollSync(scrollRef, headScrollRef);
   const { song, isWaitingForAudio, waitingClipIds } = detail;
@@ -76,6 +79,7 @@ export function SongEditor({ detail }: SongEditorProps) {
   const width = useElementWidth(scrollRef);
   const { trackNameWidth, resizeHandlers } = useTrackNameResize();
   const trackHeight = usePreferencesStore((state) => state.trackHeight);
+  const { showTrack } = useStickyTracks(scrollRef, tracksMarkRef, tracksRoomRef, trackHeight + 1);
   const { pixelsPerBar, zoomIn, zoomOut, fit, zoomTo } = useZoom({
     song: draftSong,
     clips,
@@ -210,6 +214,7 @@ export function SongEditor({ detail }: SongEditorProps) {
       </div>
       <div className="song-editor-body">
         <div className="song-editor-main">
+          <div ref={tracksMarkRef} />
           <div ref={scrollRef} className="song-editor-scroll">
             <Timeline
               song={shownSong}
@@ -231,6 +236,7 @@ export function SongEditor({ detail }: SongEditorProps) {
               waitingClipIds={waitingClipIds}
             />
           </div>
+          <div ref={tracksRoomRef} />
           <Mixer
             songId={song.id}
             tracks={draft.tracks}
@@ -252,6 +258,7 @@ export function SongEditor({ detail }: SongEditorProps) {
             onLoopRange={loop.loopRange}
             onUseTake={(clipId) => void putTake(clipId)}
             getPlaceTicks={getPlaceTicks}
+            onShowTrack={showTrack}
           />
         </div>
         <SongClips

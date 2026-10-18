@@ -93,13 +93,23 @@
   }
 }
 
-/* the tracks, between the head's strip and the mixer's row, which close the box */
+/* the tracks, between the head's strip and the mixer's row; scrolled up and down only by the page
+   (use-sticky-tracks.ts), never by a hand */
 .song-editor-scroll {
   overflow-x: auto;
+  overflow-y: hidden;
   border: var(--border-width) solid var(--line);
   border-top: 0;
-  border-bottom: 0;
   background: var(--card);
+}
+
+/* kept in view under the editor's head, shrinking to one track's row as the page scrolls on down */
+@media (min-width: 720px) {
+  .song-editor-scroll {
+    position: sticky;
+    top: calc(var(--top-bar-height, 0px) + var(--editor-head-height, 0px));
+    z-index: 4;
+  }
 }
 
 .song-editor-progress {

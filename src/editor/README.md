@@ -5,7 +5,7 @@ saved, playing from a cursor, the zoom, and the selected block's clip or track.
 
 - `block-drag.ts`: where a dragged block goes: moved on the grid and between tracks, or trimmed
 - `BlockDetails.css`: the look of BlockDetails.tsx
-- `BlockDetails.tsx`: the selected block's section, one bar: where it plays, the clip it plays, Loop it, solo, repeats, duplicate, untrim, remove
+- `BlockDetails.tsx`: the selected block's section, one bar: where it plays, the clip it plays, Show track, Loop it, solo, repeats, duplicate, untrim, remove
 - `ClipDetails.css`: the look of ClipDetails.tsx
 - `ClipDetails.tsx`: a clip's section: its facts, its .fur, its takes, quick changes; the prompt for takes of it beside them; the note grid under
 - `DetailsSection.css`: the look of DetailsSection.tsx
@@ -62,6 +62,7 @@ saved, playing from a cursor, the zoom, and the selected block's clip or track.
 - `TrackMixButtons.tsx`: a track's M and S, in its row and in the mixer
 - `TrackMeter.css`: the look of TrackMeter.tsx
 - `TrackMeter.tsx`: a track's level meter, beside its name and in the mixer
+- `tracks-window.ts`: how much of the tracks shows as the page scrolls past them: down to one row, the room kept under them
 - `track-height.ts`: how tall the track rows are drawn: where they start, the slider's bounds
 - `track-mix.ts`: which tracks are heard, by mute and solo
 - `track-name-width.ts`: how wide the track names are drawn, and the bounds of dragging them
@@ -87,6 +88,7 @@ saved, playing from a cursor, the zoom, and the selected block's clip or track.
 - `use-playhead-line.ts`: the playhead moved every frame while the song plays
 - `use-press-drag.ts`: a press that becomes a drag: a mouse at once, a finger after holding still
 - `use-scroll-sync.ts`: the timeline's head and its tracks kept scrolled sideways to the same place
+- `use-sticky-tracks.ts`: the tracks kept in view under the editor's head, shrinking to one row; a track brought into it
 - `use-song-draft.ts`: the song being edited: a draft with undo and redo, the selection, save and revert
 - `use-song-transport.ts`: playing the song from its cursor, stopping, moving the cursor
 - `use-take-deletion.ts`: the take a block plays deleted, asked first, its clip's parent put in its blocks

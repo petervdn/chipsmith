@@ -36,6 +36,7 @@ type SelectionDetailsProps = {
   onLoopRange: (range: LoopRange) => void;
   onUseTake: (clipId: string) => void;
   getPlaceTicks: (place: BlockPlace) => number;
+  onShowTrack: (trackId: string) => void;
 };
 
 /**
@@ -52,6 +53,7 @@ type SelectionDetailsProps = {
  * @param props.onLoopRange - Called with bars to loop round.
  * @param props.onUseTake - Called with a take's id to put it in place of the selected clip.
  * @param props.getPlaceTicks - Gives the length in ticks of the clip a block plays.
+ * @param props.onShowTrack - Called with a track's id to bring its row into view on the timeline.
  * @returns The details' element.
  */
 export function SelectionDetails({
@@ -65,6 +67,7 @@ export function SelectionDetails({
   onLoopRange,
   onUseTake,
   getPlaceTicks,
+  onShowTrack,
 }: SelectionDetailsProps) {
   const { selection } = draft;
   const ticksPerBar = getTicksPerBar(song);
@@ -112,6 +115,7 @@ export function SelectionDetails({
             onPlayFrom((range.startBar * ticksPerBar) / getTicksPerSecond(song.bpm));
           }}
           onToggleSolo={() => onToggleSolo(span.trackId)}
+          onShowTrack={() => onShowTrack(span.trackId)}
           onRepeats={(repeats) => draft.edit((tracks) => setRepeats(tracks, place, repeats))}
           onDuplicate={() =>
             draft.edit((tracks) => duplicateBlock(tracks, place, getPlaceTicks(place)))

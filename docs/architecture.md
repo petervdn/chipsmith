@@ -85,7 +85,8 @@ page but Home starts with breadcrumbs, the last its heading (Songs › Seven Tee
   tiles from bar 1, as it was sent and never following edits (0030); each block drawn as the slice
   of its clip's waveform it plays, repeats after it, a playhead), ▶ / ❚❚ from a cursor set on the ruler and ■ back to it (■ again: back to the start), large at the left of the editor bar with the time, the bar and the ruler (with the strip under it
   that a mouse drags to scroll the timeline, and the loop and structure rows) kept in view at the top while the page scrolls (on a phone only the transport and
-  the ruler; 0043),
+  the ruler; 0043), and under them the tracks, which shrink to one track's row as the page scrolls on
+  down to what is under them (`src/editor/use-sticky-tracks.ts`; 0044),
   follow (the playhead kept in the middle), a loop (the whole song, or bars drawn in a row under the
   ruler; 0031), a metronome (on or off, its own
   volume; the first beat of a bar higher, `src/playback/metronome.ts`), zoom (and the tracks' height on a slider), the song's clips in a
@@ -93,8 +94,8 @@ page but Home starts with breadcrumbs, the last its heading (Songs › Seven Tee
   the clip is selected, not a block; folded to a strip, and on a phone folded at first and laid over
   the timeline when open), the page (and the top bar with it) wider than the others, up to 1800 px,
   the timeline from the page's left, and under it, as wide, the details of what is selected, as sections each named by its kind (`src/editor/SelectionDetails.tsx`): a block selected
-  shows the block's section as one bar (where it plays, the clip it plays, Loop it (the block's bars looped and
-  played) and solo for its track, repeats, duplicate, untrim, remove) with its clip's under it; a
+  shows the block's section as one bar (where it plays, the clip it plays, Show track (its track brought into the
+  one row the shrunk tracks show), Loop it (the block's bars looped and played) and solo for its track, repeats, duplicate, untrim, remove) with its clip's under it; a
   clip selected shows only the clip's; a track its own. The clip's section, in two columns (the clip
   and its takes at the left, Change this clip at the right) with the note grid under both when open: its facts, its .fur to
   look at (open in Furnace, download, view as text), its takes as pills (the original and every

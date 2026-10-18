@@ -1,8 +1,9 @@
 // The selected block's section of the details, as one bar: where it plays (its track and bars),
 // which clip it plays and how much of it; ▶ plays the song from the block, Loop it plays its bars
-// round, solo leaves its track alone; its repeats, Duplicate, Untrim and Remove. The clip itself is
+// round, solo leaves its track alone, Show track brings its track into the one row the timeline keeps
+// in view once the page is scrolled down; its repeats, Duplicate, Untrim and Remove. The clip itself is
 // its own section (ClipDetails.tsx), under it.
-import { Minus, Play, Plus, Repeat } from 'lucide-react';
+import { LocateFixed, Minus, Play, Plus, Repeat } from 'lucide-react';
 import type { Clip } from '../../shared/clip.schema.ts';
 import { getClipLabel } from '../../shared/clip-label.ts';
 import { getTicksPerSecond } from '../../shared/song-length.ts';
@@ -22,6 +23,7 @@ type BlockDetailsProps = {
   onPlayFrom: (seconds: number) => void;
   onLoop: () => void;
   onToggleSolo: () => void;
+  onShowTrack: () => void;
   onRepeats: (repeats: number) => void;
   onDuplicate: () => void;
   onUntrim: () => void;
@@ -40,6 +42,7 @@ type BlockDetailsProps = {
  * @param props.onPlayFrom - Called with the block's start, in seconds, to play the song from there.
  * @param props.onLoop - Called to loop the block's bars and play them.
  * @param props.onToggleSolo - Called to solo the block's track, or stop soloing it.
+ * @param props.onShowTrack - Called to bring the block's track into view on the timeline.
  * @param props.onRepeats - Called with how many times the block should play.
  * @param props.onDuplicate - Called to place a copy right after the block.
  * @param props.onUntrim - Called to let the block play its whole clip again.
@@ -54,6 +57,7 @@ export function BlockDetails({
   onPlayFrom,
   onLoop,
   onToggleSolo,
+  onShowTrack,
   onRepeats,
   onDuplicate,
   onUntrim,
@@ -74,6 +78,13 @@ export function BlockDetails({
         {span.repeats > 1 && `, ×${span.repeats}`}
       </p>
       <div className="block-details-actions">
+        <button
+          type="button"
+          onClick={onShowTrack}
+          data-tooltip="bring this block's track into view on the timeline"
+        >
+          <LocateFixed /> Show track
+        </button>
         <button type="button" onClick={() => onPlayFrom(startSeconds)}>
           <Play fill="currentColor" /> from here
         </button>
