@@ -1,5 +1,5 @@
 /* The look of SongsTabs.tsx: the tabs on a hairline across the list, the one open underlined in the
-   accent. */
+   text's colour (the accent is lost on the light page). */
 
 .songs-tabs {
   display: flex;
@@ -22,7 +22,7 @@
 }
 
 .songs-tabs-tab.is-on {
-  border-bottom-color: var(--accent);
+  border-bottom-color: var(--fg);
   color: var(--fg);
 }
 
