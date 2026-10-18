@@ -1,5 +1,5 @@
-// The buttons at the end of a song's or a clip's row: ★ keeps it (pressed again, it goes back to
-// heard), and a quiet trash can deletes it, where it can be deleted.
+// The buttons of a song's or a clip's row: ★ keeps it (pressed again, it goes back to heard), one
+// flat shape, light grey until kept; and a quiet trash can deletes it, where it can be deleted.
 import { Star, Trash2 } from 'lucide-react';
 import type { Status } from '../../shared/catalogue.schema.ts';
 import './StatusButtons.css';
@@ -32,7 +32,7 @@ export function StatusButtons({ status, onChange, onDelete, deleteLabel }: Statu
         aria-label={status === 'keeper' ? 'kept; press to undo' : 'keep'}
         onClick={() => onChange(status === 'keeper' ? 'heard' : 'keeper')}
       >
-        <Star fill={status === 'keeper' ? 'currentColor' : 'none'} />
+        <Star fill="currentColor" />
       </button>
       {onDelete && (
         <button

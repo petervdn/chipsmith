@@ -2,13 +2,26 @@
 
 .status-buttons {
   grid-area: status;
-  position: relative;
-  z-index: 1;
   display: flex;
   gap: 4px;
 }
 
+/* a song's row with ⌄ lays the two apart: ★ at its far left, the trash can at its right (lists.css) */
+.list-row.has-expand .status-buttons {
+  display: contents;
+}
+
+.list-row.has-expand .status-buttons-keep {
+  grid-area: keep;
+}
+
+.list-row.has-expand .status-buttons-delete {
+  grid-area: status;
+}
+
 .status-buttons button {
+  position: relative;
+  z-index: 1;
   width: var(--touch);
   height: var(--touch);
   border: 0;
@@ -19,7 +32,15 @@
   cursor: pointer;
 }
 
-.status-buttons-keep.is-on {
+/* ★ one flat shape (filled, its outline the same colour): light grey until kept */
+.status-buttons .status-buttons-keep {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--line);
+}
+
+.status-buttons .status-buttons-keep.is-on {
   color: var(--keep);
 }
 
@@ -46,6 +67,9 @@
 @media (hover: hover) {
   .status-buttons button:hover {
     background: var(--raised);
+  }
+  .status-buttons .status-buttons-keep:not(.is-on):hover {
+    color: var(--faint);
   }
   .status-buttons .status-buttons-delete:hover {
     color: var(--reject);

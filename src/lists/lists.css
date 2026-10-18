@@ -109,16 +109,16 @@
 
 /* ⌄ opens a row's details (after ▶'s layout in player.css, so more specific than it) */
 .list-row.has-play.has-expand {
-  grid-template-columns: auto 1fr auto auto;
+  grid-template-columns: auto auto 1fr auto auto;
   grid-template-areas:
-    'play main status expand'
-    'play facts status expand';
+    'keep play main status expand'
+    'keep play facts status expand';
 }
 
 @media (min-width: 760px) {
   .list-row.has-play.has-expand {
-    grid-template-columns: auto 1fr auto auto auto;
-    grid-template-areas: 'play main facts status expand';
+    grid-template-columns: auto auto 1fr auto auto auto;
+    grid-template-areas: 'keep play main facts status expand';
   }
 }
 
@@ -152,14 +152,15 @@
   }
 }
 
-/* a phone: a song's title has the top line to itself; ▶, its tags and facts, ★ ✕ and ▾ below */
+/* a phone: ★ at the far left; a song's title has the top line to itself beside it; ▶, its tags and
+   facts, the trash can and ⌄ below */
 @media (max-width: 759px) {
   .list-row.has-play.has-expand {
-    grid-template-columns: auto 1fr auto auto;
+    grid-template-columns: auto auto 1fr auto auto;
     grid-template-areas:
-      'title title title title'
-      'play tags status expand'
-      'play facts status expand';
+      'keep title title title title'
+      'keep play tags status expand'
+      'keep play facts status expand';
     row-gap: 0;
   }
   .list-row.has-expand .list-main {

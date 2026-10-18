@@ -78,7 +78,7 @@ with its title alone, the Songs tab marked above it.
   there are (kept, not heard yet) and the five made last with ▶; and a line linking the README and
   the source on GitHub (`src/project-links.ts`).
 - **Songs** (`/songs`): every song, with the filter bar (words, tags) and under it two tabs, All and
-  Favorites (`/songs/favorites`, only the kept ones), its facts, ▶, ★, a trash can
+  Favorites (`/songs/favorites`, only the kept ones), ★ at its far left (flat, light grey until kept), ▶, its facts, a trash can
   (asked first), and ⌄ to open the row: its prompt (copy, prompt again), its facts and its prompt links.
 - **Song** (`/songs/<id>`): ★ beside its title to keep it; under its title its header
   (`src/songs/header/`): its facts (tempo, meter, length, chips, key, tracks, clips, made, changed,
