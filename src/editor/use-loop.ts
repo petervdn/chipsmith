@@ -16,7 +16,8 @@ import { getBlockSpans, getTicksPerBar } from './timeline.ts';
  * @param clips - The clips its blocks play.
  * @returns `isOn` and `toggle`; `range`, the loop's bars (the whole song's until one is drawn), and
  *   `isWhole`; `setRange`, which sets the bars, and `setWhole`, which goes back to the whole song;
- *   `loop`, the loop in seconds for the player, or null while it is off.
+ *   `loopRange`, which sets the bars and turns the loop on; `loop`, the loop in seconds for the
+ *   player, or null while it is off.
  */
 export function useLoop(song: Song, clips: Clip[]) {
   const [isOn, setOn] = useState(false);
@@ -33,6 +34,10 @@ export function useLoop(song: Song, clips: Clip[]) {
     isWhole: drawn === null,
     setRange: setDrawn,
     setWhole: () => setDrawn(null),
+    loopRange: (looped: LoopRange) => {
+      setDrawn(looped);
+      setOn(true);
+    },
     loop,
   };
 }

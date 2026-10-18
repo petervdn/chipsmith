@@ -1,6 +1,6 @@
 // The page's own confirm dialog, in place of the browser's: the question asked through
-// stores/confirm-store.ts over a see-through black backdrop, with Cancel and the answer. Escape, a
-// tap beside it or Cancel says no. It knows nothing of what is asked or why.
+// stores/confirm-store.ts over a see-through black backdrop, with Cancel (or the refusal asked
+// for) and the answer. Escape, a tap beside it or Cancel says no. It knows nothing of what is asked or why.
 import { useEffect, useRef } from 'react';
 import { useConfirmStore } from '../stores/confirm-store.ts';
 import './ConfirmDialog.css';
@@ -44,7 +44,7 @@ export function ConfirmDialog() {
               className="confirm-dialog-button"
               onClick={() => answerQuestion(false)}
             >
-              Cancel
+              {asked.refusal ?? 'Cancel'}
             </button>
             <button
               type="button"

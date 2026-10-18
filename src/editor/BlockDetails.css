@@ -41,27 +41,6 @@
   font-size: 0.8125rem;
 }
 
-.block-details-variation {
-  margin: 8px 0;
-}
-
-.block-details-subtitle {
-  margin: 16px 0 4px;
-  font-size: 0.875rem;
-}
-
-.block-details-versions ol {
-  margin: 0;
-  padding-left: 20px;
-  color: var(--muted);
-  font-size: 0.8125rem;
-}
-
-.block-details-versions .is-current {
-  color: var(--fg);
-  font-weight: 600;
-}
-
 .block-details-actions {
   display: flex;
   flex-wrap: wrap;

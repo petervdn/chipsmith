@@ -1,7 +1,8 @@
 /**
  * The clips a song plays, as the editor lists them: in the order the song first plays them, each
  * with how many of the draft's blocks play it; a clip of the song no block plays any more comes last.
- * And where a clip's first block is, to select it. Knows nothing of the page.
+ * Where a clip's first block is, to select it; and the clips the draft plays, a take swapped in from
+ * the pool among them. Knows nothing of the page.
  */
 import type { Clip } from '../../shared/clip.types.ts';
 import type { Track } from '../../shared/song.types.ts';
@@ -53,4 +54,19 @@ export function getFirstBlockPlace(tracks: Track[], clipId: string): BlockPlace 
     null,
   );
   return first?.place ?? null;
+}
+
+/**
+ * Returns the clips the editor knows: the saved song's, and any clip of the pool the draft plays
+ * that the saved song does not (a take swapped in, docs/adr/0037).
+ *
+ * @param tracks - The song's tracks, as edited.
+ * @param songClips - The clips the saved song plays.
+ * @param pool - The clip pool, or none before it is read.
+ * @returns The song's clips, then the pool's the draft plays besides.
+ */
+export function getEditorClips(tracks: Track[], songClips: Clip[], pool: Clip[]): Clip[] {
+  const played = new Set(tracks.flatMap((track) => track.blocks.map((block) => block.clip)));
+  const known = new Set(songClips.map((clip) => clip.id));
+  return [...songClips, ...pool.filter((clip) => played.has(clip.id) && !known.has(clip.id))];
 }

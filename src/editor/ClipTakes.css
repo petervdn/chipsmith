@@ -1,0 +1,55 @@
+/* The look of ClipTakes.tsx: the takes as pills that wrap, the one in the block in the accent, and
+   the name of the take in the block edited on a row of its own. */
+
+.clip-takes {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.clip-takes-title {
+  margin: 0;
+  font-size: 0.875rem;
+}
+
+.clip-takes-pills {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.clip-takes-pill {
+  min-height: var(--touch);
+  padding: 0 12px;
+  border: var(--border-width) solid var(--line);
+  border-radius: calc(var(--touch) / 2);
+  background: var(--card);
+  color: var(--fg);
+  cursor: pointer;
+}
+
+.clip-takes-pill.is-current {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--on-accent);
+  font-weight: 600;
+}
+
+.clip-takes-rename,
+.clip-takes-name button {
+  min-width: var(--touch);
+  min-height: var(--touch);
+}
+
+.clip-takes-name {
+  display: flex;
+  gap: 6px;
+}
+
+.clip-takes-name input {
+  flex: 1;
+  min-width: 0;
+  min-height: var(--touch);
+}

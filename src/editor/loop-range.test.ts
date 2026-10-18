@@ -1,7 +1,8 @@
-// The editor's loop: the whole song to start with, and where each kind of drag puts it, in bars.
+// The editor's loop: the whole song to start with, a block's bars, and where each kind of drag puts
+// it, in bars.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { getDraggedRange, getLoopSeconds, getWholeSongRange } from './loop-range.ts';
+import { getBlockRange, getDraggedRange, getLoopSeconds, getWholeSongRange } from './loop-range.ts';
 
 const RANGE = { startBar: 4, endBar: 8 };
 
@@ -38,4 +39,11 @@ test('a new loop is drawn either way, a bar long at least', () => {
 
 test('bars become seconds', () => {
   assert.deepEqual(getLoopSeconds(RANGE, 2), { start: 8, end: 16 });
+});
+
+test('a block loops from the bar it starts in to the bar line at or after its end', () => {
+  assert.deepEqual(getBlockRange({ start: 32, end: 64 + 8 }, 16), { startBar: 2, endBar: 5 });
+  assert.deepEqual(getBlockRange({ start: 0, end: 64 }, 16), { startBar: 0, endBar: 4 });
+  assert.deepEqual(getBlockRange({ start: 0, end: 64.1 }, 16), { startBar: 0, endBar: 4 });
+  assert.deepEqual(getBlockRange({ start: 16, end: 16 }, 16), { startBar: 1, endBar: 2 });
 });

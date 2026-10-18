@@ -7,9 +7,11 @@ import {
   addBlock,
   addTrack,
   duplicateBlock,
+  getClipPlaces,
   moveBlock,
   removeTrack,
   renameTrack,
+  setBlockClip,
   setRepeats,
   setTrackVolume,
   trimBlock,
@@ -96,4 +98,57 @@ test("a track's level is set, the others and the old tracks untouched", () => {
   );
   assert.equal(TRACKS[1]?.volume, 0);
   assert.equal(setTrackVolume(TRACKS, 't1', 0), TRACKS);
+});
+
+test('another clip in a block keeps its start, repeats and trim', () => {
+  const trimmed: Track[] = [
+    {
+      id: 't1',
+      name: 'Bass',
+      volume: 0,
+      blocks: [{ clip: 'c1', start: 96, trim: { offset: 384, length: 384 }, repeats: 2 }],
+    },
+  ];
+  const { tracks, place } = setBlockClip(trimmed, { trackId: 't1', index: 0 }, 'c9', 1536);
+  assert.deepEqual(tracks[0]?.blocks[0], {
+    clip: 'c9',
+    start: 96,
+    trim: { offset: 384, length: 384 },
+    repeats: 2,
+  });
+  assert.deepEqual(place, { trackId: 't1', index: 0 });
+  assert.equal(trimmed[0]?.blocks[0]?.clip, 'c1');
+});
+
+test('a trim past the end of a shorter clip is cut to it, or dropped', () => {
+  const trimmed: Track[] = [
+    {
+      id: 't1',
+      name: 'Bass',
+      volume: 0,
+      blocks: [{ clip: 'c1', start: 0, trim: { offset: 384, length: 768 }, repeats: 1 }],
+    },
+  ];
+  const place = { trackId: 't1', index: 0 };
+  assert.deepEqual(setBlockClip(trimmed, place, 'c9', 768).tracks[0]?.blocks[0]?.trim, {
+    offset: 384,
+    length: 384,
+  });
+  assert.equal(setBlockClip(trimmed, place, 'c9', 384).tracks[0]?.blocks[0]?.trim, null);
+});
+
+test('the places of the blocks that play a clip', () => {
+  const tracks: Track[] = [
+    ...TRACKS.slice(0, 1),
+    {
+      id: 't2',
+      name: 'Lead',
+      volume: 0,
+      blocks: [{ clip: 'c1', start: 0, trim: null, repeats: 1 }],
+    },
+  ];
+  assert.deepEqual(getClipPlaces(tracks, 'c1'), [
+    { trackId: 't1', index: 0 },
+    { trackId: 't2', index: 0 },
+  ]);
 });

@@ -1,7 +1,6 @@
 /**
  * The edits of a song's arrangement: adding, moving, trimming, repeating, duplicating and removing a
- * block,
- * and adding, renaming and removing a track. Each takes the tracks and gives new ones (the old are
+ * block, putting another clip (a take) in it, and adding, renaming and removing a track. Each takes the tracks and gives new ones (the old are
  * left as they were), with where the edited block is now. Knows nothing of the page.
  */
 import type { Block, BlockTrim, Track } from '../../shared/song.types.ts';
@@ -124,6 +123,49 @@ export function duplicateBlock(tracks: Track[], place: BlockPlace, clipTicks: nu
   const length = block.trim ? block.trim.length : clipTicks;
   const copy = { ...block, start: block.start + length * block.repeats };
   return putBlock(tracks, place.trackId, copy);
+}
+
+/**
+ * Puts another clip in a block, such as a take of its clip (docs/adr/0037): the block keeps its
+ * start and repeats, and its trim as far as the new clip is long.
+ *
+ * @param tracks - The song's tracks.
+ * @param place - Where the block is.
+ * @param clipId - The clip it plays from now on.
+ * @param clipTicks - How long that clip is, in ticks.
+ * @returns The tracks with the block's clip changed, and where it is.
+ */
+export function setBlockClip(
+  tracks: Track[],
+  place: BlockPlace,
+  clipId: string,
+  clipTicks: number,
+): Edited {
+  const block = getBlock(tracks, place);
+  if (!block) return { tracks, place };
+  const { trim } = block;
+  const keptTrim =
+    trim && trim.offset < clipTicks
+      ? { offset: trim.offset, length: Math.min(trim.length, clipTicks - trim.offset) }
+      : null;
+  const isWhole = keptTrim !== null && keptTrim.offset === 0 && keptTrim.length >= clipTicks;
+  const changed = { ...block, clip: clipId, trim: isWhole ? null : keptTrim };
+  return { tracks: replaceBlock(tracks, place, changed), place };
+}
+
+/**
+ * Returns where the blocks that play a clip are.
+ *
+ * @param tracks - The song's tracks.
+ * @param clipId - The clip.
+ * @returns Their places, track by track.
+ */
+export function getClipPlaces(tracks: Track[], clipId: string): BlockPlace[] {
+  return tracks.flatMap((track) =>
+    track.blocks.flatMap((block, index) =>
+      block.clip === clipId ? [{ trackId: track.id, index }] : [],
+    ),
+  );
 }
 
 /**

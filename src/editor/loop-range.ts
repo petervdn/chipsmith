@@ -1,12 +1,15 @@
 /**
- * The editor's loop in whole bars: the whole song to start with, and where a drag in the loop row
- * puts it (an edge moved, the loop moved, or a new one drawn). Given bars, gives bars and seconds;
+ * The editor's loop in whole bars: the whole song to start with, the bars a block plays, and where a
+ * drag in the loop row puts it (an edge moved, the loop moved, or a new one drawn). Given bars, gives bars and seconds;
  * knows nothing of the page or the audio.
  */
 import type { Loop } from '../playback/loop.ts';
 
 /** A loop in bars: its first bar and the bar it ends before, from 0. */
 export type LoopRange = { startBar: number; endBar: number };
+
+/** How far past a bar line, in bars, a block may end and still count as ending on it. */
+const BAR_SLACK = 0.02;
 
 /** What a drag in the loop row does: move an edge, move the loop, or draw a new one. */
 export type LoopDragMode = 'start' | 'end' | 'move' | 'draw';
@@ -21,6 +24,26 @@ export type LoopDragMode = 'start' | 'end' | 'move' | 'draw';
  */
 export function getWholeSongRange(songEnd: number, ticksPerBar: number): LoopRange {
   return { startBar: 0, endBar: Math.max(1, Math.round(songEnd / ticksPerBar)) };
+}
+
+/**
+ * Returns the loop round the bars a block plays: from the bar it starts in to the bar line at or
+ * after its end, to hear it, or its takes, over and over.
+ *
+ * @param span - Where the block plays.
+ * @param span.start - Where it starts, in ticks.
+ * @param span.end - Where it ends, after its repeats, in ticks.
+ * @param ticksPerBar - Ticks to a bar of the song.
+ * @returns The loop, at least a bar long.
+ */
+export function getBlockRange(
+  { start, end }: { start: number; end: number },
+  ticksPerBar: number,
+): LoopRange {
+  const startBar = Math.floor(start / ticksPerBar);
+  // a block that ends a hair past a bar line (audio ringing on) ends on that line
+  const endBar = Math.ceil(end / ticksPerBar - BAR_SLACK);
+  return { startBar, endBar: Math.max(startBar + 1, endBar) };
 }
 
 /**

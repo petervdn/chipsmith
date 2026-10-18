@@ -11,6 +11,8 @@ export type ConfirmQuestion = {
   question: string;
   /** What the button that goes ahead says ("Delete"). */
   answer: string;
+  /** What the button that does not says, "Cancel" when left out. */
+  refusal?: string;
   /** Whether going ahead takes something away, shown in the reject colour. */
   isDanger?: boolean;
 };

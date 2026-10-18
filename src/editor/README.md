@@ -9,6 +9,8 @@ saved, playing from a cursor, the zoom, and the selected block's clip or track.
 - `clip-prompt.ts`: the prompt on a clip: its quick asks, how a tap adds one, the most takes
 - `ClipPrompt.css`: the look of ClipPrompt.tsx
 - `ClipPrompt.tsx`: the prompt on the selected block's clip: what to change, how many takes, Send, the jobs on their way
+- `ClipTakes.css`: the look of ClipTakes.tsx
+- `ClipTakes.tsx`: the takes of the selected block's clip as pills: a tap puts one in the block; the one in it renamed
 - `ClipFileLinks.css`: the look of ClipFileLinks.tsx
 - `ClipFileLinks.tsx`: a clip's .fur to look at: opened in Furnace (a copy), downloaded, or as text
 - `clip-peaks.ts`: a clip's waveform as peaks, from its samples
@@ -72,6 +74,7 @@ saved, playing from a cursor, the zoom, and the selected block's clip or track.
 - `use-press-drag.ts`: a press that becomes a drag: a mouse at once, a finger after holding still
 - `use-song-draft.ts`: the song being edited: a draft with undo and redo, the selection, save and revert
 - `use-song-transport.ts`: playing the song from its cursor, stopping, moving the cursor
+- `use-take-swap.ts`: a take put in the selected block, and in the other blocks of its clip if asked
 - `use-timeline-pan.ts`: dragging empty space with a mouse scrolls the timeline
 - `use-track-mix.ts`: the tracks muted and soloed while editing
 - `use-track-name-resize.ts`: dragging the track names' edge resizes them, kept in the preferences

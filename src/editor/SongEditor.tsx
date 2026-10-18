@@ -1,5 +1,6 @@
 // An opened song in the editor: the bar of controls (play, undo and redo, the grid, a new track,
-// zoom, save and revert), the timeline of the draft, and the selected block's or track's details.
+// zoom, save and revert), the timeline of the draft, and the selected block's or track's details,
+// a take swapped into the selected block among its edits.
 import { useRef, useState } from 'react';
 import type { SongDetail } from '../../shared/api.types.ts';
 import { useClips } from '../queries/clips.ts';
@@ -22,7 +23,9 @@ import type { BlockPlace } from './song-edits.ts';
 import { Timeline } from './Timeline.tsx';
 import { getBlockSpans, getClipTicks, getSongSplitCount, getTicksPerBar } from './timeline.ts';
 import { SongClips } from './SongClips.tsx';
-import { getFirstBlockPlace, getSongClips } from './song-clips.ts';
+import { getEditorClips, getFirstBlockPlace, getSongClips } from './song-clips.ts';
+import { getBlockRange } from './loop-range.ts';
+import { useTakeSwap } from './use-take-swap.ts';
 import { TrackDetails } from './TrackDetails.tsx';
 import { useBlockDrag } from './use-block-drag.ts';
 import { useClipDrag } from './use-clip-drag.ts';
@@ -60,15 +63,18 @@ type SongEditorProps = { detail: SongDetail };
 export function SongEditor({ detail }: SongEditorProps) {
   const [step, setStep] = useState(BAR_STEP);
   const scrollRef = useRef<HTMLDivElement>(null);
-  const { song, clips, isWaitingForAudio, waitingClipIds } = detail;
+  const { song, isWaitingForAudio, waitingClipIds } = detail;
+  const { data: pool } = useClips();
+  const poolClips = (pool ?? []).map((listing) => listing.clip);
   const { mutate: splitSong, isPending: isSplitting, error: splitError } = useSplitSong();
-  const splitCount = getSongSplitCount(song, clips);
+  const splitCount = getSongSplitCount(song, detail.clips);
   const draft = useSongDraft(detail);
+  const clips = getEditorClips(draft.tracks, detail.clips, poolClips);
   const { mix, toggleMute, toggleSolo } = useTrackMix();
   const draftSong = { ...song, tracks: draft.tracks };
   useHeardTracks(draft.tracks, mix);
   const loop = useLoop(draftSong, clips);
-  const transport = useSongTransport({ ...detail, song: draftSong }, loop.loop);
+  const transport = useSongTransport({ ...detail, song: draftSong, clips }, loop.loop);
   useMetronome(transport.mode === 'playing', song);
   const width = useElementWidth(scrollRef);
   const { trackNameWidth, resizeHandlers } = useTrackNameResize();
@@ -122,7 +128,6 @@ export function SongEditor({ detail }: SongEditorProps) {
       clipDrag.redrag();
     },
   });
-  const { data: pool } = useClips();
   const selection = draft.selection;
   const place = selection?.kind === 'block' ? selection.place : null;
   useEditorKeys({
@@ -145,7 +150,13 @@ export function SongEditor({ detail }: SongEditorProps) {
     selection?.kind === 'track'
       ? draft.tracks.find((track) => track.id === selection.trackId)
       : undefined;
-  const poolClips = (pool ?? []).map((listing) => listing.clip);
+  const putTake = useTakeSwap({
+    tracks: draft.tracks,
+    place,
+    clips: [...clips, ...poolClips],
+    bpm: song.bpm,
+    edit: draft.edit,
+  });
   const preview = drag.preview ?? clipDrag.drag?.preview;
   const shownSong = preview ? { ...song, tracks: preview.tracks } : draftSong;
   return (
@@ -242,7 +253,15 @@ export function SongEditor({ detail }: SongEditorProps) {
               span={span}
               clip={clip}
               versions={clip ? getVersions(clip.id, poolClips.length > 0 ? poolClips : clips) : []}
+              isSoloed={mix.soloed.includes(span.trackId)}
               onPlayFrom={transport.playFrom}
+              onLoop={() => {
+                const range = getBlockRange(span, ticksPerBar);
+                loop.loopRange(range);
+                transport.playFrom((range.startBar * ticksPerBar) / getTicksPerSecond(song.bpm));
+              }}
+              onToggleSolo={() => toggleSolo(span.trackId)}
+              onUseVersion={(clipId) => void putTake(clipId)}
               onRepeats={(repeats) => draft.edit((tracks) => setRepeats(tracks, place, repeats))}
               onDuplicate={() =>
                 draft.edit((tracks) => duplicateBlock(tracks, place, getPlaceTicks(place)))

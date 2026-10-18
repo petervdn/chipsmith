@@ -4,7 +4,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import type { Clip } from '../../shared/clip.types.ts';
 import type { Track } from '../../shared/song.types.ts';
-import { getFirstBlockPlace, getSongClips } from './song-clips.ts';
+import { getEditorClips, getFirstBlockPlace, getSongClips } from './song-clips.ts';
 
 /**
  * Returns a clip with only what the list reads filled in.
@@ -62,4 +62,16 @@ test("a clip's first block is its earliest, none for a clip no block plays", () 
   assert.deepEqual(getFirstBlockPlace(TRACKS, 'c2'), { trackId: 't1', index: 0 });
   assert.deepEqual(getFirstBlockPlace(TRACKS, 'c3'), { trackId: 't2', index: 0 });
   assert.equal(getFirstBlockPlace(TRACKS, 'c1'), null);
+});
+
+test('the editor knows the song’s clips and the pool’s the draft plays besides', () => {
+  const known = getEditorClips(
+    TRACKS,
+    [makeClip('c2')],
+    [makeClip('c2'), makeClip('c3'), makeClip('c9')],
+  );
+  assert.deepEqual(
+    known.map((clip) => clip.id),
+    ['c2', 'c3'],
+  );
 });

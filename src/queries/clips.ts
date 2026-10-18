@@ -1,4 +1,7 @@
-/** The clips from the server: the pool, changing a clip's status, and opening its .fur in Furnace. */
+/**
+ * The clips from the server: the pool, changing a clip's status or a variation's label, and opening
+ * its .fur in Furnace.
+ */
 import { useMutation, useQuery } from '@tanstack/react-query';
 import type { ClipListing, ClipOpened } from '../../shared/api.types.ts';
 import type { Status } from '../../shared/catalogue.types.ts';
@@ -26,6 +29,21 @@ export function useSetClipStatus() {
   return useMutation({
     mutationFn: ({ clipId, status }: { clipId: string; status: Status }) =>
       sendJson<ClipListing>(`/api/clips/${encodeURIComponent(clipId)}`, 'PATCH', { status }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: getQueryKey({ type: 'clips' }) }),
+  });
+}
+
+/**
+ * Renames a variation (docs/adr/0036); the pool is read again after.
+ *
+ * @returns The mutation, called with the clip's id (`clipId`) and its new `variationLabel`.
+ */
+export function useSetVariationLabel() {
+  return useMutation({
+    mutationFn: ({ clipId, variationLabel }: { clipId: string; variationLabel: string }) =>
+      sendJson<ClipListing>(`/api/clips/${encodeURIComponent(clipId)}`, 'PATCH', {
+        variationLabel,
+      }),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: getQueryKey({ type: 'clips' }) }),
   });
 }

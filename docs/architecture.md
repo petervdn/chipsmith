@@ -89,9 +89,12 @@ page but Home starts with breadcrumbs, the last its heading (Songs › Seven Tee
   as the page's content (as the top bar's), the clips' column out in the margin left of it and
   the selected block's or track's details in the margin right of it where there is room (else beside
   and under it), and the selected block's
-  clip with what it changed and its versions, its .fur to look at (open in Furnace, download, view as
-  text), and Change this clip (0037): a prompt for takes of it, quick asks a tap adds, 1 to 5 takes,
-  and its jobs on their way (`src/editor/ClipPrompt.tsx`). Editing (0022): drag a block to move it (to another track too),
+  clip, its .fur to look at (open in Furnace, download, view as text), Loop it (the block's bars
+  looped and played) and solo for its track, its takes as pills (the original and every variation by
+  its label; a tap puts one in the block as an edit, heard at once if it plays, offered to the other
+  blocks of the same clip; the one in it renamed in place; `src/editor/ClipTakes.tsx`), and Change
+  this clip (0037): a prompt for takes of it, quick asks a tap adds, 1 to 5 takes, and its jobs on
+  their way (`src/editor/ClipPrompt.tsx`). Editing (0022): drag a block to move it (to another track too),
   its edges to trim it, drag a clip from the song's clips onto a track as a new block, snapped to a grid; repeat, duplicate, untrim, remove; add, rename and remove tracks; mute and solo
   (not saved); a mixer under the timeline, switched in the editor bar: a strip per track (its fader,
   saved and heard in playback only, one undo step per move; its meter, M and S, the same values as
@@ -221,10 +224,8 @@ a variation) instead of a song; `make/check-script.ts --takes-of <clip>` checks 
 
 ## Still to build
 
-1. Takes (0037): a prompt on a selected block's clip makes takes, variations each with its label;
-   the block shows its clip's versions as pills, a tap swaps a take in (a draft), auditioned on a
-   loop of the block's bars. Then operations (octave, transpose) and a one-channel note grid, each
-   another way to make a take.
+1. More ways to make a take (0037; the prompt and the pills are built): operations (octave,
+   transpose) on a clip's .fur, then a one-channel note grid.
 2. A song's sections as written, if wanted: the script returns the sections it wrote, kept on the
    whole clip (`sections` in its record) and drawn where its block plays, moved with it and cut by
    its trim. For now the structure as it was sent is drawn instead (0030).
