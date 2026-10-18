@@ -1,6 +1,6 @@
 /* The look of NoteGrid.tsx: its head (the channel), the grid in a box that scrolls both ways
-   (pitch names staying at the top, bar numbers staying at the left, lines at rows, beats and bars,
-   the sharps shaded, notes as bars down their length), and its buttons on rows that wrap. */
+   (bar numbers staying at the top, pitch names staying at the left, lines at rows, beats and bars,
+   the sharps shaded, notes as bars along their length), and its buttons on rows that wrap. */
 
 .note-grid {
   display: flex;
@@ -69,7 +69,7 @@
   background: var(--card);
 }
 
-.note-grid-pitches {
+.note-grid-ruler {
   position: sticky;
   top: 0;
   z-index: 3;
@@ -78,29 +78,32 @@
   background: var(--card);
   color: var(--muted);
   font-size: 0.625rem;
-  text-align: center;
-}
-
-.note-grid-pitches span {
-  flex: none;
 }
 
 .note-grid-corner {
   position: sticky;
   left: 0;
-  align-self: stretch;
+  z-index: 1;
+  flex: none;
   background: var(--card);
 }
 
-.note-grid-pitches .is-sharp {
-  background: var(--raised);
+.note-grid-bars {
+  position: relative;
+  flex: none;
+}
+
+.note-grid-bars span {
+  position: absolute;
+  top: 2px;
+  padding-left: 3px;
 }
 
 .note-grid-body {
   display: flex;
 }
 
-.note-grid-bars {
+.note-grid-pitches {
   position: sticky;
   left: 0;
   z-index: 2;
@@ -112,9 +115,14 @@
   font-size: 0.625rem;
 }
 
-.note-grid-bars span {
-  position: absolute;
-  left: 4px;
+.note-grid-pitches span {
+  display: flex;
+  align-items: center;
+  padding-left: 4px;
+}
+
+.note-grid-pitches .is-sharp {
+  background: var(--raised);
 }
 
 .note-grid-cells {
@@ -122,19 +130,19 @@
   flex: none;
   background-image:
     linear-gradient(
-      to bottom,
+      to right,
       color-mix(in srgb, var(--line) 50%, transparent) 1px,
       transparent 1px
     ),
-    linear-gradient(to bottom, var(--line) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--muted) 1px, transparent 1px);
+    linear-gradient(to right, var(--line) 1px, transparent 1px),
+    linear-gradient(to right, var(--muted) 1px, transparent 1px);
   cursor: pointer;
 }
 
 .note-grid-sharp {
   position: absolute;
-  top: 0;
-  bottom: 0;
+  right: 0;
+  left: 0;
   background: color-mix(in srgb, var(--raised) 70%, transparent);
   pointer-events: none;
 }
@@ -142,7 +150,7 @@
 .note-grid-note {
   position: absolute;
   box-sizing: border-box;
-  border-top: 4px solid var(--fg);
+  border-left: 4px solid var(--fg);
   border-radius: 3px;
   background: var(--accent);
   pointer-events: none;

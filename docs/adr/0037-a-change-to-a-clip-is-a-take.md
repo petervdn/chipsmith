@@ -1,6 +1,6 @@
 # 0037. A change to a clip is a take, swapped into its block
 
-- Status: accepted
+- Status: accepted; the note grid's direction superseded by 0041
 - Date: 2026-10-18
 
 ## Context

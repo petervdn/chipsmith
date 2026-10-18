@@ -1,6 +1,6 @@
-// The note grid (docs/adr/0037): one channel of the selected block's clip, time down the screen and
-// pitch across, in a box that scrolls both ways over the channel's range (docs/adr/0040), the pitch
-// names at the top and the bar numbers at the left staying in view. A tap on an empty place puts a
+// The note grid (docs/adr/0037): one channel of the selected block's clip, time across as in the
+// timeline and pitch up (docs/adr/0041), in a box that scrolls both ways over the channel's range
+// (docs/adr/0040), the bar numbers at the top and the pitch names at the left staying in view. A tap on an empty place puts a
 // note there; a tap on a note selects it, and the buttons under the grid move it in pitch or time,
 // make it longer or shorter, or take it out. Save as new take makes a take of the edits and puts it
 // in the block; on a take, Update this take puts one in its place (docs/adr/0039).
@@ -12,12 +12,14 @@ import { useNoteGridScroll } from './use-note-grid-scroll.ts';
 import '../jobs/jobs.css';
 import './NoteGrid.css';
 
-/** The height of a row, in pixels. */
-const ROW_HEIGHT = 20;
-/** The width of the bar numbers' column, in pixels. */
-const GUTTER = 32;
-/** The width of a pitch's column, in pixels: wide enough to tap. */
-const COLUMN_WIDTH = 28;
+/** The width of a row, in pixels. */
+const ROW_WIDTH = 18;
+/** The height of a pitch, in pixels: tall enough to tap. */
+const PITCH_HEIGHT = 24;
+/** The width of the pitch names' column, in pixels. */
+const GUTTER = 36;
+/** The height of the bar numbers' ruler, in pixels. */
+const RULER_HEIGHT = 18;
 
 type NoteGridProps = {
   clipId: string;
@@ -41,26 +43,26 @@ type NoteGridProps = {
 export function NoteGrid({ clipId, songId, isTake, onMade, onUpdated }: NoteGridProps) {
   const grid = useNoteGrid({ clipId, songId, onMade, onUpdated });
   const { notes, channel, rows, rowCount, selectedRow, pitchRange } = grid;
-  const lowestPitch = pitchRange.lowest;
+  const highestPitch = pitchRange.highest;
   const scrollRef = useNoteGridScroll({
     channel: channel?.channel ?? null,
-    lowestPitch,
+    highestPitch,
     middlePitch: pitchRange.middle,
-    columnWidth: COLUMN_WIDTH,
-    gutter: GUTTER,
+    pitchHeight: PITCH_HEIGHT,
+    rulerHeight: RULER_HEIGHT,
   });
   if (grid.error && !notes) return <p className="error">{grid.error.message}</p>;
   if (!notes) return <p className="note-grid-loading">Reading the notes…</p>;
   if (!channel) return <p className="note-grid-loading">This clip plays no pitched notes.</p>;
-  const pitchCount = pitchRange.highest - lowestPitch + 1;
-  const pitches = Array.from({ length: pitchCount }, (_unused, i) => lowestPitch + i);
+  const pitchCount = highestPitch - pitchRange.lowest + 1;
+  const pitches = Array.from({ length: pitchCount }, (_unused, i) => highestPitch - i);
   const bars = Math.ceil(rowCount / notes.rowsPerBar);
   function tap(event: MouseEvent<HTMLDivElement>): void {
     const box = event.currentTarget.getBoundingClientRect();
-    const row = Math.floor((event.clientY - box.top) / ROW_HEIGHT);
-    const column = Math.floor((event.clientX - box.left) / COLUMN_WIDTH);
-    if (row >= 0 && row < rowCount && column >= 0 && column < pitchCount) {
-      grid.tapCell(row, lowestPitch + column);
+    const row = Math.floor((event.clientX - box.left) / ROW_WIDTH);
+    const line = Math.floor((event.clientY - box.top) / PITCH_HEIGHT);
+    if (row >= 0 && row < rowCount && line >= 0 && line < pitchCount) {
+      grid.tapCell(row, highestPitch - line);
     }
   }
   return (
@@ -81,41 +83,44 @@ export function NoteGrid({ clipId, songId, isTake, onMade, onUpdated }: NoteGrid
         </div>
       )}
       <div className="note-grid-scroll" ref={scrollRef}>
-        <div className="note-grid-sheet" style={{ width: GUTTER + pitchCount * COLUMN_WIDTH }}>
-          <div className="note-grid-pitches">
+        <div className="note-grid-sheet" style={{ width: GUTTER + rowCount * ROW_WIDTH }}>
+          <div className="note-grid-ruler" style={{ height: RULER_HEIGHT }}>
             <span className="note-grid-corner" style={{ width: GUTTER }} />
-            {pitches.map((pitch) => (
-              <span
-                key={pitch}
-                className={isSharp(pitch) ? 'is-sharp' : ''}
-                style={{ width: COLUMN_WIDTH }}
-              >
-                {getNoteName(pitch).replace('-', '')}
-              </span>
-            ))}
-          </div>
-          <div className="note-grid-body" style={{ height: rowCount * ROW_HEIGHT }}>
-            <div className="note-grid-bars" style={{ width: GUTTER }}>
+            <span className="note-grid-bars" style={{ width: rowCount * ROW_WIDTH }}>
               {Array.from({ length: bars }, (_unused, bar) => (
-                <span key={bar} style={{ top: bar * notes.rowsPerBar * ROW_HEIGHT }}>
+                <span key={bar} style={{ left: bar * notes.rowsPerBar * ROW_WIDTH }}>
                   {bar + 1}
+                </span>
+              ))}
+            </span>
+          </div>
+          <div className="note-grid-body">
+            <div className="note-grid-pitches" style={{ width: GUTTER }}>
+              {pitches.map((pitch) => (
+                <span
+                  key={pitch}
+                  className={isSharp(pitch) ? 'is-sharp' : ''}
+                  style={{ height: PITCH_HEIGHT }}
+                >
+                  {getNoteName(pitch).replace('-', '')}
                 </span>
               ))}
             </div>
             <div
               className="note-grid-cells"
               style={{
-                width: pitchCount * COLUMN_WIDTH,
-                backgroundSize: `100% ${ROW_HEIGHT}px, 100% ${notes.rowsPerBeat * ROW_HEIGHT}px, 100% ${notes.rowsPerBar * ROW_HEIGHT}px`,
+                width: rowCount * ROW_WIDTH,
+                height: pitchCount * PITCH_HEIGHT,
+                backgroundSize: `${ROW_WIDTH}px 100%, ${notes.rowsPerBeat * ROW_WIDTH}px 100%, ${notes.rowsPerBar * ROW_WIDTH}px 100%`,
               }}
               onClick={tap}
             >
-              {pitches.map((pitch, column) =>
+              {pitches.map((pitch, line) =>
                 isSharp(pitch) ? (
                   <span
                     key={pitch}
                     className="note-grid-sharp"
-                    style={getColumnStyle(column)}
+                    style={{ top: line * PITCH_HEIGHT, height: PITCH_HEIGHT }}
                     aria-hidden="true"
                   />
                 ) : null,
@@ -127,9 +132,10 @@ export function NoteGrid({ clipId, songId, isTake, onMade, onUpdated }: NoteGrid
                     key={row.row}
                     className={`note-grid-note${row.row === selectedRow ? ' is-selected' : ''}`}
                     style={{
-                      ...getColumnStyle((row.note ?? 0) - lowestPitch),
-                      top: row.row * ROW_HEIGHT,
-                      height: (end - row.row) * ROW_HEIGHT - 1,
+                      left: row.row * ROW_WIDTH,
+                      width: (end - row.row) * ROW_WIDTH - 1,
+                      top: (highestPitch - (row.note ?? 0)) * PITCH_HEIGHT,
+                      height: PITCH_HEIGHT,
                     }}
                   />
                 );
@@ -152,10 +158,10 @@ export function NoteGrid({ clipId, songId, isTake, onMade, onUpdated }: NoteGrid
           +oct
         </button>
         <button type="button" disabled={selectedRow === null} onClick={() => grid.moveTime(-1)}>
-          ↑ earlier
+          ← earlier
         </button>
         <button type="button" disabled={selectedRow === null} onClick={() => grid.moveTime(1)}>
-          ↓ later
+          later →
         </button>
         <button type="button" disabled={selectedRow === null} onClick={() => grid.changeLength(-1)}>
           shorter
@@ -208,14 +214,4 @@ export function NoteGrid({ clipId, songId, isTake, onMade, onUpdated }: NoteGrid
  */
 function isSharp(pitch: number): boolean {
   return getNoteName(pitch).includes('#');
-}
-
-/**
- * Returns where a column of the grid is, across.
- *
- * @param column - The column, from the lowest pitch laid out.
- * @returns Its left and width, in pixels.
- */
-function getColumnStyle(column: number): { left: number; width: number } {
-  return { left: column * COLUMN_WIDTH, width: COLUMN_WIDTH };
 }

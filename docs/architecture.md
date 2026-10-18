@@ -99,7 +99,7 @@ page but Home starts with breadcrumbs, the last its heading (Songs › Seven Tee
   back to the clip it was made from (0039); `src/editor/ClipTakes.tsx`), quick
   changes for a clip of pitched notes (an octave or a semitone up or down: a take made on the server
   without Claude and put in the block; `src/editor/ClipOperations.tsx`, `make/transpose-take.ts`),
-  Edit notes (the note grid: one pitched channel at a time, time down and pitch across, in a box
+  Edit notes (the note grid: one pitched channel at a time, time across as in the timeline and pitch up (0041), in a box
   that scrolls both ways over the channel's range and an octave either side (0040), opened at its
   notes; a tap puts a note in or selects one, buttons move it
   in pitch or time, make it longer or shorter or take it out, with undo; Save as new take makes a take of the

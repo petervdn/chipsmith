@@ -1,7 +1,7 @@
 /**
- * Where the note grid's box is scrolled across (docs/adr/0040): to the middle of the notes when a
- * channel is first shown, and kept on the same pitches when the range laid out grows below them.
- * Knows nothing of the notes or their edits.
+ * Where the note grid's box is scrolled (docs/adr/0040, 0041): to the start and the middle of the
+ * notes' pitches when a channel is first shown, and kept on the same pitches when the range laid out
+ * grows above them. Knows nothing of the notes or their edits.
  */
 import { useLayoutEffect, useRef } from 'react';
 
@@ -9,47 +9,48 @@ import { useLayoutEffect, useRef } from 'react';
 export type NoteGridScroll = {
   /** The channel shown; a new one is scrolled to its notes. */
   channel: number | null;
-  /** The lowest pitch laid out. */
-  lowestPitch: number;
+  /** The highest pitch laid out, at the top. */
+  highestPitch: number;
   /** The pitch to put in the middle at first. */
   middlePitch: number;
-  /** The width of a pitch's column, in pixels. */
-  columnWidth: number;
-  /** The width of the bar numbers' column that stays at the left, in pixels. */
-  gutter: number;
+  /** The height of a pitch's line, in pixels. */
+  pitchHeight: number;
+  /** The height of the bar numbers' ruler that stays at the top, in pixels. */
+  rulerHeight: number;
 };
 
 /**
- * Scrolls the note grid's box across to its notes.
+ * Scrolls the note grid's box to its notes.
  *
  * @param scroll - What the scroll is worked out from.
  * @param scroll.channel - The channel shown.
- * @param scroll.lowestPitch - The lowest pitch laid out.
+ * @param scroll.highestPitch - The highest pitch laid out.
  * @param scroll.middlePitch - The pitch to put in the middle at first.
- * @param scroll.columnWidth - The width of a pitch's column, in pixels.
- * @param scroll.gutter - The width of the bar numbers' column, in pixels.
+ * @param scroll.pitchHeight - The height of a pitch's line, in pixels.
+ * @param scroll.rulerHeight - The height of the bar numbers' ruler, in pixels.
  * @returns The ref to put on the box that scrolls.
  */
 export function useNoteGridScroll({
   channel,
-  lowestPitch,
+  highestPitch,
   middlePitch,
-  columnWidth,
-  gutter,
+  pitchHeight,
+  rulerHeight,
 }: NoteGridScroll) {
   const boxRef = useRef<HTMLDivElement>(null);
-  const shownRef = useRef<{ channel: number; lowestPitch: number } | null>(null);
+  const shownRef = useRef<{ channel: number; highestPitch: number } | null>(null);
   useLayoutEffect(() => {
     const box = boxRef.current;
     if (!box || channel === null) return;
     const shown = shownRef.current;
-    shownRef.current = { channel, lowestPitch };
+    shownRef.current = { channel, highestPitch };
     if (shown?.channel === channel) {
-      box.scrollLeft += (shown.lowestPitch - lowestPitch) * columnWidth;
+      box.scrollTop += (highestPitch - shown.highestPitch) * pitchHeight;
       return;
     }
-    const middle = (middlePitch - lowestPitch + 0.5) * columnWidth;
-    box.scrollLeft = middle - (box.clientWidth - gutter) / 2;
+    const middle = (highestPitch - middlePitch + 0.5) * pitchHeight;
+    box.scrollTop = middle - (box.clientHeight - rulerHeight) / 2;
+    box.scrollLeft = 0;
   });
   return boxRef;
 }

@@ -50,7 +50,8 @@ Consequences.
 | [0034](0034-a-song-may-use-a-chip-twice.md) | A song may use a chip twice | accepted |
 | [0035](0035-the-psg-joins-the-sid-leaves-new.md) | The MSX PSG is a chip a song can use; the New page stops offering the SID | accepted |
 | [0036](0036-a-clip-keeps-no-prompt.md) | A clip keeps no prompt; a variation says what it changed | accepted |
-| [0037](0037-a-change-to-a-clip-is-a-take.md) | A change to a clip is a take, swapped into its block | accepted |
+| [0037](0037-a-change-to-a-clip-is-a-take.md) | A change to a clip is a take, swapped into its block | accepted; the note grid's direction superseded by 0041 |
 | [0038](0038-zod-schemas-are-the-source-of-truth.md) | Data that is validated is a Zod schema, and its type is inferred from it | accepted |
 | [0039](0039-a-take-not-wanted-is-deleted.md) | A take not wanted is deleted; the take in a block can be updated | accepted |
-| [0040](0040-the-note-grid-scrolls-both-ways.md) | The note grid lays out the channel's whole range and scrolls both ways | accepted |
+| [0040](0040-the-note-grid-scrolls-both-ways.md) | The note grid lays out the channel's whole range and scrolls both ways | accepted; its axes superseded by 0041 |
+| [0041](0041-the-note-grid-runs-time-across.md) | The note grid runs time across, as the timeline does, and pitch up | accepted |

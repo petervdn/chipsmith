@@ -1,6 +1,6 @@
 # 0040. The note grid lays out the channel's whole range and scrolls both ways
 
-- Status: accepted
+- Status: accepted; its axes superseded by 0041
 - Date: 2026-10-18
 
 ## Context
