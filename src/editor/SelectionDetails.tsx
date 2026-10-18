@@ -75,7 +75,8 @@ export function SelectionDetails({
       )
     : undefined;
   const clipId = selection?.kind === 'clip' ? selection.clipId : span?.clipId;
-  const clip = clips.find((candidate) => candidate.id === clipId);
+  // a take of a selected clip that no block plays (kept as a take) is only in the pool
+  const clip = [...clips, ...poolClips].find((candidate) => candidate.id === clipId);
   const track =
     selection?.kind === 'track'
       ? song.tracks.find((candidate) => candidate.id === selection.trackId)

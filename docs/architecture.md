@@ -99,7 +99,8 @@ page but Home starts with breadcrumbs, the last its heading (Songs › Seven Tee
   clip selected shows only the clip's; a track its own. The clip's section: its facts, its .fur to
   look at (open in Furnace, download, view as text), its takes as pills (the original and every
   variation by its label; a tap puts one in the block as an edit, heard at once if it plays, offered
-  to the other blocks of the same clip, or with a clip selected put in all its blocks and selected; the one in it renamed in place or deleted, asked first, its blocks going
+  to the other blocks of the same clip; with a clip selected, the take is selected and goes in the
+  blocks that play the clip only if the answer to the question asked is yes; the one in it renamed in place or deleted, asked first, its blocks going
   back to the clip it was made from (0039); `src/editor/ClipTakes.tsx`), quick
   changes for a clip of pitched notes (an octave or a semitone up or down: a take made on the server
   without Claude and put in the block; `src/editor/ClipOperations.tsx`, `make/transpose-take.ts`),
