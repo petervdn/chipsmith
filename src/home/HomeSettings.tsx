@@ -22,7 +22,7 @@ export function HomeSettings() {
     <div className="home-settings">
       <p className="home-page-note">
         This browser keeps light or dark mode, the volume and mute, the editor’s sizes and switches,
-        and what the New Song page was left at. This does not affect saved songs.
+        and what the New Song page was left at. This does not affect saved songs or clips.
       </p>
       <button type="button" className="home-settings-clear" onClick={() => void clear()}>
         Clear saved settings
