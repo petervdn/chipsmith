@@ -32,10 +32,10 @@
   --touch: 32px;
   /* how tall an option pill is (a chip, a style guide, a structure) */
   --pill: 28px;
-  /* the widest every page gets, centred beyond that, the top bar's content keeping to it too, so the
-     bar and a page's left edge stay put from page to page (docs/adr/0046); room enough for the
-     editor. A page narrower than this (a form, text to read) keeps to the left. */
-  --page-width: 1400px;
+  /* the widest the page's content gets, centred beyond that; the top bar's content keeps to it */
+  --page-width: 1100px;
+  /* the widest a song's page gets, its editor wanting the room; the top bar keeps to it there too */
+  --wide-page-width: 1600px;
   /* the tracks' colours on the timeline, bright in light and dark alike, with --on-accent on them */
   --track-1: #a6f23a;
   --track-2: #2ee6ff;
