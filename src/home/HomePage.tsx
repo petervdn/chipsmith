@@ -1,5 +1,5 @@
 // The home page: what the app is and how it works, what it needs (the programs as the server found
-// them), where to start, the jobs on their way and the songs made last.
+// them), the jobs on their way and the songs made last.
 import { Plus } from 'lucide-react';
 import type { Job } from '../../shared/job.schema.ts';
 import { HomeLatest } from './HomeLatest.tsx';
@@ -35,14 +35,6 @@ const STEPS = [
     name: 'Listen and shape',
     text: "Keep, delete, prompt again or build on a song. In a song's editor, split it into its channels, ask for takes of one part, edit notes and mix the tracks.",
   },
-];
-
-/** Where to start, each a page and what it is for. */
-const STARTS = [
-  { href: '/songs', name: 'Songs', text: 'five example songs to listen to and take apart' },
-  { href: '/new', name: 'New song', text: 'write a prompt and send it' },
-  { href: '/guides', name: 'Guides', text: 'write down your taste, to send with a prompt' },
-  { href: '/references', name: 'References', text: "Furnace's demo songs, channel by channel" },
 ];
 
 type HomePageProps = { jobs: Job[] };
@@ -107,15 +99,6 @@ export function HomePage({ jobs }: HomePageProps) {
         <div>
           <h2 className="home-page-heading">What it needs</h2>
           <HomePrograms />
-          <h2 className="home-page-heading">Where to start</h2>
-          <ul className="home-page-starts">
-            {STARTS.map(({ href, name, text }) => (
-              <li key={href}>
-                <a href={href}>{name}</a>
-                <span>{text}</span>
-              </li>
-            ))}
-          </ul>
         </div>
       </div>
       <HomeLatest />

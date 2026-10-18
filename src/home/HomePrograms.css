@@ -9,7 +9,7 @@
 
 .home-programs-row {
   display: grid;
-  grid-template-columns: auto 7.5em 1fr;
+  grid-template-columns: auto 9em 1fr;
   align-items: baseline;
   gap: 0 8px;
   padding: 6px 0;
@@ -18,7 +18,7 @@
 
 .home-programs-row .lucide {
   align-self: center;
-  color: var(--accent);
+  color: var(--fg);
 }
 
 .home-programs-row.is-missing .lucide {

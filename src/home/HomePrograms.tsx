@@ -2,19 +2,10 @@
 // when asked here): its version, or why it cannot be used and the setting that points to it; and a
 // button to look for them again, beside when it last looked and what it found.
 import { Check, RefreshCw, X } from 'lucide-react';
-import type { ProgramName } from '../../shared/api.types.ts';
 import { formatTime } from '../format.ts';
+import { getProgramRows } from './program-rows.ts';
 import { useCheckProgramsAgain, usePrograms } from '../queries/programs.ts';
 import './HomePrograms.css';
-
-/** Each program the app runs, by the name it is known by. */
-const PROGRAM_LABELS = {
-  node: 'Node',
-  furnace: 'Furnace',
-  furnaceApp: 'Furnace app',
-  ffmpeg: 'ffmpeg',
-  claude: 'Claude Code',
-} satisfies Record<ProgramName, string>;
 
 /**
  * Shows the programs the app runs, as the server last looked for them.
@@ -37,22 +28,24 @@ export function HomePrograms() {
       </p>
       {error && <p className="error">{error.message}</p>}
       <ul className="home-programs-list">
-        {(checks ?? []).map(({ name, version, error: problem, variable, neededFor }) => (
-          <li key={name} className={`home-programs-row${problem ? ' is-missing' : ''}`}>
-            {problem ? <X /> : <Check />}
-            <span className="home-programs-name">{PROGRAM_LABELS[name]}</span>
-            <span className="home-programs-state">
-              {problem ? (
-                <>
-                  {problem}: set <code>{variable}</code>
-                </>
-              ) : (
-                (version ?? 'found')
-              )}
-            </span>
-            <span className="home-programs-for">{neededFor}</span>
-          </li>
-        ))}
+        {getProgramRows(checks ?? []).map(
+          ({ name, label, version, error: problem, variable, neededFor }) => (
+            <li key={name} className={`home-programs-row${problem ? ' is-missing' : ''}`}>
+              {problem ? <X /> : <Check />}
+              <span className="home-programs-name">{label}</span>
+              <span className="home-programs-state">
+                {problem ? (
+                  <>
+                    {problem}: set <code>{variable}</code>
+                  </>
+                ) : (
+                  (version ?? 'found')
+                )}
+              </span>
+              <span className="home-programs-for">{neededFor}</span>
+            </li>
+          ),
+        )}
       </ul>
       <p className="home-page-note">
         Claude Code also has to be logged in: run <code>claude</code>, then <code>/login</code>.
