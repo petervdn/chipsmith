@@ -6,7 +6,7 @@ import { StatusButtons } from '../lists/StatusButtons.tsx';
 import { useSetSongStatus, useSong } from '../queries/songs.ts';
 import { usePageTitle } from '../use-page-title.ts';
 import { Breadcrumbs } from '../Breadcrumbs.tsx';
-import { CardHeader } from './header/CardHeader.tsx';
+import { SongHeader } from './header/SongHeader.tsx';
 import { getSongSummary } from './header/song-summary.ts';
 import { useStopOnOpen } from './use-stop-on-open.ts';
 import './SongPage.css';
@@ -37,7 +37,7 @@ export function SongPage({ songId }: SongPageProps) {
           onChange={(status) => setStatus({ songId: song.id, status })}
         />
       </div>
-      <CardHeader summary={getSongSummary(song, detail.clips)} />
+      <SongHeader summary={getSongSummary(song, detail.clips)} />
       {/* other tracks from the server (split, one added or removed) start the editor afresh; a new
           arrangement of the same tracks is taken in by its draft (editor/use-song-draft.ts) */}
       <SongEditor

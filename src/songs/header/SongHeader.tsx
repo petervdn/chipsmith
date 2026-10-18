@@ -4,13 +4,12 @@
 import { SongPrompt } from '../SongPrompt.tsx';
 import { FactList } from './FactList.tsx';
 import type { SongSummary } from './song-summary.ts';
-import './CardHeader.css';
 import './SongHeader.css';
 
 /** How many of the facts, from the first, are shown large. */
 const LARGE_FACT_COUNT = 3;
 
-type CardHeaderProps = { summary: SongSummary };
+type SongHeaderProps = { summary: SongSummary };
 
 /**
  * Shows a song's header on the page, its main facts large.
@@ -19,19 +18,19 @@ type CardHeaderProps = { summary: SongSummary };
  * @param props.summary - The song's prompt, facts and what the prompt was sent with.
  * @returns The header's element.
  */
-export function CardHeader({ summary }: CardHeaderProps) {
+export function SongHeader({ summary }: SongHeaderProps) {
   return (
-    <div className="card-header">
-      <div className="card-header-top">
+    <div className="song-header">
+      <div className="song-header-top">
         <FactList facts={summary.facts.slice(0, LARGE_FACT_COUNT)} look="large" />
-        <div className="card-header-rest">
+        <div className="song-header-rest">
           <FactList
             facts={[...summary.facts.slice(LARGE_FACT_COUNT), ...summary.promptFacts]}
             look="grid"
           />
         </div>
       </div>
-      <section className="card-header-prompt">
+      <section className="song-header-prompt">
         <h2 className="song-header-label">Prompt</h2>
         <SongPrompt prompt={summary.prompt} />
       </section>

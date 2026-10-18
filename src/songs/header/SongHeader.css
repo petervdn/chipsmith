@@ -1,5 +1,32 @@
-/* The label over a part of the header (Prompt), small, in capitals
-   and faint, well apart from what it labels. */
+/* The look of SongHeader.tsx: on the page itself, no card around it; the large facts in big
+   figures beside the grid of the others (under it on a phone), a hairline, the prompt; and the
+   label over a part (Prompt), small, in capitals and faint, well apart from what it labels. */
+
+.song-header {
+  margin-bottom: 16px;
+}
+
+.song-header-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px 40px;
+}
+
+.song-header-rest {
+  flex: 1 1 320px;
+}
+
+/* the hairline across the whole width, the prompt's lines kept short enough to read */
+.song-header-prompt {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: var(--border-width) solid var(--line);
+}
+
+.song-header-prompt > * {
+  max-width: 80ch;
+}
 
 .song-header-label {
   margin: 0 0 6px;
