@@ -1,10 +1,10 @@
 // Facts with their labels, as a list of terms: a grid (the label over its value, in columns) or
-// large (a few, in big figures side by side). It knows nothing of what the facts are.
+// rows (a table, the label at the left). It knows nothing of what the facts are.
 import type { SongFact } from './song-summary.ts';
 import './FactList.css';
 
 /** How the facts are laid out. */
-export type FactListLook = 'grid' | 'large';
+export type FactListLook = 'grid' | 'rows';
 
 type FactListProps = { facts: SongFact[]; look: FactListLook };
 

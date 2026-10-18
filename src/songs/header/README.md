@@ -4,8 +4,7 @@ A song's header on its page, between its title and the editor: its facts, its pr
 prompt was sent with.
 
 - `FactList.css`: the look of FactList.tsx
-- `FactList.tsx`: facts with their labels, as a grid or a few large
+- `FactList.tsx`: facts with their labels, as a grid or rows
 - `SongHeader.css`: the look of SongHeader.tsx
-- `SongHeader.tsx`: the header: no card, the tempo, meter and length large, the others in a
-  grid, the prompt under a hairline
+- `SongHeader.tsx`: the header: the song's facts, then the prompt beside what it was sent with
 - `song-summary.ts`: what the header shows, as labelled facts: the song's, and what its prompt was sent with

@@ -1,5 +1,5 @@
 /* The look of FactList.tsx: the labels small, in capitals and faint, the values in the page's text;
-   a grid, or a few large. */
+   a grid, or rows. */
 
 .fact-list {
   display: flex;
@@ -31,14 +31,23 @@
   font-weight: 600;
 }
 
-/* large: a few facts side by side in big figures */
-.fact-list.is-large {
-  gap: 28px;
+/* rows: a table, the label at the left, a hairline between */
+.fact-list.is-rows {
+  flex-direction: column;
 }
 
-.fact-list.is-large dd {
-  font-size: 1.75rem;
-  font-weight: 700;
-  font-variant-numeric: tabular-nums;
-  line-height: 1.1;
+.fact-list.is-rows .fact-list-fact {
+  display: grid;
+  grid-template-columns: 8em minmax(0, 1fr);
+  gap: 8px;
+  padding: 6px 0;
+  border-bottom: var(--border-width) solid var(--line);
+}
+
+.fact-list.is-rows .fact-list-fact:last-child {
+  border-bottom: 0;
+}
+
+.fact-list.is-rows dt {
+  padding-top: 0.2em;
 }

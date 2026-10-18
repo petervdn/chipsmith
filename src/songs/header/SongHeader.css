@@ -1,31 +1,29 @@
-/* The look of SongHeader.tsx: on the page itself, no card around it; the large facts in big
-   figures beside the grid of the others (under it on a phone), a hairline, the prompt; and the
-   label over a part (Prompt), small, in capitals and faint, well apart from what it labels. */
+/* The look of SongHeader.tsx: its parts one under another, a hairline over each, room between
+   them; the prompt and what it was sent with side by side (one under the other on a phone); and
+   the label over a part (Prompt), small, in capitals and faint, well apart from what it labels. */
 
 .song-header {
   margin-bottom: 16px;
 }
 
-.song-header-top {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 16px 40px;
-}
-
-.song-header-rest {
-  flex: 1 1 320px;
-}
-
-/* the hairline across the whole width, the prompt's lines kept short enough to read */
-.song-header-prompt {
-  margin-top: 16px;
-  padding-top: 12px;
+.song-header-section {
+  padding: 12px 0;
   border-top: var(--border-width) solid var(--line);
 }
 
-.song-header-prompt > * {
+.song-header-pair {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 40px;
+}
+
+.song-header-pair > .song-header-section {
+  flex: 1 1 320px;
+}
+
+.song-header-section .song-prompt {
   max-width: 80ch;
+  margin: 0;
 }
 
 .song-header-label {

@@ -1,18 +1,15 @@
-// A song's header, between its title and the editor: on the page, no card around it. At its top the tempo, meter and length large, the other
-// facts and what the prompt was sent with (its tags too) in a grid beside them; under a hairline
-// only the prompt.
+// A song's header, between its title and the editor: two parts, each under a hairline: the song's
+// facts in columns (no heading, the labels say enough), and under it side by side the prompt under
+// its heading at the left and what the prompt was sent with (as rows, no heading) at the right.
 import { SongPrompt } from '../SongPrompt.tsx';
 import { FactList } from './FactList.tsx';
 import type { SongSummary } from './song-summary.ts';
 import './SongHeader.css';
 
-/** How many of the facts, from the first, are shown large. */
-const LARGE_FACT_COUNT = 3;
-
 type SongHeaderProps = { summary: SongSummary };
 
 /**
- * Shows a song's header on the page, its main facts large.
+ * Shows a song's header: its facts, then its prompt beside what that was sent with.
  *
  * @param props - The component's props.
  * @param props.summary - The song's prompt, facts and what the prompt was sent with.
@@ -21,19 +18,20 @@ type SongHeaderProps = { summary: SongSummary };
 export function SongHeader({ summary }: SongHeaderProps) {
   return (
     <div className="song-header">
-      <div className="song-header-top">
-        <FactList facts={summary.facts.slice(0, LARGE_FACT_COUNT)} look="large" />
-        <div className="song-header-rest">
-          <FactList
-            facts={[...summary.facts.slice(LARGE_FACT_COUNT), ...summary.promptFacts]}
-            look="grid"
-          />
-        </div>
-      </div>
-      <section className="song-header-prompt">
-        <h2 className="song-header-label">Prompt</h2>
-        <SongPrompt prompt={summary.prompt} />
+      <section className="song-header-section">
+        <FactList facts={summary.facts} look="grid" />
       </section>
+      <div className="song-header-pair">
+        <section className="song-header-section">
+          <h2 className="song-header-label">Prompt</h2>
+          <SongPrompt prompt={summary.prompt} />
+        </section>
+        {summary.promptFacts.length > 0 && (
+          <section className="song-header-section">
+            <FactList facts={summary.promptFacts} look="rows" />
+          </section>
+        )}
+      </div>
     </div>
   );
 }
