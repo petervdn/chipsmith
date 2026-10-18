@@ -9,7 +9,7 @@ Nothing here reads files or touches the page.
 - `chord-numerals.ts`: a chord as a Roman numeral (♭VI, ii7), read, written and named in a key
 - `clip-label.ts`: a clip's name as it is shown: its section and stem, or "whole"
 - `clip-channels.ts`: a clip's channels named from its chips, and whether it can be split
-- `clip-lineage.ts`: a clip's lineage, the clips it was made from: whether a variation is among them
+- `clip-lineage.ts`: a clip's lineage, the clips it was made from: whether a variation is among them, the channels a take keeps
 - `clip.types.ts`: a clip, what it was made from and what slice of the music it is
 - `guide.types.ts`: a style guide, and a guide as it was sent with a prompt
 - `harmony-prompt.ts`: a harmony as the lines of a prompt that ask for it, and as one short line

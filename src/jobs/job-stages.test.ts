@@ -12,6 +12,7 @@ const JOB: Job = {
   tokens: null,
   nowTokens: null,
   songCount: 1,
+  takesOf: null,
   structure: null,
   harmony: null,
   created: '2026-10-17T10:00:00.000Z',

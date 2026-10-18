@@ -1,8 +1,9 @@
-// Tests for a clip's lineage: whether a variation is among the clips it was made from.
+// Tests for a clip's lineage: whether a variation is among the clips it was made from, and the
+// channels a take of it keeps.
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import type { Clip, ClipParent } from './clip.types.ts';
-import { hasVariationInLineage } from './clip-lineage.ts';
+import { getTakeChannels, hasVariationInLineage } from './clip-lineage.ts';
 
 function getClip(id: string, parent: ClipParent | null): Clip {
   return {
@@ -52,4 +53,10 @@ test('a parent that cannot be found, or a loop, ends the lineage', () => {
     hasVariationInLineage(looped, () => looped),
     false,
   );
+});
+
+test('a take of a whole clip keeps every channel; of a cut, or a take of one, its channel', () => {
+  assert.equal(getTakeChannels(whole, find), null);
+  assert.deepEqual(getTakeChannels(split, find), [0]);
+  assert.deepEqual(getTakeChannels(take, find), [0]);
 });

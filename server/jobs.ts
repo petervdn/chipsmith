@@ -5,7 +5,7 @@
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import type { SentGuide } from '../shared/guide.types.ts';
-import type { Job, JobPhase, JobStageId, NewNote } from '../shared/job.types.ts';
+import type { Job, JobPhase, JobStageId, NewNote, TakesTarget } from '../shared/job.types.ts';
 import { JOB_IDS, claimId } from '../make/ids.ts';
 import { writeJsonAtomically } from './store.ts';
 import type { SentHarmony } from '../shared/harmony.types.ts';
@@ -54,6 +54,7 @@ export function openJobs(root: string): JobStore {
         tokens: job.tokens ?? null,
         nowTokens: job.nowTokens ?? null,
         songCount: job.songCount ?? null,
+        takesOf: job.takesOf ?? null,
         composeStep: job.composeStep ?? null,
         notes: job.notes.map((note) => ({
           ...note,
@@ -89,6 +90,7 @@ export function getJobFolder(store: JobStore, jobId: string): string {
  * @param structure - The structure chosen with the prompt, copied, or null for none.
  * @param songCount - How many songs to make, or null to leave it to the prompt.
  * @param harmony - The harmony chosen with the prompt, copied, or null for none.
+ * @param takesOf - The clip to make takes of and the song it was asked in, or null to make songs.
  * @returns The job made.
  */
 export function createJob(
@@ -99,6 +101,7 @@ export function createJob(
   structure: SentStructure | null = null,
   songCount: number | null = null,
   harmony: SentHarmony | null = null,
+  takesOf: TakesTarget | null = null,
 ): Job {
   const id = claimId(store.root, JOB_IDS);
   const now = new Date().toISOString();
@@ -109,6 +112,7 @@ export function createJob(
     structure,
     harmony,
     songCount,
+    takesOf,
     tokens: null,
     nowTokens: null,
     created: now,

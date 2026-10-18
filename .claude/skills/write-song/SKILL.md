@@ -18,6 +18,8 @@ skill is the music; the others are how it is written down:
 - "For the NES and the SCC" names the chips; read each chip's skill before writing for it. "Two
   SCCs" asks for the chip twice: twice its channels, in one song (furnace-song, `chips`).
 - `Based on <title> [<id>]: …` changes an existing song: furnace-song, "A prompt based on a song".
+- A job of **takes of a clip** changes one clip in a few ways: furnace-song, "Takes of a clip". The
+  music here still applies to the part changed.
 - Before each step, say in one short line what you are about to do; the user sees these lines live.
 - End with a short reply: what you made and anything the user should know.
 - Work quickly: a set is minutes, not half an hour of measuring.

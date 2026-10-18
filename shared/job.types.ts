@@ -1,6 +1,7 @@
 /**
- * A job: one prompt on its way to songs, visible from the moment it is sent. Its phases: Claude
- * composes a script, the script builds a .fur file per song, each song is rendered; then done or failed.
+ * A job: one prompt on its way to songs, or to takes of a clip (docs/adr/0037), visible from the
+ * moment it is sent. Its phases: Claude composes a script, the script builds a .fur file per song or
+ * take, each is rendered; then done or failed.
  */
 import type { SentGuide } from './guide.types.ts';
 import type { SentHarmony } from './harmony.types.ts';
@@ -52,7 +53,10 @@ export type JobNote = {
 /** A note to add to a job: its text and its tokens, without the time it is added. */
 export type NewNote = Omit<JobNote, 'at'>;
 
-/** A song a job makes, from the moment its script built it. */
+/** The clip a job makes takes of, and the song it was asked in. */
+export type TakesTarget = { clip: string; song: string };
+
+/** A song a job makes, or a take (its title the take's label, its song the one asked in). */
 export type JobSong = {
   title: string;
   state: 'waiting' | 'rendering' | 'done' | 'failed';
@@ -69,8 +73,10 @@ export type Job = {
   tokens: number | null;
   /** The tokens of what Claude is in the middle of while it composes (estimated), not yet in `tokens`. */
   nowTokens: number | null;
-  /** How many songs to make, set beside the Create button; null for a job from before it was. */
+  /** How many songs (or takes) to make, set beside the Create button; null for a job from before it was. */
   songCount: number | null;
+  /** The clip this job makes takes of, or null for a job that makes songs. */
+  takesOf: TakesTarget | null;
   /** The structure chosen with the prompt, copied when it was sent, or null. */
   structure: SentStructure | null;
   /** The harmony chosen with the prompt, copied when it was sent, or null. */

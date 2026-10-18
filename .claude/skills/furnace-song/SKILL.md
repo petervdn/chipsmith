@@ -114,8 +114,9 @@ from that song's music and change what is asked; keep the rest as it is.
 - `<data>/songs/<id>/song.json`: its title, its own prompt (what it was asked to be), its tracks and
   the clips its blocks play.
 - `<data>/clips/<clip>/`: each clip's `clip.json` (its key, slice, what a variation changed),
-  `source.fur` (its music, and its tempo and chips) and `script.ts` (the script that wrote it). A song imported from the old
-  project has its import script there, not a composition: work from its `source.fur`. An older script
+  `source.fur` (its music, and its tempo and chips) and `script.ts` (the script that wrote it). A
+  song imported from the old project has its import script there, not a composition: work from its
+  `source.fur`. An older script
   uses old names: `buildModule` (`make/module-builder.ts`), `readModule` and the plan's `module` are
   now `buildFurFile`, `readFurFile` and `furFile`; its `chips` `'nes'` and `'nes+scc'` are now
   `['nes']` and `['nes', 'scc']`.
@@ -125,3 +126,25 @@ from that song's music and change what is asked; keep the rest as it is.
   `furFile`. `node fur/dump.ts <data>/clips/<clip>/source.fur --ins --pat 2,0` shows what is in it.
 - A song of several clips is its arrangement: which clip plays where (blocks: start in ticks, 96 to
   a beat, trim, repeats). Work from the clips the change is about.
+
+## Takes of a clip
+
+A job may ask for takes of one clip instead of songs: its prompt says so and names the clip, its
+song, how many takes and the check to run. A take is the clip changed as the prompt asks; the user
+tries the takes in the song and keeps one. No song is made.
+
+- Start from what wrote the clip: its `script.ts`, copied into the job's script and changed, or its
+  `source.fur` read in the script (above). A take's own `script.ts` makes every take of its job:
+  the one it is had the clip's `variationLabel` as its title (unless the user renamed it); when
+  unsure, or where the script no longer writes what the clip plays, work from `source.fur`.
+- A clip cut by channel (a stem, `parent` relation `split` somewhere up its line) keeps only its
+  channel of what the script makes; the prompt names it. Change that channel and fit it to the rest
+  of the song (the whole clip's `source.fur`, up its `parent`s), which is cut away after.
+- One plan per take. Its `title` is the take's label: what it changed, in 2 to 5 words, lower case
+  ("walking bass", "half-time drums"), a different one for each take. `tags` and `key` as for a song.
+- Keep the clip's chips and tempo (tick rate, speeds, virtual tempo), and its length unless the
+  prompt asks for another; the check fails on other chips or tempo. Keep its `chipVolumes`: the
+  track's level in the song is set for the clip.
+- Takes of one prompt differ audibly from each other (rhythm, register, contour), not by a few notes.
+- The check: `node make/check-script.ts <script> --takes-of <clip>` cuts each take as it will be
+  kept, fails when one does not fit, and prints its length and peak.

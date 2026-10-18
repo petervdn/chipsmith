@@ -1,12 +1,13 @@
 /**
  * What a job's Claude is told: the prompt it is sent (where to write, the user's prompt and what
- * was chosen with it), what it is told before that, and the tools it may use. Knows nothing of how a
+ * was chosen with it, or the clip to make takes of), what it is told before that, and the tools it
+ * may use. Knows nothing of how a
  * job runs.
  */
 import { isAbsolute, join, relative } from 'node:path';
 import { PROJECT_FOLDER } from '../config/settings.ts';
 import type { SentGuide } from '../shared/guide.types.ts';
-import type { Job } from '../shared/job.types.ts';
+import type { Job, TakesTarget } from '../shared/job.types.ts';
 import { getHarmonyLines } from '../shared/harmony-prompt.ts';
 import { getStructureLines } from '../shared/structure-prompt.ts';
 import { getTitleWordCounts } from '../make/song-titles.ts';
@@ -105,5 +106,59 @@ export function getJobPrompt(job: Job, folder: string, root: string): string {
     ...getGuideLines(job.guides),
     ...(job.structure ? getStructureLines(job.structure) : []),
     ...(job.harmony ? getHarmonyLines(job.harmony) : []),
+  ].join('\n');
+}
+
+/** What a prompt for takes of a clip is made from. */
+export type TakesPromptParts = {
+  job: Job;
+  takesOf: TakesTarget;
+  /** The job's folder. */
+  folder: string;
+  /** The data folder. */
+  root: string;
+  /** The names of the channels a take keeps, or null when it keeps every channel. */
+  keptChannels: string[] | null;
+};
+
+/**
+ * Returns the prompt a job's Claude is sent to make takes of a clip (docs/adr/0037): the job, where
+ * its script goes, the clip and its song, how many takes, what a take keeps, the check, the user's
+ * prompt and the song's guides.
+ *
+ * @param parts - What the prompt is made from.
+ * @param parts.job - The job.
+ * @param parts.takesOf - The clip the takes are of, and the song it was asked in.
+ * @param parts.folder - The job's folder.
+ * @param parts.root - The data folder.
+ * @param parts.keptChannels - The names of the channels a take keeps, or null for every channel.
+ * @returns The prompt, as lines joined.
+ */
+export function getTakesPrompt({
+  job,
+  takesOf,
+  folder,
+  root,
+  keptChannels,
+}: TakesPromptParts): string {
+  const scriptFile = getProjectPath(join(folder, 'script.ts'));
+  const takeCount = job.songCount ?? 1;
+  return [
+    `Job ${job.id}: takes of a clip (the furnace-song skill, "Takes of a clip"). Write the script to ${scriptFile}.`,
+    `The data folder (songs/, clips/) is ${getProjectPath(root)}.`,
+    `The script imports the project's modules from ${relative(folder, PROJECT_FOLDER)}/ (e.g. ${relative(folder, PROJECT_FOLDER)}/make/fur-file-builder.ts).`,
+    '',
+    `The clip: ${getProjectPath(join(root, 'clips', takesOf.clip))}/ (clip.json, source.fur, script.ts), in the song ${getProjectPath(join(root, 'songs', takesOf.song, 'song.json'))}.`,
+    keptChannels
+      ? `The clip is the song's ${keptChannels.join(', ')} alone: a take keeps only that channel of what your script makes, so change it there and leave the rest as it is.`
+      : 'The clip is the whole song: a take keeps every channel.',
+    `Make ${takeCount} ${takeCount === 1 ? 'take' : 'takes'}: one plan each, the clip changed as the prompt asks${takeCount === 1 ? '' : ', each in its own way'}.`,
+    'Title each plan with its label: what it changed, in 2 to 5 words, lower case ("walking bass", "octave jumps").',
+    "Keep the clip's chips and tempo, and its length unless the prompt asks for another.",
+    `Check it with: node make/check-script.ts ${scriptFile} --takes-of ${takesOf.clip}`,
+    '',
+    "The user's prompt:",
+    job.prompt,
+    ...getGuideLines(job.guides),
   ].join('\n');
 }

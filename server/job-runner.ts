@@ -1,20 +1,26 @@
 /**
- * A job's way from prompt to songs, one job at a time: Claude composes a script (its notes read from
- * its log every second), the script is built into a .fur file per song, each song is rendered and made,
- * and the store is told to look again after each, so finished songs show while the rest render.
+ * A job's way from prompt to songs or takes of a clip, one job at a time: Claude composes a script
+ * (its notes read from its log every second), the script is built into a .fur file per song or take,
+ * each is rendered and made, and the store is told to look again after each, so finished ones show
+ * while the rest render.
  */
 import { spawn } from 'node:child_process';
 import { PROJECT_FOLDER, getSettings } from '../config/settings.ts';
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import type { Job, JobSong } from '../shared/job.types.ts';
+import type { Job, JobSong, TakesTarget } from '../shared/job.types.ts';
 import type { BuiltPlan } from '../make/build-script.ts';
 import { makeSong } from '../make/make-song.ts';
+import { makeTake } from '../make/make-take.ts';
+import type { FurFile } from '../fur/fur.types.ts';
+import type { Tag } from '../shared/catalogue.types.ts';
+import { getTakeChannels } from '../shared/clip-lineage.ts';
 import { readFurFile } from '../fur/read.ts';
 import type { LogPlace } from './claude-log.ts';
 import { LOG_START, getLaterStep, readLogNews, readRunTokens } from './claude-log.ts';
 import { isRunning, startClaude, stopClaude } from './claude-run.ts';
-import { JOB_SYSTEM_PROMPT, getAllowedTools, getJobPrompt } from './job-prompt.ts';
+import { JOB_SYSTEM_PROMPT, getAllowedTools, getJobPrompt, getTakesPrompt } from './job-prompt.ts';
+import { getChannelName } from '../shared/clip-channels.ts';
 import type { JobStore } from './jobs.ts';
 import { addNotes, getJobFolder, setPhase, updateJob } from './jobs.ts';
 import type { Store } from './store.ts';
@@ -68,7 +74,7 @@ export function startJobRunner(jobs: JobStore, store: Store, isResuming: boolean
         const composing = [...jobs.jobs.values()].find((job) => job.phase === 'composing');
         const queued = [...jobs.jobs.values()].find((job) => job.phase === 'queued');
         if (composing) watch = resumeWatching(jobs, composing);
-        else if (queued) watch = startComposing(jobs, queued);
+        else if (queued) watch = startComposing(jobs, store, queued);
       }
     } catch (error) {
       const failedId = watch?.jobId ?? null;
@@ -84,18 +90,40 @@ export function startJobRunner(jobs: JobStore, store: Store, isResuming: boolean
   return () => clearInterval(timer);
 }
 
-function startComposing(jobs: JobStore, job: Job): ClaudeWatch {
+function startComposing(jobs: JobStore, store: Store, job: Job): ClaudeWatch {
   setPhase(jobs, job.id, 'composing', 'Claude starts composing');
   const folder = getJobFolder(jobs, job.id);
   const pid = startClaude({
     projectFolder: PROJECT_FOLDER,
-    prompt: getJobPrompt(job, folder, jobs.root),
+    prompt: job.takesOf
+      ? getTakesPrompt({
+          job,
+          takesOf: job.takesOf,
+          folder,
+          root: jobs.root,
+          keptChannels: getKeptChannelNames(store, job.takesOf),
+        })
+      : getJobPrompt(job, folder, jobs.root),
     systemPrompt: JOB_SYSTEM_PROMPT,
     allowedTools: getAllowedTools(folder),
     logFile: join(folder, 'claude.log'),
   });
   updateJob(jobs, job.id, { claudePid: pid ?? null });
   return { jobId: job.id, pid, place: LOG_START };
+}
+
+/**
+ * Returns the names of the channels a take of a clip keeps, for Claude to be told.
+ *
+ * @param store - The clips and songs.
+ * @param takesOf - The clip the takes are of.
+ * @returns The channels' names, or null when every channel is kept; an error when the clip is gone.
+ */
+function getKeptChannelNames(store: Store, takesOf: TakesTarget): string[] | null {
+  const clip = store.clips.get(takesOf.clip);
+  if (!clip) throw new Error(`the clip ${takesOf.clip} is gone`);
+  const channels = getTakeChannels(clip, (clipId) => store.clips.get(clipId));
+  return channels?.map((channel) => getChannelName(clip.chips, channel)) ?? null;
 }
 
 /**
@@ -184,32 +212,19 @@ async function buildAndRender(jobs: JobStore, store: Store, jobId: string): Prom
     jobs,
     jobId,
     'rendering',
-    `rendering ${plans.length} ${plans.length === 1 ? 'song' : 'songs'}`,
+    `rendering ${plans.length} ${getMadeNoun(before, plans.length)}`,
   );
   const job = jobs.jobs.get(jobId);
+  if (!job) return;
   for (const [i, plan] of plans.entries()) {
     if (jobs.jobs.get(jobId)?.phase === 'cancelled') return;
     if (songs[i]?.state === 'done') continue;
     songs = songs.map((song, index) => (index === i ? { ...song, state: 'rendering' } : song));
     updateJob(jobs, jobId, { songs });
     try {
-      const made = await makeSong({
-        root: store.root,
-        title: plan.title,
-        furFile: readFurFile(readFileSync(join(buildFolder, plan.furFileName))),
-        prompt: job?.prompt ?? '',
-        guides: job?.guides ?? [],
-        structure: job?.structure ?? null,
-        harmony: job?.harmony ?? null,
-        scriptFile,
-        tags: plan.tags.map((name) => ({ name, by: 'claude' })),
-        status: 'new',
-        key: plan.key,
-        promptedFrom: job?.promptedFrom ?? null,
-      });
-      songs = songs.map((song, index) =>
-        index === i ? { ...song, state: 'done', songId: made.songId } : song,
-      );
+      const furFile = readFurFile(readFileSync(join(buildFolder, plan.furFileName)));
+      const songId = await makePlan(store, job, plan, furFile, scriptFile);
+      songs = songs.map((song, index) => (index === i ? { ...song, state: 'done', songId } : song));
       rescanStore(store);
     } catch (error) {
       songs = songs.map((song, index) => (index === i ? { ...song, state: 'failed' } : song));
@@ -227,6 +242,69 @@ async function buildAndRender(jobs: JobStore, store: Store, jobId: string): Prom
     failed === songs.length ? 'failed' : 'done',
     failed ? `done, ${failed} failed` : 'done',
   );
+}
+
+/**
+ * Makes what one plan of a job's script asks for: a song, or a take of the job's clip.
+ *
+ * @param store - The clips and songs.
+ * @param job - The job.
+ * @param plan - The plan, as plan.json holds it.
+ * @param furFile - The .fur file the script built for it.
+ * @param scriptFile - The job's script, copied into the clip made.
+ * @returns The id of the song made, or of the song a take was asked in.
+ */
+async function makePlan(
+  store: Store,
+  job: Job,
+  plan: BuiltPlan,
+  furFile: FurFile,
+  scriptFile: string,
+): Promise<string> {
+  const tags = plan.tags.map((name): Tag => ({ name, by: 'claude' }));
+  if (job.takesOf) {
+    const parent = store.clips.get(job.takesOf.clip);
+    if (!parent) throw new Error(`the clip ${job.takesOf.clip} is gone`);
+    await makeTake({
+      root: store.root,
+      parent,
+      channels: getTakeChannels(parent, (clipId) => store.clips.get(clipId)),
+      songId: job.takesOf.song,
+      furFile,
+      label: plan.title,
+      scriptFile,
+      tags,
+      key: plan.key,
+    });
+    return job.takesOf.song;
+  }
+  const made = await makeSong({
+    root: store.root,
+    title: plan.title,
+    furFile,
+    prompt: job.prompt,
+    guides: job.guides,
+    structure: job.structure,
+    harmony: job.harmony,
+    scriptFile,
+    tags,
+    status: 'new',
+    key: plan.key,
+    promptedFrom: job.promptedFrom,
+  });
+  return made.songId;
+}
+
+/**
+ * Returns what a job makes, as a word for a count of them.
+ *
+ * @param job - The job, or undefined when it is gone.
+ * @param count - How many.
+ * @returns "song", "songs", "take" or "takes".
+ */
+function getMadeNoun(job: Job | undefined, count: number): string {
+  const noun = job?.takesOf ? 'take' : 'song';
+  return count === 1 ? noun : `${noun}s`;
 }
 
 function runBuild(scriptFile: string, buildFolder: string): Promise<void> {
