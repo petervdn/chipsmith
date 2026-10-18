@@ -214,6 +214,8 @@ sent is a card, newest first.
   `data-look="dark"` (the top bar's switch).
 - **A control that does not say what it does gets a tooltip**: `data-tooltip`, shown by the page's
   own tooltip (`src/tooltip/`), never `title`.
-- **Icons are Lucide's** (`lucide-react`, imported by name), never drawn by hand (docs/adr/0027).
+- **Icons are Lucide's** (`lucide-react`, imported by name), never drawn by hand; a brand's mark,
+  which Lucide does not have, comes from the brand's own set (GitHub's: `@primer/octicons-react`;
+  docs/adr/0027).
 - **Nothing pops up from the browser**: a question before a change is `askToConfirm`
   (`src/stores/confirm-store.ts`), never `window.confirm`, `alert` or `prompt` (docs/adr/0026).

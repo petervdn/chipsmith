@@ -23,3 +23,8 @@ Icons come from `lucide-react` (pinned, `npm install --save-exact`), imported on
 ## Consequences
 One more dependency in the page. The controls that are still Unicode symbols (▶ ■ ↶ ↷ « » ▸ ☾ ☀ ★ ☆)
 can move to Lucide icons when they are next touched.
+
+## Addendum (2026-10-18)
+Lucide has no brands' marks. A brand's mark (GitHub's, for the link to the source) comes from that
+brand's own icon set, pinned the same way: GitHub's from `@primer/octicons-react`
+(`MarkGithubIcon`). Still no icon drawn by hand.

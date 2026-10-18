@@ -14,6 +14,7 @@
     "format:check": "prettier --check --log-level warn \"src/**/*.{ts,tsx,css}\" \"server/**/*.ts\" \"shared/**/*.ts\" \"fur/**/*.ts\" \"render/**/*.ts\" \"make/**/*.ts\" \"config/**/*.ts\" \"test/**/*.ts\" vite.config.ts"
   },
   "dependencies": {
+    "@primer/octicons-react": "19.38.0",
     "@tanstack/react-query": "5.104.1",
     "lucide-react": "1.50.0",
     "react": "19.2.8",

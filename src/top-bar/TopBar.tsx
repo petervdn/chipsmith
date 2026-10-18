@@ -2,7 +2,8 @@
 // many are on their way, turning while one runs; the one open marked), a
 // button for a new song at the right, a link to the source on GitHub and the switch between light
 // and dark; always in the dark look.
-import { CodeXml, Plus } from 'lucide-react';
+import { MarkGithubIcon } from '@primer/octicons-react';
+import { Plus } from 'lucide-react';
 import { useRef } from 'react';
 import type { Job } from '../../shared/job.schema.ts';
 import { Logo } from './Logo.tsx';
@@ -15,6 +16,7 @@ import '../jobs/jobs.css';
 import './TopBar.css';
 
 const LOGO_SIZE = 32;
+const GITHUB_MARK_SIZE = 18;
 
 type TopBarProps = { route: Route; jobs: Job[] };
 
@@ -64,7 +66,7 @@ export function TopBar({ route, jobs }: TopBarProps) {
         data-tooltip="the source on GitHub"
         aria-label="the source on GitHub"
       >
-        <CodeXml />
+        <MarkGithubIcon size={GITHUB_MARK_SIZE} />
       </a>
       <LookSwitcher />
     </header>
