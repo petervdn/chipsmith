@@ -1,5 +1,4 @@
-// Split into channels, left of Revert and Save on the song's title row (put there by
-// SongEditor.tsx): only while the song is one whole clip of more than one channel; it makes a track
+// Split into channels, among the song's actions beside its title (put there by SongEditor.tsx): only while the song is one whole clip of more than one channel; it makes a track
 // per channel (docs/splitting.md), after asking, once the changes are saved or reverted.
 import './SplitButton.css';
 

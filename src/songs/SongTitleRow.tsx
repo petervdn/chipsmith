@@ -1,6 +1,7 @@
 // A song's title row on its page, kept in view under the top bar so Save and whether there are
-// changes always show: the title alone (no Songs › before it), ★ to keep it, and at the right the
-// place the editor puts Split, Revert and Save in. Its height is given to the page
+// changes always show: the title alone (no Songs › before it), ★ to keep it, beside them the place
+// the editor puts what acts on the song itself in (Split, Export), and at the right the place for
+// what acts on its unsaved edits (Revert and Save). Its height is given to the page
 // (`--song-title-height`), so what sticks under it knows where it ends.
 import { useRef } from 'react';
 import type { Song } from '../../shared/song.schema.ts';
@@ -10,17 +11,22 @@ import { useSetSongStatus } from '../queries/songs.ts';
 import { useHeightProperty } from '../use-height-property.ts';
 import './SongTitleRow.css';
 
-type SongTitleRowProps = { song: Song; onSaveSlot: (element: HTMLDivElement | null) => void };
+type SongTitleRowProps = {
+  song: Song;
+  onActionSlot: (element: HTMLDivElement | null) => void;
+  onSaveSlot: (element: HTMLDivElement | null) => void;
+};
 
 /**
- * Shows a song's title row: its title, ★, and the place for the editor's buttons.
+ * Shows a song's title row: its title, ★, and the places for the editor's buttons.
  *
  * @param props - The component's props.
  * @param props.song - The song.
- * @param props.onSaveSlot - Called with the element the editor puts its buttons in.
+ * @param props.onActionSlot - Called with the element the editor puts the song's actions in.
+ * @param props.onSaveSlot - Called with the element the editor puts Revert and Save in.
  * @returns The title row's element.
  */
-export function SongTitleRow({ song, onSaveSlot }: SongTitleRowProps) {
+export function SongTitleRow({ song, onActionSlot, onSaveSlot }: SongTitleRowProps) {
   const rowRef = useRef<HTMLDivElement>(null);
   const { mutate: setStatus } = useSetSongStatus();
   useHeightProperty(rowRef, '--song-title-height');
@@ -31,6 +37,7 @@ export function SongTitleRow({ song, onSaveSlot }: SongTitleRowProps) {
         status={song.status}
         onChange={(status) => setStatus({ songId: song.id, status })}
       />
+      <div ref={onActionSlot} className="song-title-row-actions" />
       <div ref={onSaveSlot} className="song-title-row-save" />
     </div>
   );

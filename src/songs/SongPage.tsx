@@ -1,5 +1,5 @@
-// One song, opened: its title row, kept in view (SongTitleRow.tsx: ★, and the place the editor puts
-// Revert and Save in); its header (its facts, the prompt it was made from and what that was sent
+// One song, opened: its title row, kept in view (SongTitleRow.tsx: ★, and the places the editor puts
+// the song's actions and Revert and Save in); its header (its facts, the prompt it was made from and what that was sent
 // with), and the editor (editor/SongEditor.tsx), with nothing but the song itself playing when it
 // opens.
 import { useState } from 'react';
@@ -22,6 +22,7 @@ type SongPageProps = { songId: string };
  * @returns The page's section element, or a paragraph while it loads or when it could not be read.
  */
 export function SongPage({ songId }: SongPageProps) {
+  const [actionSlot, setActionSlot] = useState<HTMLDivElement | null>(null);
   const [saveSlot, setSaveSlot] = useState<HTMLDivElement | null>(null);
   const { data: detail, error } = useSong(songId);
   useStopOnOpen(songId);
@@ -31,13 +32,14 @@ export function SongPage({ songId }: SongPageProps) {
   const { song } = detail;
   return (
     <section className="song-page">
-      <SongTitleRow song={song} onSaveSlot={setSaveSlot} />
+      <SongTitleRow song={song} onActionSlot={setActionSlot} onSaveSlot={setSaveSlot} />
       <SongHeader summary={getSongSummary(song, detail.clips)} />
       {/* other tracks from the server (split, one added or removed) start the editor afresh; a new
           arrangement of the same tracks is taken in by its draft (editor/use-song-draft.ts) */}
       <SongEditor
         key={[song.id, ...song.tracks.map((track) => track.id)].join(' ')}
         detail={detail}
+        actionSlot={actionSlot}
         saveSlot={saveSlot}
       />
     </section>

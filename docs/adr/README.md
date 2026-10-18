@@ -60,3 +60,4 @@ Consequences.
 | [0045](0045-a-song-playing-plays-on-into-its-page.md) | A song playing when its page opens plays on in the editor | accepted |
 | [0046](0046-the-top-bar-is-full-width.md) | The top bar is the window's full width; each page keeps its own width | accepted |
 | [0047](0047-a-song-prompt-changes-its-song.md) | A song prompt changes its song as a proposal; the clip prompt stays with the clip until then | accepted (not built yet) |
+| [0048](0048-a-songs-actions-are-beside-its-title.md) | A song's actions are beside its title; Revert and Save alone at the right | accepted |

@@ -37,7 +37,7 @@ saved, playing from a cursor, the zoom, and the selected block's clip or track.
 - `song-edits.ts`: the edits of the arrangement: move, trim, repeat, duplicate, remove a block; tracks
 - `song-clips.ts`: the song's clips in the order it plays them, their blocks counted, each with its takes; how often one is used, in words
 - `SplitButton.css`: the look of SplitButton.tsx
-- `SplitButton.tsx`: Split into channels, left of Revert and Save, while the song is one whole clip
+- `SplitButton.tsx`: Split into channels, among the song's actions beside its title, while the song is one whole clip
 - `SongClipRow.css`: the look of SongClipRow.tsx
 - `SongClipRow.tsx`: one clip of the column on one line: a clip, a take, one on its way, the dragged copy
 - `SongClips.css`: the look of SongClips.tsx

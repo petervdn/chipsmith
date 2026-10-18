@@ -1,5 +1,5 @@
-/* The look of SongTitleRow.tsx: ★ beside the title and Split, Revert and Save at the right, level
-   with it; kept in view under the top bar, on the page's own background so what scrolls under it
+/* The look of SongTitleRow.tsx: ★ and the song's actions beside the title, Revert and Save at the
+   right, level with it; kept in view under the top bar, on the page's own background so what scrolls under it
    is hidden. */
 
 .song-title-row {
@@ -16,8 +16,16 @@
 /* ★, and Revert and Save at the right, level with the middle of the title's capitals, which sit
    below the middle of its line */
 .song-title-row .status-buttons,
+.song-title-row-actions,
 .song-title-row-save {
   margin-top: 5px;
+}
+
+.song-title-row-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: 12px;
 }
 
 .song-title-row-save {

@@ -1,8 +1,7 @@
-/* The look of SplitButton.tsx: quiet and outlined like Revert and Save, a little apart from them. */
+/* The look of SplitButton.tsx: quiet and outlined like Revert and Save. */
 
 .split-button {
   min-height: var(--touch);
-  margin-right: 16px;
   padding: 0 14px;
   border: var(--border-width) solid var(--line);
   border-radius: var(--radius);
