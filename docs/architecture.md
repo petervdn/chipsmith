@@ -92,7 +92,7 @@ page but Home starts with breadcrumbs, the last its heading (Songs › Seven Tee
   column at its left (each with its blocks counted; tapped, the clip is selected, not a block; folded to a
   strip, and on a phone folded at first and laid over the timeline when open), the page (and the
   top bar with it) wider than the others, up to 1800 px, the clips' column left of the timeline and
-  the details of what is selected in a column right of it, 240 px, where there is room (else under
+  the details of what is selected in a column right of it, 384 px, where there is room (else under
   it), as sections each named by its kind (`src/editor/SelectionDetails.tsx`): a block selected
   shows the block's section (where it plays, the clip it plays, Loop it (the block's bars looped and
   played) and solo for its track, repeats, duplicate, untrim, remove) with its clip's under it; a
