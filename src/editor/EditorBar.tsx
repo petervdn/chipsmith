@@ -1,7 +1,8 @@
 // The editor's bar of controls above the timeline: the transport, large at its left (stop, play or
 // pause, the time), then the groups: play (follow, loop), the metronome, edit (undo, redo; revert
-// and save are by the song's title, SaveButtons.tsx), snap, tracks (split, when the song can be), zoom (in, out,
-// fit, and the tracks' height on a slider), view (the structure, when the song was asked for one).
+// and save are by the song's title, SaveButtons.tsx, and so is split, SplitButton.tsx), snap, zoom
+// (in, out, fit, and the tracks' height on a slider), view (the structure, when the song was asked
+// for one).
 // It wraps on a phone. It knows nothing of what the controls do: it is given the values and
 // handlers, or keeps them in the preferences.
 import { Minus, Plus, Redo2, Undo2 } from 'lucide-react';
@@ -24,10 +25,7 @@ type EditorBarProps = {
   loop: { isOn: boolean; toggle: () => void };
   step: GridStep;
   onStep: (step: GridStep) => void;
-  splitCount: number;
   hasStructure: boolean;
-  isSplitting: boolean;
-  onSplit: () => void;
   zoom: { zoomIn: () => void; zoomOut: () => void; fit: () => void };
 };
 
@@ -43,10 +41,7 @@ type EditorBarProps = {
  * @param props.loop.toggle - Switches looping on or off.
  * @param props.step - What blocks snap to.
  * @param props.onStep - Called with the step chosen to snap to.
- * @param props.splitCount - Into how many channels the song can be split; 0 when it cannot.
  * @param props.hasStructure - Whether the song was asked for a structure, which can be shown.
- * @param props.isSplitting - Whether a split is on its way.
- * @param props.onSplit - Called to split the song (after asking).
  * @param props.zoom - Zooming the timeline: in, out, and fitting the song to it.
  * @returns The bar's element.
  */
@@ -57,10 +52,7 @@ export function EditorBar({
   loop,
   step,
   onStep,
-  splitCount,
   hasStructure,
-  isSplitting,
-  onSplit,
   zoom,
 }: EditorBarProps) {
   const isFollowing = usePreferencesStore((state) => state.isFollowingPlayhead);
@@ -126,23 +118,6 @@ export function EditorBar({
             ))}
           </select>
         </ControlGroup>
-        {splitCount > 0 && (
-          <ControlGroup label="tracks">
-            <button
-              type="button"
-              className="editor-bar-button"
-              onClick={onSplit}
-              disabled={draft.hasChanges || isSplitting}
-              data-tooltip={
-                draft.hasChanges
-                  ? 'save or revert the changes first'
-                  : 'make a track per channel, each the whole song on that channel alone'
-              }
-            >
-              {isSplitting ? 'Splitting…' : `Split into ${splitCount} channels`}
-            </button>
-          </ControlGroup>
-        )}
         <ControlGroup label="zoom">
           <button
             type="button"

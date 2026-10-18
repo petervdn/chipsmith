@@ -20,5 +20,7 @@
 }
 
 .song-page-save {
+  display: flex;
+  align-items: center;
   margin-left: auto;
 }

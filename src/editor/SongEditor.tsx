@@ -12,6 +12,7 @@ import { getPendingTakes } from './pending-takes.ts';
 import { useSplitSong } from '../queries/songs.ts';
 import { EditorBar } from './EditorBar.tsx';
 import { SaveButtons } from './SaveButtons.tsx';
+import { SplitButton } from './SplitButton.tsx';
 import { BAR_STEP } from './grid.ts';
 import { addTrack, getBlock, removeBlock, setTrackVolume } from './song-edits.ts';
 import type { BlockPlace } from './song-edits.ts';
@@ -158,11 +159,29 @@ export function SongEditor({ detail, saveSlot }: SongEditorProps) {
     bpm: song.bpm,
     edit: draft.edit,
   });
+  /** Splits the song into a track per channel, after asking. */
+  async function split(): Promise<void> {
+    if (!(await askToConfirm({ question: getSplitQuestion(splitCount), answer: 'Split' }))) return;
+    transport.stop();
+    splitSong(song.id);
+  }
   const preview = drag.preview ?? clipDrag.drag?.preview;
   const shownSong = preview ? { ...song, tracks: preview.tracks } : draftSong;
   return (
     <div className="song-editor">
-      {saveSlot && createPortal(<SaveButtons draft={draft} />, saveSlot)}
+      {saveSlot &&
+        createPortal(
+          <>
+            <SplitButton
+              splitCount={splitCount}
+              hasChanges={draft.hasChanges}
+              isSplitting={isSplitting}
+              onSplit={() => void split()}
+            />
+            <SaveButtons draft={draft} />
+          </>,
+          saveSlot,
+        )}
       {draft.saveError && <p className="error">{draft.saveError.message}</p>}
       {splitError && <p className="error">{splitError.message}</p>}
       {waitingClipIds.length > 0 && (
@@ -180,15 +199,7 @@ export function SongEditor({ detail, saveSlot }: SongEditorProps) {
           loop={loop}
           step={step}
           onStep={setStep}
-          splitCount={splitCount}
           hasStructure={structure !== null}
-          isSplitting={isSplitting}
-          onSplit={async () => {
-            const question = getSplitQuestion(splitCount);
-            if (!(await askToConfirm({ question, answer: 'Split' }))) return;
-            transport.stop();
-            splitSong(song.id);
-          }}
           zoom={{ zoomIn, zoomOut, fit }}
         />
         <div ref={headScrollRef} className="song-editor-head-scroll">
