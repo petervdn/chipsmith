@@ -1,7 +1,7 @@
 /**
  * The clips from the server: the pool, changing a clip's status or a variation's label, a clip's
  * notes for the note grid, a take made by transposing a clip or from its notes as edited, a take
- * deleted, and opening its .fur in Furnace.
+ * updated from its notes or deleted, and opening its .fur in Furnace.
  */
 import { useMutation, useQuery } from '@tanstack/react-query';
 import type { ClipListing, ClipOpened, TakeDeleted, TakeMade } from '../../shared/api.types.ts';
@@ -131,6 +131,45 @@ export function useSaveNotes() {
 }
 
 /**
+ * Updates a take from one channel's rows as the note grid edited them (docs/adr/0039): a new take
+ * with its label and parent takes its place in the saved song, and the old one is deleted. The page
+ * is told once the pool is read again, so the new take is among the clips when its blocks get it,
+ * and before the song is.
+ *
+ * @param onUpdated - Called with the old take's id and the new take's, once it is made.
+ * @returns The mutation, called with the take's id (`clipId`), the song it is edited in (`songId`),
+ * the channel and its rows.
+ */
+export function useUpdateNotesTake(onUpdated: (takeId: string, newTakeId: string) => void) {
+  return useMutation({
+    mutationFn: async ({
+      clipId,
+      songId,
+      channel,
+      rows,
+    }: {
+      clipId: string;
+      songId: string;
+      channel: number;
+      rows: ChannelRow[];
+    }) => {
+      const body: NotesRequest = { song: songId, channel, rows, isUpdate: true };
+      const made = await sendJson<TakeMade>(
+        `/api/clips/${encodeURIComponent(clipId)}/notes`,
+        'POST',
+        body,
+      );
+      return made.clipId;
+    },
+    onSuccess: async (newTakeId, { clipId, songId }) => {
+      await queryClient.invalidateQueries({ queryKey: getQueryKey({ type: 'clips' }) });
+      onUpdated(clipId, newTakeId);
+      await invalidateTakeQueries(songId);
+    },
+  });
+}
+
+/**
  * Deletes a take from the song it is edited in (docs/adr/0039): the saved song's blocks that played
  * it play the clip it was made from. The page is told before the pool and the song are read again,
  * so it can put that clip in its own blocks while the take is still among the clips.
@@ -151,11 +190,7 @@ export function useDeleteTake(onDeleted: (takeId: string, replacedBy: string) =>
     },
     onSuccess: async (replacedBy, { clipId, songId }) => {
       onDeleted(clipId, replacedBy);
-      await Promise.all([
-        queryClient.invalidateQueries({ queryKey: getQueryKey({ type: 'clips' }) }),
-        queryClient.invalidateQueries({ queryKey: getQueryKey({ type: 'song', songId }) }),
-        queryClient.invalidateQueries({ queryKey: getQueryKey({ type: 'songs' }) }),
-      ]);
+      await invalidateTakeQueries(songId);
     },
   });
 }
@@ -170,4 +205,18 @@ export function useOpenClipInFurnace() {
     mutationFn: (clipId: string) =>
       sendJson<ClipOpened>(`/api/clips/${encodeURIComponent(clipId)}/open`, 'POST', null),
   });
+}
+
+/**
+ * Has the pool, a song and the songs list read again after a take of the song was replaced.
+ *
+ * @param songId - The song whose blocks played the take.
+ * @returns A promise that settles when they are read.
+ */
+async function invalidateTakeQueries(songId: string): Promise<void> {
+  await Promise.all([
+    queryClient.invalidateQueries({ queryKey: getQueryKey({ type: 'clips' }) }),
+    queryClient.invalidateQueries({ queryKey: getQueryKey({ type: 'song', songId }) }),
+    queryClient.invalidateQueries({ queryKey: getQueryKey({ type: 'songs' }) }),
+  ]);
 }

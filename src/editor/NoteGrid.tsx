@@ -1,8 +1,9 @@
 // The note grid (docs/adr/0037): one channel of the selected block's clip, time down the screen and
 // pitch across, an octave and its top note at a time (‹ › for others). A tap on an empty place puts
 // a note there; a tap on a note selects it, and the buttons under the grid move it in pitch or
-// time, make it longer or shorter, or take it out. Save as new take makes a take of the edits and puts it in the
-// block. Notes outside the pitches shown are marked at the edge.
+// time, make it longer or shorter, or take it out. Save as new take makes a take of the edits and
+// puts it in the block; on a take, Update this take puts one in its place (docs/adr/0039). Notes
+// outside the pitches shown are marked at the edge.
 import type { MouseEvent } from 'react';
 import { getNoteName } from '../../fur/notes.ts';
 import { PITCHES_SHOWN, getNoteEnd, isPitch } from './note-grid.ts';
@@ -15,7 +16,13 @@ const ROW_HEIGHT = 20;
 /** The width of the bar numbers' column, in pixels. */
 const GUTTER = 32;
 
-type NoteGridProps = { clipId: string; songId: string; onMade: (clipId: string) => void };
+type NoteGridProps = {
+  clipId: string;
+  songId: string;
+  isTake: boolean;
+  onMade: (clipId: string) => void;
+  onUpdated: (takeId: string, newTakeId: string) => void;
+};
 
 /**
  * Shows the note grid of a clip.
@@ -23,11 +30,13 @@ type NoteGridProps = { clipId: string; songId: string; onMade: (clipId: string) 
  * @param props - The component's props.
  * @param props.clipId - The clip whose notes are edited.
  * @param props.songId - The song it is edited in.
+ * @param props.isTake - Whether the clip is a take, which can be updated instead of a new one made.
  * @param props.onMade - Called with the take's id once it is made.
+ * @param props.onUpdated - Called with the take edited and the take that updates it.
  * @returns The note grid element.
  */
-export function NoteGrid({ clipId, songId, onMade }: NoteGridProps) {
-  const grid = useNoteGrid({ clipId, songId, onMade });
+export function NoteGrid({ clipId, songId, isTake, onMade, onUpdated }: NoteGridProps) {
+  const grid = useNoteGrid({ clipId, songId, onMade, onUpdated });
   const { notes, channel, rows, rowCount, selectedRow, lowestPitch } = grid;
   if (grid.error && !notes) return <p className="error">{grid.error.message}</p>;
   if (!notes) return <p className="note-grid-loading">Reading the notes…</p>;
@@ -186,8 +195,19 @@ export function NoteGrid({ clipId, songId, onMade }: NoteGridProps) {
           onClick={grid.saveAsNewTake}
           data-tooltip="make a take of these notes and put it in the block"
         >
-          {grid.isMaking ? 'Making…' : 'Save as new take'}
+          {grid.isSaving ? 'Making…' : 'Save as new take'}
         </button>
+        {isTake && (
+          <button
+            type="button"
+            className="note-grid-update"
+            disabled={!grid.canUndo || grid.isMaking}
+            onClick={grid.updateTake}
+            data-tooltip="put these notes in place of this take; the old one is deleted"
+          >
+            {grid.isUpdating ? 'Updating…' : 'Update this take'}
+          </button>
+        )}
       </div>
       {grid.error && <p className="error">{grid.error.message}</p>}
     </div>

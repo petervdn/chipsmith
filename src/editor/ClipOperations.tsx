@@ -1,7 +1,7 @@
 // Changes to the selected block's clip made without Claude (docs/adr/0037): an octave or a semitone
 // up or down, and Edit notes, which opens the note grid. Each makes a take, rendered on the server,
-// and puts it in the block; it is listed with the clip's other takes. Shown only for a clip that
-// plays pitched notes.
+// and puts it in the block; it is listed with the clip's other takes. On a take, the note grid can
+// update it instead (docs/adr/0039). Shown only for a clip that plays pitched notes.
 import { useState } from 'react';
 import { useTransposeClip } from '../queries/clips.ts';
 import { NoteGrid } from './NoteGrid.tsx';
@@ -16,7 +16,13 @@ const STEPS = [
   { semitones: 12, label: 'Octave up' },
 ];
 
-type ClipOperationsProps = { clipId: string; songId: string; onMade: (clipId: string) => void };
+type ClipOperationsProps = {
+  clipId: string;
+  songId: string;
+  isTake: boolean;
+  onMade: (clipId: string) => void;
+  onReplaceClip: (fromClipId: string, toClipId: string) => void;
+};
 
 /**
  * Shows the quick changes to a clip.
@@ -24,10 +30,19 @@ type ClipOperationsProps = { clipId: string; songId: string; onMade: (clipId: st
  * @param props - The component's props.
  * @param props.clipId - The clip changed.
  * @param props.songId - The song it is changed in.
+ * @param props.isTake - Whether the clip is a take, which the note grid can update.
  * @param props.onMade - Called with the take's id once it is made, to put it in the block.
+ * @param props.onReplaceClip - Called with a take and the take that updates it, to put it in the
+ *   draft's blocks.
  * @returns The quick changes' element.
  */
-export function ClipOperations({ clipId, songId, onMade }: ClipOperationsProps) {
+export function ClipOperations({
+  clipId,
+  songId,
+  isTake,
+  onMade,
+  onReplaceClip,
+}: ClipOperationsProps) {
   const [isGridOpen, setGridOpen] = useState(false);
   const { mutate: transpose, isPending, error } = useTransposeClip();
   return (
@@ -61,7 +76,16 @@ export function ClipOperations({ clipId, songId, onMade }: ClipOperationsProps) 
         )}
       </div>
       {error && <p className="error">{error.message}</p>}
-      {isGridOpen && <NoteGrid key={clipId} clipId={clipId} songId={songId} onMade={onMade} />}
+      {isGridOpen && (
+        <NoteGrid
+          key={clipId}
+          clipId={clipId}
+          songId={songId}
+          isTake={isTake}
+          onMade={onMade}
+          onUpdated={onReplaceClip}
+        />
+      )}
     </div>
   );
 }

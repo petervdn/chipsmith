@@ -52,13 +52,18 @@
 
 .note-grid .note-grid-save {
   margin-left: auto;
+}
+
+.note-grid .note-grid-save,
+.note-grid .note-grid-update {
   border: 0;
   background: var(--accent);
   color: var(--on-accent);
   font-weight: 600;
 }
 
-.note-grid .note-grid-save:disabled {
+.note-grid .note-grid-save:disabled,
+.note-grid .note-grid-update:disabled {
   background: var(--raised);
   color: var(--muted);
 }

@@ -1,12 +1,13 @@
 /**
  * `/api/clips`: the pool listed, a clip's record changed (status, tags, a variation's label), a copy
  * of its .fur opened in Furnace, and its notes for the note grid; a take of it made by transposing
- * it or from its notes as edited (docs/adr/0037), and a take deleted (docs/adr/0039).
+ * it or from its notes as edited (docs/adr/0037), and a take deleted or updated from its notes
+ * (docs/adr/0039).
  */
 import type { IncomingMessage, ServerResponse } from 'node:http';
 import type { ClipListing, ClipOpened, TakeDeleted, TakeMade } from '../shared/api.types.ts';
 import { makeTransposedTake } from '../make/transpose-take.ts';
-import { makeNotesTake, readClipNotes } from '../make/notes-take.ts';
+import { NOTES_TAKE_LABEL, makeNotesTake, readClipNotes } from '../make/notes-take.ts';
 import {
   clipChangeSchema,
   notesRequestSchema,
@@ -73,10 +74,24 @@ export async function routeClips(
       song: songId,
       channel,
       rows,
+      isUpdate,
     } = parseChecked(notesRequestSchema, await readJsonBody(request), 'body');
     if (!store.songs.has(songId)) return sendError(response, 400, `no song ${songId}`);
-    const clipId = await makeNotesTake({ root: store.root, parent: clip, songId, channel, rows });
+    const take = { root: store.root, edited: clip, songId, channel, rows };
+    if (!isUpdate) {
+      const clipId = await makeNotesTake({ ...take, parent: clip, label: NOTES_TAKE_LABEL });
+      rescanStore(store);
+      const made: TakeMade = { clipId };
+      return sendJson(response, made);
+    }
+    const problem = getTakeDeletionProblem(store, id, songId);
+    const parent = clip.parent ? store.clips.get(clip.parent.clip) : undefined;
+    if (problem || !parent || !clip.variationLabel) {
+      return sendError(response, 409, problem ?? `${id} is not a take`);
+    }
+    const clipId = await makeNotesTake({ ...take, parent, label: clip.variationLabel });
     rescanStore(store);
+    replaceTake(store, id, clipId);
     const made: TakeMade = { clipId };
     return sendJson(response, made);
   }

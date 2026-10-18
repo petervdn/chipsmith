@@ -102,7 +102,8 @@ page but Home starts with breadcrumbs, the last its heading (Songs › Seven Tee
   Edit notes (the note grid: one pitched channel at a time, time down and pitch across, an octave
   and its top note shown with ‹ › for others; a tap puts a note in or selects one, buttons move it
   in pitch or time, make it longer or shorter or take it out, with undo; Save as new take makes a take of the
-  channel as edited, its effects left on their rows; `src/editor/NoteGrid.tsx`,
+  channel as edited, its effects left on their rows, and on a take Update this take puts one in its
+  place, its label kept and the old one deleted (0039); `src/editor/NoteGrid.tsx`,
   `make/notes-take.ts`, `fur/channel-rows.ts`),
   and Change this clip (0037): a prompt for takes of it, quick asks a tap adds, 1 to 5 takes, and its jobs on
   their way (`src/editor/ClipPrompt.tsx`). Editing (0022): drag a block to move it (to another track too),

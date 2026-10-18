@@ -1,7 +1,8 @@
 /**
  * A clip's notes for the note grid (docs/adr/0037), and a take made from them once edited, without
  * Claude: the clip's source.fur with one channel's notes, instruments and volumes set, its effects
- * kept, labelled "notes edited". It has no script, as none wrote it.
+ * kept, labelled "notes edited", or as the take it updates (docs/adr/0039). It has no script, as
+ * none wrote it.
  */
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
@@ -12,6 +13,9 @@ import { getChannelRows, getRowCount, setChannelRows } from '../fur/channel-rows
 import type { FurFile } from '../fur/fur.types.ts';
 import { readFurFile } from '../fur/read.ts';
 import { makeTake } from './make-take.ts';
+
+/** What a take of edited notes is called when it is made. */
+export const NOTES_TAKE_LABEL = 'notes edited';
 
 /** Rows to a beat when a song does not say. */
 const DEFAULT_ROWS_PER_BEAT = 4;
@@ -41,11 +45,15 @@ export function readClipNotes(root: string, clip: Clip): ClipNotes {
 }
 
 /**
- * Makes a take of a clip with one channel's rows edited, rendered and kept as a variation of it.
+ * Makes a take of a clip with one channel's rows edited, rendered and kept as a variation: of the
+ * clip edited, or of the clip a take was made from when it updates that take.
  *
  * @param take - What it is made of.
  * @param take.root - The data folder.
- * @param take.parent - The clip edited.
+ * @param take.edited - The clip whose notes were edited.
+ * @param take.parent - The clip the take is a variation of: the clip edited, or the parent of the
+ *   take it updates.
+ * @param take.label - The take's label: NOTES_TAKE_LABEL, or the label of the take it updates.
  * @param take.songId - The song it was edited in.
  * @param take.channel - The channel edited; one of the clip's pitched channels.
  * @param take.rows - The channel's rows as edited.
@@ -53,30 +61,34 @@ export function readClipNotes(root: string, clip: Clip): ClipNotes {
  */
 export async function makeNotesTake({
   root,
+  edited,
   parent,
+  label,
   songId,
   channel,
   rows,
 }: {
   root: string;
+  edited: Clip;
   parent: Clip;
+  label: string;
   songId: string;
   channel: number;
   rows: ChannelRow[];
 }): Promise<string> {
-  if (!parent.channels.includes(channel) || !isPitchedChannel(parent.chips, channel)) {
-    throw new Error(`channel ${channel} is not one of ${parent.id}'s pitched channels`);
+  if (!edited.channels.includes(channel) || !isPitchedChannel(edited.chips, channel)) {
+    throw new Error(`channel ${channel} is not one of ${edited.id}'s pitched channels`);
   }
   return makeTake({
     root,
     parent,
     channels: null,
     songId,
-    furFile: setChannelRows(readClipFur(root, parent.id), channel, rows),
-    label: 'notes edited',
+    furFile: setChannelRows(readClipFur(root, edited.id), channel, rows),
+    label,
     scriptFile: null,
     tags: [],
-    key: parent.key,
+    key: edited.key,
   });
 }
 

@@ -67,11 +67,16 @@ export const transposeRequestSchema = z.object({
 /** A take of a clip asked by transposing it. */
 export type TransposeRequest = z.input<typeof transposeRequestSchema>;
 
-/** A take of a clip asked from one channel's rows as the note grid edited them. */
+/**
+ * A take of a clip asked from one channel's rows as the note grid edited them: a new take, or the
+ * take edited updated (docs/adr/0039).
+ */
 export const notesRequestSchema = z.object({
   song: z.string(),
   channel: z.number().int().min(0),
   rows: z.array(channelRowSchema),
+  /** Whether the take made replaces the take edited, its label and parent kept, instead of being new. */
+  isUpdate: z.boolean().default(false),
 });
 
 /** A take of a clip asked from one channel's rows. */

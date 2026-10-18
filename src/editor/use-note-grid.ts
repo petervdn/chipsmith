@@ -1,11 +1,12 @@
 /**
  * The note grid's state (docs/adr/0037): the clip's notes read, the channel shown, its rows as
  * edited with their undo steps, the note selected, the pitches shown; the edits on the selected
- * note; and Save as new take, which makes a take of the edited rows and hands it on.
+ * note; and Save as new take, which makes a take of the edited rows and hands it on, or Update this
+ * take, which puts a take of them in place of the take edited (docs/adr/0039).
  */
 import { useState } from 'react';
 import type { ChannelRow } from '../../shared/clip-notes.schema.ts';
-import { useClipNotes, useSaveNotes } from '../queries/clips.ts';
+import { useClipNotes, useSaveNotes, useUpdateNotesTake } from '../queries/clips.ts';
 import {
   OCTAVE,
   changeNoteLength,
@@ -24,6 +25,8 @@ export type NoteGridTarget = {
   songId: string;
   /** Called with a take's id once it is made, to put it in the block. */
   onMade: (clipId: string) => void;
+  /** Called with the take edited and the take that updates it, to put it in the draft's blocks. */
+  onUpdated: (takeId: string, newTakeId: string) => void;
 };
 
 /**
@@ -33,16 +36,18 @@ export type NoteGridTarget = {
  * @param target.clipId - The clip whose notes are edited.
  * @param target.songId - The song it is edited in.
  * @param target.onMade - Called with the take's id once it is made.
+ * @param target.onUpdated - Called with the take edited and the take that updates it.
  * @returns The notes read (or the query's error), the channel shown and its rows as edited, the
  *   selected note's row, the lowest pitch shown, and the handlers.
  */
-export function useNoteGrid({ clipId, songId, onMade }: NoteGridTarget) {
+export function useNoteGrid({ clipId, songId, onMade, onUpdated }: NoteGridTarget) {
   const [channelIndex, setChannelIndex] = useState(0);
   const [edits, setEdits] = useState<ChannelRow[][]>([]);
   const [selectedRow, setSelectedRow] = useState<number | null>(null);
   const [shownLowest, setShownLowest] = useState<number | null>(null);
   const { data: notes, error } = useClipNotes(clipId);
-  const { mutate: saveNotes, isPending: isMaking, error: makeError } = useSaveNotes();
+  const { mutate: saveNotes, isPending: isSaving, error: saveError } = useSaveNotes();
+  const update = useUpdateNotesTake(onUpdated);
   const channel = notes?.channels[channelIndex] ?? notes?.channels[0];
   const rows = edits.at(-1) ?? channel?.rows ?? [];
   const rowCount = channel?.rowCount ?? 0;
@@ -70,7 +75,7 @@ export function useNoteGrid({ clipId, songId, onMade }: NoteGridTarget) {
   }
   return {
     notes,
-    error: error ?? makeError,
+    error: error ?? saveError ?? update.error,
     channel,
     channelIndex,
     rows,
@@ -78,7 +83,9 @@ export function useNoteGrid({ clipId, songId, onMade }: NoteGridTarget) {
     selectedRow,
     lowestPitch,
     canUndo: edits.length > 0,
-    isMaking,
+    isSaving,
+    isUpdating: update.isPending,
+    isMaking: isSaving || update.isPending,
     chooseChannel: (index: number) => {
       setChannelIndex(index);
       setEdits([]);
@@ -107,6 +114,10 @@ export function useNoteGrid({ clipId, songId, onMade }: NoteGridTarget) {
     saveAsNewTake: () => {
       if (!channel || edits.length === 0) return;
       saveNotes({ clipId, songId, channel: channel.channel, rows }, { onSuccess: onMade });
+    },
+    updateTake: () => {
+      if (!channel || edits.length === 0) return;
+      update.mutate({ clipId, songId, channel: channel.channel, rows });
     },
   };
 }

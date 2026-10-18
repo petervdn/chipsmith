@@ -47,8 +47,8 @@ type BlockDetailsProps = {
  * @param props.onLoop - Called to loop the block's bars and play them.
  * @param props.onToggleSolo - Called to solo the block's track, or stop soloing it.
  * @param props.onUseVersion - Called with a take's id to put it in the block.
- * @param props.onReplaceClip - Called with a clip's id and the one that replaces it (a take deleted),
- *   to put it in the draft's blocks.
+ * @param props.onReplaceClip - Called with a clip's id and the one that replaces it (a take deleted
+ *   or updated), to put it in the draft's blocks.
  * @param props.onRepeats - Called with how many times the block should play.
  * @param props.onDuplicate - Called to place a copy right after the block.
  * @param props.onUntrim - Called to let the block play its whole clip again.
@@ -162,7 +162,13 @@ export function BlockDetails({
             />
           )}
           {clip.channels.some((channel) => isPitchedChannel(clip.chips, channel)) && (
-            <ClipOperations clipId={clip.id} songId={song.id} onMade={onUseVersion} />
+            <ClipOperations
+              clipId={clip.id}
+              songId={song.id}
+              isTake={clip.parent?.relation === 'variation'}
+              onMade={onUseVersion}
+              onReplaceClip={onReplaceClip}
+            />
           )}
           <ClipPrompt clipId={clip.id} songId={song.id} />
         </>
