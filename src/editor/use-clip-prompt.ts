@@ -11,6 +11,9 @@ import { isJobRunning, useJobs, useSendTakes } from '../queries/jobs.ts';
 import { useSong } from '../queries/songs.ts';
 import { addAsk } from './clip-prompt.ts';
 
+/** How many takes the prompt asks for until the count is changed. */
+const FIRST_TAKE_COUNT = 1;
+
 /** What the prompt on a clip gives its component. */
 export type ClipPrompt = {
   text: string;
@@ -43,7 +46,7 @@ export type ClipPrompt = {
  */
 export function useClipPrompt({ clipId, songId }: { clipId: string; songId: string }): ClipPrompt {
   const [text, setText] = useState('');
-  const [takeCount, setTakeCount] = useState(3);
+  const [takeCount, setTakeCount] = useState(FIRST_TAKE_COUNT);
   const songGuideIds = useSong(songId).data?.song.guides.map((guide) => guide.id) ?? [];
   const { guides, chosenIds, toggleGuide, resetChoice } = useGuideChoice(songGuideIds);
   const { mutate, isPending, error } = useSendTakes();
