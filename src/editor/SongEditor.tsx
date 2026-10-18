@@ -86,8 +86,7 @@ export function SongEditor({ detail }: SongEditorProps) {
     width,
     trackNameWidth,
   });
-  useWheelZoom(scrollRef, { pixelsPerBar, trackNameWidth, zoomTo });
-  useWheelZoom(headScrollRef, { pixelsPerBar, trackNameWidth, zoomTo });
+  useWheelZoom([scrollRef, headScrollRef], { pixelsPerBar, trackNameWidth, zoomTo });
   const ticksPerBar = getTicksPerBar(song);
   function getPlaceTicks(place: BlockPlace): number {
     return getClipTicks(clips, getBlock(draft.tracks, place)?.clip ?? '', song.bpm);
