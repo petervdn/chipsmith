@@ -1,6 +1,6 @@
 /**
- * What a song's export is made of: the name its file is saved as, and how loud each track goes into
- * the mix. Knows nothing of audio or the page.
+ * What a song's export is made of: the name its file is saved as, how loud each track goes into
+ * the mix, and about how big the file will be. Knows nothing of audio or the page.
  */
 import type { ExportFormat } from '../../shared/audio-export.ts';
 import type { Track } from '../../shared/song.schema.ts';
@@ -51,4 +51,27 @@ export function getExportTrackGains(
 export function getDecibelsOver(peak: number): number | null {
   if (peak <= 1) return null;
   return Math.round(20 * Math.log10(peak) * 10) / 10;
+}
+
+/** Bytes to a megabyte, as a file's size is shown. */
+const MEGABYTE = 1000000;
+/** Sizes from this many megabytes on are shown without a decimal. */
+const WHOLE_MEGABYTES = 10;
+
+/**
+ * Returns about how big an export will be, as it is shown.
+ *
+ * @param format - The file type.
+ * @param seconds - How long the export is.
+ * @returns The size in megabytes ("7.9 MB"), or the range it falls in ("1.2–3.2 MB").
+ */
+export function getExportSizeText(format: ExportFormat, seconds: number): string {
+  const fewest = getMegabytesText(format.bytesPerSecond.fewest * seconds);
+  const most = getMegabytesText(format.bytesPerSecond.most * seconds);
+  return fewest === most ? `${most} MB` : `${fewest}–${most} MB`;
+}
+
+function getMegabytesText(bytes: number): string {
+  const megabytes = bytes / MEGABYTE;
+  return megabytes >= WHOLE_MEGABYTES ? String(Math.round(megabytes)) : megabytes.toFixed(1);
 }

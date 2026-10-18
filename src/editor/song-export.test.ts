@@ -4,7 +4,12 @@ import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { getExportFormat } from '../../shared/audio-export.ts';
 import type { Track } from '../../shared/song.schema.ts';
-import { getDecibelsOver, getExportFileName, getExportTrackGains } from './song-export.ts';
+import {
+  getDecibelsOver,
+  getExportFileName,
+  getExportSizeText,
+  getExportTrackGains,
+} from './song-export.ts';
 
 test("a file's name is the title, without what a name cannot hold, and the type's ending", () => {
   const flac = getExportFormat('flac');
@@ -28,4 +33,13 @@ test('a track goes in at its fader, and one left out at 0', () => {
 test('a peak over full scale is said in decibels', () => {
   assert.equal(getDecibelsOver(1), null);
   assert.equal(getDecibelsOver(2), 6);
+});
+
+test("a WAV's size is one figure, a FLAC's a range, whole megabytes from 10 on", () => {
+  const wav = getExportFormat('wav');
+  const flac = getExportFormat('flac');
+  assert.ok(wav && flac);
+  assert.equal(getExportSizeText(wav, 45), '7.9 MB');
+  assert.equal(getExportSizeText(wav, 180), '32 MB');
+  assert.equal(getExportSizeText(flac, 45), '1.2–3.2 MB');
 });

@@ -9,6 +9,7 @@ import { useState } from 'react';
 import { EXPORT_FORMATS } from '../../shared/audio-export.ts';
 import { Dialog } from '../dialog/Dialog.tsx';
 import type { LoopRange } from './loop-range.ts';
+import { getExportSizeText } from './song-export.ts';
 import type { ExportOutcome, ExportPhase, useSongExport } from './use-song-export.ts';
 import './ExportButton.css';
 
@@ -57,6 +58,7 @@ export function ExportButton({
   const { phase, error } = songExport;
   const format = EXPORT_FORMATS.find((each) => each.name === formatName);
   const isLoop = loopRange !== null && isLoopChosen;
+  const seconds = songExport.getSeconds(isLoop ? loopTimes : null);
   function close(): void {
     if (phase) return;
     setOpen(false);
@@ -166,7 +168,9 @@ export function ExportButton({
                   onChange={() => setFormatName(each.name)}
                 />
                 <span className="export-dialog-option-name">{each.label}</span>
-                <span className="export-dialog-option-about">{each.about}</span>
+                <span className="export-dialog-option-about">
+                  {each.about} · about {getExportSizeText(each, seconds)}
+                </span>
               </label>
             ))}
           </fieldset>

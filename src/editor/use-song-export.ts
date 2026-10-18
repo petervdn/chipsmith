@@ -7,7 +7,7 @@ import type { Clip } from '../../shared/clip.schema.ts';
 import type { Song } from '../../shared/song.schema.ts';
 import type { Loop } from '../playback/loop.ts';
 import { renderMixdown } from '../playback/mixdown.ts';
-import { getStretches } from '../playback/schedule.ts';
+import { getEnd, getStretches } from '../playback/schedule.ts';
 import { getPeak, getWavBytes } from '../playback/wav-file.ts';
 import { useEncodeAudio } from '../queries/exports.ts';
 import { getClipAudioUrl } from '../stores/player-store.ts';
@@ -43,7 +43,7 @@ type SongExportArguments = {
  * @param songExport.clips - The clips its blocks play.
  * @param songExport.unheardTrackIds - The tracks mute and solo leave unheard now.
  * @param songExport.loop - The loop drawn on the timeline, which can be exported instead, or null.
- * @returns The export, its phase and its error.
+ * @returns The export, how long it will be (`getSeconds`), its phase and its error.
  */
 export function useSongExport({ song, clips, unheardTrackIds, loop }: SongExportArguments) {
   const [phase, setPhase] = useState<ExportPhase | null>(null);
@@ -102,5 +102,15 @@ export function useSongExport({ song, clips, unheardTrackIds, loop }: SongExport
       setPhase(null);
     }
   }
-  return { phase, error, exportSong, clearError: () => setError(null) };
+  /**
+   * Returns how long an export will be.
+   *
+   * @param loopTimes - How many times the loop plays, or null for the whole song.
+   * @returns Its length in seconds.
+   */
+  function getSeconds(loopTimes: number | null): number {
+    if (loop && loopTimes) return (loop.end - loop.start) * loopTimes;
+    return getEnd(getStretches(song, clips));
+  }
+  return { phase, error, exportSong, getSeconds, clearError: () => setError(null) };
 }
