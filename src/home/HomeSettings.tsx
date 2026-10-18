@@ -15,8 +15,8 @@ export function HomeSettings() {
   return (
     <div className="home-settings">
       <p className="home-page-note">
-        This browser keeps light or dark mode, the volume and mute, the editor’s sizes and switches,
-        and what the New Song page was left at. This does not affect saved songs or clips.
+        This browser keeps light or dark mode, the volume and mute, and the editor’s sizes and
+        switches. This does not affect saved songs or clips.
       </p>
       <button type="button" className="home-settings-clear" onClick={clear}>
         {isCleared ? (

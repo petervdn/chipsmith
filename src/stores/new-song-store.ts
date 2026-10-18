@@ -1,12 +1,12 @@
 /**
- * What the New page was left at, kept in localStorage (Zustand's persist; docs/adr/0050) so the next
- * visit starts there: the prompt builder's parts and locks, the harmony chosen and its locks, and
- * the structure chosen, as edited. What is only the view's (the section selected, the presets
- * offered to hear, the part a progression is being chosen for) is not kept. The rules of choosing
- * are the New page's hooks' (new-song/); this only keeps the values.
+ * What the New page was left at, kept while the page is open and not saved (docs/adr/0051): going to
+ * another page and back finds it as it was, a reload starts afresh. It holds the prompt builder's
+ * parts and locks, the harmony chosen and its locks, and the structure chosen, as edited. What is
+ * only the view's (the section selected, the presets offered to hear, the part a progression is
+ * being chosen for) is not kept. The rules of choosing are the New page's hooks' (new-song/); this
+ * only keeps the values.
  */
 import { create } from 'zustand';
-import { createJSONStorage, persist } from 'zustand/middleware';
 import type { Section } from '../../shared/structure.schema.ts';
 import type { HarmonyChoice, HarmonyRowName } from '../new-song/random-harmony.ts';
 import { OPEN_HARMONY } from '../new-song/random-harmony.ts';
@@ -45,8 +45,6 @@ type NewSongStore = NewSongChoices & {
   setHarmony: (harmony: HarmonyChoice) => void;
   setLockedHarmonyRows: (lockedHarmonyRows: HarmonyRowName[]) => void;
   setStructure: (structure: StructureDraft) => void;
-  /** Starts New afresh: parts rolled again, nothing locked, everything Claude's choice. */
-  reset: () => void;
 };
 
 /** No structure chosen. */
@@ -73,28 +71,11 @@ function getFreshChoices(): NewSongChoices {
 }
 
 /** The New page's choices store. */
-export const useNewSongStore = create<NewSongStore>()(
-  persist(
-    (set) => ({
-      ...getFreshChoices(),
-      setParts: (parts) => set({ parts }),
-      setLockedParts: (lockedParts) => set({ lockedParts }),
-      setHarmony: (harmony) => set({ harmony }),
-      setLockedHarmonyRows: (lockedHarmonyRows) => set({ lockedHarmonyRows }),
-      setStructure: (structure) => set({ structure }),
-      reset: () => set(getFreshChoices()),
-    }),
-    {
-      name: 'chiptune.new-song',
-      version: 1,
-      storage: createJSONStorage(() => localStorage),
-      partialize: ({ parts, lockedParts, harmony, lockedHarmonyRows, structure }) => ({
-        parts,
-        lockedParts,
-        harmony,
-        lockedHarmonyRows,
-        structure,
-      }),
-    },
-  ),
-);
+export const useNewSongStore = create<NewSongStore>()((set) => ({
+  ...getFreshChoices(),
+  setParts: (parts) => set({ parts }),
+  setLockedParts: (lockedParts) => set({ lockedParts }),
+  setHarmony: (harmony) => set({ harmony }),
+  setLockedHarmonyRows: (lockedHarmonyRows) => set({ lockedHarmonyRows }),
+  setStructure: (structure) => set({ structure }),
+}));

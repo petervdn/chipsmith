@@ -1,6 +1,6 @@
 # 0050. New remembers what it was left at, in this browser
 
-- Status: accepted
+- Status: superseded by 0051
 - Date: 2026-10-18
 
 ## Context
