@@ -15,7 +15,7 @@
   --accent: #a6f23a;
   --on-accent: #18181b;
   --logo-outline: #18181b;
-  --keep: #c08400;
+  --keep: #f5b301;
   --reject: #dc2f4b;
   --on-reject: #ffffff;
   color-scheme: light;
@@ -64,7 +64,7 @@
     --accent: #a6f23a;
     --on-accent: #18181b;
     --logo-outline: transparent;
-    --keep: #ffb83d;
+    --keep: #ffc83d;
     --reject: #ff4d6d;
     color-scheme: dark;
   }
@@ -81,7 +81,7 @@
   --accent: #a6f23a;
   --on-accent: #18181b;
   --logo-outline: transparent;
-  --keep: #ffb83d;
+  --keep: #ffc83d;
   --reject: #ff4d6d;
   color-scheme: dark;
 }
