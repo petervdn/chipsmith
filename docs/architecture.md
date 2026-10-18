@@ -121,7 +121,7 @@ with its title alone, the Songs tab marked above it.
   channel as edited, its effects left on their rows, and on a take Update this take puts one in its
   place, its label kept and the old one deleted (0039); `src/editor/NoteGrid.tsx`,
   `make/notes-take.ts`, `fur/channel-rows.ts`),
-  and Change this clip (0037): a prompt for takes of it, quick asks a tap adds, 1 to 5 takes, the style guides to send along (the song's own chosen at first), and its jobs on
+  and Change this clip (0037): a prompt for takes of it, quick asks a tap adds, the style guides to send along as chips (the song's own chosen at first), 1 to 5 takes made by Create, and its jobs on
   their way (`src/editor/ClipPrompt.tsx`). Editing (0022): drag a block to move it (to another track too),
   its edges to trim it, drag a clip from the song's clips onto a track as a new block (a copy of its row held under the pointer where it was grabbed; the timeline scrolls at its edges only once the drag has been inside it), snapped to a grid; repeat, duplicate, untrim, remove; add, rename and remove tracks; mute and solo
   (not saved); a mixer, a row under the tracks opened and folded from its own head: a strip per track (its fader,

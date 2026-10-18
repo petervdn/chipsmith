@@ -5,7 +5,7 @@
 import { useState } from 'react';
 import type { Guide } from '../../shared/guide.schema.ts';
 import { FoldPanel } from '../new-song/FoldPanel.tsx';
-import '../lists/lists.css';
+import { GuideChipRow } from './GuideChipRow.tsx';
 import './GuideChips.css';
 
 type GuideChipsProps = {
@@ -29,26 +29,7 @@ export function GuideChips({ guides, chosenIds, onToggle }: GuideChipsProps) {
   return (
     <FoldPanel
       label="Style guides"
-      summary={
-        guides.length === 0 ? (
-          <p className="guide-chips-none">None yet.</p>
-        ) : (
-          <div className="guide-chips-row">
-            {guides.map((guide) => (
-              <button
-                key={guide.id}
-                type="button"
-                className={`list-chip guide-chips-chip${chosenIds.includes(guide.id) ? ' is-on' : ''}`}
-                onClick={() => onToggle(guide.id)}
-                aria-pressed={chosenIds.includes(guide.id)}
-                data-tooltip={guide.text.slice(0, 200)}
-              >
-                {guide.name}
-              </button>
-            ))}
-          </div>
-        )
-      }
+      summary={<GuideChipRow guides={guides} chosenIds={chosenIds} onToggle={onToggle} />}
       isOpen={isOpen}
       onToggle={() => setOpen(!isOpen)}
       toggleLabels={{ open: "hide the guides' texts", closed: 'read what the guides say' }}

@@ -1,0 +1,23 @@
+/* The look of GuideChipRow.tsx: the chips wrapping, a chosen one in inverted colours. */
+
+.guide-chip-row-none {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+
+.guide-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.guide-chip-row-chip {
+  min-height: var(--pill);
+}
+
+.guide-chip-row-chip.is-on {
+  border-color: var(--fg);
+  background: var(--fg);
+  color: var(--bg);
+}

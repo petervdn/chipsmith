@@ -1,11 +1,11 @@
 // The prompt on the selected clip (or the selected block's): a box to say what to change, quick asks
-// a tap adds, how many takes, and Send; the style guides to send along, the song's own chosen at
-// first; then the jobs making takes of it, on their way (docs/adr/0037). Its takes are listed with
+// a tap adds, the style guides to send along (the song's own chosen at first), how many takes and
+// Create; then the jobs making takes of it, on their way (docs/adr/0037). Its takes are listed with
 // the clip's versions.
 import { Minus, Plus } from 'lucide-react';
 import { MOST_TAKES, QUICK_ASKS } from './clip-prompt.ts';
 import { useClipPrompt } from './use-clip-prompt.ts';
-import { GuideChips } from '../guides/GuideChips.tsx';
+import { GuideChipRow } from '../guides/GuideChipRow.tsx';
 import '../jobs/jobs.css';
 import './ClipPrompt.css';
 
@@ -50,6 +50,14 @@ export function ClipPrompt({ clipId, songId }: ClipPromptProps) {
           </button>
         ))}
       </div>
+      <div className="clip-prompt-guides">
+        <span className="clip-prompt-label">Style guides to send along</span>
+        <GuideChipRow
+          guides={prompt.guides}
+          chosenIds={prompt.chosenGuideIds}
+          onToggle={prompt.toggleGuide}
+        />
+      </div>
       <div className="clip-prompt-send-row">
         <span className="clip-prompt-count" aria-label="how many takes">
           <button
@@ -79,14 +87,9 @@ export function ClipPrompt({ clipId, songId }: ClipPromptProps) {
         >
           {prompt.isSending
             ? 'Sending…'
-            : `Make ${takeCount} ${takeCount === 1 ? 'take' : 'takes'}`}
+            : `Create ${takeCount} ${takeCount === 1 ? 'take' : 'takes'}`}
         </button>
       </div>
-      <GuideChips
-        guides={prompt.guides}
-        chosenIds={prompt.chosenGuideIds}
-        onToggle={prompt.toggleGuide}
-      />
       {prompt.error && <p className="error">{prompt.error}</p>}
       {prompt.runningJobs.map((job) => (
         <p key={job.id} className="clip-prompt-running">

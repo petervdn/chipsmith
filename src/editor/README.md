@@ -12,7 +12,7 @@ saved, playing from a cursor, the zoom, and the selected block's clip or track.
 - `DetailsSection.tsx`: a section of the details as a card, or a bar: its kind (block, clip, track) over its title
 - `clip-prompt.ts`: the prompt on a clip: its quick asks, how a tap adds one, the most takes
 - `ClipPrompt.css`: the look of ClipPrompt.tsx
-- `ClipPrompt.tsx`: the prompt on a clip: what to change, how many takes, Send, the jobs on their way
+- `ClipPrompt.tsx`: the prompt on a clip: what to change, the style guides, how many takes, Create, the jobs on their way
 - `ClipPlayer.css`: the look of ClipPlayer.tsx
 - `ClipPlayer.tsx`: a clip's own player in its section: ▶ / ❚❚ and its waveform, the part played in full colour; a tap plays from there
 - `ClipFamily.css`: the look of ClipFamily.tsx

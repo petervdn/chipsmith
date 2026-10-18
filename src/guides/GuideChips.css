@@ -1,35 +1,5 @@
 /* The look of GuideChips.tsx, in its panel (FoldPanel.css). */
 
-/* the chips in the summary of their panel (FoldPanel.css); a chosen one in inverted colours */
-.guide-chips-none {
-  margin: 0;
-  color: var(--muted);
-  font-size: 0.875rem;
-}
-
-.guide-chips-help {
-  max-width: 40em;
-  margin: 0;
-  color: var(--muted);
-  font-size: 0.875rem;
-}
-
-.guide-chips-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.guide-chips-chip {
-  min-height: var(--pill);
-}
-
-.guide-chips-chip.is-on {
-  border-color: var(--fg);
-  background: var(--fg);
-  color: var(--bg);
-}
-
 /* the guides' texts, to read without leaving the prompt */
 .guide-chips-read > summary {
   display: flex;

@@ -1,5 +1,5 @@
-/* The look of ClipPrompt.tsx: the box, the quick asks as pills that wrap, the count and Send on
-   one row, and a line per job on its way. */
+/* The look of ClipPrompt.tsx: the box, the quick asks as pills that wrap, the style guides under
+   their label, the count and Create on one row, and a line per job on its way. */
 
 .clip-prompt {
   display: flex;
@@ -41,6 +41,17 @@
   color: var(--fg);
   font-size: 0.8125rem;
   cursor: pointer;
+}
+
+.clip-prompt-guides {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.clip-prompt-label {
+  color: var(--muted);
+  font-size: 0.8125rem;
 }
 
 .clip-prompt-send-row {
