@@ -1,29 +1,12 @@
 /* The look of LookSwitcher.tsx. */
 
-/* the switch between the looks: a step back, the look's name, a step on */
+/* the switch between light and dark (LookSwitcher.tsx) */
 .look-switcher {
-  display: inline-flex;
-  align-items: center;
+  min-width: var(--touch);
+  min-height: var(--touch);
   border: var(--border-width) solid var(--line);
   border-radius: var(--radius);
   background: var(--raised);
-}
-
-.look-switcher-step {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: var(--touch);
-  min-height: var(--touch);
-  padding: 0;
-  border: none;
-  background: none;
+  font-size: 1.125rem;
   cursor: pointer;
-}
-
-.look-switcher-name {
-  min-width: 3.5em;
-  text-align: center;
-  font-size: 0.8125rem;
-  color: var(--muted);
 }

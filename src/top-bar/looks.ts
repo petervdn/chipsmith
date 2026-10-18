@@ -1,6 +1,6 @@
 /**
- * The looks, light, the light greys and dark, in the order the top bar's switch goes through them;
- * style.css holds their colours under `data-look`. Knows nothing of the page.
+ * The two looks, light and dark, in the order the top bar's switch goes through them; style.css holds
+ * their colours under `data-look`. Knows nothing of the page.
  */
 
 /** A look: its id (style.css's `data-look`) and the name the top bar shows. */
@@ -10,14 +10,7 @@ export type Look = { id: string; name: string };
 export const DEFAULT_LOOK: Look = { id: 'light', name: 'Light' };
 
 /** Every look, in order. */
-export const LOOKS: Look[] = [
-  DEFAULT_LOOK,
-  { id: 'mist', name: 'Mist' },
-  { id: 'fog', name: 'Fog' },
-  { id: 'slate', name: 'Slate' },
-  { id: 'ash', name: 'Ash' },
-  { id: 'dark', name: 'Dark' },
-];
+export const LOOKS: Look[] = [DEFAULT_LOOK, { id: 'dark', name: 'Dark' }];
 
 /**
  * Returns the look of an id.

@@ -1,6 +1,6 @@
 // The bar at the top of every page: the logo (home), Songs, Guides, References and Jobs (with how
 // many are on their way, turning while one runs; the one open marked), a
-// button for a new song at the right, and the switch between the looks; always in the dark look.
+// button for a new song at the right, and the switch between light and dark; always in the dark look.
 import { Plus } from 'lucide-react';
 import { useRef } from 'react';
 import type { Job } from '../../shared/job.schema.ts';
