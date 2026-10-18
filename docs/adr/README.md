@@ -50,3 +50,4 @@ Consequences.
 | [0034](0034-a-song-may-use-a-chip-twice.md) | A song may use a chip twice | accepted |
 | [0035](0035-the-psg-joins-the-sid-leaves-new.md) | The MSX PSG is a chip a song can use; the New page stops offering the SID | accepted |
 | [0036](0036-a-clip-keeps-no-prompt.md) | A clip keeps no prompt; a variation says what it changed | accepted |
+| [0037](0037-a-change-to-a-clip-is-a-take.md) | A change to a clip is a take, swapped into its block | accepted |

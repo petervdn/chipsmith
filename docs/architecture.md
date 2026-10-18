@@ -98,7 +98,7 @@ page but Home starts with breadcrumbs, the last its heading (Songs › Seven Tee
   of more than one channel; what cutting does to the sound: docs/splitting.md): a track per channel
   that plays, each one block of a new clip, the whole song on that channel alone, rendered in the
   background and shown striped until its audio is in (`fur/cut.ts`, `make/split-song.ts`,
-  `POST /api/songs/<id>/split`). To come: a prompt on the selection.
+  `POST /api/songs/<id>/split`). To come: takes on the selected block's clip (0037).
 - **Clips** (`/clips`): the pool, with the same filter bar; not in the top bar (0029), opened by its
   address.
 - **Guides** (`/guides`): the style guides, made, edited and deleted.
@@ -214,7 +214,10 @@ phases:
 
 ## Still to build
 
-1. A prompt on the editor's selection, its new clips replacing the blocks, with versions (0014).
+1. Takes (0037): a prompt on a selected block's clip makes takes, variations each with its label;
+   the block shows its clip's versions as pills, a tap swaps a take in (a draft), auditioned on a
+   loop of the block's bars. Then operations (octave, transpose) and a one-channel note grid, each
+   another way to make a take.
 2. A song's sections as written, if wanted: the script returns the sections it wrote, kept on the
    whole clip (`sections` in its record) and drawn where its block plays, moved with it and cut by
    its trim. For now the structure as it was sent is drawn instead (0030).
