@@ -1,18 +1,17 @@
 /**
  * The note grid's edits of one channel's rows (docs/adr/0037): a note put in, moved in pitch or time,
- * made longer or shorter, taken out; how long a note sounds; and the pitches the grid shows. A
+ * made longer or shorter, taken out; how long a note sounds; and the range of pitches the grid lays
+ * out. A
  * channel plays one note at a time, so a row holds at most one. Each edit takes the rows and gives
  * new ones, or the same when it cannot be done. Knows nothing of the page.
  */
 import type { ChannelRow } from '../../shared/clip-notes.schema.ts';
 import { NOTE_OFF } from '../../fur/notes.ts';
 
-/** How many pitches the grid shows across: an octave and its top note. */
-export const PITCHES_SHOWN = 13;
 /** Semitones to an octave. */
-export const OCTAVE = 12;
-/** The lowest pitch shown for a channel without notes: C-2. */
-const EMPTY_LOWEST_PITCH = 84;
+const OCTAVE = 12;
+/** The pitch a channel without notes is laid out around: C-2. */
+const EMPTY_PITCH = 84;
 /** The highest note a row can hold that is a pitch; above it are note offs and releases. */
 const HIGHEST_NOTE = NOTE_OFF - 1;
 
@@ -172,24 +171,32 @@ export function removeNote(rows: ChannelRow[], row: number): ChannelRow[] {
   });
 }
 
+/** The pitches the grid lays out across, and where the notes are among them. */
+export type PitchRange = {
+  /** The lowest pitch laid out. */
+  lowest: number;
+  /** The highest pitch laid out. */
+  highest: number;
+  /** The pitch halfway between the lowest and the highest note, to scroll to at first. */
+  middle: number;
+};
+
 /**
- * Returns the lowest pitch the grid shows at first: for notes that fit in what it shows, the C at or
- * below the lowest when they fit from there, else the pitch that puts the highest at the top; for
- * notes spread wider, the C that puts the middle of them nearest its middle.
+ * Returns the pitches the grid lays out: from the C an octave below the lowest note's octave to the
+ * B an octave above the highest note's, within the notes Furnace plays.
  *
- * @param rows - The channel's rows.
- * @returns The lowest note shown.
+ * @param rows - The rows whose notes are laid out (the channel as read and as edited, together).
+ * @returns The lowest and highest pitch laid out, and the middle of the notes.
  */
-export function getFirstLowestPitch(rows: ChannelRow[]): number {
+export function getPitchRange(rows: ChannelRow[]): PitchRange {
   const notes = rows.flatMap((row) => (isPitch(row) && row.note !== null ? [row.note] : []));
-  if (notes.length === 0) return EMPTY_LOWEST_PITCH;
-  const lowest = Math.min(...notes);
-  const highest = Math.max(...notes);
-  if (highest - lowest < PITCHES_SHOWN) {
-    const fromC = Math.floor(lowest / OCTAVE) * OCTAVE;
-    return fromC + PITCHES_SHOWN - 1 >= highest ? fromC : highest - (PITCHES_SHOWN - 1);
-  }
-  return Math.round(((lowest + highest) / 2 - OCTAVE / 2) / OCTAVE) * OCTAVE;
+  const lowestNote = notes.length > 0 ? Math.min(...notes) : EMPTY_PITCH;
+  const highestNote = notes.length > 0 ? Math.max(...notes) : EMPTY_PITCH;
+  return {
+    lowest: Math.max(0, (Math.floor(lowestNote / OCTAVE) - 1) * OCTAVE),
+    highest: Math.min(HIGHEST_NOTE, (Math.floor(highestNote / OCTAVE) + 2) * OCTAVE - 1),
+    middle: (lowestNote + highestNote) / 2,
+  };
 }
 
 function getInstrumentBefore(rows: ChannelRow[], row: number): number | null {

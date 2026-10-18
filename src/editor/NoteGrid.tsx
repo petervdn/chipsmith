@@ -1,13 +1,14 @@
 // The note grid (docs/adr/0037): one channel of the selected block's clip, time down the screen and
-// pitch across, an octave and its top note at a time (‹ › for others). A tap on an empty place puts
-// a note there; a tap on a note selects it, and the buttons under the grid move it in pitch or
-// time, make it longer or shorter, or take it out. Save as new take makes a take of the edits and
-// puts it in the block; on a take, Update this take puts one in its place (docs/adr/0039). Notes
-// outside the pitches shown are marked at the edge.
+// pitch across, in a box that scrolls both ways over the channel's range (docs/adr/0040), the pitch
+// names at the top and the bar numbers at the left staying in view. A tap on an empty place puts a
+// note there; a tap on a note selects it, and the buttons under the grid move it in pitch or time,
+// make it longer or shorter, or take it out. Save as new take makes a take of the edits and puts it
+// in the block; on a take, Update this take puts one in its place (docs/adr/0039).
 import type { MouseEvent } from 'react';
 import { getNoteName } from '../../fur/notes.ts';
-import { PITCHES_SHOWN, getNoteEnd, isPitch } from './note-grid.ts';
+import { getNoteEnd, isPitch } from './note-grid.ts';
 import { useNoteGrid } from './use-note-grid.ts';
+import { useNoteGridScroll } from './use-note-grid-scroll.ts';
 import '../jobs/jobs.css';
 import './NoteGrid.css';
 
@@ -15,6 +16,8 @@ import './NoteGrid.css';
 const ROW_HEIGHT = 20;
 /** The width of the bar numbers' column, in pixels. */
 const GUTTER = 32;
+/** The width of a pitch's column, in pixels: wide enough to tap. */
+const COLUMN_WIDTH = 28;
 
 type NoteGridProps = {
   clipId: string;
@@ -37,25 +40,33 @@ type NoteGridProps = {
  */
 export function NoteGrid({ clipId, songId, isTake, onMade, onUpdated }: NoteGridProps) {
   const grid = useNoteGrid({ clipId, songId, onMade, onUpdated });
-  const { notes, channel, rows, rowCount, selectedRow, lowestPitch } = grid;
+  const { notes, channel, rows, rowCount, selectedRow, pitchRange } = grid;
+  const lowestPitch = pitchRange.lowest;
+  const scrollRef = useNoteGridScroll({
+    channel: channel?.channel ?? null,
+    lowestPitch,
+    middlePitch: pitchRange.middle,
+    columnWidth: COLUMN_WIDTH,
+    gutter: GUTTER,
+  });
   if (grid.error && !notes) return <p className="error">{grid.error.message}</p>;
   if (!notes) return <p className="note-grid-loading">Reading the notes…</p>;
   if (!channel) return <p className="note-grid-loading">This clip plays no pitched notes.</p>;
-  const pitches = Array.from({ length: PITCHES_SHOWN }, (_unused, i) => lowestPitch + i);
-  const highestPitch = lowestPitch + PITCHES_SHOWN - 1;
+  const pitchCount = pitchRange.highest - lowestPitch + 1;
+  const pitches = Array.from({ length: pitchCount }, (_unused, i) => lowestPitch + i);
   const bars = Math.ceil(rowCount / notes.rowsPerBar);
   function tap(event: MouseEvent<HTMLDivElement>): void {
     const box = event.currentTarget.getBoundingClientRect();
     const row = Math.floor((event.clientY - box.top) / ROW_HEIGHT);
-    const column = Math.floor(((event.clientX - box.left) / box.width) * PITCHES_SHOWN);
-    if (row >= 0 && row < rowCount && column >= 0 && column < PITCHES_SHOWN) {
+    const column = Math.floor((event.clientX - box.left) / COLUMN_WIDTH);
+    if (row >= 0 && row < rowCount && column >= 0 && column < pitchCount) {
       grid.tapCell(row, lowestPitch + column);
     }
   }
   return (
     <div className="note-grid">
-      <div className="note-grid-head">
-        {notes.channels.length > 1 && (
+      {notes.channels.length > 1 && (
+        <div className="note-grid-head">
           <select
             value={grid.channelIndex}
             onChange={(event) => grid.chooseChannel(Number(event.target.value))}
@@ -67,88 +78,63 @@ export function NoteGrid({ clipId, songId, isTake, onMade, onUpdated }: NoteGrid
               </option>
             ))}
           </select>
-        )}
-        <span className="note-grid-range">
-          <button
-            type="button"
-            onClick={() => grid.shiftPitches(-1)}
-            data-tooltip="show an octave lower"
-            aria-label="show an octave lower"
-          >
-            ‹
-          </button>
-          {getNoteName(lowestPitch)} – {getNoteName(highestPitch)}
-          <button
-            type="button"
-            onClick={() => grid.shiftPitches(1)}
-            data-tooltip="show an octave higher"
-            aria-label="show an octave higher"
-          >
-            ›
-          </button>
-        </span>
-      </div>
-      <div className="note-grid-scroll">
-        <div className="note-grid-pitches" style={{ paddingLeft: GUTTER }}>
-          {pitches.map((pitch) => (
-            <span key={pitch} className={isSharp(pitch) ? 'is-sharp' : ''}>
-              {getNoteName(pitch).replace('-', '')}
-            </span>
-          ))}
         </div>
-        <div className="note-grid-body" style={{ height: rowCount * ROW_HEIGHT }}>
-          <div className="note-grid-bars" style={{ width: GUTTER }}>
-            {Array.from({ length: bars }, (_unused, bar) => (
-              <span key={bar} style={{ top: bar * notes.rowsPerBar * ROW_HEIGHT }}>
-                {bar + 1}
+      )}
+      <div className="note-grid-scroll" ref={scrollRef}>
+        <div className="note-grid-sheet" style={{ width: GUTTER + pitchCount * COLUMN_WIDTH }}>
+          <div className="note-grid-pitches">
+            <span className="note-grid-corner" style={{ width: GUTTER }} />
+            {pitches.map((pitch) => (
+              <span
+                key={pitch}
+                className={isSharp(pitch) ? 'is-sharp' : ''}
+                style={{ width: COLUMN_WIDTH }}
+              >
+                {getNoteName(pitch).replace('-', '')}
               </span>
             ))}
           </div>
-          <div
-            className="note-grid-cells"
-            style={{
-              left: GUTTER,
-              backgroundSize: `100% ${ROW_HEIGHT}px, 100% ${notes.rowsPerBeat * ROW_HEIGHT}px, 100% ${notes.rowsPerBar * ROW_HEIGHT}px`,
-            }}
-            onClick={tap}
-          >
-            {pitches.map((pitch, column) =>
-              isSharp(pitch) ? (
-                <span
-                  key={pitch}
-                  className="note-grid-sharp"
-                  style={getColumnStyle(column)}
-                  aria-hidden="true"
-                />
-              ) : null,
-            )}
-            {rows.filter(isPitch).map((row) => {
-              const note = row.note ?? 0;
-              const end = getNoteEnd(rows, row.row, rowCount);
-              const isSelected = row.row === selectedRow;
-              if (note < lowestPitch || note > highestPitch) {
+          <div className="note-grid-body" style={{ height: rowCount * ROW_HEIGHT }}>
+            <div className="note-grid-bars" style={{ width: GUTTER }}>
+              {Array.from({ length: bars }, (_unused, bar) => (
+                <span key={bar} style={{ top: bar * notes.rowsPerBar * ROW_HEIGHT }}>
+                  {bar + 1}
+                </span>
+              ))}
+            </div>
+            <div
+              className="note-grid-cells"
+              style={{
+                width: pitchCount * COLUMN_WIDTH,
+                backgroundSize: `100% ${ROW_HEIGHT}px, 100% ${notes.rowsPerBeat * ROW_HEIGHT}px, 100% ${notes.rowsPerBar * ROW_HEIGHT}px`,
+              }}
+              onClick={tap}
+            >
+              {pitches.map((pitch, column) =>
+                isSharp(pitch) ? (
+                  <span
+                    key={pitch}
+                    className="note-grid-sharp"
+                    style={getColumnStyle(column)}
+                    aria-hidden="true"
+                  />
+                ) : null,
+              )}
+              {rows.filter(isPitch).map((row) => {
+                const end = getNoteEnd(rows, row.row, rowCount);
                 return (
                   <span
                     key={row.row}
-                    className={`note-grid-away ${note < lowestPitch ? 'is-below' : 'is-above'}${isSelected ? ' is-selected' : ''}`}
-                    style={{ top: row.row * ROW_HEIGHT }}
-                  >
-                    {getNoteName(note)}
-                  </span>
+                    className={`note-grid-note${row.row === selectedRow ? ' is-selected' : ''}`}
+                    style={{
+                      ...getColumnStyle((row.note ?? 0) - lowestPitch),
+                      top: row.row * ROW_HEIGHT,
+                      height: (end - row.row) * ROW_HEIGHT - 1,
+                    }}
+                  />
                 );
-              }
-              return (
-                <span
-                  key={row.row}
-                  className={`note-grid-note${isSelected ? ' is-selected' : ''}`}
-                  style={{
-                    ...getColumnStyle(note - lowestPitch),
-                    top: row.row * ROW_HEIGHT,
-                    height: (end - row.row) * ROW_HEIGHT - 1,
-                  }}
-                />
-              );
-            })}
+              })}
+            </div>
           </div>
         </div>
       </div>
@@ -227,12 +213,9 @@ function isSharp(pitch: number): boolean {
 /**
  * Returns where a column of the grid is, across.
  *
- * @param column - The column, from the lowest pitch shown.
- * @returns Its left and width, as shares of the grid.
+ * @param column - The column, from the lowest pitch laid out.
+ * @returns Its left and width, in pixels.
  */
-function getColumnStyle(column: number): { left: string; width: string } {
-  return {
-    left: `${(column / PITCHES_SHOWN) * 100}%`,
-    width: `${100 / PITCHES_SHOWN}%`,
-  };
+function getColumnStyle(column: number): { left: number; width: number } {
+  return { left: column * COLUMN_WIDTH, width: COLUMN_WIDTH };
 }

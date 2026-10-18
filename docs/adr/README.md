@@ -53,3 +53,4 @@ Consequences.
 | [0037](0037-a-change-to-a-clip-is-a-take.md) | A change to a clip is a take, swapped into its block | accepted |
 | [0038](0038-zod-schemas-are-the-source-of-truth.md) | Data that is validated is a Zod schema, and its type is inferred from it | accepted |
 | [0039](0039-a-take-not-wanted-is-deleted.md) | A take not wanted is deleted; the take in a block can be updated | accepted |
+| [0040](0040-the-note-grid-scrolls-both-ways.md) | The note grid lays out the channel's whole range and scrolls both ways | accepted |

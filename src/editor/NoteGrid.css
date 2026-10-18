@@ -1,6 +1,6 @@
-/* The look of NoteGrid.tsx: its head (the channel, the pitches shown), the grid in a box that
-   scrolls down (pitch names on top, bar numbers at the left, lines at rows, beats and bars, the
-   sharps shaded, notes as bars down their length), and its buttons on rows that wrap. */
+/* The look of NoteGrid.tsx: its head (the channel), the grid in a box that scrolls both ways
+   (pitch names staying at the top, bar numbers staying at the left, lines at rows, beats and bars,
+   the sharps shaded, notes as bars down their length), and its buttons on rows that wrap. */
 
 .note-grid {
   display: flex;
@@ -25,14 +25,6 @@
 
 .note-grid-head select {
   min-height: var(--touch);
-}
-
-.note-grid-range {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin-left: auto;
-  font-variant-numeric: tabular-nums;
 }
 
 .note-grid button {
@@ -70,7 +62,8 @@
 
 .note-grid-scroll {
   max-height: 60vh;
-  overflow-y: auto;
+  overflow: auto;
+  overscroll-behavior: contain;
   border: var(--border-width) solid var(--line);
   border-radius: var(--radius);
   background: var(--card);
@@ -79,9 +72,8 @@
 .note-grid-pitches {
   position: sticky;
   top: 0;
-  z-index: 2;
-  display: grid;
-  grid-template-columns: repeat(13, 1fr);
+  z-index: 3;
+  display: flex;
   border-bottom: var(--border-width) solid var(--line);
   background: var(--card);
   color: var(--muted);
@@ -89,19 +81,33 @@
   text-align: center;
 }
 
+.note-grid-pitches span {
+  flex: none;
+}
+
+.note-grid-corner {
+  position: sticky;
+  left: 0;
+  align-self: stretch;
+  background: var(--card);
+}
+
 .note-grid-pitches .is-sharp {
   background: var(--raised);
 }
 
 .note-grid-body {
-  position: relative;
+  display: flex;
 }
 
 .note-grid-bars {
-  position: absolute;
-  top: 0;
-  bottom: 0;
+  position: sticky;
   left: 0;
+  z-index: 2;
+  flex: none;
+  box-sizing: border-box;
+  border-right: var(--border-width) solid var(--line);
+  background: var(--card);
   color: var(--muted);
   font-size: 0.625rem;
 }
@@ -112,10 +118,8 @@
 }
 
 .note-grid-cells {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
+  position: relative;
+  flex: none;
   background-image:
     linear-gradient(
       to bottom,
@@ -147,27 +151,4 @@
 .note-grid-note.is-selected {
   outline: 2px solid var(--fg);
   outline-offset: 1px;
-}
-
-.note-grid-away {
-  position: absolute;
-  padding: 0 3px;
-  border-radius: 3px;
-  background: var(--raised);
-  color: var(--muted);
-  font-size: 0.625rem;
-  line-height: 18px;
-  pointer-events: none;
-}
-
-.note-grid-away.is-below {
-  left: 0;
-}
-
-.note-grid-away.is-above {
-  right: 0;
-}
-
-.note-grid-away.is-selected {
-  outline: 2px solid var(--fg);
 }

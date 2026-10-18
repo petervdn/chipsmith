@@ -35,9 +35,9 @@ saved, playing from a cursor, the zoom, and the selected block's clip or track.
 - `Mixer.tsx`: the mixer under the timeline: a strip per track and the master (the player's volume)
 - `MixerStrip.css`: the look of MixerStrip.tsx
 - `MixerStrip.tsx`: a track's strip: its name, fader beside its meter, level, M and S
-- `note-grid.ts`: the note grid's edits of a channel's rows: a note put in, moved, made longer or shorter, taken out
+- `note-grid.ts`: the note grid's edits of a channel's rows: a note put in, moved, made longer or shorter, taken out; the pitches laid out
 - `NoteGrid.css`: the look of NoteGrid.tsx
-- `NoteGrid.tsx`: the note grid: one channel, time down and pitch across, its notes edited and tried as a take
+- `NoteGrid.tsx`: the note grid: one channel, time down and pitch across in a box that scrolls both ways, its notes edited and tried as a take
 - `MetronomeControls.css`: the look of MetronomeControls.tsx
 - `MetronomeControls.tsx`: the metronome's switch and its volume slider, in the editor bar
 - `structure-lane.ts`: where the structure a song was asked for lies on its timeline, from its start
@@ -75,6 +75,7 @@ saved, playing from a cursor, the zoom, and the selected block's clip or track.
 - `use-loop.ts`: the editor's loop: on or off, the whole song until one is drawn
 - `use-loop-drag.ts`: dragging in the loop row: an edge, the loop, or a new one drawn
 - `use-metronome.ts`: the metronome clicking while the song plays, when it is on
+- `use-note-grid-scroll.ts`: where the note grid's box is scrolled across: to the notes at first, kept on them as the range grows
 - `use-note-grid.ts`: the note grid's state: the notes read, the channel, the edits and their undo, Save as new take
 - `use-playhead-line.ts`: the playhead moved every frame while the song plays
 - `use-press-drag.ts`: a press that becomes a drag: a mouse at once, a finger after holding still

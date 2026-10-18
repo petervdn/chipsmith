@@ -1,12 +1,12 @@
 // The note grid's edits: a note put in, moved in pitch and time with the off that ends it, made
-// longer and shorter, taken out; none where a note is in the way; and the pitches shown at first.
+// longer and shorter, taken out; none where a note is in the way; and the pitches laid out.
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import type { ChannelRow } from '../../shared/clip-notes.schema.ts';
 import {
   changeNoteLength,
-  getFirstLowestPitch,
   getNoteEnd,
+  getPitchRange,
   moveNotePitch,
   moveNoteTime,
   putNote,
@@ -79,12 +79,11 @@ test('a note taken out leaves its row’s volume', () => {
   assert.equal(removeNote(ROWS, 0).length, 3);
 });
 
-test('the grid starts at the C below the notes, or near the middle of a wide spread', () => {
-  assert.equal(getFirstLowestPitch(ROWS), 96);
-  const octaveJumps = [77, 89].map((note, row) => ({ row, note, instrument: 3, volume: null }));
-  assert.equal(getFirstLowestPitch(octaveJumps), 77);
-  assert.equal(
-    getFirstLowestPitch([...ROWS, { row: 7, note: 130, instrument: 3, volume: null }]),
-    108,
-  );
+test('the grid lays out an octave either side of the notes’ octaves', () => {
+  assert.deepEqual(getPitchRange(ROWS), { lowest: 84, highest: 119, middle: 98 });
+  const wide = [...ROWS, { row: 7, note: 130, instrument: 3, volume: null }];
+  assert.deepEqual(getPitchRange(wide), { lowest: 84, highest: 143, middle: 113 });
+  assert.deepEqual(getPitchRange([]), { lowest: 72, highest: 107, middle: 84 });
+  const lowest = [{ row: 0, note: 3, instrument: 3, volume: null }];
+  assert.equal(getPitchRange(lowest).lowest, 0);
 });

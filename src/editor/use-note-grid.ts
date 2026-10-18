@@ -1,6 +1,6 @@
 /**
  * The note grid's state (docs/adr/0037): the clip's notes read, the channel shown, its rows as
- * edited with their undo steps, the note selected, the pitches shown; the edits on the selected
+ * edited with their undo steps, the note selected, the pitches laid out; the edits on the selected
  * note; and Save as new take, which makes a take of the edited rows and hands it on, or Update this
  * take, which puts a take of them in place of the take edited (docs/adr/0039).
  */
@@ -8,10 +8,9 @@ import { useState } from 'react';
 import type { ChannelRow } from '../../shared/clip-notes.schema.ts';
 import { useClipNotes, useSaveNotes, useUpdateNotesTake } from '../queries/clips.ts';
 import {
-  OCTAVE,
   changeNoteLength,
-  getFirstLowestPitch,
   getNoteEnd,
+  getPitchRange,
   isPitch,
   moveNotePitch,
   moveNoteTime,
@@ -38,20 +37,19 @@ export type NoteGridTarget = {
  * @param target.onMade - Called with the take's id once it is made.
  * @param target.onUpdated - Called with the take edited and the take that updates it.
  * @returns The notes read (or the query's error), the channel shown and its rows as edited, the
- *   selected note's row, the lowest pitch shown, and the handlers.
+ *   selected note's row, the pitches laid out, and the handlers.
  */
 export function useNoteGrid({ clipId, songId, onMade, onUpdated }: NoteGridTarget) {
   const [channelIndex, setChannelIndex] = useState(0);
   const [edits, setEdits] = useState<ChannelRow[][]>([]);
   const [selectedRow, setSelectedRow] = useState<number | null>(null);
-  const [shownLowest, setShownLowest] = useState<number | null>(null);
   const { data: notes, error } = useClipNotes(clipId);
   const { mutate: saveNotes, isPending: isSaving, error: saveError } = useSaveNotes();
   const update = useUpdateNotesTake(onUpdated);
   const channel = notes?.channels[channelIndex] ?? notes?.channels[0];
   const rows = edits.at(-1) ?? channel?.rows ?? [];
   const rowCount = channel?.rowCount ?? 0;
-  const lowestPitch = shownLowest ?? getFirstLowestPitch(rows);
+  const pitchRange = getPitchRange([...(channel?.rows ?? []), ...rows]);
   function edit(next: ChannelRow[]): void {
     if (next !== rows) setEdits([...edits, next]);
   }
@@ -81,7 +79,7 @@ export function useNoteGrid({ clipId, songId, onMade, onUpdated }: NoteGridTarge
     rows,
     rowCount,
     selectedRow,
-    lowestPitch,
+    pitchRange,
     canUndo: edits.length > 0,
     isSaving,
     isUpdating: update.isPending,
@@ -90,10 +88,8 @@ export function useNoteGrid({ clipId, songId, onMade, onUpdated }: NoteGridTarge
       setChannelIndex(index);
       setEdits([]);
       setSelectedRow(null);
-      setShownLowest(null);
     },
     tapCell,
-    shiftPitches: (octaves: number) => setShownLowest(lowestPitch + octaves * OCTAVE),
     movePitch: (semitones: number) => editSelected((row) => moveNotePitch(rows, row, semitones)),
     moveTime: (by: number) => {
       if (selectedRow === null) return;
