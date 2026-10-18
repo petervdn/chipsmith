@@ -1,6 +1,6 @@
 # src/top-bar/
 
-The bar at the top of every page: the logo, the tabs with their counts, + New song, and the switch
+The bar at the top of every page: the logo, the tabs with their counts, + New song, a link to the source on GitHub and the switch
 between light and dark, always in the dark look's colours.
 
 - `Logo.css`: the look of Logo.tsx

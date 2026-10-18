@@ -1,7 +1,8 @@
 // The bar at the top of every page: the logo (home), Songs, Guides, References and Jobs (with how
 // many are on their way, turning while one runs; the one open marked), a
-// button for a new song at the right, and the switch between light and dark; always in the dark look.
-import { Plus } from 'lucide-react';
+// button for a new song at the right, a link to the source on GitHub and the switch between light
+// and dark; always in the dark look.
+import { CodeXml, Plus } from 'lucide-react';
 import { useRef } from 'react';
 import type { Job } from '../../shared/job.schema.ts';
 import { Logo } from './Logo.tsx';
@@ -13,6 +14,7 @@ import '../jobs/jobs.css';
 import './TopBar.css';
 
 const LOGO_SIZE = 32;
+const SOURCE_URL = 'https://github.com/petervdn/chipsmith';
 
 type TopBarProps = { route: Route; jobs: Job[] };
 
@@ -53,6 +55,16 @@ export function TopBar({ route, jobs }: TopBarProps) {
       </nav>
       <a href="/new" className="top-bar-new">
         <Plus /> New song
+      </a>
+      <a
+        href={SOURCE_URL}
+        className="top-bar-source"
+        target="_blank"
+        rel="noreferrer"
+        data-tooltip="the source on GitHub"
+        aria-label="the source on GitHub"
+      >
+        <CodeXml />
       </a>
       <LookSwitcher />
     </header>
