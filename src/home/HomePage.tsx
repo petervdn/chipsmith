@@ -82,8 +82,10 @@ export function HomePage({ jobs }: HomePageProps) {
             <p>
               You say what you want; Claude composes it for real sound chips (the NES, the MSX's PSG
               and Konami's SCC) and writes it as a{' '}
-              <a href="https://github.com/tildearrow/furnace">Furnace</a> file, which Furnace
-              renders. The songs show up here, to listen to on a phone too.
+              <a href="https://github.com/tildearrow/furnace" target="_blank" rel="noreferrer">
+                Furnace
+              </a>{' '}
+              file, which Furnace renders. The songs show up here, to listen to on a phone too.
             </p>
             <p>
               A song is never final. Opened, it is an editor: tracks of blocks, each playing a clip.
@@ -112,9 +114,15 @@ export function HomePage({ jobs }: HomePageProps) {
       </div>
       <HomeLatest />
       <p className="home-page-note home-page-footer">
-        Setting it up, its settings and how it is built: the <a href={README_URL}>README</a>. An
-        unofficial tool: it uses Furnace's command line and is not part of the Furnace project.{' '}
-        <a href={SOURCE_URL}>Source on GitHub</a>.
+        Setting it up, its settings and how it is built: the{' '}
+        <a href={README_URL} target="_blank" rel="noreferrer">
+          README
+        </a>
+        . An unofficial tool: it uses Furnace's command line and is not part of the Furnace project.{' '}
+        <a href={SOURCE_URL} target="_blank" rel="noreferrer">
+          Source on GitHub
+        </a>
+        .
       </p>
     </section>
   );

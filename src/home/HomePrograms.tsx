@@ -62,9 +62,12 @@ export function HomePrograms() {
         <p className="home-page-note">
           Two Furnaces are set here. The renderer turns the songs into audio: a build of its own (
           <code>CHIPSMITH_FURNACE</code>), best one without its window,{' '}
-          <a href={HEADLESS_FURNACE_URL}>as the README shows</a>. The app opens a clip's{' '}
-          <code>.fur</code> for you to look at (<code>CHIPSMITH_FURNACE_APP</code>). With only the
-          Furnace app installed, it does both and is one row.
+          <a href={HEADLESS_FURNACE_URL} target="_blank" rel="noreferrer">
+            as the README shows
+          </a>
+          . The app opens a clip's <code>.fur</code> for you to look at (
+          <code>CHIPSMITH_FURNACE_APP</code>). With only the Furnace app installed, it does both and
+          is one row.
         </p>
       )}
       <p className="home-page-note">
