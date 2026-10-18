@@ -8,6 +8,7 @@ import { PromptBox } from './PromptBox.tsx';
 import { useSongs } from '../queries/songs.ts';
 import { usePageTitle } from '../use-page-title.ts';
 import { Breadcrumbs } from '../Breadcrumbs.tsx';
+import { useFreshChoices } from './use-fresh-choices.ts';
 import './NewPage.css';
 
 /**
@@ -21,6 +22,7 @@ export function NewPage() {
   const [baseSongId] = useState(() => new URLSearchParams(window.location.search).get('base'));
   const [isSourceCleared, setSourceCleared] = useState(false);
   usePageTitle('New song');
+  useFreshChoices();
   const { data: listings } = useSongs();
   const from = fromSongId ? listings?.find(({ song }) => song.id === fromSongId) : undefined;
   const base = baseSongId ? listings?.find(({ song }) => song.id === baseSongId) : undefined;

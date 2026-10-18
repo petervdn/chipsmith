@@ -1,6 +1,6 @@
 # 0051. New keeps its choices while the page is open, not in the browser's storage
 
-- Status: accepted
+- Status: superseded by 0052
 - Date: 2026-10-18
 
 ## Context

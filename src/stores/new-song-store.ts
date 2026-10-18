@@ -1,7 +1,7 @@
 /**
- * What the New page was left at, kept while the page is open and not saved (docs/adr/0051): going to
- * another page and back finds it as it was, a reload starts afresh. It holds the prompt builder's
- * parts and locks, the harmony chosen and its locks, and the structure chosen, as edited. What is
+ * New's choices while the page is open, shared by its hooks and started afresh when the page is left
+ * (docs/adr/0052): the prompt builder's parts and locks, the harmony chosen and its locks, and the
+ * structure chosen, as edited. Nothing is saved. What is
  * only the view's (the section selected, the presets offered to hear, the part a progression is
  * being chosen for) is not kept. The rules of choosing are the New page's hooks' (new-song/); this
  * only keeps the values.
@@ -45,6 +45,8 @@ type NewSongStore = NewSongChoices & {
   setHarmony: (harmony: HarmonyChoice) => void;
   setLockedHarmonyRows: (lockedHarmonyRows: HarmonyRowName[]) => void;
   setStructure: (structure: StructureDraft) => void;
+  /** Starts New afresh: parts rolled again, nothing locked, everything Claude's choice. */
+  reset: () => void;
 };
 
 /** No structure chosen. */
@@ -78,4 +80,5 @@ export const useNewSongStore = create<NewSongStore>()((set) => ({
   setHarmony: (harmony) => set({ harmony }),
   setLockedHarmonyRows: (lockedHarmonyRows) => set({ lockedHarmonyRows }),
   setStructure: (structure) => set({ structure }),
+  reset: () => set(getFreshChoices()),
 }));

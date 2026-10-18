@@ -63,4 +63,5 @@ Consequences.
 | [0048](0048-a-songs-actions-are-beside-its-title.md) | A song's actions are beside its title; Revert and Save alone at the right | accepted |
 | [0049](0049-a-song-is-exported-as-it-plays.md) | A song is exported as audio as the editor plays it, mixed in the page | accepted |
 | [0050](0050-new-remembers-its-choices.md) | New remembers what it was left at, in this browser | superseded by 0051 |
-| [0051](0051-new-is-not-saved-in-the-browser.md) | New keeps its choices while the page is open, not in the browser's storage | accepted |
+| [0051](0051-new-is-not-saved-in-the-browser.md) | New keeps its choices while the page is open, not in the browser's storage | superseded by 0052 |
+| [0052](0052-new-starts-afresh-on-every-visit.md) | New starts afresh on every visit | accepted |

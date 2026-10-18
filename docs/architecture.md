@@ -135,7 +135,7 @@ with its title alone, the Songs tab marked above it.
 - **Clips** (`/clips`): the pool, with the same filter bar; not in the top bar (0029), opened by its
   address.
 - **Guides** (`/guides`): the style guides, made, edited and deleted.
-- **New** (`/new`), as it was left while the page stays open, afresh after a reload (0051): a prompt for Claude in a box, a prompt builder under it (the chips as switches: NES, PSG and SCC, the
+- **New** (`/new`), afresh on every visit (0052): a prompt for Claude in a box, a prompt builder under it (the chips as switches: NES, PSG and SCC, the
   SID not offered for now (0035), one or more, each off, once or twice (0034); a part per row, rolled
   at random or picked, each with a lock, the sentence they make on top; "Use" fills the box, which is otherwise its own),
   the Structure panel (none chosen at first; none, a preset, a saved structure or your own: written short and as tiles
@@ -167,8 +167,8 @@ desktop (rows on one line), in `src/style.css`.
 Where state lives follows 0017: local first, lifted, context for a subtree, a Zustand store when it is
 the app's. Everything from the server is TanStack Query (`src/queries/`: songs, a song, clips, jobs
 polled while one runs, and the mutations), its keys from `getQueryKey({ type })`. The stores
-(`src/stores/`): the player and what New was left at (the builder's parts and locks, the harmony,
-the structure; 0051), neither persisted, and the preferences (mute, the look, the metronome, the
+(`src/stores/`): the player and New's choices while it is open (the builder's parts and locks, the
+harmony, the structure; 0052), neither persisted, and the preferences (mute, the look, the metronome, the
 editor's sizes), in localStorage through Zustand's persist; no component touches storage. A list's filter is in the address only: the
 top bar's links open a list unfiltered, and the back button returns to a filtered one.
 
