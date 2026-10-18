@@ -8,7 +8,6 @@ import type { IncomingMessage, ServerResponse } from 'node:http';
 import { join } from 'node:path';
 import type { Plugin } from 'vite';
 import type {
-  CatalogueChange,
   ClipListing,
   ClipOpened,
   ProgramCheck,
@@ -29,7 +28,7 @@ import { openJobs } from './jobs.ts';
 import { copyExamplesIfEmpty } from './examples.ts';
 import { splitSong } from '../make/split-song.ts';
 import { isAudioMissing, renderMissingAudio } from './missing-audio.ts';
-import { checkGuideDraft, checkStatus, checkTags, checkTracks } from './model-checks.ts';
+import { checkCatalogueChange, checkGuideDraft, checkTracks } from './model-checks.ts';
 import type { GuideStore } from './guides.ts';
 import { createGuide, deleteGuide, listGuides, openGuides, updateGuide } from './guides.ts';
 import type { Store } from './store.ts';
@@ -364,14 +363,6 @@ function getWholeClip(store: Store, song: Song): Clip | null {
   const clip = store.clips.get(block.clip);
   if (!clip || getSplitCount(clip) === 0) return null;
   return existsSync(join(getClipFolder(store, clip.id), 'source.fur')) ? clip : null;
-}
-
-function checkCatalogueChange(body: unknown): CatalogueChange {
-  const change = getObject(body, 'body');
-  const result: CatalogueChange = {};
-  if (change['status'] !== undefined) result.status = checkStatus(change['status'], 'body.status');
-  if (change['tags'] !== undefined) result.tags = checkTags(change['tags'], 'body.tags');
-  return result;
 }
 
 function sendClipAudio(

@@ -1,8 +1,9 @@
 /**
- * A clip.json or a song.json as read from disk, checked field by field into a Clip or a Song. A file
- * that does not fit is an error that names the file and the field (docs/code-guidelines.md: checked
+ * A clip.json or a song.json as read from disk, checked field by field into a Clip or a Song, and a
+ * request's change to them. A file that does not fit is an error that names the file and the field (docs/code-guidelines.md: checked
  * where it comes in).
  */
+import type { CatalogueChange } from '../shared/api.types.ts';
 import type { Status, Tag } from '../shared/catalogue.types.ts';
 import type { BarRange, ClipName, ClipParent, ClipRecord } from '../shared/clip.types.ts';
 import type { Guide, GuideDraft, SentGuide } from '../shared/guide.types.ts';
@@ -103,6 +104,20 @@ export function checkGuideDraft(value: unknown, path: string): GuideDraft {
     text: getString(draft['text'], `${path}.text`),
     isDefault: getBoolean(draft['isDefault'], `${path}.isDefault`),
   };
+}
+
+/**
+ * Checks a change to a song's or a clip's catalogue fields, sent in a request's body.
+ *
+ * @param body - The body parsed from JSON.
+ * @returns The change, with only the fields the body sets.
+ */
+export function checkCatalogueChange(body: unknown): CatalogueChange {
+  const change = getObject(body, 'body');
+  const result: CatalogueChange = {};
+  if (change['status'] !== undefined) result.status = checkStatus(change['status'], 'body.status');
+  if (change['tags'] !== undefined) result.tags = checkTags(change['tags'], 'body.tags');
+  return result;
 }
 
 /**
