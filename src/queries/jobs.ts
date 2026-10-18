@@ -1,10 +1,11 @@
 /**
  * The jobs from the server, read every second while one runs and every five when none does; sending
- * a prompt; and the songs list read again whenever a job has made another song.
+ * a prompt, or one for takes of a clip; and the songs and clips read again whenever a job has made
+ * another song or take.
  */
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
-import type { Job } from '../../shared/job.types.ts';
+import type { Job, TakesTarget } from '../../shared/job.types.ts';
 import { getQueryKey, queryClient } from './client.ts';
 import { requestJson, sendJson } from './request.ts';
 import type { SentHarmony } from '../../shared/harmony.types.ts';
@@ -27,7 +28,7 @@ export function isJobRunning({ phase }: Job): boolean {
 
 /**
  * Reads the jobs from the server, every second while one runs and every five when none does, and
- * reads the songs list again whenever a job has made another song.
+ * reads the songs list and the clips again whenever a job has made another song or take.
  *
  * @returns Every job, newest first; none until they are read.
  */
@@ -42,6 +43,7 @@ export function useJobs(): Job[] {
   const madeCount = jobs.flatMap((job) => job.songs).filter((song) => song.songId).length;
   useEffect(() => {
     void queryClient.invalidateQueries({ queryKey: getQueryKey({ type: 'songs' }), exact: true });
+    void queryClient.invalidateQueries({ queryKey: getQueryKey({ type: 'clips' }) });
   }, [madeCount]);
   return jobs;
 }
@@ -125,6 +127,28 @@ export function useSendPrompt() {
         harmony,
         songCount,
       }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: getQueryKey({ type: 'jobs' }) }),
+  });
+}
+
+/**
+ * Sends a prompt for takes of a clip in a song as a new job (docs/adr/0037); the jobs are read again
+ * at once.
+ *
+ * @returns The mutation, called with the `prompt`, the clip and the song (`takesOf`) and how many
+ * takes to make (`takeCount`).
+ */
+export function useSendTakes() {
+  return useMutation({
+    mutationFn: ({
+      prompt,
+      takesOf,
+      takeCount,
+    }: {
+      prompt: string;
+      takesOf: TakesTarget;
+      takeCount: number;
+    }) => sendJson<Job>('/api/jobs', 'POST', { prompt, takesOf, songCount: takeCount }),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: getQueryKey({ type: 'jobs' }) }),
   });
 }

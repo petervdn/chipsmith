@@ -1,6 +1,6 @@
 // The selected block's details: where it plays, its clip (what it is, its facts, its .fur file to
-// look at, what it changed if it is a variation) and the versions of the clip; ▶ plays the song from
-// the block.
+// look at, what it changed if it is a variation), the prompt for takes of it and the versions of the
+// clip; ▶ plays the song from the block.
 import { Minus, Play, Plus } from 'lucide-react';
 import type { Clip } from '../../shared/clip.types.ts';
 import { getTicksPerSecond } from '../../shared/song-length.ts';
@@ -11,6 +11,7 @@ import type { BlockSpan } from './timeline.ts';
 import { getTicksPerBar } from './timeline.ts';
 import { getChannelName } from '../../shared/clip-channels.ts';
 import { ClipFileLinks } from './ClipFileLinks.tsx';
+import { ClipPrompt } from './ClipPrompt.tsx';
 import './BlockDetails.css';
 
 type BlockDetailsProps = {
@@ -122,6 +123,7 @@ export function BlockDetails({
           </p>
           <ClipFileLinks clipId={clip.id} />
           {clip.variationLabel && <p className="block-details-variation">{clip.variationLabel}</p>}
+          <ClipPrompt clipId={clip.id} songId={song.id} />
           {versions.length > 1 && (
             <div className="block-details-versions">
               <h3 className="block-details-subtitle">Versions</h3>

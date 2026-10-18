@@ -5,7 +5,10 @@ saved, playing from a cursor, the zoom, and the selected block's clip or track.
 
 - `block-drag.ts`: where a dragged block goes: moved on the grid and between tracks, or trimmed
 - `BlockDetails.css`: the look of BlockDetails.tsx
-- `BlockDetails.tsx`: the selected block: where it plays, its clip, its prompt and versions
+- `BlockDetails.tsx`: the selected block: where it plays, its clip, the prompt for takes of it and its versions
+- `clip-prompt.ts`: the prompt on a clip: its quick asks, how a tap adds one, the most takes
+- `ClipPrompt.css`: the look of ClipPrompt.tsx
+- `ClipPrompt.tsx`: the prompt on the selected block's clip: what to change, how many takes, Send, the jobs on their way
 - `ClipFileLinks.css`: the look of ClipFileLinks.tsx
 - `ClipFileLinks.tsx`: a clip's .fur to look at: opened in Furnace (a copy), downloaded, or as text
 - `clip-peaks.ts`: a clip's waveform as peaks, from its samples
@@ -56,6 +59,7 @@ saved, playing from a cursor, the zoom, and the selected block's clip or track.
 - `TransportButtons.tsx`: ■ stop, ▶ / ❚❚ play or pause on one button, follow, and loop
 - `use-block-drag.ts`: dragging blocks: moving and trimming them
 - `use-clip-drag.ts`: dragging a clip onto a track's lane, as a new block
+- `use-clip-prompt.ts`: the prompt on a clip kept, sent as takes, and the jobs of takes of it on their way
 - `use-edge-scroll.ts`: the timeline scrolled while a drag is near its left or right edge
 - `use-editor-keys.ts`: the editor's keys: Space, Delete, ⌘Z, ⇧⌘Z, ⌘S, Escape
 - `use-element-width.ts`: an element's width, kept current

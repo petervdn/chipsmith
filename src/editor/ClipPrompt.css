@@ -1,0 +1,88 @@
+/* The look of ClipPrompt.tsx: the box, the quick asks as pills that wrap, the count and Send on
+   one row, and a line per job on its way. */
+
+.clip-prompt {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: var(--border-width) solid var(--line);
+}
+
+.clip-prompt-title {
+  margin: 0;
+  font-size: 0.875rem;
+}
+
+.clip-prompt-text {
+  width: 100%;
+  resize: vertical;
+}
+
+.clip-prompt-asks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.clip-prompt-ask {
+  min-height: var(--pill);
+  padding: 0 10px;
+  border: var(--border-width) solid var(--line);
+  border-radius: calc(var(--pill) / 2);
+  background: var(--card);
+  color: var(--fg);
+  font-size: 0.8125rem;
+  cursor: pointer;
+}
+
+.clip-prompt-send-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.clip-prompt-count {
+  display: flex;
+  align-items: center;
+  color: var(--muted);
+  font-size: 0.8125rem;
+}
+
+.clip-prompt-count-number {
+  min-width: 1.5em;
+  text-align: center;
+}
+
+.clip-prompt-send {
+  min-height: var(--touch);
+  padding: 0 14px;
+  border: 0;
+  border-radius: var(--radius);
+  background: var(--accent);
+  color: var(--on-accent);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.clip-prompt-send:disabled {
+  background: var(--raised);
+  color: var(--muted);
+  cursor: default;
+}
+
+.clip-prompt-running {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.8125rem;
+}
+
+.clip-prompt-count button {
+  min-width: var(--touch);
+  min-height: var(--touch);
+}

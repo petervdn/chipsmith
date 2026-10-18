@@ -63,3 +63,9 @@ test('a job from before the count was asked lists only what it built', () => {
   assert.equal(getSongCountText(job, false), '1 of 2 songs');
   assert.equal(getSongCountText({ ...job, songs: [] }, false), null);
 });
+
+test('a job of takes of a clip counts and lists takes', () => {
+  const job: Job = { ...JOB, takesOf: { clip: 'c0101', song: 's0050' } };
+  assert.equal(getSongCountText(job, true), '3 takes');
+  assert.equal(getJobSongRows(job, true)[0]?.title, 'Take 1');
+});

@@ -89,8 +89,9 @@ page but Home starts with breadcrumbs, the last its heading (Songs › Seven Tee
   as the page's content (as the top bar's), the clips' column out in the margin left of it and
   the selected block's or track's details in the margin right of it where there is room (else beside
   and under it), and the selected block's
-  clip with what it changed and its versions, and its .fur to look at (open in Furnace, download, view as
-  text). Editing (0022): drag a block to move it (to another track too),
+  clip with what it changed and its versions, its .fur to look at (open in Furnace, download, view as
+  text), and Change this clip (0037): a prompt for takes of it, quick asks a tap adds, 1 to 5 takes,
+  and its jobs on their way (`src/editor/ClipPrompt.tsx`). Editing (0022): drag a block to move it (to another track too),
   its edges to trim it, drag a clip from the song's clips onto a track as a new block, snapped to a grid; repeat, duplicate, untrim, remove; add, rename and remove tracks; mute and solo
   (not saved); a mixer under the timeline, switched in the editor bar: a strip per track (its fader,
   saved and heard in playback only, one undo step per move; its meter, M and S, the same values as
@@ -211,6 +212,12 @@ phases:
 3. **rendering**: each song is made and rendered in turn (`make/make-song.ts`) and shows in the list as
    soon as it is done.
 4. **done** with Claude's reply, or **failed** with the reason.
+
+A job of **takes of a clip** (0037; `takesOf: { clip, song }` on `POST /api/jobs`, sent from the
+song's editor) goes the same way: Claude is told the clip, its song, what a take keeps and the
+song's guides (`server/job-prompt.ts`), its script gives a plan per take titled with its label, and
+each take is made by `make/make-take.ts` (cut to the clip's channel when the clip is a stem, kept as
+a variation) instead of a song; `make/check-script.ts --takes-of <clip>` checks they fit the clip.
 
 ## Still to build
 

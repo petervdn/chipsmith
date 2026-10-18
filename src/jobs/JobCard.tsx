@@ -1,6 +1,6 @@
 // A job's card on the Jobs page, from the moment its prompt is sent: in its top row its phase, how
 // long it has been going and the tokens it used; under it its stages from start to end; then,
-// labelled, the prompt, the songs it makes (a line for each asked for, its title once built), the
+// labelled, the prompt, the clip it makes takes of, the songs or takes it makes (a line for each asked for, its title once built), the
 // style guides, structure and harmony sent with it, Claude's reply, and its steps. A job that is
 // over folds to one line.
 import { useEffect, useState } from 'react';
@@ -203,6 +203,16 @@ export function JobCard({ job, onRemove }: JobCardProps) {
       <dl className="job-card-facts">
         <dt>Prompt</dt>
         <dd className="job-card-prompt">{job.prompt}</dd>
+        {job.takesOf && (
+          <>
+            <dt>Takes of</dt>
+            <dd>
+              <a href={`/songs/${encodeURIComponent(job.takesOf.song)}`}>
+                {job.takesOf.clip} in {job.takesOf.song}
+              </a>
+            </dd>
+          </>
+        )}
         {songCountText && (
           <>
             <dt>{songCountText}</dt>
