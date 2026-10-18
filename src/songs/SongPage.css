@@ -1,4 +1,4 @@
-/* The look of SongPage.tsx: ★ beside the title; the page, and the top bar with it, as wide as the
+/* The look of SongPage.tsx: ★ beside the title, level with it; the page, and the top bar with it, as wide as the
    editor can use. */
 
 .app:has(.song-page) {
@@ -10,4 +10,9 @@
   flex-wrap: wrap;
   align-items: flex-start;
   gap: 4px;
+}
+
+/* ★ level with the middle of the title's capitals, which sit below the middle of its line */
+.song-page-head .status-buttons {
+  margin-top: 5px;
 }
