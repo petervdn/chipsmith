@@ -43,7 +43,12 @@ type PreferencesStore = {
   setMetronomeVolume: (metronomeVolume: number) => void;
   setStructureShown: (isStructureShown: boolean) => void;
   setMixerOpen: (isMixerOpen: boolean) => void;
+  /** Puts every preference back as a first visit has it. */
+  reset: () => void;
 };
+
+/** The preferences kept, without the actions. */
+type Preferences = Omit<PreferencesStore, `set${string}` | 'reset'>;
 
 /** The metronome's volume to start with, in decibels: as loud as the music. */
 const METRONOME_DB = 0;
@@ -57,30 +62,42 @@ function getSystemLookId(): string {
   return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 }
 
+/**
+ * Returns the preferences as a first visit has them.
+ *
+ * @returns Every preference at its default; the look the system's.
+ */
+function getDefaultPreferences(): Preferences {
+  return {
+    isMuted: false,
+    lookId: getSystemLookId(),
+    volume: LOUDEST_DB,
+    isFollowingPlayhead: true,
+    trackNameWidth: TRACK_NAME_WIDTH,
+    trackHeight: TRACK_HEIGHT,
+    isMetronomeOn: false,
+    metronomeVolume: METRONOME_DB,
+    isStructureShown: true,
+    isMixerOpen: false,
+  };
+}
+
 /** The preferences store. */
 export const usePreferencesStore = create<PreferencesStore>()(
   persist(
     (set) => ({
-      isMuted: false,
-      lookId: getSystemLookId(),
+      ...getDefaultPreferences(),
       setMuted: (isMuted) => set({ isMuted }),
       setLookId: (lookId) => set({ lookId }),
-      volume: LOUDEST_DB,
       setVolume: (volume) => set({ volume }),
-      isFollowingPlayhead: true,
       setFollowingPlayhead: (isFollowingPlayhead) => set({ isFollowingPlayhead }),
-      trackNameWidth: TRACK_NAME_WIDTH,
       setTrackNameWidth: (trackNameWidth) => set({ trackNameWidth }),
-      trackHeight: TRACK_HEIGHT,
       setTrackHeight: (trackHeight) => set({ trackHeight }),
-      isMetronomeOn: false,
       setMetronomeOn: (isMetronomeOn) => set({ isMetronomeOn }),
-      metronomeVolume: METRONOME_DB,
       setMetronomeVolume: (metronomeVolume) => set({ metronomeVolume }),
-      isStructureShown: true,
       setStructureShown: (isStructureShown) => set({ isStructureShown }),
-      isMixerOpen: false,
       setMixerOpen: (isMixerOpen) => set({ isMixerOpen }),
+      reset: () => set(getDefaultPreferences()),
     }),
     {
       name: 'chiptune.preferences',

@@ -8,3 +8,4 @@ storage.
 - `new-song-store.ts`: what New was left at: the builder's parts and locks, the harmony, the structure (localStorage)
 - `player-store.ts`: the one player: which song, loading or playing, where (not persisted)
 - `preferences-store.ts`: the mute switch, the look, the volume, following the playhead, the track names' width (localStorage)
+- `saved-settings.ts`: the persisted stores put back as a first visit has them

@@ -8,4 +8,6 @@ The home page.
 - `HomePage.tsx`: the start page: what the app is, how it works, what it needs
 - `HomePrograms.css`: the look of HomePrograms.tsx
 - `HomePrograms.tsx`: the programs the app calls, found or not, with "Check again"
+- `HomeSettings.css`: the look of HomeSettings.tsx
+- `HomeSettings.tsx`: what this browser keeps of the page, and a button that clears it
 - `program-rows.ts`: the rows shown of the programs, Furnace's two as one when they are one

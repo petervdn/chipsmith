@@ -1,9 +1,10 @@
 // The home page: what the app is and how it works, what it needs (the programs as the server found
-// them), the jobs on their way and the songs made last.
+// them), what this browser keeps, the jobs on their way and the songs made last.
 import { Plus } from 'lucide-react';
 import type { Job } from '../../shared/job.schema.ts';
 import { HomeLatest } from './HomeLatest.tsx';
 import { HomePrograms } from './HomePrograms.tsx';
+import { HomeSettings } from './HomeSettings.tsx';
 import { JobStrip } from '../jobs/JobStrip.tsx';
 import { Logo } from '../top-bar/Logo.tsx';
 import { README_URL, SOURCE_URL } from '../project-links.ts';
@@ -110,6 +111,8 @@ export function HomePage({ jobs }: HomePageProps) {
         <div>
           <h2 className="home-page-heading">What it needs</h2>
           <HomePrograms />
+          <h2 className="home-page-heading">In this browser</h2>
+          <HomeSettings />
         </div>
       </div>
       <HomeLatest />

@@ -74,7 +74,8 @@ with its title alone, the Songs tab marked above it.
 - **Home** (`/`): what the app is: the logo and a line, + New song, the running jobs; what it is
   and how it works (prompt, style guides, compose, render, listen and shape); what it needs, the
   programs as the server looked for them (found with their versions or not; one row for Furnace
-  when one Furnace renders and opens files; "Look again" and when it last looked); how many songs
+  when one Furnace renders and opens files; "Look again" and when it last looked); what this browser keeps,
+  with a quiet Clear saved settings (asked first; the preferences and New's choices start afresh); how many songs
   there are (kept, not heard yet) and the five made last with ▶; and a line linking the README and
   the source on GitHub (`src/project-links.ts`).
 - **Songs** (`/songs`): every song, with the filter bar (words, tags) and under it two tabs, All and

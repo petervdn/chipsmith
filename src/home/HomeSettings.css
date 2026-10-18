@@ -1,0 +1,24 @@
+/* The look of HomeSettings.tsx: the line, and under it a quiet grey button. */
+
+.home-settings {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.home-settings-clear {
+  min-height: var(--touch);
+  padding: 0 14px;
+  border: var(--border-width) solid var(--line);
+  border-radius: var(--radius);
+  background: var(--raised);
+  color: var(--muted);
+  cursor: pointer;
+}
+
+@media (hover: hover) {
+  .home-settings-clear:hover {
+    color: var(--fg);
+  }
+}
