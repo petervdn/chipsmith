@@ -1,6 +1,4 @@
-// The filter bar above a list: words to find, ★ favorites to show only the kept ones, and the tags
-// in the list to pick from. It shows and changes a ListFilter; what it filters is the list's.
-import { Star } from 'lucide-react';
+// The filter bar above a list: words to find, and the tags in the list to pick from. It shows and changes a ListFilter; what it filters is the list's.
 import type { ListFilter } from './list-filter.ts';
 import './lists.css';
 import './FilterBar.css';
@@ -13,7 +11,7 @@ type FilterBarProps = {
 };
 
 /**
- * Shows the filter bar: words to find, ★ for only the kept, and the list's tags to pick from.
+ * Shows the filter bar: words to find, and the list's tags to pick from.
  *
  * @param props - The component's props.
  * @param props.filter - The filter shown.
@@ -38,16 +36,6 @@ export function FilterBar({ filter, onChange, tagCounts, placeholder }: FilterBa
         value={filter.words}
         onChange={(event) => onChange({ ...filter, words: event.target.value })}
       />
-      <button
-        type="button"
-        className={`filter-bar-kept${filter.isKeptOnly ? ' is-on' : ''}`}
-        onClick={() => onChange({ ...filter, isKeptOnly: !filter.isKeptOnly })}
-        aria-pressed={filter.isKeptOnly}
-        data-tooltip={filter.isKeptOnly ? 'show all' : 'show only the favorites (★)'}
-      >
-        <Star fill={filter.isKeptOnly ? 'currentColor' : 'none'} />
-        favorites
-      </button>
       {tagCounts.length > 0 && (
         <div className="filter-bar-tags">
           {tagCounts.map(({ name, count }) => (

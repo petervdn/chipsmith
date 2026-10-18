@@ -1,6 +1,6 @@
-// The songs list: every song with its length, tempo, meter, tags and status, the filter bar above
-// it, ▶, ★, a trash can and ⌄ (more) on each row, and a line for each job on its way. A row's title
-// opens the song.
+// The songs list: every song, or only the favorites (`/songs/favorites`), with its length, tempo,
+// meter, tags and status; the filter bar and the tabs (All, Favorites) above it, ▶, ★, a trash can
+// and ⌄ (more) on each row, and a line for each job on its way. A row's title opens the song.
 import { ChevronDown } from 'lucide-react';
 import { useState } from 'react';
 import type { Job } from '../../shared/job.schema.ts';
@@ -10,12 +10,13 @@ import type { Song } from '../../shared/song.schema.ts';
 import { FilterBar } from '../lists/FilterBar.tsx';
 import { PlayButton } from '../player/PlayButton.tsx';
 import { formatMeter, formatSeconds } from '../format.ts';
-import { getTagCounts, isShown } from '../lists/list-filter.ts';
+import { getFilterQuery, getTagCounts, isShown } from '../lists/list-filter.ts';
 import { groupByTime } from '../lists/time-groups.ts';
 import { useNow } from '../lists/use-now.ts';
 import { useDeleteSong, useSetSongStatus, useSongs } from '../queries/songs.ts';
 import { useListFilter } from '../lists/use-list-filter.ts';
 import { SongRowDetails } from './SongRowDetails.tsx';
+import { SongsTabs } from './SongsTabs.tsx';
 import { StatusButtons } from '../lists/StatusButtons.tsx';
 import { askToConfirm } from '../stores/confirm-store.ts';
 import { usePageTitle } from '../use-page-title.ts';
@@ -23,23 +24,24 @@ import { Breadcrumbs } from '../Breadcrumbs.tsx';
 import '../lists/lists.css';
 import './SongsPage.css';
 
-type SongsPageProps = { jobs: Job[] };
+type SongsPageProps = { jobs: Job[]; isFavoritesOnly: boolean };
 
 /**
  * Shows the songs list, newest first, with a line for each job on its way above it.
  *
  * @param props - The component's props.
  * @param props.jobs - Every job, of which those on their way get a line.
+ * @param props.isFavoritesOnly - Whether only the favorites (the kept songs) are listed.
  * @returns The page's section element.
  */
-export function SongsPage({ jobs }: SongsPageProps) {
+export function SongsPage({ jobs, isFavoritesOnly }: SongsPageProps) {
   const { data: listings, error } = useSongs();
   const { mutate: setStatus } = useSetSongStatus();
   const { mutate: deleteSong } = useDeleteSong();
   const [filter, setFilter] = useListFilter();
   const [openSongs, setOpenSongs] = useState<string[]>([]);
   const now = useNow();
-  usePageTitle('Songs');
+  usePageTitle(isFavoritesOnly ? 'Favorites' : 'Songs');
   const titlesById = new Map((listings ?? []).map(({ song }) => [song.id, song.title]));
 
   function toggleOpen(songId: string): void {
@@ -47,12 +49,13 @@ export function SongsPage({ jobs }: SongsPageProps) {
       open.includes(songId) ? open.filter((id) => id !== songId) : [...open, songId],
     );
   }
-  const items = (listings ?? []).map((listing) => ({
+  const allItems = (listings ?? []).map((listing) => ({
     listing,
     text: listing.song.title,
     tags: listing.song.tags,
-    isKept: listing.song.status === 'keeper',
   }));
+  const favorites = allItems.filter(({ listing }) => listing.song.status === 'keeper');
+  const items = isFavoritesOnly ? favorites : allItems;
   const shown = items
     .filter((item) => isShown(item, filter))
     .sort((first, second) => second.listing.song.created.localeCompare(first.listing.song.created));
@@ -73,11 +76,21 @@ export function SongsPage({ jobs }: SongsPageProps) {
         filter={filter}
         onChange={setFilter}
         tagCounts={getTagCounts(items)}
-        placeholder={`Search ${items.length} songs…`}
+        placeholder={`Search ${items.length} ${isFavoritesOnly ? 'favorites' : 'songs'}…`}
+      />
+      <SongsTabs
+        isFavoritesOnly={isFavoritesOnly}
+        allCount={allItems.length}
+        favoritesCount={favorites.length}
+        query={getFilterQuery(filter)}
       />
       {error && <p className="error">{error.message}</p>}
       {listings && items.length === 0 && (
-        <p className="empty">No songs yet. A song appears here as soon as Claude makes one.</p>
+        <p className="empty">
+          {isFavoritesOnly
+            ? 'No favorites yet. ★ on a song makes it one.'
+            : 'No songs yet. A song appears here as soon as Claude makes one.'}
+        </p>
       )}
       {items.length > 0 && shown.length === 0 && (
         <p className="empty">No songs match this filter (a song needs every chosen tag).</p>

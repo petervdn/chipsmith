@@ -35,7 +35,9 @@ export function App() {
       <ProgramWarning />
       <main className="page">
         {route.page === 'home' && <HomePage jobs={jobs} />}
-        {route.page === 'songs' && <SongsPage jobs={jobs} />}
+        {route.page === 'songs' && (
+          <SongsPage jobs={jobs} isFavoritesOnly={route.isFavoritesOnly} />
+        )}
         {route.page === 'clips' && <ClipsPage />}
         {route.page === 'guides' && <GuidesPage />}
         {route.page === 'new' && <NewPage />}

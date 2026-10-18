@@ -1,0 +1,39 @@
+/* The look of SongsTabs.tsx: the tabs on a hairline across the list, the one open underlined in the
+   accent. */
+
+.songs-tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 12px;
+  border-bottom: var(--border-width) solid var(--line);
+}
+
+.songs-tabs-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: var(--touch);
+  margin-bottom: calc(-1 * var(--border-width));
+  padding: 0 12px;
+  border-bottom: 2px solid transparent;
+  color: var(--muted);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.songs-tabs-tab.is-on {
+  border-bottom-color: var(--accent);
+  color: var(--fg);
+}
+
+.songs-tabs-count {
+  color: var(--faint);
+  font-size: 0.8125rem;
+  font-weight: 400;
+}
+
+@media (hover: hover) {
+  .songs-tabs-tab:hover {
+    color: var(--fg);
+  }
+}

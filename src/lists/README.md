@@ -3,8 +3,8 @@
 What the lists of songs and clips share: the filter, its bar, and ★ and the trash can.
 
 - `FilterBar.css`: the look of FilterBar.tsx
-- `FilterBar.tsx`: the filter bar above a list: words, ★ kept only, tags
-- `list-filter.ts`: the filter both lists share: words, tags, kept only
+- `FilterBar.tsx`: the filter bar above a list: words, tags
+- `list-filter.ts`: the filter both lists share: words, tags
 - `lists.css`: what the lists share: the rows, the tag chip, the small row buttons and warnings
 - `StatusButtons.css`: the look of StatusButtons.tsx
 - `StatusButtons.tsx`: ★ to keep a song or a clip, and a trash can to delete it

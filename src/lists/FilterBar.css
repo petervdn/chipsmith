@@ -18,34 +18,6 @@
   background: var(--card);
 }
 
-/* ★ kept: a switch beside the words, lit in the keep colour while only the kept show */
-.filter-bar-kept {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  min-height: var(--touch);
-  padding: 0 12px;
-  border: var(--border-width) solid var(--line);
-  border-radius: var(--radius);
-  background: var(--card);
-  color: var(--muted);
-  cursor: pointer;
-}
-
-.filter-bar-kept svg {
-  width: 16px;
-  height: 16px;
-}
-
-.filter-bar-kept.is-on {
-  border-color: var(--keep);
-  color: var(--fg);
-}
-
-.filter-bar-kept.is-on svg {
-  color: var(--keep);
-}
-
 .filter-bar-tags {
   display: flex;
   flex-wrap: wrap;

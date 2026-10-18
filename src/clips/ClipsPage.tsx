@@ -25,7 +25,6 @@ export function ClipsPage() {
     listing,
     text: `${getClipLabel(listing.clip)} ${listing.clip.variationLabel ?? ''} ${listing.clip.id}`,
     tags: listing.clip.tags,
-    isKept: listing.clip.status === 'keeper',
   }));
   const shown = items
     .filter((item) => isShown(item, filter))

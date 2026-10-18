@@ -77,7 +77,8 @@ page but Home starts with breadcrumbs, the last its heading (Songs › Seven Tee
 
 - **Home** (`/`): the logo and what the app is, a + New song button, the running jobs, how many songs
   there are (kept, not heard yet) and the five made last with ▶.
-- **Songs** (`/songs`): every song, with the filter bar (words, ★ favorites: only the kept ones, tags), its facts, ▶, ★, a trash can
+- **Songs** (`/songs`): every song, with the filter bar (words, tags) and under it two tabs, All and
+  Favorites (`/songs/favorites`, only the kept ones), its facts, ▶, ★, a trash can
   (asked first), and ⌄ to open the row: its prompt (copy, prompt again), its facts and its prompt links.
 - **Song** (`/songs/<id>`): ★ beside its title to keep it; under its title its header
   (`src/songs/header/`): its facts (tempo, meter, length, chips, key, tracks, clips, made, changed,

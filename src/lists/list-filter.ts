@@ -1,31 +1,30 @@
 /**
- * The filter both lists share (songs and clips): words to find, tags that must all be there, and
- * whether only the kept ones (★) show. Given an item's text, tags and status, says whether it shows.
+ * The filter both lists share (songs and clips): words to find and tags that must all be there.
+ * Given an item's text and tags, says whether it shows. (Only the favorites is a page of its own,
+ * `/songs/favorites`, not part of the filter.)
  */
 import type { Tag } from '../../shared/catalogue.schema.ts';
 
 /** What a list is filtered by. */
-export type ListFilter = { words: string; tags: string[]; isKeptOnly: boolean };
+export type ListFilter = { words: string; tags: string[] };
 
 /** What the filter reads of an item. */
-export type FilterableItem = { text: string; tags: Tag[]; isKept: boolean };
+export type FilterableItem = { text: string; tags: Tag[] };
 
 /** A filter that shows everything. */
-export const EMPTY_FILTER: ListFilter = { words: '', tags: [], isKeptOnly: false };
+export const EMPTY_FILTER: ListFilter = { words: '', tags: [] };
 
 /**
- * Tells whether an item shows under a filter: it is kept if only the kept show, it has every tag of
- * the filter, and its text and tag names hold every word.
+ * Tells whether an item shows under a filter: it has every tag of the filter, and its text and tag
+ * names hold every word.
  *
  * @param item - What the filter reads of the item.
  * @param item.text - The item's text, searched for the words.
  * @param item.tags - The item's tags.
- * @param item.isKept - Whether the item is kept (★).
  * @param filter - The filter.
  * @returns Whether the item shows.
  */
-export function isShown({ text, tags, isKept }: FilterableItem, filter: ListFilter): boolean {
-  if (filter.isKeptOnly && !isKept) return false;
+export function isShown({ text, tags }: FilterableItem, filter: ListFilter): boolean {
   const tagNames = tags.map((tag) => tag.name);
   if (!filter.tags.every((name) => tagNames.includes(name))) return false;
   const haystack = `${text} ${tagNames.join(' ')}`.toLowerCase();
@@ -53,19 +52,17 @@ export function getTagCounts(items: FilterableItem[]): { name: string; count: nu
 }
 
 /**
- * Writes a filter as the address's query: `q` (words), `tags` (comma-separated) and `favorites`.
+ * Writes a filter as the address's query: `q` (words) and `tags` (comma-separated).
  *
  * @param filter - The filter.
  * @param filter.words - The words to find, left out when blank.
  * @param filter.tags - The tags that must all be there.
- * @param filter.isKeptOnly - Whether only the favorites (the kept) show, `favorites=1` when they do.
  * @returns The query with its leading "?", or an empty string for an empty filter.
  */
-export function getFilterQuery({ words, tags, isKeptOnly }: ListFilter): string {
+export function getFilterQuery({ words, tags }: ListFilter): string {
   const query = new URLSearchParams();
   if (words.trim()) query.set('q', words);
   if (tags.length > 0) query.set('tags', tags.join(','));
-  if (isKeptOnly) query.set('favorites', '1');
   const text = query.toString().replaceAll('%2C', ',');
   return text ? `?${text}` : '';
 }
@@ -81,6 +78,5 @@ export function getFilterFromQuery(search: string): ListFilter {
   return {
     words: query.get('q') ?? '',
     tags: (query.get('tags') ?? '').split(',').filter(Boolean),
-    isKeptOnly: query.get('favorites') === '1',
   };
 }

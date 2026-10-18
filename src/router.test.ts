@@ -5,8 +5,10 @@ import { getRoute } from './router.ts';
 
 test('addresses read as their pages', () => {
   assert.deepEqual(getRoute('/'), { page: 'home' });
-  assert.deepEqual(getRoute('/songs'), { page: 'songs' });
-  assert.deepEqual(getRoute('/songs?tag=funk'), { page: 'songs' });
+  assert.deepEqual(getRoute('/songs'), { page: 'songs', isFavoritesOnly: false });
+  assert.deepEqual(getRoute('/songs?tag=funk'), { page: 'songs', isFavoritesOnly: false });
+  assert.deepEqual(getRoute('/songs/favorites'), { page: 'songs', isFavoritesOnly: true });
+  assert.deepEqual(getRoute('/songs/favorites?q=dark'), { page: 'songs', isFavoritesOnly: true });
   assert.deepEqual(getRoute('/clips'), { page: 'clips' });
   assert.deepEqual(getRoute('/guides'), { page: 'guides' });
   assert.deepEqual(getRoute('/new'), { page: 'new' });

@@ -1,6 +1,6 @@
 /**
  * Which page the address is, and moving between them without reloading. Pages: `/` home,
- * `/songs` the songs list, `/songs/<id>` one song, `/clips` the clip pool, `/guides` the style guides, `/new` a prompt, `/jobs`
+ * `/songs` the songs list, `/songs/favorites` only the kept ones, `/songs/<id>` one song, `/clips` the clip pool, `/guides` the style guides, `/new` a prompt, `/jobs`
  * every prompt sent, `/references` the demo songs to learn from, `/references/<id>` one of them. Knows nothing of what a page shows.
  */
 import { useEffect, useState } from 'react';
@@ -8,7 +8,7 @@ import { useEffect, useState } from 'react';
 /** A page and what it is of. */
 export type Route =
   | { page: 'home' }
-  | { page: 'songs' }
+  | { page: 'songs'; isFavoritesOnly: boolean }
   | { page: 'song'; songId: string }
   | { page: 'clips' }
   | { page: 'guides' }
@@ -25,9 +25,10 @@ export type Route =
  */
 export function getRoute(address: string): Route {
   const path = address.split('?')[0] ?? '';
+  if (/^\/songs\/favorites\/?$/.test(path)) return { page: 'songs', isFavoritesOnly: true };
   const song = /^\/songs\/([^/]+)\/?$/.exec(path);
   if (song?.[1]) return { page: 'song', songId: decodeURIComponent(song[1]) };
-  if (/^\/songs\/?$/.test(path)) return { page: 'songs' };
+  if (/^\/songs\/?$/.test(path)) return { page: 'songs', isFavoritesOnly: false };
   const reference = /^\/references\/([^/]+)\/?$/.exec(path);
   if (reference?.[1]) return { page: 'reference', referenceId: decodeURIComponent(reference[1]) };
   if (/^\/references\/?$/.test(path)) return { page: 'references' };
