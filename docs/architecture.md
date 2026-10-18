@@ -262,3 +262,6 @@ a variation) instead of a song; `make/check-script.ts --takes-of <clip>` checks 
    but no song shares one. Clips has left the top bar (0029); still to weigh: drop the Clips page or
    group it by song; clean up the clips no song plays; reuse across songs, if wanted, as a picker in
    the editor's clip column. The outcome is an ADR beside 0005.
+3. More chips: any chip Furnace has, in two tiers (written; known, with a skill), and a job that
+   names a chip not written stops with the reason instead of writing for another. The plan and
+   what is open: docs/more-chips.md.
