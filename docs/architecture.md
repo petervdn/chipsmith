@@ -59,7 +59,7 @@ Routes: `GET /api/songs`, `GET /api/songs/<id>`, `PATCH /api/songs/<id>` (status
 `DELETE /api/songs/<id>` (with the clips only it played), `PUT /api/songs/<id>/tracks` (the
 arrangement, saved from the editor), `POST /api/songs/<id>/split`, `GET /api/clips`, `PATCH /api/clips/<id>` (status, tags, a variation's label), `DELETE /api/clips/<id>` (a take, 0039), and `GET /media/clips/<id>/audio.flac` with byte ranges, `GET /media/clips/<id>/source.fur` (a
 download) and `source.txt` (the .fur as tracker text, `fur/tracker-text.ts`), and
-`POST /api/clips/<id>/transpose` (a take of it transposed, 0037), `GET` and `POST
+`POST /api/encode/<type>` (a song's mix, as the page rendered it to a WAV, encoded to FLAC or MP3, 0049), `POST /api/clips/<id>/transpose` (a take of it transposed, 0037), `GET` and `POST
 /api/clips/<id>/notes` (its notes for the note grid, and a take of them as edited), `POST /api/clips/<id>/open` (a copy in the system's temporary folder opened in Furnace,
 `server/clip-files.ts`, so the clip never changes).
 What they answer is typed in `shared/api.types.ts`.
@@ -126,7 +126,7 @@ with its title alone, the Songs tab marked above it.
   its edges to trim it, drag a clip from the song's clips onto a track as a new block (a copy of its row held under the pointer where it was grabbed; the timeline scrolls at its edges only once the drag has been inside it), snapped to a grid; repeat, duplicate, untrim, remove; add, rename and remove tracks; mute and solo
   (not saved); a mixer, a row under the tracks opened and folded from its own head: a strip per track (its fader,
   saved and heard in playback only, one undo step per move; its meter, M and S, the same values as
-  its row) and the master (the player's volume); undo and redo in the bar's edit group; Revert and Save at the right of the song's title row, which stays in view under the top bar with the editor's sticky rows under it (`src/songs/SongTitleRow.tsx`, `--sticky-top`), quiet until there are changes, then Save lit in the accent (`src/editor/SaveButtons.tsx`). Split into channels, beside the title with the song's other actions, apart from Revert and Save (0048; `src/editor/SplitButton.tsx`; a song that is one whole clip
+  its row) and the master (the player's volume); undo and redo in the bar's edit group; Revert and Save at the right of the song's title row, which stays in view under the top bar with the editor's sticky rows under it (`src/songs/SongTitleRow.tsx`, `--sticky-top`), quiet until there are changes, then Save lit in the accent (`src/editor/SaveButtons.tsx`). Export, beside the title with Split (0048): a dialog to save the song as audio as the editor plays it now, its unsaved edits and faders (and mute and solo, or all tracks), as WAV, FLAC or MP3, in a place chosen in the browser's Save dialog where it has one, else downloaded; mixed in the page (`src/playback/mixdown.ts`), FLAC and MP3 encoded by ffmpeg (`POST /api/encode/<type>`; 0049; `src/editor/ExportButton.tsx`). Split into channels, beside the title with the song's other actions, apart from Revert and Save (0048; `src/editor/SplitButton.tsx`; a song that is one whole clip
   of more than one channel; what cutting does to the sound: docs/splitting.md): a track per channel
   that plays, each one block of a new clip, the whole song on that channel alone, rendered in the
   background and shown striped until its audio is in (`fur/cut.ts`, `make/split-song.ts`,

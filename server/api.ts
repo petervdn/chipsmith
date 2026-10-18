@@ -13,7 +13,7 @@ import { PROJECT_FOLDER, getSettings } from '../config/settings.ts';
 import type { Clip } from '../shared/clip.schema.ts';
 import type { Song } from '../shared/song.schema.ts';
 import { getSongSeconds } from '../shared/song-length.ts';
-import { sendError, sendFile, sendJson, readJsonBody } from './http.ts';
+import { readBody, readJsonBody, sendBytes, sendError, sendFile, sendJson } from './http.ts';
 import { startJobRunner } from './job-runner.ts';
 import type { JobStore } from './jobs.ts';
 import { openJobs } from './jobs.ts';
@@ -35,6 +35,9 @@ import { getSplitCount } from '../shared/clip-channels.ts';
 import { hasVariationInLineage } from '../shared/clip-lineage.ts';
 import { sendClipFur, sendClipText } from './clip-files.ts';
 import { routeClips } from './clip-routes.ts';
+import { getExportFormat } from '../shared/audio-export.ts';
+import { encodeExport } from '../render/encode-export.ts';
+import { getWavFacts } from '../render/wav.ts';
 
 /**
  * Checks the programs the app calls, and warns in the server's log of each one that cannot be used.
@@ -216,7 +219,36 @@ async function route(
     return sendJson(response, getSongDetail(store, id));
   }
   if (kind === 'clips') return routeClips(store, request, response, { id, file, method });
+  if (kind === 'encode' && id && method === 'POST') return encodeMix(request, response, id);
   sendError(response, 404, 'not found');
+}
+
+/**
+ * Answers `POST /api/encode/<type>`: the WAV in the body, a song's mix the page rendered, encoded
+ * to an export file type and sent back.
+ *
+ * @param request - The request, its body the WAV.
+ * @param response - The response to send the encoded file on.
+ * @param formatName - The name of the file type to encode to (`flac`, `mp3`).
+ */
+async function encodeMix(
+  request: IncomingMessage,
+  response: ServerResponse,
+  formatName: string,
+): Promise<void> {
+  const format = getExportFormat(formatName);
+  if (!format || format.ffmpegArgs.length === 0) {
+    sendError(response, 400, `no export to ${formatName}`);
+    return;
+  }
+  const wav = await readBody(request);
+  try {
+    getWavFacts(wav);
+  } catch (error) {
+    sendError(response, 400, error instanceof Error ? error.message : String(error));
+    return;
+  }
+  sendBytes(response, await encodeExport(wav, format), format.mediaType);
 }
 
 /**

@@ -1,6 +1,7 @@
 /**
  * Answering a request: JSON, plain text, an error, a file with byte ranges (a browser seeks in audio
- * by asking for ranges) or as a download, and reading a JSON body. Knows nothing of clips or songs.
+ * by asking for ranges) or as a download, bytes made for the request, and reading a body as JSON or
+ * as bytes. Knows nothing of clips or songs.
  */
 import { createReadStream, statSync } from 'node:fs';
 import type { IncomingMessage, ServerResponse } from 'node:http';
@@ -46,10 +47,32 @@ export function sendError(response: ServerResponse, status: number, message: str
  * @returns The parsed body, or null when the body is empty.
  */
 export async function readJsonBody(request: IncomingMessage): Promise<unknown> {
+  const text = (await readBody(request)).toString('utf8');
+  return text ? JSON.parse(text) : null;
+}
+
+/**
+ * Reads a request's body as it is.
+ *
+ * @param request - The request.
+ * @returns The body's bytes.
+ */
+export async function readBody(request: IncomingMessage): Promise<Buffer> {
   const chunks: Buffer[] = [];
   for await (const chunk of request) chunks.push(Buffer.from(chunk));
-  const text = Buffer.concat(chunks).toString('utf8');
-  return text ? JSON.parse(text) : null;
+  return Buffer.concat(chunks);
+}
+
+/**
+ * Sends bytes made for the request, as a file of a media type.
+ *
+ * @param response - The response.
+ * @param bytes - The bytes.
+ * @param contentType - Their media type.
+ */
+export function sendBytes(response: ServerResponse, bytes: Buffer, contentType: string): void {
+  response.writeHead(200, { 'Content-Type': contentType, 'Content-Length': bytes.length });
+  response.end(bytes);
 }
 
 /**

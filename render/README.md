@@ -2,6 +2,7 @@
 
 A clip's audio: its .fur rendered by Furnace and encoded as FLAC (docs/adr/0007).
 
+- `encode-export.ts`: a song's mix, as a WAV, encoded to an export file type (FLAC, MP3)
 - `ffmpeg.ts`: ffmpeg run with arguments, failing with what it wrote
 - `flac.ts`: a WAV encoded as FLAC, with ffmpeg
 - `furnace.ts`: a .fur rendered to a WAV by Furnace (a headless build or the app), one at a time, retried if it fails

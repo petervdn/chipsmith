@@ -25,7 +25,13 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  margin-left: 12px;
+}
+
+/* apart from the title where they share its line; on a phone they wrap under it */
+@media (min-width: 760px) {
+  .song-title-row-actions {
+    margin-left: 12px;
+  }
 }
 
 .song-title-row-save {

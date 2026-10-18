@@ -5,6 +5,7 @@ Everything the page reads from or sends to the server, as TanStack Query queries
 
 - `client.ts`: the query client and `getQueryKey`, the one typed factory of its keys
 - `clips.ts`: the clip pool, and changing a clip's status
+- `exports.ts`: a song's mix, as a WAV, encoded on the server to another file type
 - `guides.ts`: the style guides, and making, changing and deleting one
 - `jobs.ts`: the jobs, polled while one runs, and sending a prompt
 - `peaks.ts`: a clip's waveform as peaks, read once from its audio

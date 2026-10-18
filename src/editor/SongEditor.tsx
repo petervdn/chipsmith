@@ -1,5 +1,5 @@
 // An opened song in the editor: the bar of controls (play, undo and redo, the grid, a new track,
-// zoom), the song's actions and Revert and Save put in the song's title row, and the timeline's head under it, which stay in view at the top, the
+// zoom), the song's actions (Split, Export) and Revert and Save put in the song's title row, and the timeline's head under it, which stay in view at the top, the
 // timeline of the draft with the song's clips in a column at its right, and under it the details of
 // the block, clip or track selected, a take swapped into
 // the selected block or clip among its edits.
@@ -13,6 +13,9 @@ import { useSplitSong } from '../queries/songs.ts';
 import { EditorBar } from './EditorBar.tsx';
 import { SaveButtons } from './SaveButtons.tsx';
 import { SplitButton } from './SplitButton.tsx';
+import { ExportButton } from './ExportButton.tsx';
+import { useSongExport } from './use-song-export.ts';
+import { getUnheardTrackIds } from './track-mix.ts';
 import { BAR_STEP } from './grid.ts';
 import { addTrack, getBlock, removeBlock, setTrackVolume } from './song-edits.ts';
 import type { BlockPlace } from './song-edits.ts';
@@ -87,6 +90,8 @@ export function SongEditor({ detail, actionSlot, saveSlot }: SongEditorProps) {
   const { mix, toggleMute, toggleSolo } = useTrackMix();
   const draftSong = { ...song, tracks: draft.tracks };
   useHeardTracks(draft.tracks, mix);
+  const unheardTrackIds = getUnheardTrackIds(draft.tracks, mix);
+  const songExport = useSongExport({ song: draftSong, clips, unheardTrackIds });
   const loop = useLoop(draftSong, clips);
   const transport = useSongTransport({ ...detail, song: draftSong, clips }, loop.loop);
   useMetronome(transport.mode === 'playing', song);
@@ -176,12 +181,20 @@ export function SongEditor({ detail, actionSlot, saveSlot }: SongEditorProps) {
     <div className="song-editor">
       {actionSlot &&
         createPortal(
-          <SplitButton
-            splitCount={splitCount}
-            hasChanges={draft.hasChanges}
-            isSplitting={isSplitting}
-            onSplit={() => void split()}
-          />,
+          <>
+            <SplitButton
+              splitCount={splitCount}
+              hasChanges={draft.hasChanges}
+              isSplitting={isSplitting}
+              onSplit={() => void split()}
+            />
+            <ExportButton
+              songExport={songExport}
+              trackCount={draft.tracks.length}
+              unheardCount={unheardTrackIds.length}
+              isWaitingForAudio={isWaitingForAudio}
+            />
+          </>,
           actionSlot,
         )}
       {saveSlot && createPortal(<SaveButtons draft={draft} />, saveSlot)}

@@ -28,14 +28,18 @@ saved, playing from a cursor, the zoom, and the selected block's clip or track.
 - `ControlGroup.tsx`: controls grouped under a very small label over a line
 - `EditorBar.css`: the look of EditorBar.tsx
 - `EditorBar.tsx`: the bar of controls above the timeline: the transport, then the groups
+- `ExportButton.css`: the look of ExportButton.tsx
+- `ExportButton.tsx`: Export among the song's actions, and its dialog: the file type, the tracks, where it goes
 - `Fader.css`: the look of Fader.tsx
 - `Fader.tsx`: a level's fader in decibels, standing in the mixer
 - `grid.ts`: the snap grid: its steps, and a time snapped to one
 - `lane-position.ts`: the track's lane under a point, and the tick a point is at, read from the page
+- `save-file.ts`: where an exported file goes: the browser's Save dialog where it has one, else a download
 - `SaveButtons.css`: the look of SaveButtons.tsx
 - `SaveButtons.tsx`: Revert and Save, at the right of the song's title row
 - `song-edits.ts`: the edits of the arrangement: move, trim, repeat, duplicate, remove a block; tracks
 - `song-clips.ts`: the song's clips in the order it plays them, their blocks counted, each with its takes; how often one is used, in words
+- `song-export.ts`: an export's file name, each track's gain in the mix, how far it went over full scale
 - `SplitButton.css`: the look of SplitButton.tsx
 - `SplitButton.tsx`: Split into channels, among the song's actions beside its title, while the song is one whole clip
 - `SongClipRow.css`: the look of SongClipRow.tsx
@@ -102,6 +106,7 @@ saved, playing from a cursor, the zoom, and the selected block's clip or track.
 - `use-playhead-line.ts`: the playhead moved every frame while the song plays
 - `use-press-drag.ts`: a press that becomes a drag: a mouse at once, a finger after holding still
 - `use-scroll-sync.ts`: the timeline's head and its tracks kept scrolled sideways to the same place
+- `use-song-export.ts`: the song exported: where asked, mixed, encoded, written
 - `use-sticky-tracks.ts`: the tracks kept in view under the editor's head, shrinking to one row; a track brought into it
 - `use-song-draft.ts`: the song being edited: a draft with undo and redo, the selection, save and revert
 - `use-song-transport.ts`: playing the song from its cursor, stopping, moving the cursor

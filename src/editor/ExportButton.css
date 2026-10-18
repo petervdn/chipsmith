@@ -1,0 +1,91 @@
+/* The look of ExportButton.tsx: the button quiet and outlined like Split; in its dialog (Dialog.css)
+   the choices as options stacked, the one chosen in inverted colours, its name and what it is for. */
+
+.export-button {
+  min-height: var(--touch);
+  padding: 0 14px;
+  border: var(--border-width) solid var(--line);
+  border-radius: var(--radius);
+  background: transparent;
+  cursor: pointer;
+}
+
+.export-button:disabled {
+  color: var(--muted);
+  opacity: 0.5;
+  cursor: default;
+}
+
+@media (hover: hover) {
+  .export-button:not(:disabled):hover {
+    background: var(--raised);
+  }
+}
+
+.export-dialog {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.export-dialog-title {
+  margin: 0;
+  font-size: 1.125rem;
+}
+
+.export-dialog-about,
+.export-dialog-where {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.875rem;
+  line-height: var(--line-height);
+}
+
+.export-dialog-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.export-dialog-label {
+  color: var(--muted);
+  font-size: 0.8125rem;
+}
+
+.export-dialog-option {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  min-height: var(--touch);
+  padding: 0 12px;
+  border: var(--border-width) solid var(--line);
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--fg);
+  text-align: left;
+  cursor: pointer;
+}
+
+.export-dialog-option.is-on {
+  border-color: var(--fg);
+  background: var(--fg);
+  color: var(--bg);
+}
+
+.export-dialog-option-name {
+  font-weight: 600;
+}
+
+.export-dialog-option-about {
+  font-size: 0.8125rem;
+  opacity: 0.7;
+}
+
+.export-dialog-clipped {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: var(--radius);
+  background: var(--raised);
+  font-size: 0.875rem;
+  line-height: var(--line-height);
+}
