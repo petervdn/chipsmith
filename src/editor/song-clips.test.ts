@@ -16,12 +16,10 @@ function makeClip(id: string): Clip {
   return {
     id,
     created: '2026-10-17T00:00:00.000Z',
-    prompt: '',
-    guides: [],
-    promptId: 'p1',
     name: { section: null, stem: null },
     bars: null,
     parent: null,
+    variationLabel: null,
     madeFor: null,
     tags: [],
     status: 'new',

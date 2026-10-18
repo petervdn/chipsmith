@@ -287,7 +287,6 @@ async function buildAndRender(jobs: JobStore, store: Store, jobId: string): Prom
         guides: job?.guides ?? [],
         structure: job?.structure ?? null,
         harmony: job?.harmony ?? null,
-        promptId: jobId,
         scriptFile,
         tags: plan.tags.map((name) => ({ name, by: 'claude' })),
         status: 'new',

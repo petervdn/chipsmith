@@ -1,4 +1,4 @@
-// The clip pool: every clip with its name, its prompt, its length and the songs that use it, the
+// The clip pool: every clip with its name, what a variation changed, its length and the songs that use it, the
 // filter bar above it, and ★ on each row.
 import { getClipLabel } from '../../shared/clip-label.ts';
 import { FilterBar } from '../lists/FilterBar.tsx';
@@ -23,7 +23,7 @@ export function ClipsPage() {
   usePageTitle('Clips');
   const items = (listings ?? []).map((listing) => ({
     listing,
-    text: `${getClipLabel(listing.clip)} ${listing.clip.prompt} ${listing.clip.id}`,
+    text: `${getClipLabel(listing.clip)} ${listing.clip.variationLabel ?? ''} ${listing.clip.id}`,
     tags: listing.clip.tags,
   }));
   const shown = items
@@ -50,7 +50,9 @@ export function ClipsPage() {
             <div className="list-row">
               <span className="list-main">
                 <span className="list-title">{getClipLabel(clip)}</span>
-                <span className="list-prompt">{clip.prompt}</span>
+                {clip.variationLabel && (
+                  <span className="list-variation">{clip.variationLabel}</span>
+                )}
               </span>
               <span className="list-facts">
                 <span>{formatSeconds(clip.seconds)}</span>

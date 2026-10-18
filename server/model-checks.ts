@@ -3,7 +3,7 @@
  * request's change to them. A file that does not fit is an error that names the file and the field (docs/code-guidelines.md: checked
  * where it comes in).
  */
-import type { CatalogueChange } from '../shared/api.types.ts';
+import type { CatalogueChange, ClipChange } from '../shared/api.types.ts';
 import type { Status, Tag } from '../shared/catalogue.types.ts';
 import type { BarRange, ClipName, ClipParent, ClipRecord } from '../shared/clip.types.ts';
 import type { Guide, GuideDraft, SentGuide } from '../shared/guide.types.ts';
@@ -121,6 +121,24 @@ export function checkCatalogueChange(body: unknown): CatalogueChange {
 }
 
 /**
+ * Checks a change to a clip's record sent in a request's body: its catalogue fields, and its label
+ * if it is a variation.
+ *
+ * @param body - The body parsed from JSON.
+ * @param clip - The clip changed, whose parent says whether it can have a label.
+ * @param clip.parent - The clip it was made from, or null.
+ * @returns The change, with only the fields the body sets.
+ */
+export function checkClipChange(body: unknown, { parent }: ClipRecord): ClipChange {
+  const result: ClipChange = checkCatalogueChange(body);
+  const variationLabel = getObject(body, 'body')['variationLabel'];
+  if (variationLabel === undefined) return result;
+  const label = checkVariationLabel(variationLabel, parent, 'body.variationLabel');
+  if (label !== null) result.variationLabel = label;
+  return result;
+}
+
+/**
  * Checks a clip.json's content. Fields it no longer holds (what its source says, docs/adr/0024) are
  * left out.
  *
@@ -130,21 +148,47 @@ export function checkCatalogueChange(body: unknown): CatalogueChange {
  */
 export function checkClipRecord(value: unknown, path: string): ClipRecord {
   const clip = getObject(value, path);
+  const id = getString(clip['id'], `${path}.id`);
+  const created = getString(clip['created'], `${path}.created`);
+  const name = checkClipName(clip['name'], `${path}.name`);
+  const bars = clip['bars'] === null ? null : checkBarRange(clip['bars'], `${path}.bars`);
+  const parent = clip['parent'] === null ? null : checkParent(clip['parent'], `${path}.parent`);
   return {
-    id: getString(clip['id'], `${path}.id`),
-    created: getString(clip['created'], `${path}.created`),
-    prompt: getString(clip['prompt'], `${path}.prompt`),
-    guides: checkSentGuides(clip['guides'], `${path}.guides`),
-    promptId: getString(clip['promptId'], `${path}.promptId`),
-    name: checkClipName(clip['name'], `${path}.name`),
-    bars: clip['bars'] === null ? null : checkBarRange(clip['bars'], `${path}.bars`),
-    parent: clip['parent'] === null ? null : checkParent(clip['parent'], `${path}.parent`),
+    id,
+    created,
+    name,
+    bars,
+    parent,
+    variationLabel: checkVariationLabel(clip['variationLabel'], parent, `${path}.variationLabel`),
     madeFor: getStringOrNull(clip['madeFor'], `${path}.madeFor`),
     tags: checkTags(clip['tags'], `${path}.tags`),
     status: checkStatus(clip['status'], `${path}.status`),
     key: getStringOrNull(clip['key'], `${path}.key`),
     furnace: getStringOrNull(clip['furnace'], `${path}.furnace`),
   };
+}
+
+/**
+ * Checks a clip's variation label: a variation has one, written out, and any other clip none
+ * (docs/adr/0036).
+ *
+ * @param value - The value parsed from JSON.
+ * @param parent - The clip's parent, which says whether it is a variation.
+ * @param path - Where the value is (a file, or a field in one), named in an error.
+ * @returns The label, trimmed, or null for a clip that is not a variation.
+ */
+export function checkVariationLabel(
+  value: unknown,
+  parent: ClipParent | null,
+  path: string,
+): string | null {
+  if (parent?.relation !== 'variation') {
+    if (value !== null) throw new Error(`${path} is set, but the clip is not a variation`);
+    return null;
+  }
+  const label = getString(value, path).trim();
+  if (!label) throw new Error(`${path} is empty, and a variation needs one`);
+  return label;
 }
 
 /**

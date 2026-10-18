@@ -113,8 +113,8 @@ from that song's music and change what is asked; keep the rest as it is.
 
 - `<data>/songs/<id>/song.json`: its title, its own prompt (what it was asked to be), its tracks and
   the clips its blocks play.
-- `<data>/clips/<clip>/`: each clip's `clip.json` (its prompt, key, slice), `source.fur` (its music,
-  and its tempo and chips) and `script.ts` (the script that wrote it). A song imported from the old
+- `<data>/clips/<clip>/`: each clip's `clip.json` (its key, slice, what a variation changed),
+  `source.fur` (its music, and its tempo and chips) and `script.ts` (the script that wrote it). A song imported from the old
   project has its import script there, not a composition: work from its `source.fur`. An older script
   uses old names: `buildModule` (`make/module-builder.ts`), `readModule` and the plan's `module` are
   now `buildFurFile`, `readFurFile` and `furFile`; its `chips` `'nes'` and `'nes+scc'` are now

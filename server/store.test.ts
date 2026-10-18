@@ -28,12 +28,10 @@ const FUR_FILE = buildFurFile({
 const RECORD: ClipRecord = {
   id: 'c0001',
   created: '2026-10-16T23:00:00',
-  prompt: 'a funk groove',
-  guides: [],
-  promptId: 'p0001',
   name: { section: 'A', stem: 'Bass' },
   bars: { from: 0, to: 8 },
   parent: null,
+  variationLabel: null,
   madeFor: 's0001',
   tags: [{ name: 'funk', by: 'claude' }],
   status: 'new',

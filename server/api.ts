@@ -28,7 +28,12 @@ import { openJobs } from './jobs.ts';
 import { copyExamplesIfEmpty } from './examples.ts';
 import { splitSong } from '../make/split-song.ts';
 import { isAudioMissing, renderMissingAudio } from './missing-audio.ts';
-import { checkCatalogueChange, checkGuideDraft, checkTracks } from './model-checks.ts';
+import {
+  checkCatalogueChange,
+  checkClipChange,
+  checkGuideDraft,
+  checkTracks,
+} from './model-checks.ts';
 import type { GuideStore } from './guides.ts';
 import { createGuide, deleteGuide, listGuides, openGuides, updateGuide } from './guides.ts';
 import type { Store } from './store.ts';
@@ -49,6 +54,7 @@ import { openReferences, rescanReferences } from './references.ts';
 import type { StructureStore } from './structures.ts';
 import { openStructures } from './structures.ts';
 import { getSplitCount } from '../shared/clip-channels.ts';
+import { hasVariationInLineage } from '../shared/clip-lineage.ts';
 import { openClipInFurnace, sendClipFur, sendClipText } from './clip-files.ts';
 
 /**
@@ -251,7 +257,7 @@ async function route(
   if (kind === 'clips' && id && method === 'PATCH') {
     const clip = store.clips.get(id);
     if (!clip) return sendError(response, 404, `no clip ${id}`);
-    saveClip(store, { ...clip, ...checkCatalogueChange(await readJsonBody(request)) });
+    saveClip(store, { ...clip, ...checkClipChange(await readJsonBody(request), clip) });
     return sendJson(response, { clip: store.clips.get(id), usedBy: getSongsUsingClip(store, id) });
   }
   sendError(response, 404, 'not found');
@@ -296,7 +302,9 @@ function listSongs(store: Store): SongListing[] {
       seconds: getSongSeconds(song, (clipId) => store.clips.get(clipId)?.seconds ?? 0),
       clipCount: clips.length,
       isWaitingForAudio: clips.some((clip) => isAudioMissing(store, clip.id)),
-      isChangedAfterPrompt: clips.some((clip) => clip.prompt !== song.prompt),
+      isChangedAfterPrompt: clips.some((clip) =>
+        hasVariationInLineage(clip, (clipId) => store.clips.get(clipId)),
+      ),
       key: clips.find((clip) => clip.key)?.key ?? null,
       chips: [...new Set(clips.flatMap((clip) => clip.chips))],
       promptedAgainAs: songs

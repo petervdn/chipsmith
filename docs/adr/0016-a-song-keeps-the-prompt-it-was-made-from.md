@@ -1,6 +1,6 @@
 # 0016. A song keeps the prompt it was made from; prompting it again sends only that
 
-- Status: accepted
+- Status: accepted; the clips' prompts superseded by 0036
 - Date: 2026-10-17
 
 ## Context

@@ -17,7 +17,7 @@ Consequences.
 | [0001](0001-record-decisions.md) | Record architecture decisions | accepted |
 | [0002](0002-typescript-only.md) | TypeScript only; the Python tools are left on the archive branch | accepted |
 | [0003](0003-no-batches.md) | No batches: an exploration makes songs | accepted |
-| [0004](0004-a-clip-holds-its-own-information.md) | A clip holds all of its own information, even what others repeat | accepted |
+| [0004](0004-a-clip-holds-its-own-information.md) | A clip holds all of its own information, even what others repeat | accepted; its prompt superseded by 0036 |
 | [0005](0005-clips-are-a-shared-pool.md) | Clips are one shared pool; a song points to clips, and a clip never changes | accepted |
 | [0006](0006-the-files-are-the-data.md) | The files are the data; the server holds a copy in memory, no database | accepted |
 | [0007](0007-flac-is-the-one-audio-format.md) | FLAC is the one audio format | accepted |
@@ -29,10 +29,10 @@ Consequences.
 | [0013](0013-react-for-the-page.md) | The page is React | accepted |
 | [0014](0014-a-variation-changes-only-its-block.md) | A new version of a clip changes only the block it was asked for | accepted |
 | [0015](0015-render-with-the-furnace-app.md) | A clip is rendered with the Furnace app's command line, one at a time | accepted |
-| [0016](0016-a-song-keeps-the-prompt-it-was-made-from.md) | A song keeps the prompt it was made from; prompting it again sends only that | accepted |
+| [0016](0016-a-song-keeps-the-prompt-it-was-made-from.md) | A song keeps the prompt it was made from; prompting it again sends only that | accepted; the clips' prompts superseded by 0036 |
 | [0017](0017-where-state-lives.md) | Where state lives: local first, then lifted, then a store; the server's in TanStack Query | accepted |
 | [0018](0018-what-is-made-is-not-in-git.md) | What is made is never in git; five examples are, and missing audio is rendered on start | accepted |
-| [0019](0019-style-guides-are-part-of-the-prompt.md) | Style guides are part of the prompt: chosen per prompt, copied into what it makes | accepted |
+| [0019](0019-style-guides-are-part-of-the-prompt.md) | Style guides are part of the prompt: chosen per prompt, copied into what it makes | accepted; the guides' copy in clips superseded by 0036 |
 | [0020](0020-the-page-is-grouped-by-area.md) | The page is grouped by area; a component's CSS is beside it; no barrel files | accepted |
 | [0021](0021-comments-are-full-jsdoc.md) | A function's comment is full JSDoc, checked by the linter | accepted |
 | [0022](0022-an-edit-is-a-draft-until-saved.md) | An edit is a draft in the page until it is saved (for now) | accepted |
@@ -49,3 +49,4 @@ Consequences.
 | [0033](0033-references-are-their-own-kind.md) | Furnace's demos are references: their own kind, listened to and noted, never songs | accepted |
 | [0034](0034-a-song-may-use-a-chip-twice.md) | A song may use a chip twice | accepted |
 | [0035](0035-the-psg-joins-the-sid-leaves-new.md) | The MSX PSG is a chip a song can use; the New page stops offering the SID | accepted |
+| [0036](0036-a-clip-keeps-no-prompt.md) | A clip keeps no prompt; a variation says what it changed | accepted |

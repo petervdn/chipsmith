@@ -32,7 +32,6 @@ export type NewSong = {
   structure?: SentStructure | null;
   /** The harmony sent with the prompt, copied, or null. */
   harmony?: SentHarmony | null;
-  promptId: string;
   /** The script that wrote the .fur file, copied into the clip. */
   scriptFile: string;
   tags: Tag[];
@@ -54,10 +53,9 @@ export type MadeSong = { songId: string; clipId: string };
  * @param newSong.title - The song's title.
  * @param newSong.furFile - The .fur file, written as the clip's source.fur.
  * @param newSong.prompt - The prompt as written, or what the song was made from.
- * @param newSong.guides - The style guides sent with the prompt, copied into the clip and the song.
+ * @param newSong.guides - The style guides sent with the prompt, copied into the song.
  * @param newSong.structure - The structure sent with the prompt, copied into the song, or null.
  * @param newSong.harmony - The harmony sent with the prompt, copied into the song, or null.
- * @param newSong.promptId - The id of the prompt, kept in the clip.
  * @param newSong.scriptFile - The script that wrote the .fur file, copied into the clip.
  * @param newSong.tags - The tags of the clip and the song.
  * @param newSong.status - The status of the clip and the song.
@@ -73,7 +71,6 @@ export async function makeSong({
   guides,
   structure = null,
   harmony = null,
-  promptId,
   scriptFile,
   tags,
   status,
@@ -92,12 +89,10 @@ export async function makeSong({
   const clip: ClipRecord = {
     id: clipId,
     created,
-    prompt,
-    guides,
-    promptId,
     name: { section: null, stem: null },
     bars: null,
     parent: null,
+    variationLabel: null,
     madeFor: songId,
     tags,
     status,

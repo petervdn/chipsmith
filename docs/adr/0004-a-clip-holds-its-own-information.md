@@ -1,6 +1,6 @@
 # 0004. A clip holds all of its own information, even what others repeat
 
-- Status: accepted
+- Status: accepted; its prompt superseded by 0036
 - Date: 2026-10-16
 
 ## Context

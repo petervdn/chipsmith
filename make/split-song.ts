@@ -49,6 +49,7 @@ export function splitSong(
       created,
       name: { section: null, stem: getStemName(furFile.song.channelNames[channel], chipChannel) },
       parent: { clip: whole.id, relation: 'split' },
+      variationLabel: null,
       madeFor: song.id,
       tags: [],
       status: 'new',

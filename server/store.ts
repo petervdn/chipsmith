@@ -138,12 +138,10 @@ export function getClipRecord(clip: ClipRecord): ClipRecord {
   return {
     id: clip.id,
     created: clip.created,
-    prompt: clip.prompt,
-    guides: clip.guides,
-    promptId: clip.promptId,
     name: clip.name,
     bars: clip.bars,
     parent: clip.parent,
+    variationLabel: clip.variationLabel,
     madeFor: clip.madeFor,
     tags: clip.tags,
     status: clip.status,

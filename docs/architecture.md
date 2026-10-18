@@ -9,7 +9,8 @@ docs/code-guidelines.md.
   song's grid (ticks, `TICKS_PER_BEAT` to a beat), with an optional trim and a number of repeats.
 - **A clip** is one piece of audio: a whole piece, or a slice of it by bars and chip channels. Every
   clip is the same kind of thing, however it was cut. It holds all of its own information (0004):
-  in clip.json its record (prompt, slice, name, parent, tags, status, the Furnace that rendered it),
+  in clip.json its record (slice, name, parent, what a variation changed, tags, status, the Furnace
+  that rendered it; no prompt, 0036),
   and its own .fur and script. Its facts (tempo, beats, chips, the channels that play, its length)
   are read from its .fur when it is read, never stored (0024).
 - Clips are one shared pool (0005); a song points to clips by id. A clip's audio and source never
@@ -17,9 +18,11 @@ docs/code-guidelines.md.
   whose parent is the whole one (`split`). Which songs use a clip is worked out, not stored.
 - Songs and clips have tags (descriptions) and a status: new, heard, keeper (0009). A song not
   wanted is deleted, with the clips no other song plays (0028).
-- A song keeps the prompt it was made from (`prompt`, never changed; 0016); its clips keep their own.
-  "Prompt again" on a song's row sends only the song's prompt; the new songs note the song
-  (`promptedFrom`). A song whose clips were made by other prompts shows as changed after its prompt.
+- A song keeps the prompt it was made from (`prompt`, never changed; 0016); its clips keep none
+  (0036). A variation has `variationLabel`, what it changed from its parent, editable, to tell the
+  takes apart. "Prompt again" on a song's row sends only the song's prompt; the new songs note the
+  song (`promptedFrom`). A song with a variation among its clips (or what they were cut from) shows
+  as changed after its prompt (`shared/clip-lineage.ts`).
 - "Use as base" on a song's row opens New with `Based on <title> [<id>]: `; the composing Claude reads
   that song's files and starts from its music (the furnace-song skill). Nothing else is stored.
 
@@ -55,7 +58,7 @@ a song waiting for its audio shows … for ▶ and its list is read again until 
 
 Routes: `GET /api/songs`, `GET /api/songs/<id>`, `PATCH /api/songs/<id>` (status, tags),
 `DELETE /api/songs/<id>` (with the clips only it played), `PUT /api/songs/<id>/tracks` (the
-arrangement, saved from the editor), `POST /api/songs/<id>/split`, `GET /api/clips`, `PATCH /api/clips/<id>`, and `GET /media/clips/<id>/audio.flac` with byte ranges, `GET /media/clips/<id>/source.fur` (a
+arrangement, saved from the editor), `POST /api/songs/<id>/split`, `GET /api/clips`, `PATCH /api/clips/<id>` (status, tags, a variation's label), and `GET /media/clips/<id>/audio.flac` with byte ranges, `GET /media/clips/<id>/source.fur` (a
 download) and `source.txt` (the .fur as tracker text, `fur/tracker-text.ts`), and
 `POST /api/clips/<id>/open` (a copy in the system's temporary folder opened in Furnace,
 `server/clip-files.ts`, so the clip never changes). The references: `GET /api/references`,
@@ -86,7 +89,7 @@ page but Home starts with breadcrumbs, the last its heading (Songs › Seven Tee
   as the page's content (as the top bar's), the clips' column out in the margin left of it and
   the selected block's or track's details in the margin right of it where there is room (else beside
   and under it), and the selected block's
-  clip with its prompt and versions, and its .fur to look at (open in Furnace, download, view as
+  clip with what it changed and its versions, and its .fur to look at (open in Furnace, download, view as
   text). Editing (0022): drag a block to move it (to another track too),
   its edges to trim it, drag a clip from the song's clips onto a track as a new block, snapped to a grid; repeat, duplicate, untrim, remove; add, rename and remove tracks; mute and solo
   (not saved); a mixer under the timeline, switched in the editor bar: a strip per track (its fader,
@@ -183,8 +186,8 @@ row and song page has ▶.
 A prompt is written on the New page (`/new`), with the style guides chosen as chips (the default ones
 to start with; nothing is carried over from another song), and becomes a job (`server/jobs.ts`,
 `jobs/<id>/job.json`, out of git) the moment it arrives. The chosen guides (`server/guides.ts`) are
-copied into the job, given to Claude as part of the prompt, and copied into every song and clip it
-makes (`guides` beside `prompt`), so a later change to a guide does not change what they were made
+copied into the job, given to Claude as part of the prompt, and copied into every song it makes
+(`guides` beside `prompt`), so a later change to a guide does not change what they were made
 from (0019); so are the structure and the harmony chosen with it (`structure`, `harmony`), which
 Claude gets as lines of its prompt (`shared/structure-prompt.ts`, `shared/harmony-prompt.ts`). Its
 card shows on the Jobs page, with its stages from start to end (preparing, writing the script,

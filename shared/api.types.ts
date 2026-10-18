@@ -11,7 +11,7 @@ export type SongListing = {
   clipCount: number;
   /** Whether a clip of the song has no audio yet: it is rendered when the server starts. */
   isWaitingForAudio: boolean;
-  /** Whether a clip of the song was made by a later prompt than the song's own (docs/adr/0016). */
+  /** Whether a clip of the song is, or was cut from, a variation: changed after the song's prompt (docs/adr/0036). */
   isChangedAfterPrompt: boolean;
   /** The key its clips name, the first one found. */
   key: string | null;
@@ -39,6 +39,9 @@ export type SongDeletion = { clipIds: string[] };
 
 /** A change to a song's or a clip's catalogue fields; a field left out stays as it is. */
 export type CatalogueChange = { status?: Status; tags?: Tag[] };
+
+/** A change to a clip's record: its catalogue fields, and a variation's label (docs/adr/0036). */
+export type ClipChange = CatalogueChange & { variationLabel?: string };
 
 /** A program the app calls (config/settings.ts). */
 export type ProgramName = 'furnace' | 'ffmpeg' | 'claude' | 'node';

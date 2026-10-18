@@ -1,6 +1,6 @@
 # 0019. Style guides are part of the prompt: chosen per prompt, copied into what it makes
 
-- Status: accepted
+- Status: accepted; the guides' copy in clips superseded by 0036
 - Date: 2026-10-17
 
 ## Context

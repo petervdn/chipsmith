@@ -1,6 +1,6 @@
 // The selected block's details: where it plays, its clip (what it is, its facts, its .fur file to
-// look at, the prompt and guides it was made with) and the versions of the clip; ▶ plays the song
-// from the block.
+// look at, what it changed if it is a variation) and the versions of the clip; ▶ plays the song from
+// the block.
 import { Minus, Play, Plus } from 'lucide-react';
 import type { Clip } from '../../shared/clip.types.ts';
 import { getTicksPerSecond } from '../../shared/song-length.ts';
@@ -121,19 +121,15 @@ export function BlockDetails({
             · made {clip.created.slice(0, 10)}
           </p>
           <ClipFileLinks clipId={clip.id} />
-          <p className="block-details-prompt">{clip.prompt || 'No prompt.'}</p>
-          {clip.guides.length > 0 && (
-            <p className="block-details-guides">
-              with {clip.guides.map((guide) => guide.name).join(', ')}
-            </p>
-          )}
+          {clip.variationLabel && <p className="block-details-variation">{clip.variationLabel}</p>}
           {versions.length > 1 && (
             <div className="block-details-versions">
               <h3 className="block-details-subtitle">Versions</h3>
               <ol>
                 {versions.map((version) => (
                   <li key={version.id} className={version.id === clip.id ? 'is-current' : ''}>
-                    {version.id} · {version.created.slice(0, 10)}
+                    {version.variationLabel ?? 'original'} · {version.id} ·{' '}
+                    {version.created.slice(0, 10)}
                     {version.id === clip.id && ' · in this block'}
                   </li>
                 ))}

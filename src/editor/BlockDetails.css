@@ -41,15 +41,8 @@
   font-size: 0.8125rem;
 }
 
-.block-details-prompt {
+.block-details-variation {
   margin: 8px 0;
-  white-space: pre-wrap;
-}
-
-.block-details-guides {
-  margin: 0;
-  color: var(--muted);
-  font-size: 0.8125rem;
 }
 
 .block-details-subtitle {

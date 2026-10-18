@@ -5,7 +5,6 @@
  * source never change once made (docs/adr/0005).
  */
 import type { Status, Tag } from './catalogue.types.ts';
-import type { SentGuide } from './guide.types.ts';
 
 /** The bars a clip covers, from the first to the one after the last; null in a Clip is the whole piece. */
 export type BarRange = { from: number; to: number };
@@ -20,21 +19,22 @@ export type ClipParent = { clip: string; relation: ClipRelation };
 export type ClipName = { section: string | null; stem: string | null };
 
 /**
- * A clip as its clip.json holds it: what only the clip's record can say. What its source.fur says is
+ * A clip as its clip.json holds it: what only the clip's record can say. Why it was made is not
+ * kept: the song keeps its prompt (docs/adr/0036). What its source.fur says is
  * read from it, never stored (ClipFacts, docs/adr/0024).
  */
 export type ClipRecord = {
   id: string;
   created: string;
-  /** The prompt the clip was made with, as written. */
-  prompt: string;
-  /** The style guides sent with the prompt, as they were then (docs/adr/0019). */
-  guides: SentGuide[];
-  /** Shared by the clips one prompt made together; a label, never looked up. */
-  promptId: string;
   name: ClipName;
   bars: BarRange | null;
   parent: ClipParent | null;
+  /**
+   * What a variation changed from its parent ("walking bass", "octave up"), to tell it from the
+   * other takes; written when it is made and editable. Null when the clip is not a variation
+   * (docs/adr/0036).
+   */
+  variationLabel: string | null;
   /** The song the clip was made in; for information, nothing depends on it. */
   madeFor: string | null;
   tags: Tag[];
