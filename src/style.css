@@ -11,6 +11,8 @@
   --raised: #d4d4d8;
   --fg: #18181b;
   --muted: #5b5b63;
+  /* lighter than muted: a label over what it names (a song's header) */
+  --faint: #85858d;
   --line: #c8c8ce;
   --accent: #a6f23a;
   --on-accent: #18181b;
@@ -69,6 +71,7 @@
     --raised: #2e2e33;
     --fg: #ececef;
     --muted: #9a9aa3;
+    --faint: #6e6e77;
     --line: #3a3a41;
     --accent: #a6f23a;
     --on-accent: #18181b;
@@ -86,6 +89,7 @@
   --raised: #2e2e33;
   --fg: #ececef;
   --muted: #9a9aa3;
+  --faint: #6e6e77;
   --line: #3a3a41;
   --accent: #a6f23a;
   --on-accent: #18181b;

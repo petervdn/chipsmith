@@ -1,11 +1,11 @@
 /* What the header's layouts share: the label over a part of it (Prompt, Song), small, in capitals
-   and muted. */
+   and faint, well apart from what it labels. */
 
 .song-header-label {
   margin: 0 0 6px;
-  color: var(--muted);
+  color: var(--faint);
   font-size: 0.6875rem;
-  font-weight: 600;
+  font-weight: 500;
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
