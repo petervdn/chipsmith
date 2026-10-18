@@ -62,3 +62,4 @@ Consequences.
 | [0047](0047-a-song-prompt-changes-its-song.md) | A song prompt changes its song as a proposal; the clip prompt stays with the clip until then | accepted (not built yet) |
 | [0048](0048-a-songs-actions-are-beside-its-title.md) | A song's actions are beside its title; Revert and Save alone at the right | accepted |
 | [0049](0049-a-song-is-exported-as-it-plays.md) | A song is exported as audio as the editor plays it, mixed in the page | accepted |
+| [0050](0050-new-remembers-its-choices.md) | New remembers what it was left at, in this browser | accepted |

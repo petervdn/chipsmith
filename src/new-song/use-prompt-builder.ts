@@ -1,10 +1,10 @@
 // The prompt builder's parts: rolled at random to start, rolled again except the locked ones, one
 // rolled on its own, a
 // part picked by hand or a chip switched (which locks it; a rhythm or idea that no longer goes with
-// the rest is picked again), and the sentence they make. Kept while the page is open.
-import { useState } from 'react';
+// the rest is picked again), and the sentence they make. Kept between visits (stores/new-song-store.ts).
 import type { ChipName } from '../../shared/chips.ts';
-import type { ListPartName, PartName, PromptParts } from './random-prompt.ts';
+import { useNewSongStore } from '../stores/new-song-store.ts';
+import type { ListPartName, PartName } from './random-prompt.ts';
 import { fitParts, getPromptText, getToggledChips, rollPart, rollParts } from './random-prompt.ts';
 
 /**
@@ -15,30 +15,30 @@ import { fitParts, getPromptText, getToggledChips, rollPart, rollParts } from '.
  *   the last one off, and locks the chips) and `toggleLock`.
  */
 export function usePromptBuilder() {
-  const [parts, setParts] = useState<PromptParts>(() => rollParts(null, [], Math.random));
-  const [locked, setLocked] = useState<PartName[]>([]);
+  const parts = useNewSongStore((state) => state.parts);
+  const locked = useNewSongStore((state) => state.lockedParts);
+  const setParts = useNewSongStore((state) => state.setParts);
+  const setLocked = useNewSongStore((state) => state.setLockedParts);
   function lock(name: PartName): void {
-    setLocked((current) => (current.includes(name) ? current : [...current, name]));
+    if (!locked.includes(name)) setLocked([...locked, name]);
   }
   return {
     parts,
     locked,
     text: getPromptText(parts),
-    roll: () => setParts((current) => rollParts(current, locked, Math.random)),
-    rollOne: (name: PartName) => setParts((current) => rollPart(current, name, Math.random)),
+    roll: () => setParts(rollParts(parts, locked, Math.random)),
+    rollOne: (name: PartName) => setParts(rollPart(parts, name, Math.random)),
     pick: (name: ListPartName, value: string) => {
-      setParts((current) => fitParts({ ...current, [name]: value }, Math.random));
+      setParts(fitParts({ ...parts, [name]: value }, Math.random));
       lock(name);
     },
     toggleChip: (chip: ChipName) => {
-      setParts((current) =>
-        fitParts({ ...current, chips: getToggledChips(current.chips, chip) }, Math.random),
-      );
+      setParts(fitParts({ ...parts, chips: getToggledChips(parts.chips, chip) }, Math.random));
       lock('chips');
     },
     toggleLock: (name: PartName) =>
-      setLocked((current) =>
-        current.includes(name) ? current.filter((other) => other !== name) : [...current, name],
+      setLocked(
+        locked.includes(name) ? locked.filter((other) => other !== name) : [...locked, name],
       ),
   };
 }

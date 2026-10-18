@@ -1,8 +1,10 @@
 // The harmony chosen for a prompt on New: everything Claude's choice at first; its scale, note,
 // feel and colour picked by hand (which locks them) or rolled; three presets to hear that fit them,
 // picked again when they change or on asking; the part one is being chosen for, if any; a
-// progression kept per part. Kept while the page is open.
+// progression kept per part. The harmony and its locks are kept between visits
+// (stores/new-song-store.ts); the presets offered and the part chosen for, while the page is open.
 import { useState } from 'react';
+import { useNewSongStore } from '../stores/new-song-store.ts';
 import type { ProgressionPreset } from '../../shared/progression-presets.ts';
 import type { Section } from '../../shared/structure.schema.ts';
 import type { HarmonyChoice, HarmonyPart, HarmonyRowName } from './random-harmony.ts';
@@ -32,10 +34,12 @@ const CANDIDATES = 3;
  *   choosing), `drop`, `toggleLock`, and `clear` (all Claude's choice, unlocked).
  */
 export function useHarmonyChoice(sections: Section[] | null) {
-  const [choice, setChoice] = useState(OPEN_HARMONY);
-  const [locked, setLocked] = useState<HarmonyRowName[]>([]);
+  const choice = useNewSongStore((state) => state.harmony);
+  const locked = useNewSongStore((state) => state.lockedHarmonyRows);
+  const setChoice = useNewSongStore((state) => state.setHarmony);
+  const setLocked = useNewSongStore((state) => state.setLockedHarmonyRows);
   const [candidates, setCandidates] = useState<ProgressionPreset[]>(() =>
-    pickCandidates(OPEN_HARMONY, CANDIDATES, [], Math.random),
+    pickCandidates(choice, CANDIDATES, [], Math.random),
   );
   const [choosingKey, setChoosingKey] = useState<string | null>(null);
   const parts = getHarmonyParts(sections);
@@ -57,7 +61,7 @@ export function useHarmonyChoice(sections: Section[] | null) {
     rollRow: (name: HarmonyRowName) => change(rollHarmonyRow(choice, name, Math.random)),
     setRow: (name: HarmonyRowName, value: string | null) => {
       change({ ...choice, [name]: value });
-      setLocked((current) => (current.includes(name) ? current : [...current, name]));
+      if (!locked.includes(name)) setLocked([...locked, name]);
     },
     pickOthers: () =>
       setCandidates(
@@ -76,8 +80,8 @@ export function useHarmonyChoice(sections: Section[] | null) {
     },
     drop: (part: HarmonyPart) => setChoice(dropProgression(choice, part)),
     toggleLock: (name: HarmonyRowName) =>
-      setLocked((current) =>
-        current.includes(name) ? current.filter((other) => other !== name) : [...current, name],
+      setLocked(
+        locked.includes(name) ? locked.filter((other) => other !== name) : [...locked, name],
       ),
     clear: () => {
       change(OPEN_HARMONY);
