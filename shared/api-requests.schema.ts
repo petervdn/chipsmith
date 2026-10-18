@@ -87,6 +87,3 @@ export const takeDeletionRequestSchema = z.object({ song: z.string() });
 
 /** A take deleted from the song it is edited in. */
 export type TakeDeletionRequest = z.input<typeof takeDeletionRequestSchema>;
-
-/** A reference's notes, written as the user types. */
-export const referenceNotesSchema = z.object({ notes: z.string() });

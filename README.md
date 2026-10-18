@@ -116,7 +116,6 @@ A song shows … instead of ▶ until its audio is there (docs/adr/0018).
 | Command | What it does |
 |---|---|
 | `npm run check` | types, lint, tests and formatting; passes before every commit |
-| `npm run import-references` | Furnace's demos on the NES, SID and SCC imported as references (docs/adr/0033) |
 | `node fur/dump.ts <file.fur> [--ins] [--pat CHANNEL,ORDER]` | a .fur file as text |
 | `node make/check-script.ts <script.ts>` | builds and renders a song script: length, peak, gain per song |
 

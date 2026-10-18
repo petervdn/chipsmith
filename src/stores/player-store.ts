@@ -1,7 +1,6 @@
 /**
- * The one player of the page (not persisted: a reload starts with nothing playing): which song, or
- * which reference's audio (its mix or one channel alone), whether it is loading, playing or
- * stopped, where, and the loop it plays round, if any. Components read it with a selector and
+ * The one player of the page (not persisted: a reload starts with nothing playing): which song,
+ * whether it is loading, playing or stopped, where, and the loop it plays round, if any. Components read it with a selector and
  * change it with its actions; the audio itself is playback/audio-engine.ts's.
  */
 import { create } from 'zustand';
@@ -15,24 +14,9 @@ import { getLoopFrom } from '../playback/loop.ts';
 /** Whether the player is stopped, loading a song or playing it. */
 export type PlayerMode = 'stopped' | 'loading' | 'playing';
 
-/** A reference's audio in the player: its mix, or one of its channels alone. */
-export type ReferencePlay = {
-  referenceId: string;
-  /** The channel heard alone, from 1, or null for the mix. */
-  channel: number | null;
-  title: string;
-  url: string;
-  seconds: number;
-};
-
-/** The track a reference's audio plays on: one of its own, which the editor's mute and solo miss. */
-const REFERENCE_TRACK = 'reference';
-
 /** What the player is doing, and how to change it. */
 type PlayerStore = {
   song: SongDetail | null;
-  /** The reference's audio in the player, when that is what it plays instead of a song. */
-  reference: ReferencePlay | null;
   mode: PlayerMode;
   /** How much of the song's audio has loaded, 0 to 1, while loading. */
   loaded: number;
@@ -45,8 +29,6 @@ type PlayerStore = {
   error: string | null;
   /** Plays a song from a second, round a loop if given; call it from a tap. */
   playSong: (song: SongDetail, from?: number, loop?: Loop | null) => Promise<void>;
-  /** Plays a reference's mix or one of its channels from a second; call it from a tap. */
-  playReference: (reference: ReferencePlay, from?: number) => Promise<void>;
   /** Stops, keeping the place it stopped at. */
   stopSong: (at: number) => void;
   /** Moves to a second of the song, playing on from there (round the same loop) if it was playing. */
@@ -61,20 +43,6 @@ type PlayerStore = {
  */
 export function getClipAudioUrl(clipId: string): string {
   return `/media/clips/${encodeURIComponent(clipId)}/audio.flac`;
-}
-
-/**
- * Returns the URL of a reference's mix, or of one of its channels alone.
- *
- * @param referenceId - The id of the reference.
- * @param channel - The channel, from 1, or null for the mix.
- * @returns The URL.
- */
-export function getReferenceAudioUrl(referenceId: string, channel: number | null): string {
-  const folder = `/media/references/${encodeURIComponent(referenceId)}`;
-  return channel === null
-    ? `${folder}/audio.flac`
-    : `${folder}/channels/${String(channel).padStart(2, '0')}.flac`;
 }
 
 /** The player store. */
@@ -112,7 +80,6 @@ export const usePlayerStore = create<PlayerStore>()((set, get) => {
 
   return {
     song: null,
-    reference: null,
     mode: 'stopped',
     loaded: 0,
     from: 0,
@@ -126,7 +93,6 @@ export const usePlayerStore = create<PlayerStore>()((set, get) => {
       const start = loop ? getLoopFrom(from, loop) : from >= end ? 0 : from;
       set({
         song,
-        reference: null,
         mode: 'loading',
         loaded: 0,
         from: start,
@@ -137,30 +103,13 @@ export const usePlayerStore = create<PlayerStore>()((set, get) => {
       await unlocking;
       await play(stretches, getClipAudioUrl, start, loop);
     },
-    playReference: async (reference, from = 0) => {
-      const unlocking = unlockAudio();
-      const end = reference.seconds;
-      const start = from >= end ? 0 : from;
-      const stretch = {
-        clipId: reference.url,
-        trackId: REFERENCE_TRACK,
-        start: 0,
-        offset: 0,
-        duration: end,
-      };
-      set({ song: null, reference, mode: 'loading', loaded: 0, from: start, end, loop: null });
-      set({ error: null });
-      await unlocking;
-      await play([stretch], (url) => url, start, null);
-    },
     stopSong: (at) => {
       stopPlaying();
       set({ mode: 'stopped', from: at });
     },
     seekSong: (to) => {
-      const { song, reference, mode, loop, playSong, playReference } = get();
+      const { song, mode, loop, playSong } = get();
       if (song && mode !== 'stopped') void playSong(song, to, loop);
-      else if (reference && mode !== 'stopped') void playReference(reference, to);
       else set({ from: to });
     },
   };

@@ -29,7 +29,7 @@ Furnace's MSX demos all have (`chipType=1`, `clockSel=0`). Instruments:
   checked here by render, `duty`'s direction and the envelope's shapes are not yet: say what you
   used so the user can check it by ear.
 
-## Drums (from Konami's Gyruss, Stage 2, in References)
+## Drums (from Konami's Gyruss, Stage 2: `references/furnace/demos/msx/Gyruss_Stage_2.fur`)
 
 The whole kit on **one PSG channel**, one note per hit, the instrument choosing the drum; the
 other two channels stay free.

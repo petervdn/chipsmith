@@ -25,7 +25,6 @@ Nothing here reads files or touches the page.
 - `progression-notation.ts`: a progression written short (i ♭VI V:½), read and written
 - `progression-presets.ts`: the progressions offered to hear and keep, by the modes and feels they fit
 - `schema-parse.ts`: a value parsed with its schema, and what does not fit reported with its file and field
-- `reference.schema.ts`: a reference: a song someone else wrote in Furnace, to listen to and write notes on
 - `song-length.ts`: how long a song is, from its blocks and its clips' lengths
 - `song.schema.ts`: a song: tracks of blocks that point to clips
 - `structure-notation.ts`: a structure written short (A8 A'8 B8), read and written; how a section stands to those before

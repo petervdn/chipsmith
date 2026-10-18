@@ -38,7 +38,7 @@
   min-width: 0;
 }
 
-/* the title, a link to the song's editor (or the reference's page), the arrow saying so */
+/* the title, a link to the song's editor, the arrow saying so */
 .player-bar-title {
   justify-content: flex-start;
   align-self: flex-start;

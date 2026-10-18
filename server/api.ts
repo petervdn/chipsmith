@@ -29,9 +29,6 @@ import type { Store } from './store.ts';
 import { deleteSong, getClipFolder, openStore, rescanStore, saveSong } from './store.ts';
 import { routeStructures } from './structure-routes.ts';
 import { routeJobs } from './job-routes.ts';
-import { routeReferences } from './reference-routes.ts';
-import type { ReferenceStore } from './references.ts';
-import { openReferences, rescanReferences } from './references.ts';
 import type { StructureStore } from './structures.ts';
 import { openStructures } from './structures.ts';
 import { getSplitCount } from '../shared/clip-channels.ts';
@@ -101,9 +98,8 @@ export function chiptuneServer(root: string): Plugin {
         jobs: openJobs(root),
         guides: openGuides(root),
         structures: openStructures(root),
-        references: openReferences(root),
       });
-      const { store, jobs, guides, structures, references } = stores;
+      const { store, jobs, guides, structures } = stores;
       if (isFirstStart) {
         for (const { file, error } of store.unreadable) {
           console.warn(`unreadable ${file}: ${error}`);
@@ -129,7 +125,7 @@ export function chiptuneServer(root: string): Plugin {
           );
           return;
         }
-        route({ store, jobs, guides, structures, references }, request, response, path).catch(
+        route({ store, jobs, guides, structures }, request, response, path).catch(
           (error: unknown) => {
             sendError(response, 400, error instanceof Error ? error.message : String(error));
           },
@@ -145,11 +141,10 @@ type Stores = {
   jobs: JobStore;
   guides: GuideStore;
   structures: StructureStore;
-  references: ReferenceStore;
 };
 
 async function route(
-  { store, jobs, guides, structures, references }: Stores,
+  { store, jobs, guides, structures }: Stores,
   request: IncomingMessage,
   response: ServerResponse,
   path: string,
@@ -167,14 +162,6 @@ async function route(
   if (area === 'media' && kind === 'clips' && id && file === 'source.txt' && parts.length === 4) {
     return sendClipText(store, response, id);
   }
-  if (kind === 'references') {
-    return routeReferences(references, request, response, {
-      area: area ?? '',
-      id,
-      rest: parts.slice(3),
-      method,
-    });
-  }
   if (area !== 'api') return sendError(response, 404, 'not found');
   if (kind === 'jobs') {
     return routeJobs({ store, jobs, guides }, request, response, { id, file, method });
@@ -185,7 +172,6 @@ async function route(
   }
   if (kind === 'rescan' && method === 'POST') {
     rescanStore(store);
-    rescanReferences(references);
     return sendJson(response, { songs: store.songs.size, clips: store.clips.size });
   }
   if (kind === 'songs' && !id && method === 'GET') return sendJson(response, listSongs(store));

@@ -18,8 +18,6 @@ back to its file (docs/adr/0006).
 - `job-runner.ts`: a job's way from prompt to songs: compose, build, render
 - `jobs.ts`: the jobs in memory and in jobs/<id>/job.json
 - `missing-audio.ts`: clips with a source and no audio, rendered when the server starts
-- `reference-routes.ts`: `/api/references` (listed, notes written) and a reference's audio in `/media/`
-- `references.ts`: the references in memory, their facts read from their files, in references/<id>/
 - `store.ts`: the clips and songs in memory, read from their folders and written back to them
 - `structure-routes.ts`: `/api/structures`: the saved structures listed, made, changed, deleted
 - `structures.ts`: the saved structures in memory and in structures/<id>/structure.json
