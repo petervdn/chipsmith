@@ -114,7 +114,7 @@ page but Home starts with breadcrumbs, the last its heading (Songs › Seven Tee
   and Change this clip (0037): a prompt for takes of it, quick asks a tap adds, 1 to 5 takes, and its jobs on
   their way (`src/editor/ClipPrompt.tsx`). Editing (0022): drag a block to move it (to another track too),
   its edges to trim it, drag a clip from the song's clips onto a track as a new block, snapped to a grid; repeat, duplicate, untrim, remove; add, rename and remove tracks; mute and solo
-  (not saved); a mixer under the timeline, switched in the editor bar: a strip per track (its fader,
+  (not saved); a mixer, a row under the tracks opened and folded from its own head: a strip per track (its fader,
   saved and heard in playback only, one undo step per move; its meter, M and S, the same values as
   its row) and the master (the player's volume); undo and redo; Save or Revert. Split into channels (a song that is one whole clip
   of more than one channel; what cutting does to the sound: docs/splitting.md): a track per channel

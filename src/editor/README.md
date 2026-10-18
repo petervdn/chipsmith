@@ -36,7 +36,7 @@ saved, playing from a cursor, the zoom, and the selected block's clip or track.
 - `LoopLane.css`: the look of LoopLane.tsx
 - `LoopLane.tsx`: the loop as a row under the ruler while looping: drag its edges, move it, draw one
 - `Mixer.css`: the look of Mixer.tsx
-- `Mixer.tsx`: the mixer under the timeline: a strip per track and the master (the player's volume, and mute)
+- `Mixer.tsx`: the mixer, a row under the tracks that opens and folds from its head: a strip per track and the master (the player's volume, and mute)
 - `MixerStrip.css`: the look of MixerStrip.tsx
 - `MixerStrip.tsx`: a track's strip: its name, fader beside its meter, level, M and S
 - `note-grid.ts`: the note grid's edits of a channel's rows: a note put in, moved, made longer or shorter, taken out; the pitches laid out

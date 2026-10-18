@@ -1,8 +1,9 @@
-// The mixer, opened under the timeline: a strip per track in the timeline's order and colours, and
+// The mixer, a row under the tracks that opens and folds from its own head: a strip per track in the
+// timeline's order and colours, and
 // at the end the master, which is the player's volume and its mute (for testing; on a song's page
 // there is no player bar to hold it). What it shows and changes is the tracks'
 // own (levels, mute and solo), so their rows on the timeline follow it.
-import { Volume2, VolumeX } from 'lucide-react';
+import { ChevronDown, ChevronRight, Volume2, VolumeX } from 'lucide-react';
 import type { Track } from '../../shared/song.schema.ts';
 import { formatVolume, LOUDEST_DB } from '../player/volume.ts';
 import { usePreferencesStore } from '../stores/preferences-store.ts';
@@ -52,45 +53,62 @@ export function Mixer({
   const setVolume = usePreferencesStore((state) => state.setVolume);
   const isMuted = usePreferencesStore((state) => state.isMuted);
   const setMuted = usePreferencesStore((state) => state.setMuted);
+  const isOpen = usePreferencesStore((state) => state.isMixerOpen);
+  const setOpen = usePreferencesStore((state) => state.setMixerOpen);
   return (
-    <div className="mixer" role="group" aria-label="mixer">
-      {tracks.map((track, i) => (
-        <MixerStrip
-          key={track.id}
-          songId={songId}
-          track={track}
-          color={getTrackColor(i)}
-          isSelected={track.id === selectedTrackId}
-          isHeard={isHeard(track.id, mix)}
-          isMuted={mix.muted.includes(track.id)}
-          isSoloed={mix.soloed.includes(track.id)}
-          onSelect={() => onSelect(track.id)}
-          onVolume={(level) => onVolume(track.id, level)}
-          onToggleMute={() => onToggleMute(track.id)}
-          onToggleSolo={() => onToggleSolo(track.id)}
-        />
-      ))}
-      <div className="mixer-master">
-        <span className="mixer-master-name">master</span>
-        <div className="mixer-master-level">
-          <Fader
-            volume={volume}
-            onChange={setVolume}
-            label="master (the player's volume)"
-            loudest={LOUDEST_DB}
-          />
+    <div className={`mixer${isOpen ? ' is-open' : ''}`}>
+      <button
+        type="button"
+        className="mixer-toggle"
+        onClick={() => setOpen(!isOpen)}
+        aria-expanded={isOpen}
+        data-tooltip={
+          isOpen ? 'fold the mixer away' : 'open the mixer: a fader, meter, mute and solo per track'
+        }
+      >
+        {isOpen ? <ChevronDown /> : <ChevronRight />} mixer
+      </button>
+      {isOpen && (
+        <div className="mixer-strips" role="group" aria-label="mixer">
+          {tracks.map((track, i) => (
+            <MixerStrip
+              key={track.id}
+              songId={songId}
+              track={track}
+              color={getTrackColor(i)}
+              isSelected={track.id === selectedTrackId}
+              isHeard={isHeard(track.id, mix)}
+              isMuted={mix.muted.includes(track.id)}
+              isSoloed={mix.soloed.includes(track.id)}
+              onSelect={() => onSelect(track.id)}
+              onVolume={(level) => onVolume(track.id, level)}
+              onToggleMute={() => onToggleMute(track.id)}
+              onToggleSolo={() => onToggleSolo(track.id)}
+            />
+          ))}
+          <div className="mixer-master">
+            <span className="mixer-master-name">master</span>
+            <div className="mixer-master-level">
+              <Fader
+                volume={volume}
+                onChange={setVolume}
+                label="master (the player's volume)"
+                loudest={LOUDEST_DB}
+              />
+            </div>
+            <span className="mixer-master-value">{formatVolume(volume)}</span>
+            <button
+              type="button"
+              className={`mixer-master-mute${isMuted ? ' is-on' : ''}`}
+              onClick={() => setMuted(!isMuted)}
+              aria-label={isMuted ? 'muted (for testing); press to hear' : 'mute'}
+              data-tooltip={isMuted ? 'muted (for testing); press to hear' : 'mute'}
+            >
+              {isMuted ? <VolumeX /> : <Volume2 />}
+            </button>
+          </div>
         </div>
-        <span className="mixer-master-value">{formatVolume(volume)}</span>
-        <button
-          type="button"
-          className={`mixer-master-mute${isMuted ? ' is-on' : ''}`}
-          onClick={() => setMuted(!isMuted)}
-          aria-label={isMuted ? 'muted (for testing); press to hear' : 'mute'}
-          data-tooltip={isMuted ? 'muted (for testing); press to hear' : 'mute'}
-        >
-          {isMuted ? <VolumeX /> : <Volume2 />}
-        </button>
-      </div>
+      )}
     </div>
   );
 }

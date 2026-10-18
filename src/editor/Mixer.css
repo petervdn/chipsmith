@@ -1,13 +1,45 @@
-/* The look of Mixer.tsx: the strips side by side in a card as the timeline's, scrolling sideways
-   when they do not fit; the master at the end, set apart, its mute under it. */
+/* The look of Mixer.tsx: the bottom of the timeline's box, its head a thin row to open it; the
+   strips side by side, scrolling sideways when they do not fit; the master at the end, set apart,
+   its mute under it. */
 
 .mixer {
-  display: flex;
-  margin-top: 8px;
-  overflow-x: auto;
   border: var(--border-width) solid var(--line);
-  border-radius: var(--radius);
+  border-top: 0;
+  border-radius: 0 0 var(--radius) var(--radius);
   background: var(--card);
+}
+
+/* its head, a thin row under the tracks that opens and folds it */
+.mixer-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 4px;
+  width: 100%;
+  min-height: 24px;
+  padding: 0 8px;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+}
+
+.mixer-toggle:hover {
+  color: var(--fg);
+}
+
+.mixer-toggle > svg {
+  width: 14px;
+  height: 14px;
+}
+
+.mixer-strips {
+  display: flex;
+  overflow-x: auto;
+  border-top: var(--border-width) solid var(--line);
 }
 
 .mixer-master {

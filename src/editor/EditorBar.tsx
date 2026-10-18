@@ -1,8 +1,9 @@
 // The editor's bar of controls above the timeline: the transport, large at its left (stop, play or
-// pause, the time), then the groups: play (follow, loop), the metronome, edit (undo, redo), snap, tracks (split, when the song can be), zoom (in, out, fit, and
-// the tracks' height on a slider), view (the mixer, and the structure when the song was asked for
-// one), and the song (revert, save). It wraps on a phone. It knows nothing of what the controls do: it is given the
-// values and handlers, or keeps them in the preferences.
+// pause, the time), then the groups: play (follow, loop), the metronome, edit (undo, redo), snap,
+// tracks (split, when the song can be), zoom (in, out, fit, and the tracks' height on a slider),
+// view (the structure, when the song was asked for one), and the song (revert, save). It wraps on a
+// phone. It knows nothing of what the controls do: it is given the values and handlers, or keeps
+// them in the preferences.
 import { Minus, Plus, Redo2, Undo2 } from 'lucide-react';
 import type { useSongDraft } from './use-song-draft.ts';
 import type { useSongTransport } from './use-song-transport.ts';
@@ -66,8 +67,6 @@ export function EditorBar({
   const setFollowing = usePreferencesStore((state) => state.setFollowingPlayhead);
   const isStructureShown = usePreferencesStore((state) => state.isStructureShown);
   const setStructureShown = usePreferencesStore((state) => state.setStructureShown);
-  const isMixerOpen = usePreferencesStore((state) => state.isMixerOpen);
-  const setMixerOpen = usePreferencesStore((state) => state.setMixerOpen);
   const trackHeight = usePreferencesStore((state) => state.trackHeight);
   const setTrackHeight = usePreferencesStore((state) => state.setTrackHeight);
   return (
@@ -171,22 +170,16 @@ export function EditorBar({
             data-tooltip={`track height: ${trackHeight} px`}
           />
         </ControlGroup>
-        <ControlGroup label="view">
-          <ToggleButton
-            label="mixer"
-            isOn={isMixerOpen}
-            onToggle={() => setMixerOpen(!isMixerOpen)}
-            tooltip="open the mixer under the timeline: a fader, meter, mute and solo per track"
-          />
-          {hasStructure && (
+        {hasStructure && (
+          <ControlGroup label="view">
             <ToggleButton
               label="structure"
               isOn={isStructureShown}
               onToggle={() => setStructureShown(!isStructureShown)}
               tooltip="show the structure the song was asked for, above its tracks"
             />
-          )}
-        </ControlGroup>
+          </ControlGroup>
+        )}
         <ControlGroup label="song" isAtEnd>
           {draft.hasChanges && <span className="editor-bar-unsaved">unsaved changes</span>}
           {draft.hasChanges && (

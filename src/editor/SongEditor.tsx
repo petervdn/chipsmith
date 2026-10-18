@@ -107,7 +107,6 @@ export function SongEditor({ detail }: SongEditorProps) {
   const pan = useTimelinePan(scrollRef);
   const isFollowingPlayhead = usePreferencesStore((state) => state.isFollowingPlayhead);
   const isStructureShown = usePreferencesStore((state) => state.isStructureShown);
-  const isMixerOpen = usePreferencesStore((state) => state.isMixerOpen);
   function setVolume(trackId: string, volume: number): void {
     draft.changeTracks((tracks) => setTrackVolume(tracks, trackId, volume), `volume ${trackId}`);
   }
@@ -232,18 +231,16 @@ export function SongEditor({ detail }: SongEditorProps) {
               waitingClipIds={waitingClipIds}
             />
           </div>
-          {isMixerOpen && (
-            <Mixer
-              songId={song.id}
-              tracks={draft.tracks}
-              mix={mix}
-              selectedTrackId={selection?.kind === 'track' ? selection.trackId : null}
-              onSelect={(trackId) => draft.select({ kind: 'track', trackId })}
-              onVolume={setVolume}
-              onToggleMute={toggleMute}
-              onToggleSolo={toggleSolo}
-            />
-          )}
+          <Mixer
+            songId={song.id}
+            tracks={draft.tracks}
+            mix={mix}
+            selectedTrackId={selection?.kind === 'track' ? selection.trackId : null}
+            onSelect={(trackId) => draft.select({ kind: 'track', trackId })}
+            onVolume={setVolume}
+            onToggleMute={toggleMute}
+            onToggleSolo={toggleSolo}
+          />
           <SelectionDetails
             song={draftSong}
             draft={draft}

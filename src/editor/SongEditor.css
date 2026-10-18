@@ -93,11 +93,12 @@
   }
 }
 
+/* the tracks, between the head's strip and the mixer's row, which close the box */
 .song-editor-scroll {
   overflow-x: auto;
   border: var(--border-width) solid var(--line);
   border-top: 0;
-  border-radius: 0 0 var(--radius) var(--radius);
+  border-bottom: 0;
   background: var(--card);
 }
 
