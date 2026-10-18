@@ -66,7 +66,7 @@ What they answer is typed in `shared/api.types.ts`.
 
 ## The pages
 
-`src/`, React (0013), a folder per area (a page, the top bar, the player, the lists; 0020). One top bar on every page: the logo (home), Songs | Guides | Jobs (Jobs with how many
+`src/`, React (0013), a folder per area (a page, the top bar, the player, the lists; 0020). One top bar on every page, its content the window's full width whatever the page's (0046): the logo (home), Songs | Guides | Jobs (Jobs with how many
 are on their way, turning while one runs), and at the right + New song (an action, not a section), a link to the source on GitHub. Every
 page but Home starts with breadcrumbs, the last its heading (Guides); a song's page
 with its title alone, the Songs tab marked above it.
@@ -97,7 +97,7 @@ with its title alone, the Songs tab marked above it.
   volume; the first beat of a bar higher, `src/playback/metronome.ts`), zoom (and the tracks' height on a slider), the song's clips in a
   column at its right, its top level with the ruler's, kept in view under the editor's bar (each one row on one line, its name, length and how often the song uses it ("used 2x", "unused"; `src/editor/SongClipRow.tsx`), its takes under it as the same rows, indented, a take of a take under the take it was made from, those no block plays yet too, then the takes on their way, dashed and turning, with how far each is (`src/editor/pending-takes.ts`); tapped,
   the clip is selected, not a block; folded to a strip, and on a phone folded at first and laid over
-  the timeline when open), the page (and the top bar with it) wider than the others, up to 1600 px,
+  the timeline when open), the page wider than the others, up to 1600 px,
   the timeline from the page's left, and under it, as wide, the details of what is selected, as sections each named by its kind (`src/editor/SelectionDetails.tsx`): a block selected
   shows the block's section as one bar (where it plays, the clip it plays, Show track (its track brought into the
   one row the shrunk tracks show, its row flashed in its colour), Loop it (the block's bars looped and played) and solo for its track, repeats, duplicate, untrim, remove) with its clip's under it; a

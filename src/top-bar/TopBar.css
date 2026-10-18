@@ -10,7 +10,8 @@
   align-items: center;
   flex-wrap: wrap;
   gap: 8px 12px;
-  padding: 8px max(16px, calc((100% - var(--page-width)) / 2 + 16px));
+  /* the window's full width on every page, whatever the page's own width (docs/adr/0046) */
+  padding: 8px 24px;
   padding-top: max(8px, env(safe-area-inset-top));
   background: var(--card);
   border-bottom: var(--border-width) solid var(--line);

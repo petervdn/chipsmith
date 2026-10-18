@@ -58,3 +58,4 @@ Consequences.
 | [0043](0043-the-editors-transport-stays-in-view.md) | A song's transport and ruler stay in view at the top; no player bar on its page | accepted; stopping the song itself on open superseded by 0045 |
 | [0044](0044-the-song-page-is-laid-out-around-the-timeline.md) | The song page is laid out around the timeline; the tracks shrink to one row in view | accepted |
 | [0045](0045-a-song-playing-plays-on-into-its-page.md) | A song playing when its page opens plays on in the editor | accepted |
+| [0046](0046-the-top-bar-is-full-width.md) | The top bar is the window's full width; each page keeps its own width | accepted |

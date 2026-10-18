@@ -1,5 +1,5 @@
-/* The look of SongPage.tsx: ★ beside the title and Revert and Save at the right, level with it; the
-   page, and the top bar with it, as wide as the editor can use. */
+/* The look of SongPage.tsx: ★ beside the title and Split, Revert and Save at the right, level with
+   it; the page as wide as the editor can use. */
 
 .app:has(.song-page) {
   --page-width: var(--wide-page-width);
