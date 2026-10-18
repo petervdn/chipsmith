@@ -48,3 +48,23 @@ song; each later one told the songs made before it (title, tempo, meter, key, gr
 from them. Weighed against: more tokens (1.3-1.5× by the jobs so far, from two jobs of three songs),
 and the variety one Claude gets by writing the songs of a set together. Undecided; an ADR when it is.
 Set aside 2026-10-17.
+
+## What a clip's prompt is for
+
+Every clip keeps `prompt` (with `guides` and `promptId`) so it can be read alone (0004). So far it is
+only ever a copy of its song's: a new song's whole clip has the song's prompt, and a split clip copies
+its parent's, though no prompt made it (its `parent`, `split`, says what did). It is shown in the
+block's details and on the Clips page, and read by one rule, a song "changed after its prompt"
+(`server/api.ts`), a comparison of the two texts that cannot be true until variations exist (still
+to build 1). Ways it could go:
+
+- **As it is.** Cheap, but it means "the prompt the music goes back to", not "the prompt that made
+  this clip".
+- **Only the prompt that made the clip**: a whole clip the song's, a split clip none, a variation
+  its change ("make the B bass busier"). "Changed after its prompt" becomes a `variation` among a
+  song's clips' parents, not a comparison of texts. Leaning this way; it changes 0004 for split
+  clips, and the split clips made so far lose their prompt.
+- **None on clips; the song holds it.** Only if clips belong to one song (still to build 3); a
+  variation's prompt would then need a record of its own.
+
+Undecided; an ADR when it is. Set aside 2026-10-18.
