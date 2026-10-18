@@ -5,6 +5,7 @@
  */
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
+import type { JobRequest } from '../../shared/api-requests.schema.ts';
 import type { Job, TakesTarget } from '../../shared/job.schema.ts';
 import { getQueryKey, queryClient } from './client.ts';
 import { requestJson, sendJson } from './request.ts';
@@ -126,7 +127,7 @@ export function useSendPrompt() {
         structure,
         harmony,
         songCount,
-      }),
+      } satisfies JobRequest),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: getQueryKey({ type: 'jobs' }) }),
   });
 }
@@ -148,7 +149,12 @@ export function useSendTakes() {
       prompt: string;
       takesOf: TakesTarget;
       takeCount: number;
-    }) => sendJson<Job>('/api/jobs', 'POST', { prompt, takesOf, songCount: takeCount }),
+    }) =>
+      sendJson<Job>('/api/jobs', 'POST', {
+        prompt,
+        takesOf,
+        songCount: takeCount,
+      } satisfies JobRequest),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: getQueryKey({ type: 'jobs' }) }),
   });
 }

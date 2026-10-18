@@ -6,7 +6,8 @@ import { existsSync, readFileSync, readdirSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
 import type { Guide, GuideDraft, SentGuide } from '../shared/guide.schema.ts';
 import { GUIDE_IDS, claimId } from '../make/ids.ts';
-import { checkGuide } from './model-checks.ts';
+import { guideSchema } from '../shared/guide.schema.ts';
+import { parseChecked } from '../shared/schema-parse.ts';
 import { writeJsonAtomically } from './store.ts';
 
 /** The guides, by id, and the data folder they are kept in. */
@@ -29,7 +30,7 @@ export function openGuides(root: string): GuideStore {
     const file = join(folder, id, GUIDE_FILE);
     if (!existsSync(file)) continue;
     try {
-      const guide = checkGuide(JSON.parse(readFileSync(file, 'utf8')), file);
+      const guide = parseChecked(guideSchema, JSON.parse(readFileSync(file, 'utf8')), file);
       store.guides.set(guide.id, guide);
     } catch (error) {
       console.warn(`unreadable ${file}: ${error instanceof Error ? error.message : String(error)}`);

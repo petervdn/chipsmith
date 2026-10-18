@@ -7,7 +7,8 @@ import { existsSync, readFileSync, readdirSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
 import type { Structure, StructureDraft } from '../shared/structure.schema.ts';
 import { STRUCTURE_IDS, claimId } from '../make/ids.ts';
-import { checkStructure } from './structure-checks.ts';
+import { parseChecked } from '../shared/schema-parse.ts';
+import { structureSchema } from '../shared/structure.schema.ts';
 import { writeJsonAtomically } from './store.ts';
 
 /** The structures, by id, and the data folder they are kept in. */
@@ -29,7 +30,7 @@ export function openStructures(root: string): StructureStore {
     const file = join(folder, id, STRUCTURE_FILE);
     if (!existsSync(file)) continue;
     try {
-      const structure = checkStructure(JSON.parse(readFileSync(file, 'utf8')), file);
+      const structure = parseChecked(structureSchema, JSON.parse(readFileSync(file, 'utf8')), file);
       store.structures.set(structure.id, structure);
     } catch (error) {
       console.warn(`unreadable ${file}: ${error instanceof Error ? error.message : String(error)}`);

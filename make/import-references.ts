@@ -24,7 +24,11 @@ import { encodeFlac } from '../render/flac.ts';
 import { exportText, renderChannelsToWav, renderToWav } from '../render/furnace.ts';
 import { writeJsonAtomically } from '../server/store.ts';
 import type { Reference } from '../shared/reference.schema.ts';
+import { referenceSchema } from '../shared/reference.schema.ts';
 import { REFERENCE_IDS, claimId } from './ids.ts';
+
+/** What an import reads of a reference.json: the .fur it was copied from. */
+const REFERENCE_FILE_SCHEMA = referenceSchema.pick({ file: true });
 
 /** Where Furnace's demo songs are, in the project. */
 const DEMOS_FOLDER = join(PROJECT_FOLDER, 'references', 'furnace', 'demos');
@@ -125,12 +129,8 @@ function readImportedFiles(root: string): string[] {
   return readdirSync(folder).flatMap((referenceId) => {
     const file = join(folder, referenceId, 'reference.json');
     if (!existsSync(file)) return [];
-    const reference: unknown = JSON.parse(readFileSync(file, 'utf8'));
-    const origin =
-      typeof reference === 'object' && reference !== null && 'file' in reference
-        ? reference.file
-        : null;
-    return typeof origin === 'string' ? [origin] : [];
+    const read = REFERENCE_FILE_SCHEMA.safeParse(JSON.parse(readFileSync(file, 'utf8')));
+    return read.success ? [read.data.file] : [];
   });
 }
 

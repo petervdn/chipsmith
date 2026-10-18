@@ -51,6 +51,6 @@ export function sendJson<Answer>(
  * @returns The same answer, typed.
  */
 function asAnswer<Answer>(answer: unknown): Answer {
-  // eslint-disable-next-line typescript/consistent-type-assertions -- the server's routes are typed by shared/api.types.ts; checking each answer again would repeat server/model-checks.ts
+  // eslint-disable-next-line typescript/consistent-type-assertions -- the server's answers are typed by shared/api.types.ts and the server parses what comes in (docs/adr/0038); checking each answer again would repeat it
   return answer as Answer;
 }

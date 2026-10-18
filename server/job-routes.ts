@@ -10,17 +10,14 @@ import { readJsonBody, sendError, sendJson } from './http.ts';
 import { cancelJob } from './job-runner.ts';
 import type { JobStore } from './jobs.ts';
 import { createJob, listJobs, removeJob } from './jobs.ts';
-import { getArray, getNumber, getObject, getString, getStringOrNull } from './json-checks.ts';
+import { jobRequestSchema } from '../shared/api-requests.schema.ts';
+import { parseChecked } from '../shared/schema-parse.ts';
 import type { Store } from './store.ts';
 import { getClipFolder } from './store.ts';
 import type { TakesTarget } from '../shared/job.schema.ts';
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
-import { checkSentHarmony } from './harmony-checks.ts';
-import { checkSentStructure } from './structure-checks.ts';
 
-/** The most songs a prompt can ask for. */
-const MOST_SONGS = 6;
 /** The most takes a prompt on a clip can ask for (docs/adr/0037). */
 const MOST_TAKES = 5;
 
@@ -47,26 +44,25 @@ export async function routeJobs(
 ): Promise<void> {
   if (!id && method === 'GET') return sendJson(response, listJobs(jobs));
   if (!id && method === 'POST') {
-    const body = getObject(await readJsonBody(request), 'body');
-    const prompt = getString(body['prompt'], 'body.prompt').trim();
-    if (!prompt) return sendError(response, 400, 'the prompt is empty');
-    if (body['takesOf'] !== undefined && body['takesOf'] !== null) {
-      const takesOf = checkTakesTarget(store, body['takesOf']);
+    const { prompt, fromSong, guideIds, structure, harmony, songCount, takesOf } = parseChecked(
+      jobRequestSchema,
+      await readJsonBody(request),
+      'body',
+    );
+    if (takesOf) {
+      checkTakesTarget(store, takesOf);
+      if (songCount !== null && songCount > MOST_TAKES) {
+        return sendError(response, 400, `body.songCount: at most ${MOST_TAKES} takes`);
+      }
       const song = store.songs.get(takesOf.song);
-      const takeCount = getCount(body['songCount'], MOST_TAKES) ?? 1;
       return sendJson(
         response,
-        createJob(jobs, prompt, song?.guides ?? [], null, null, takeCount, null, takesOf),
+        createJob(jobs, prompt, song?.guides ?? [], null, null, songCount ?? 1, null, takesOf),
       );
     }
-    const fromSong = getStringOrNull(body['fromSong'] ?? null, 'body.fromSong');
     const song = fromSong ? store.songs.get(fromSong) : null;
     if (fromSong && !song) return sendError(response, 400, `no song ${fromSong}`);
-    const guideIds = getArray(body['guideIds'] ?? [], 'body.guideIds', getString);
     const sent = getSentGuides(guides, guideIds);
-    const structure = checkSentStructure(body['structure'], 'body.structure');
-    const harmony = checkSentHarmony(body['harmony'], 'body.harmony');
-    const songCount = getCount(body['songCount'], MOST_SONGS);
     return sendJson(
       response,
       createJob(jobs, prompt, sent, song ? song.id : null, structure, songCount, harmony),
@@ -85,32 +81,15 @@ export async function routeJobs(
 }
 
 /**
- * Checks how many songs, or takes, a prompt asks for.
- *
- * @param value - The request's songCount, not yet checked; missing is none.
- * @param most - The most it may ask for.
- * @returns A whole number from 1 to the most, or null when none was sent.
- */
-function getCount(value: unknown, most: number): number | null {
-  if (value === undefined || value === null) return null;
-  const count = getNumber(value, 'body.songCount');
-  if (!Number.isInteger(count) || count < 1 || count > most) {
-    throw new Error(`body.songCount is not a whole number from 1 to ${most}`);
-  }
-  return count;
-}
-
-/**
- * Checks the clip a prompt asks takes of: a clip with its source.fur, in a song that plays it.
+ * Checks the clip a prompt asks takes of against the store: a clip with its source.fur, in a song
+ * that plays it; throws when it is not.
  *
  * @param store - The clips and songs.
- * @param value - The request's takesOf, not yet checked.
- * @returns The clip's and the song's ids.
+ * @param target - The clip and the song, as the request names them.
+ * @param target.clip - The clip's id.
+ * @param target.song - The song's id.
  */
-function checkTakesTarget(store: Store, value: unknown): TakesTarget {
-  const target = getObject(value, 'body.takesOf');
-  const clipId = getString(target['clip'], 'body.takesOf.clip');
-  const songId = getString(target['song'], 'body.takesOf.song');
+function checkTakesTarget(store: Store, { clip: clipId, song: songId }: TakesTarget): void {
   const song = store.songs.get(songId);
   if (!song) throw new Error(`no song ${songId}`);
   if (!store.clips.has(clipId)) throw new Error(`no clip ${clipId}`);
@@ -120,5 +99,4 @@ function checkTakesTarget(store: Store, value: unknown): TakesTarget {
   if (!existsSync(join(getClipFolder(store, clipId), 'source.fur'))) {
     throw new Error(`${clipId} has no source.fur to change`);
   }
-  return { clip: clipId, song: songId };
 }

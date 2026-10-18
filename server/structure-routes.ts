@@ -4,7 +4,8 @@
  */
 import type { IncomingMessage, ServerResponse } from 'node:http';
 import { readJsonBody, sendError, sendJson } from './http.ts';
-import { checkStructureDraft } from './structure-checks.ts';
+import { parseChecked } from '../shared/schema-parse.ts';
+import { structureDraftSchema } from '../shared/structure.schema.ts';
 import type { StructureStore } from './structures.ts';
 import { createStructure, deleteStructure, listStructures, updateStructure } from './structures.ts';
 
@@ -26,9 +27,16 @@ export async function routeStructures(
   { id, method }: { id: string | undefined; method: string },
 ): Promise<void> {
   if (!id && method === 'POST') {
-    createStructure(structures, checkStructureDraft(await readJsonBody(request), 'body'));
+    createStructure(
+      structures,
+      parseChecked(structureDraftSchema, await readJsonBody(request), 'body'),
+    );
   } else if (id && method === 'PATCH') {
-    updateStructure(structures, id, checkStructureDraft(await readJsonBody(request), 'body'));
+    updateStructure(
+      structures,
+      id,
+      parseChecked(structureDraftSchema, await readJsonBody(request), 'body'),
+    );
   } else if (id && method === 'DELETE') {
     deleteStructure(structures, id);
   } else if (id || method !== 'GET') {

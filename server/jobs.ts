@@ -6,6 +6,8 @@ import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import type { SentGuide } from '../shared/guide.schema.ts';
 import type { Job, JobPhase, NewNote, TakesTarget } from '../shared/job.schema.ts';
+import { jobSchema } from '../shared/job.schema.ts';
+import { parseChecked } from '../shared/schema-parse.ts';
 import type { JobStageId } from '../shared/job-stages.ts';
 import { JOB_IDS, claimId } from '../make/ids.ts';
 import { writeJsonAtomically } from './store.ts';
@@ -43,28 +45,12 @@ export function openJobs(root: string): JobStore {
     const file = join(folder, id, 'job.json');
     if (!existsSync(file)) continue;
     try {
-      const job: Job = JSON.parse(readFileSync(file, 'utf8'));
-      // a job from before style guides has none, nor one from before removing or `now` those
-      store.jobs.set(job.id, {
-        ...job,
-        guides: job.guides ?? [],
-        removed: job.removed ?? null,
-        now: job.now ?? null,
-        structure: job.structure ?? null,
-        harmony: job.harmony ?? null,
-        tokens: job.tokens ?? null,
-        nowTokens: job.nowTokens ?? null,
-        songCount: job.songCount ?? null,
-        takesOf: job.takesOf ?? null,
-        composeStep: job.composeStep ?? null,
-        notes: job.notes.map((note) => ({
-          ...note,
-          tokens: note.tokens ?? null,
-          stage: note.stage ?? null,
-        })),
-      });
-    } catch {
-      /* a job.json that does not read is left; jobs are a log, not data */
+      // what a job from before a field was added leaves out, its schema reads as none
+      const job = parseChecked(jobSchema, JSON.parse(readFileSync(file, 'utf8')), file);
+      store.jobs.set(job.id, job);
+    } catch (error) {
+      // a job.json that does not read is left; jobs are a log, not data
+      console.warn(`unreadable ${file}: ${error instanceof Error ? error.message : String(error)}`);
     }
   }
   return store;

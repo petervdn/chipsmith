@@ -6,7 +6,8 @@ import { existsSync } from 'node:fs';
 import type { IncomingMessage, ServerResponse } from 'node:http';
 import { join } from 'node:path';
 import { readJsonBody, sendError, sendFile, sendJson } from './http.ts';
-import { getObject, getString } from './json-checks.ts';
+import { referenceNotesSchema } from '../shared/api-requests.schema.ts';
+import { parseChecked } from '../shared/schema-parse.ts';
 import type { ReferenceStore } from './references.ts';
 import { getReferenceFolder, listReferences, saveReferenceNotes } from './references.ts';
 
@@ -48,7 +49,7 @@ export async function routeReferences(
   if (area !== 'api' || rest.length > 0) return sendError(response, 404, 'not found');
   if (!id && method === 'GET') return sendJson(response, listReferences(references));
   if (id && method === 'PATCH') {
-    const notes = getString(getObject(await readJsonBody(request), 'body')['notes'], 'body.notes');
+    const { notes } = parseChecked(referenceNotesSchema, await readJsonBody(request), 'body');
     return sendJson(response, saveReferenceNotes(references, id, notes));
   }
   sendError(response, 404, 'not found');

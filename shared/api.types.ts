@@ -1,5 +1,8 @@
-/** What the server's routes answer with and take (server/api.ts), so the page reads them typed. */
-import type { Status, Tag } from './catalogue.schema.ts';
+/**
+ * What the server's routes answer with (server/api.ts), so the page reads them typed. Plain types:
+ * the page trusts them, nothing parses them (docs/adr/0038). What a request sends is in
+ * api-requests.schema.ts.
+ */
 import type { Clip } from './clip.schema.ts';
 import type { ChipFamily, Reference } from './reference.schema.ts';
 import type { Song } from './song.schema.ts';
@@ -36,12 +39,6 @@ export type ClipListing = { clip: Clip; usedBy: string[] };
 
 /** What deleting a song answers: the clips deleted with it, which no other song played. */
 export type SongDeletion = { clipIds: string[] };
-
-/** A change to a song's or a clip's catalogue fields; a field left out stays as it is. */
-export type CatalogueChange = { status?: Status; tags?: Tag[] };
-
-/** A change to a clip's record: its catalogue fields, and a variation's label (docs/adr/0036). */
-export type ClipChange = CatalogueChange & { variationLabel?: string };
 
 /** A take made of a clip without Claude (a transpose): the new clip's id. */
 export type TakeMade = { clipId: string };

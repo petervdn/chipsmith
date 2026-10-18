@@ -5,6 +5,7 @@
  */
 import { useMutation, useQuery } from '@tanstack/react-query';
 import type { ClipListing, ClipOpened, TakeMade } from '../../shared/api.types.ts';
+import type { NotesRequest, TransposeRequest } from '../../shared/api-requests.schema.ts';
 import type { Status } from '../../shared/catalogue.schema.ts';
 import type { ChannelRow, ClipNotes } from '../../shared/clip-notes.schema.ts';
 import { getQueryKey, queryClient } from './client.ts';
@@ -68,10 +69,11 @@ export function useTransposeClip() {
       songId: string;
       semitones: number;
     }) => {
+      const body: TransposeRequest = { song: songId, semitones };
       const made = await sendJson<TakeMade>(
         `/api/clips/${encodeURIComponent(clipId)}/transpose`,
         'POST',
-        { song: songId, semitones },
+        body,
       );
       await queryClient.invalidateQueries({ queryKey: getQueryKey({ type: 'clips' }) });
       return made.clipId;
@@ -112,10 +114,11 @@ export function useSaveNotes() {
       channel: number;
       rows: ChannelRow[];
     }) => {
+      const body: NotesRequest = { song: songId, channel, rows };
       const made = await sendJson<TakeMade>(
         `/api/clips/${encodeURIComponent(clipId)}/notes`,
         'POST',
-        { song: songId, channel, rows },
+        body,
       );
       await queryClient.invalidateQueries({ queryKey: getQueryKey({ type: 'clips' }) });
       return made.clipId;

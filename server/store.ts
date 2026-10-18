@@ -15,10 +15,12 @@ import {
 } from 'node:fs';
 import { join } from 'node:path';
 import type { Clip, ClipRecord } from '../shared/clip.schema.ts';
+import { clipRecordSchema } from '../shared/clip.schema.ts';
+import { parseChecked } from '../shared/schema-parse.ts';
 import type { Song } from '../shared/song.schema.ts';
+import { songSchema } from '../shared/song.schema.ts';
 import { readFurFile } from '../fur/read.ts';
 import { getClipFacts } from '../make/fur-file-facts.ts';
-import { checkClipRecord, checkSong } from './model-checks.ts';
 
 /** The data folder's copy in memory, and the files that could not be read. */
 export type Store = {
@@ -43,11 +45,11 @@ const SONG_FILE = 'song.json';
 export function openStore(root: string): Store {
   const store: Store = { root, clips: new Map(), songs: new Map(), unreadable: [] };
   for (const file of listFiles(join(root, 'clips'), CLIP_FILE)) {
-    const clip = readChecked(store, file, readClip);
+    const clip = readChecked(store, file, (value) => readClip(value, file));
     if (clip) store.clips.set(clip.id, clip);
   }
   for (const file of listFiles(join(root, 'songs'), SONG_FILE)) {
-    const song = readChecked(store, file, checkSong);
+    const song = readChecked(store, file, (value) => parseChecked(songSchema, value, file));
     if (song) store.songs.set(song.id, song);
   }
   return store;
@@ -129,25 +131,14 @@ export function saveClip(store: Store, clip: Clip): void {
 }
 
 /**
- * Returns a clip's record: what its clip.json holds, without the facts read from its source.
+ * Returns a clip's record: what its clip.json holds, without the facts read from its source, as
+ * its schema has it (which also holds it to its rules before it is written).
  *
  * @param clip - The clip.
  * @returns Its record.
  */
 export function getClipRecord(clip: ClipRecord): ClipRecord {
-  return {
-    id: clip.id,
-    created: clip.created,
-    name: clip.name,
-    bars: clip.bars,
-    parent: clip.parent,
-    variationLabel: clip.variationLabel,
-    madeFor: clip.madeFor,
-    tags: clip.tags,
-    status: clip.status,
-    key: clip.key,
-    furnace: clip.furnace,
-  };
+  return parseChecked(clipRecordSchema, clip, clip.id);
 }
 
 /**
@@ -214,7 +205,7 @@ function listFiles(folder: string, name: string): string[] {
  * @returns The clip.
  */
 function readClip(value: unknown, file: string): Clip {
-  const record = checkClipRecord(value, file);
+  const record = parseChecked(clipRecordSchema, value, file);
   const source = join(file, '..', SOURCE_FILE);
   return { ...record, ...getClipFacts(readFurFile(readFileSync(source))) };
 }
@@ -222,11 +213,11 @@ function readClip(value: unknown, file: string): Clip {
 function readChecked<Checked>(
   store: Store,
   file: string,
-  check: (value: unknown, path: string) => Checked,
+  check: (value: unknown) => Checked,
 ): Checked | null {
   try {
     const value: unknown = JSON.parse(readFileSync(file, 'utf8'));
-    return check(value, file);
+    return check(value);
   } catch (error) {
     store.unreadable.push({ file, error: error instanceof Error ? error.message : String(error) });
     return null;

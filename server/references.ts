@@ -7,11 +7,12 @@ import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { basename, join } from 'node:path';
 import type { ReferenceListing } from '../shared/api.types.ts';
 import type { Reference } from '../shared/reference.schema.ts';
+import { referenceSchema } from '../shared/reference.schema.ts';
 import { getChannelNames, getChipFamily, getChipLabels } from '../fur/demo-chips.ts';
 import { readFurnaceText } from '../fur/furnace-text.ts';
 import { REFERENCE_IDS } from '../make/ids.ts';
 import { readFlacSeconds } from '../render/flac.ts';
-import { getObject, getString } from './json-checks.ts';
+import { parseChecked } from '../shared/schema-parse.ts';
 import { writeJsonAtomically } from './store.ts';
 
 /** The references by id, with what is read from their files, and the data folder they are in. */
@@ -45,7 +46,7 @@ export function rescanReferences(store: ReferenceStore): void {
     const file = join(folder, id, REFERENCE_FILE);
     if (!existsSync(file)) continue;
     try {
-      const reference = checkReference(JSON.parse(readFileSync(file, 'utf8')), file);
+      const reference = parseChecked(referenceSchema, JSON.parse(readFileSync(file, 'utf8')), file);
       store.references.set(reference.id, getListing(store, reference));
     } catch (error) {
       console.warn(`unreadable ${file}: ${error instanceof Error ? error.message : String(error)}`);
@@ -119,22 +120,5 @@ function getListing(store: ReferenceStore, reference: Reference): ReferenceListi
     channels: getChannelNames(facts.chips) ?? [],
     subsongCount: facts.subsongCount,
     seconds: readFlacSeconds(join(folder, 'audio.flac')),
-  };
-}
-
-/**
- * Checks a reference.json, field by field.
- *
- * @param value - The file's value, not yet checked.
- * @param path - The file, for the error.
- * @returns The reference.
- */
-function checkReference(value: unknown, path: string): Reference {
-  const object = getObject(value, path);
-  return {
-    id: getString(object['id'], `${path}: id`),
-    file: getString(object['file'], `${path}: file`),
-    imported: getString(object['imported'], `${path}: imported`),
-    notes: getString(object['notes'], `${path}: notes`),
   };
 }

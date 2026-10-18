@@ -14,14 +14,15 @@ import type { Clip } from '../shared/clip.schema.ts';
 import type { Song } from '../shared/song.schema.ts';
 import { getSongSeconds } from '../shared/song-length.ts';
 import { sendError, sendFile, sendJson, readJsonBody } from './http.ts';
-import { getObject } from './json-checks.ts';
 import { startJobRunner } from './job-runner.ts';
 import type { JobStore } from './jobs.ts';
 import { openJobs } from './jobs.ts';
 import { copyExamplesIfEmpty } from './examples.ts';
 import { splitSong } from '../make/split-song.ts';
 import { isAudioMissing, renderMissingAudio } from './missing-audio.ts';
-import { checkCatalogueChange, checkGuideDraft, checkTracks } from './model-checks.ts';
+import { catalogueChangeSchema, tracksChangeSchema } from '../shared/api-requests.schema.ts';
+import { guideDraftSchema } from '../shared/guide.schema.ts';
+import { parseChecked } from '../shared/schema-parse.ts';
 import type { GuideStore } from './guides.ts';
 import { createGuide, deleteGuide, listGuides, openGuides, updateGuide } from './guides.ts';
 import type { Store } from './store.ts';
@@ -194,7 +195,7 @@ async function route(
   if (kind === 'songs' && id && method === 'PATCH') {
     const song = store.songs.get(id);
     if (!song) return sendError(response, 404, `no song ${id}`);
-    const change = checkCatalogueChange(await readJsonBody(request));
+    const change = parseChecked(catalogueChangeSchema, await readJsonBody(request), 'body');
     saveSong(store, { ...song, ...change, updated: new Date().toISOString() });
     return sendJson(response, getSongDetail(store, id));
   }
@@ -206,7 +207,7 @@ async function route(
   if (kind === 'songs' && id && file === 'tracks' && method === 'PUT') {
     const song = store.songs.get(id);
     if (!song) return sendError(response, 404, `no song ${id}`);
-    const tracks = checkTracks(getObject(await readJsonBody(request), 'body')['tracks'], 'tracks');
+    const { tracks } = parseChecked(tracksChangeSchema, await readJsonBody(request), 'body');
     const unknown = tracks
       .flatMap((track) => track.blocks)
       .find((block) => !store.clips.has(block.clip));
@@ -251,9 +252,9 @@ async function routeGuides(
   { id, method }: { id: string | undefined; method: string },
 ): Promise<void> {
   if (!id && method === 'POST') {
-    createGuide(guides, checkGuideDraft(await readJsonBody(request), 'body'));
+    createGuide(guides, parseChecked(guideDraftSchema, await readJsonBody(request), 'body'));
   } else if (id && method === 'PATCH') {
-    updateGuide(guides, id, checkGuideDraft(await readJsonBody(request), 'body'));
+    updateGuide(guides, id, parseChecked(guideDraftSchema, await readJsonBody(request), 'body'));
   } else if (id && method === 'DELETE') {
     deleteGuide(guides, id);
   } else if (id || method !== 'GET') {

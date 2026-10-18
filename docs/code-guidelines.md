@@ -98,8 +98,8 @@ Where state lives, in this order (why: docs/adr/0017):
 - **An object parameter is destructured in the signature.**
 - **A `Record<string, …>` is for keys that are data**, chosen at run time. Keys known when written are
   an object type with those keys.
-- **No `as` to make a type fit.** The type is put right, or a function checks the value at run time and
-  narrows it (`server/json-checks.ts`). An exception is written where it is, with an
+- **No `as` to make a type fit.** The type is put right, or its schema parses the value at run time
+  (`parseChecked`, "Data from outside"). An exception is written where it is, with an
   `eslint-disable-next-line` and its reason beside it.
 - **No `!`.** An index read that may miss is handled as the case it is.
 
@@ -109,10 +109,18 @@ Where state lives, in this order (why: docs/adr/0017):
 
 ## Data from outside
 
-- **What comes in from a file or a request is checked where it comes in**, field by field, into its
-  type (`server/model-checks.ts`). A file that does not fit is reported with the field that is wrong.
+- **What comes in from a file or a request is parsed by its Zod schema where it comes in**
+  (`parseChecked`, `shared/schema-parse.ts`; docs/adr/0038). A file that does not fit is reported
+  with the field that is wrong.
+- **The schema is the source of truth**: its type is inferred from it (`z.infer`), never written
+  beside it. Schemas are in `shared/<subject>.schema.ts`, the comments on the fields on the schema's
+  keys; a schema only one side uses sits with its subject (`make/song-plan.ts`).
+- **What is not validated is a plain type**, written by hand: the server's answers, what is worked
+  out in the code. A schema is not written for a shape nothing parses.
+- **The page imports only types from a schema file** (`import type`), so Zod stays out of its
+  bundle; a constant it needs at run time is in a module of its own (`shared/ticks.ts`).
 - **The page trusts the server's typed answers** (`shared/api.types.ts`); the server is where the
-  checks are.
+  parsing is.
 
 ## Comments
 

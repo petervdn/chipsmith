@@ -5,7 +5,8 @@ import { existsSync, mkdtempSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { readNotation } from '../shared/structure-notation.ts';
-import { checkStructureDraft } from './structure-checks.ts';
+import { parseChecked } from '../shared/schema-parse.ts';
+import { structureDraftSchema } from '../shared/structure.schema.ts';
 import { createStructure, deleteStructure, openStructures, updateStructure } from './structures.ts';
 
 const SECTIONS = readNotation("A8 A'8 B8 A8").sections ?? [];
@@ -23,15 +24,20 @@ test('a structure made, changed and deleted is kept in its file', () => {
 
 test('a structure that does not fit is refused, naming the field', () => {
   assert.throws(
-    () => checkStructureDraft({ name: ' ', sections: SECTIONS }, 'body'),
-    /body.name is empty/,
+    () => parseChecked(structureDraftSchema, { name: ' ', sections: SECTIONS }, 'body'),
+    /body\.name: is empty/,
   );
   assert.throws(
-    () => checkStructureDraft({ name: 'x', sections: [] }, 'body'),
-    /body.sections has no sections/,
+    () => parseChecked(structureDraftSchema, { name: 'x', sections: [] }, 'body'),
+    /body\.sections: has no sections/,
   );
   assert.throws(
-    () => checkStructureDraft({ name: 'x', sections: [{ ...SECTIONS[0], bars: 0 }] }, 'body'),
-    /body.sections\[0\].bars is not a whole number from 1 to 256/,
+    () =>
+      parseChecked(
+        structureDraftSchema,
+        { name: 'x', sections: [{ ...SECTIONS[0], bars: 0 }] },
+        'body',
+      ),
+    /body\.sections\[0\]\.bars: /,
   );
 });

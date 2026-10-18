@@ -121,7 +121,7 @@ test('a clip.json that does not fit is reported, and the others still read', () 
   const store = openStore(root);
   assert.equal(store.clips.size, 1);
   assert.equal(store.unreadable.length, 1);
-  assert.match(store.unreadable[0]?.error ?? '', /\.id: not a string/);
+  assert.match(store.unreadable[0]?.error ?? '', /clip\.json\.id: /);
 });
 
 test('a song deleted takes the clips only it played, and the clips they were made from', () => {

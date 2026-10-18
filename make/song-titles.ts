@@ -5,6 +5,10 @@
  */
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
+import { songSchema } from '../shared/song.schema.ts';
+
+/** What a song title check reads of a song.json: its title alone. */
+const SONG_TITLE_SCHEMA = songSchema.pick({ title: true });
 
 /** The fewest and most words a title is asked to have. */
 const FEWEST_TITLE_WORDS = 2;
@@ -40,10 +44,8 @@ export function readSongTitles(songsFolder: string): string[] {
     const file = join(songsFolder, songId, 'song.json');
     if (!existsSync(file)) return [];
     try {
-      const song: unknown = JSON.parse(readFileSync(file, 'utf8'));
-      const title =
-        typeof song === 'object' && song !== null && 'title' in song ? song.title : null;
-      return typeof title === 'string' ? [title] : [];
+      const read = SONG_TITLE_SCHEMA.safeParse(JSON.parse(readFileSync(file, 'utf8')));
+      return read.success ? [read.data.title] : [];
     } catch {
       return [];
     }

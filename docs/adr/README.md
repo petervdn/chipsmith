@@ -51,3 +51,4 @@ Consequences.
 | [0035](0035-the-psg-joins-the-sid-leaves-new.md) | The MSX PSG is a chip a song can use; the New page stops offering the SID | accepted |
 | [0036](0036-a-clip-keeps-no-prompt.md) | A clip keeps no prompt; a variation says what it changed | accepted |
 | [0037](0037-a-change-to-a-clip-is-a-take.md) | A change to a clip is a take, swapped into its block | accepted |
+| [0038](0038-zod-schemas-are-the-source-of-truth.md) | Data that is validated is a Zod schema, and its type is inferred from it | accepted |

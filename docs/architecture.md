@@ -26,7 +26,9 @@ docs/code-guidelines.md.
 - "Use as base" on a song's row opens New with `Based on <title> [<id>]: `; the composing Claude reads
   that song's files and starts from its music (the furnace-song skill). Nothing else is stored.
 
-The types are in `shared/clip.schema.ts` and `shared/song.schema.ts`.
+Their Zod schemas are in `shared/clip.schema.ts` and `shared/song.schema.ts`, the types inferred from
+them (0038); every file and request body the server reads is parsed by its schema where it comes in
+(`parseChecked`, `shared/schema-parse.ts`; the bodies in `shared/api-requests.schema.ts`).
 
 ## The files
 
