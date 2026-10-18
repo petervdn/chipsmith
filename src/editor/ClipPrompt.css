@@ -17,6 +17,12 @@
 
 .clip-prompt-text {
   width: 100%;
+  min-height: 88px;
+  padding: 10px 12px;
+  border: var(--border-width) solid var(--line);
+  border-radius: var(--radius);
+  background: var(--card);
+  line-height: 1.4;
   resize: vertical;
 }
 
