@@ -1,6 +1,7 @@
-// One song, opened: its title with ★ to keep it and, at the right, the place the editor puts Revert
-// and Save in; its header (its facts, the prompt it was made from and what that was sent with), and
-// the editor (editor/SongEditor.tsx), with nothing but the song itself playing when it opens.
+// One song, opened: its title alone (no Songs › before it) with ★ to keep it and, at the right, the
+// place the editor puts Revert and Save in; its header (its facts, the prompt it was made from and
+// what that was sent with), and the editor (editor/SongEditor.tsx), with nothing but the song itself
+// playing when it opens.
 import { useState } from 'react';
 import { SongEditor } from '../editor/SongEditor.tsx';
 import { StatusButtons } from '../lists/StatusButtons.tsx';
@@ -33,7 +34,7 @@ export function SongPage({ songId }: SongPageProps) {
   return (
     <section className="song-page">
       <div className="song-page-head">
-        <Breadcrumbs crumbs={[{ label: 'Songs', href: '/songs' }, { label: song.title }]} />
+        <Breadcrumbs crumbs={[{ label: song.title }]} />
         <StatusButtons
           status={song.status}
           onChange={(status) => setStatus({ songId: song.id, status })}

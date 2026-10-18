@@ -73,7 +73,8 @@ What they answer is typed in `shared/api.types.ts`.
 
 `src/`, React (0013), a folder per area (a page, the top bar, the player, the lists; 0020). One top bar on every page: the logo (home), Songs | Guides | References | Jobs (Jobs with how many
 are on their way, turning while one runs), and at the right + New song (an action, not a section), a link to the source on GitHub. Every
-page but Home starts with breadcrumbs, the last its heading (Songs › Seven Teeth).
+page but Home starts with breadcrumbs, the last its heading (References › Gyruss); a song's page
+with its title alone, the Songs tab marked above it.
 
 - **Home** (`/`): what the app is: the logo and a line, + New song, the running jobs; what it is
   and how it works (prompt, style guides, compose, render, listen and shape); what it needs, the
