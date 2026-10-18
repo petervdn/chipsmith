@@ -20,7 +20,8 @@ export type QueryKeyParams =
   | { type: 'structures' }
   | { type: 'programs' }
   | { type: 'references' }
-  | { type: 'peaks'; clipId: string };
+  | { type: 'peaks'; clipId: string }
+  | { type: 'clipNotes'; clipId: string };
 
 /**
  * Returns the key a read is cached by. A song's key starts with the songs list's, so the list's key
@@ -49,6 +50,8 @@ export function getQueryKey(params: QueryKeyParams): QueryKey {
       return ['references'];
     case 'peaks':
       return ['peaks', params.clipId];
+    case 'clipNotes':
+      return ['clipNotes', params.clipId];
     default:
       return getUnknownKey(params);
   }

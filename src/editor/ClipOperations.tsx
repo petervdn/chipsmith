@@ -1,7 +1,10 @@
-// Quick changes to the selected block's clip, made without Claude (docs/adr/0037): an octave or a
-// semitone up or down. Each makes a take, rendered on the server, and puts it in the block; it is
-// listed with the clip's other takes. Shown only for a clip that plays pitched notes.
+// Changes to the selected block's clip made without Claude (docs/adr/0037): an octave or a semitone
+// up or down, and Edit notes, which opens the note grid. Each makes a take, rendered on the server,
+// and puts it in the block; it is listed with the clip's other takes. Shown only for a clip that
+// plays pitched notes.
+import { useState } from 'react';
 import { useTransposeClip } from '../queries/clips.ts';
+import { NoteGrid } from './NoteGrid.tsx';
 import '../jobs/jobs.css';
 import './ClipOperations.css';
 
@@ -25,6 +28,7 @@ type ClipOperationsProps = { clipId: string; songId: string; onMade: (clipId: st
  * @returns The quick changes' element.
  */
 export function ClipOperations({ clipId, songId, onMade }: ClipOperationsProps) {
+  const [isGridOpen, setGridOpen] = useState(false);
   const { mutate: transpose, isPending, error } = useTransposeClip();
   return (
     <div className="clip-operations">
@@ -41,6 +45,15 @@ export function ClipOperations({ clipId, songId, onMade }: ClipOperationsProps) 
             {label}
           </button>
         ))}
+        <button
+          type="button"
+          className={isGridOpen ? 'is-open' : ''}
+          aria-expanded={isGridOpen}
+          onClick={() => setGridOpen(!isGridOpen)}
+          data-tooltip="move, add or take out notes yourself"
+        >
+          Edit notes
+        </button>
         {isPending && (
           <span className="clip-operations-making">
             <span className="jobs-spinner" aria-hidden="true" /> making the take…
@@ -48,6 +61,7 @@ export function ClipOperations({ clipId, songId, onMade }: ClipOperationsProps) 
         )}
       </div>
       {error && <p className="error">{error.message}</p>}
+      {isGridOpen && <NoteGrid key={clipId} clipId={clipId} songId={songId} onMade={onMade} />}
     </div>
   );
 }

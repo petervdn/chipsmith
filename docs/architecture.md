@@ -60,7 +60,8 @@ Routes: `GET /api/songs`, `GET /api/songs/<id>`, `PATCH /api/songs/<id>` (status
 `DELETE /api/songs/<id>` (with the clips only it played), `PUT /api/songs/<id>/tracks` (the
 arrangement, saved from the editor), `POST /api/songs/<id>/split`, `GET /api/clips`, `PATCH /api/clips/<id>` (status, tags, a variation's label), and `GET /media/clips/<id>/audio.flac` with byte ranges, `GET /media/clips/<id>/source.fur` (a
 download) and `source.txt` (the .fur as tracker text, `fur/tracker-text.ts`), and
-`POST /api/clips/<id>/transpose` (a take of it transposed, 0037), `POST /api/clips/<id>/open` (a copy in the system's temporary folder opened in Furnace,
+`POST /api/clips/<id>/transpose` (a take of it transposed, 0037), `GET` and `POST
+/api/clips/<id>/notes` (its notes for the note grid, and a take of them as edited), `POST /api/clips/<id>/open` (a copy in the system's temporary folder opened in Furnace,
 `server/clip-files.ts`, so the clip never changes). The references: `GET /api/references`,
 `PATCH /api/references/<id>` (its notes), `GET /media/references/<id>/audio.flac` and
 `channels/<nn>.flac` (`server/reference-routes.ts`).
@@ -95,6 +96,11 @@ page but Home starts with breadcrumbs, the last its heading (Songs › Seven Tee
   blocks of the same clip; the one in it renamed in place; `src/editor/ClipTakes.tsx`), quick
   changes for a clip of pitched notes (an octave or a semitone up or down: a take made on the server
   without Claude and put in the block; `src/editor/ClipOperations.tsx`, `make/transpose-take.ts`),
+  Edit notes (the note grid: one pitched channel at a time, time down and pitch across, an octave
+  and its top note shown with ‹ › for others; a tap puts a note in or selects one, buttons move it
+  in pitch or time, make it longer or shorter or take it out, with undo; Try makes a take of the
+  channel as edited, its effects left on their rows; `src/editor/NoteGrid.tsx`,
+  `make/notes-take.ts`, `fur/channel-rows.ts`),
   and Change this clip (0037): a prompt for takes of it, quick asks a tap adds, 1 to 5 takes, and its jobs on
   their way (`src/editor/ClipPrompt.tsx`). Editing (0022): drag a block to move it (to another track too),
   its edges to trim it, drag a clip from the song's clips onto a track as a new block, snapped to a grid; repeat, duplicate, untrim, remove; add, rename and remove tracks; mute and solo
@@ -104,7 +110,7 @@ page but Home starts with breadcrumbs, the last its heading (Songs › Seven Tee
   of more than one channel; what cutting does to the sound: docs/splitting.md): a track per channel
   that plays, each one block of a new clip, the whole song on that channel alone, rendered in the
   background and shown striped until its audio is in (`fur/cut.ts`, `make/split-song.ts`,
-  `POST /api/songs/<id>/split`). To come: takes on the selected block's clip (0037).
+  `POST /api/songs/<id>/split`).
 - **Clips** (`/clips`): the pool, with the same filter bar; not in the top bar (0029), opened by its
   address.
 - **Guides** (`/guides`): the style guides, made, edited and deleted.
@@ -226,12 +232,10 @@ a variation) instead of a song; `make/check-script.ts --takes-of <clip>` checks 
 
 ## Still to build
 
-1. A one-channel note grid, another way to make a take (0037; the prompt, the pills and the
-   transposes are built).
-2. A song's sections as written, if wanted: the script returns the sections it wrote, kept on the
+1. A song's sections as written, if wanted: the script returns the sections it wrote, kept on the
    whole clip (`sections` in its record) and drawn where its block plays, moved with it and cut by
    its trim. For now the structure as it was sent is drawn instead (0030).
-3. Rethink what clips are for. The pool is shared (0005) so a clip can play in more than one song,
+2. Rethink what clips are for. The pool is shared (0005) so a clip can play in more than one song,
    but no song shares one. Clips has left the top bar (0029); still to weigh: drop the Clips page or
    group it by song; clean up the clips no song plays; reuse across songs, if wanted, as a picker in
    the editor's clip column. The outcome is an ADR beside 0005.

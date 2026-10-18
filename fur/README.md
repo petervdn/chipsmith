@@ -7,6 +7,7 @@ references) is read through Furnace's own text export.
 
 - `block.ts`: a block of a .fur file, and the format version written
 - `bytes.ts`: little-endian bytes, written and read
+- `channel-rows.ts`: a channel as one run of rows, its notes read out and written back
 - `cut.ts`: a .fur cut by channel: the channels that play, and a channel's own .fur
 - `demo-chips.ts`: the chips a reference may play on: labels, channels' names, the app's chip each goes with
 - `dump.ts`: a .fur file as text, to see what is in it (`node fur/dump.ts file.fur`)

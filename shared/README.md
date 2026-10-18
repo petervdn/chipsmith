@@ -7,6 +7,7 @@ Nothing here reads files or touches the page.
 - `catalogue.types.ts`: the status and the tags songs and clips share
 - `chips.ts`: the chips a song can be made for, by name, in the order their channels come
 - `chord-numerals.ts`: a chord as a Roman numeral (♭VI, ii7), read, written and named in a key
+- `clip-notes.types.ts`: a clip's notes as the note grid edits them: each pitched channel as one run of rows
 - `clip-label.ts`: a clip's name as it is shown: its section and stem, or "whole"
 - `clip-channels.ts`: a clip's channels named from its chips, and whether it can be split
 - `clip-lineage.ts`: a clip's lineage, the clips it was made from: whether a variation is among them, the channels a take keeps

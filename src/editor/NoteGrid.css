@@ -1,0 +1,168 @@
+/* The look of NoteGrid.tsx: its head (the channel, the pitches shown), the grid in a box that
+   scrolls down (pitch names on top, bar numbers at the left, lines at rows, beats and bars, the
+   sharps shaded, notes as bars down their length), and its buttons on rows that wrap. */
+
+.note-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.note-grid-loading {
+  color: var(--muted);
+  font-size: 0.8125rem;
+}
+
+.note-grid-head,
+.note-grid-edits,
+.note-grid-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.note-grid-head select {
+  min-height: var(--touch);
+}
+
+.note-grid-range {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+  font-variant-numeric: tabular-nums;
+}
+
+.note-grid button {
+  min-width: var(--touch);
+  min-height: var(--touch);
+  padding: 0 10px;
+  border: var(--border-width) solid var(--line);
+  border-radius: var(--radius);
+  background: var(--raised);
+  cursor: pointer;
+}
+
+.note-grid button:disabled {
+  color: var(--muted);
+  cursor: default;
+}
+
+.note-grid .note-grid-try {
+  margin-left: auto;
+  border: 0;
+  background: var(--accent);
+  color: var(--on-accent);
+  font-weight: 600;
+}
+
+.note-grid .note-grid-try:disabled {
+  background: var(--raised);
+  color: var(--muted);
+}
+
+.note-grid-scroll {
+  max-height: 60vh;
+  overflow-y: auto;
+  border: var(--border-width) solid var(--line);
+  border-radius: var(--radius);
+  background: var(--card);
+}
+
+.note-grid-pitches {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: repeat(13, 1fr);
+  border-bottom: var(--border-width) solid var(--line);
+  background: var(--card);
+  color: var(--muted);
+  font-size: 0.625rem;
+  text-align: center;
+}
+
+.note-grid-pitches .is-sharp {
+  background: var(--raised);
+}
+
+.note-grid-body {
+  position: relative;
+}
+
+.note-grid-bars {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  color: var(--muted);
+  font-size: 0.625rem;
+}
+
+.note-grid-bars span {
+  position: absolute;
+  left: 4px;
+}
+
+.note-grid-cells {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background-image:
+    linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--line) 50%, transparent) 1px,
+      transparent 1px
+    ),
+    linear-gradient(to bottom, var(--line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--muted) 1px, transparent 1px);
+  cursor: pointer;
+}
+
+.note-grid-sharp {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background: color-mix(in srgb, var(--raised) 70%, transparent);
+  pointer-events: none;
+}
+
+.note-grid-note {
+  position: absolute;
+  box-sizing: border-box;
+  border-top: 4px solid var(--fg);
+  border-radius: 3px;
+  background: var(--accent);
+  pointer-events: none;
+}
+
+.note-grid-note.is-selected {
+  outline: 2px solid var(--fg);
+  outline-offset: 1px;
+}
+
+.note-grid-away {
+  position: absolute;
+  padding: 0 3px;
+  border-radius: 3px;
+  background: var(--raised);
+  color: var(--muted);
+  font-size: 0.625rem;
+  line-height: 18px;
+  pointer-events: none;
+}
+
+.note-grid-away.is-below {
+  left: 0;
+}
+
+.note-grid-away.is-above {
+  right: 0;
+}
+
+.note-grid-away.is-selected {
+  outline: 2px solid var(--fg);
+}

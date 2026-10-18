@@ -30,6 +30,10 @@
   cursor: pointer;
 }
 
+.clip-operations-buttons button.is-open {
+  border-color: var(--fg);
+}
+
 .clip-operations-making {
   display: flex;
   align-items: center;
