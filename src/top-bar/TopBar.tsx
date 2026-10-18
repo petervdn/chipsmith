@@ -8,13 +8,13 @@ import type { Job } from '../../shared/job.schema.ts';
 import { Logo } from './Logo.tsx';
 import { LookSwitcher } from './LookSwitcher.tsx';
 import { isJobRunning } from '../queries/jobs.ts';
+import { SOURCE_URL } from '../project-links.ts';
 import { useHeightProperty } from '../use-height-property.ts';
 import type { Route } from '../router.ts';
 import '../jobs/jobs.css';
 import './TopBar.css';
 
 const LOGO_SIZE = 32;
-const SOURCE_URL = 'https://github.com/petervdn/chipsmith';
 
 type TopBarProps = { route: Route; jobs: Job[] };
 

@@ -22,6 +22,7 @@ At the top: the app's shell and what every area uses.
 - `player/`: ▶ and the player bar
 - `ProgramWarning.css`: the look of ProgramWarning.tsx
 - `ProgramWarning.tsx`: a bar when a program the app calls is missing
+- `project-links.ts`: where the project is on GitHub: its source and its README
 - `queries/`: everything read from or sent to the server (TanStack Query)
 - `references/`: Furnace's demo songs to listen to, channel by channel, with the user's notes
 - `router.ts`: which page the address is, and moving between them

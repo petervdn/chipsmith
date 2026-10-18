@@ -1,37 +1,57 @@
-// The home page: the logo and what the app is, a button for a new song, the jobs on their way,
-// the songs made last and how many there are.
+// The home page: what the app is and how it works, what it needs (the programs as the server found
+// them), where to start, the jobs on their way and the songs made last.
 import { Plus } from 'lucide-react';
 import type { Job } from '../../shared/job.schema.ts';
-import { formatMeter, formatSeconds } from '../format.ts';
-import { getLatestSongs, getSongCounts } from './home.ts';
+import { HomeLatest } from './HomeLatest.tsx';
+import { HomePrograms } from './HomePrograms.tsx';
 import { JobStrip } from '../jobs/JobStrip.tsx';
 import { Logo } from '../top-bar/Logo.tsx';
-import { PlayButton } from '../player/PlayButton.tsx';
+import { README_URL, SOURCE_URL } from '../project-links.ts';
 import { isJobRunning } from '../queries/jobs.ts';
-import { useSongs } from '../queries/songs.ts';
 import { usePageTitle } from '../use-page-title.ts';
-import '../lists/lists.css';
 import './HomePage.css';
 
-const LATEST_COUNT = 5;
 const LOGO_SIZE = 96;
+
+/** The steps from a prompt to a song, each its name and what happens in it. */
+const STEPS = [
+  {
+    name: 'Prompt',
+    text: 'On New, say what you want in words, and pick the chips, a structure, the harmony and your style guides to send with it.',
+  },
+  {
+    name: 'Compose',
+    text: 'Claude Code runs in the background: it writes the music as a script, checks it and builds a Furnace file (.fur) per song. Jobs shows how far it is.',
+  },
+  {
+    name: 'Render',
+    text: "Furnace's command line plays each .fur into audio, kept as FLAC beside it.",
+  },
+  {
+    name: 'Listen and shape',
+    text: "Keep, delete, prompt again or build on a song. In a song's editor, split it into its channels, ask for takes of one part, edit notes and mix the tracks.",
+  },
+];
+
+/** Where to start, each a page and what it is for. */
+const STARTS = [
+  { href: '/songs', name: 'Songs', text: 'five example songs to listen to and take apart' },
+  { href: '/new', name: 'New song', text: 'write a prompt and send it' },
+  { href: '/guides', name: 'Guides', text: 'write down your taste, sent with every prompt' },
+  { href: '/references', name: 'References', text: "Furnace's demo songs, channel by channel" },
+];
 
 type HomePageProps = { jobs: Job[] };
 
 /**
- * Shows the home page: the logo and what the app is, a button for a new song, the jobs on their
- * way, how many songs there are and the songs made last.
+ * Shows the home page.
  *
  * @param props - The component's props.
  * @param props.jobs - Every job, of which those on their way get a line.
  * @returns The page's section element.
  */
 export function HomePage({ jobs }: HomePageProps) {
-  const { data: listings, error } = useSongs();
   usePageTitle('Home');
-  const latest = getLatestSongs(listings ?? [], LATEST_COUNT);
-  const { songCount, keeperCount, newCount } = getSongCounts(listings ?? []);
-
   return (
     <section className="home-page">
       <div className="home-page-hero">
@@ -39,8 +59,8 @@ export function HomePage({ jobs }: HomePageProps) {
         <div>
           <h1 className="home-page-name">chipsmith</h1>
           <p className="home-page-line">
-            Chiptune songs from prompts, for the NES and Konami's SCC: Claude writes them, Furnace
-            plays them, you keep what you like.
+            Chiptune songs from prompts: Claude writes them, Furnace plays them, you keep what you
+            like and reshape the rest.
           </p>
         </div>
       </div>
@@ -50,45 +70,56 @@ export function HomePage({ jobs }: HomePageProps) {
       {jobs.filter(isJobRunning).map((job) => (
         <JobStrip key={job.id} job={job} />
       ))}
-      {error && <p className="error">{error.message}</p>}
-      {listings && (
-        <p className="home-page-counts">
-          <a href="/songs">{songCount} songs</a> · {keeperCount} kept · {newCount} not heard yet
-        </p>
-      )}
-      {latest.length > 0 && (
-        <>
-          <h2 className="home-page-heading">Made last</h2>
-          <ul className="list">
-            {latest.map(({ song, seconds, isWaitingForAudio }) => (
-              <li key={song.id}>
-                <div className="list-row has-play">
-                  <PlayButton songId={song.id} isWaitingForAudio={isWaitingForAudio} />
-                  <span className="list-main">
-                    <a
-                      className="list-title list-link"
-                      href={`/songs/${encodeURIComponent(song.id)}`}
-                    >
-                      {song.title}
-                    </a>
-                    <span className="list-tags">
-                      {song.tags.map((tag) => tag.name).join(' · ')}
-                    </span>
-                  </span>
-                  <span className="list-facts">
-                    <span>{formatSeconds(seconds)}</span>
-                    <span>{Math.round(song.bpm)} bpm</span>
-                    <span>{formatMeter(song.beats)}</span>
-                  </span>
-                </div>
+      <div className="home-page-grid">
+        <div>
+          <h2 className="home-page-heading">What it is</h2>
+          <div className="home-page-text">
+            <p>
+              You say what you want; Claude composes it for real sound chips (the NES, the MSX's PSG
+              and Konami's SCC) and writes it as a{' '}
+              <a href="https://github.com/tildearrow/furnace">Furnace</a> file, which Furnace
+              renders. The songs show up here, to listen to on a phone too.
+            </p>
+            <p>
+              A song is never final. Opened, it is an editor: tracks of blocks, each playing a clip.
+              Split it into its chip channels, ask for takes of one part ("a busier bass"), move a
+              note by hand. Every change is a new clip, so nothing made is lost.
+            </p>
+            <p>
+              Claude cannot hear. What you hear is what counts: keep what works, say what does not,
+              and let your style guides carry your taste into the next prompt.
+            </p>
+          </div>
+          <h2 className="home-page-heading">How it works</h2>
+          <ol className="home-page-steps">
+            {STEPS.map(({ name, text }) => (
+              <li key={name}>
+                <strong>{name}</strong>
+                <span>{text}</span>
+              </li>
+            ))}
+          </ol>
+        </div>
+        <div>
+          <h2 className="home-page-heading">What it needs</h2>
+          <HomePrograms />
+          <h2 className="home-page-heading">Where to start</h2>
+          <ul className="home-page-starts">
+            {STARTS.map(({ href, name, text }) => (
+              <li key={href}>
+                <a href={href}>{name}</a>
+                <span>{text}</span>
               </li>
             ))}
           </ul>
-          <a className="home-page-all" href="/songs">
-            All songs →
-          </a>
-        </>
-      )}
+        </div>
+      </div>
+      <HomeLatest />
+      <p className="home-page-note home-page-footer">
+        Setting it up, its settings and how it is built: the <a href={README_URL}>README</a>. An
+        unofficial tool: it uses Furnace's command line and is not part of the Furnace project.{' '}
+        <a href={SOURCE_URL}>Source on GitHub</a>.
+      </p>
     </section>
   );
 }

@@ -1,0 +1,41 @@
+/* The look of HomePrograms.tsx. */
+
+/* the programs the app calls, a row each: found or not, the name, the version, what it is for */
+.home-programs-list {
+  margin: 0 0 8px;
+  padding: 0;
+  list-style: none;
+}
+
+.home-programs-row {
+  display: grid;
+  grid-template-columns: auto 7.5em 1fr;
+  align-items: baseline;
+  gap: 0 8px;
+  padding: 6px 0;
+  border-bottom: var(--border-width) solid var(--line);
+}
+
+.home-programs-row .lucide {
+  align-self: center;
+  color: var(--accent);
+}
+
+.home-programs-row.is-missing .lucide {
+  color: var(--reject);
+}
+
+.home-programs-name {
+  font-weight: 600;
+}
+
+.home-programs-state {
+  overflow-wrap: anywhere;
+  font-variant-numeric: tabular-nums;
+}
+
+.home-programs-for {
+  grid-column: 2 / -1;
+  color: var(--muted);
+  font-size: 0.8125rem;
+}

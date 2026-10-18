@@ -1,4 +1,4 @@
-/* The look of HomePage.tsx. */
+/* The look of HomePage.tsx, and what the home page's parts share (headings, notes, the counts). */
 
 /* the home page */
 .home-page-hero {
@@ -33,12 +33,97 @@
   text-decoration: none;
 }
 
+/* what it is and how it works at the left, what it needs and where to start at the right; one
+   column on a phone */
+.home-page-grid {
+  display: grid;
+  gap: 0 48px;
+}
+
+@media (min-width: 860px) {
+  .home-page-grid {
+    grid-template-columns: 3fr 2fr;
+  }
+}
+
+.home-page-text {
+  max-width: 38em;
+}
+
+.home-page-text p {
+  margin: 0 0 10px;
+}
+
+/* the steps from a prompt to a song, numbered in the accent */
+.home-page-steps {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: step;
+}
+
+.home-page-steps li {
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  gap: 2px 12px;
+  margin-bottom: 12px;
+  counter-increment: step;
+}
+
+.home-page-steps li::before {
+  content: counter(step);
+  grid-row: span 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--round);
+  background: var(--accent);
+  color: var(--on-accent);
+  font-weight: 700;
+}
+
+.home-page-steps span,
+.home-page-starts span {
+  color: var(--muted);
+}
+
+/* where to start: a page each, what it is for under it */
+.home-page-starts {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.home-page-starts li {
+  display: flex;
+  flex-direction: column;
+  padding: 6px 0;
+}
+
+.home-page-starts a {
+  font-weight: 600;
+}
+
+/* a small line under something, in the muted colour */
+.home-page-note {
+  color: var(--muted);
+  font-size: 0.8125rem;
+}
+
+.home-page-footer {
+  margin-top: 32px;
+  padding-top: 12px;
+  border-top: var(--border-width) solid var(--line);
+}
+
 .home-page-counts {
   color: var(--muted);
 }
 
 .home-page-heading {
-  margin: 24px 0 8px;
+  margin: 28px 0 10px;
   font-size: 1.125rem;
 }
 
