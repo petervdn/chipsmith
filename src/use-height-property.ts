@@ -14,9 +14,12 @@ export function useHeightProperty(ref: RefObject<HTMLElement | null>, propertyNa
     const element = ref.current;
     if (!element) return;
     const root = document.documentElement;
-    const observer = new ResizeObserver(() =>
-      root.style.setProperty(propertyName, `${element.getBoundingClientRect().height}px`),
-    );
+    function keepHeight(): void {
+      if (!element) return;
+      root.style.setProperty(propertyName, `${element.getBoundingClientRect().height}px`);
+    }
+    keepHeight();
+    const observer = new ResizeObserver(keepHeight);
     observer.observe(element);
     return () => {
       observer.disconnect();
