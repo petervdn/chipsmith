@@ -1,11 +1,12 @@
 /* The look of StructureTiles.tsx: tiles as wide as their bars (flex-grow on each tile with the gap
    before it), coloured by part, a variation striped, a repeat faint; a gap narrow and dashed while it
-   is Claude's choice, a small pill with the lead-ins chosen (their count on a phone). */
+   is Claude's choice, a small pill with the lead-ins chosen (their count on a phone). A row that
+   has no room for every tile at its least wraps, rather than drawing a gap over a tile. */
 
 .structure-tiles {
   display: flex;
+  flex-wrap: wrap;
   gap: 4px;
-  min-height: 40px;
 }
 
 .structure-tiles-tile {
@@ -58,6 +59,7 @@
 .structure-tiles-add {
   flex: none;
   min-width: var(--touch);
+  min-height: 40px;
   border: var(--border-width) dashed var(--line);
   border-radius: calc(var(--radius) * 0.5);
   background: none;
@@ -66,11 +68,12 @@
   cursor: pointer;
 }
 
+/* never narrower than its gap and its tile at their least, so a gap is not drawn over a tile */
 .structure-tiles-pair {
   display: flex;
   flex-basis: 0;
   gap: 4px;
-  min-width: 0;
+  min-height: 40px;
 }
 
 .structure-tiles-gap {
