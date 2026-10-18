@@ -32,6 +32,7 @@ The New page: a prompt written, or made up at random, and sent.
 - `StructureTiles.css`: the look of StructureTiles.tsx
 - `StructureTiles.tsx`: a structure's tiles as wide as their bars, and the gaps between them
 - `use-harmony-choice.ts`: the harmony chosen for a prompt, its locks, the presets to hear, and what changes it
+- `use-pointer-outside.ts`: a press on the page outside an element, told to a callback
 - `use-progression-preview.ts`: a progression heard, one at a time, and which one plays
 - `use-prompt-builder.ts`: the builder's parts and locks
 - `use-structure-choice.ts`: the structure chosen for a prompt, edited, saved or deleted

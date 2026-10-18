@@ -3,7 +3,7 @@
 // which opens what changes it underneath; what was shown stays where it is. It knows nothing of
 // what is in it.
 import { ChevronRight } from 'lucide-react';
-import type { ReactNode } from 'react';
+import type { ReactNode, Ref } from 'react';
 import './FoldPanel.css';
 
 type FoldPanelProps = {
@@ -14,6 +14,7 @@ type FoldPanelProps = {
   onToggle: () => void;
   toggleLabels: { open: string; closed: string };
   children: ReactNode;
+  panelRef?: Ref<HTMLFieldSetElement>;
 };
 
 /**
@@ -27,6 +28,7 @@ type FoldPanelProps = {
  * @param props.onToggle - Called when ▸ is pressed.
  * @param props.toggleLabels - What ▸ does: closing the body (while open), opening it (while closed).
  * @param props.children - The body: what changes what is chosen.
+ * @param props.panelRef - Given the panel's element, for a press outside it; none if left out.
  * @returns The panel's fieldset element.
  */
 export function FoldPanel({
@@ -37,10 +39,11 @@ export function FoldPanel({
   onToggle,
   toggleLabels,
   children,
+  panelRef,
 }: FoldPanelProps) {
   const toggleLabel = isOpen ? toggleLabels.open : toggleLabels.closed;
   return (
-    <fieldset className={`fold-panel${isOpen ? ' is-open' : ''}`}>
+    <fieldset ref={panelRef} className={`fold-panel${isOpen ? ' is-open' : ''}`}>
       <legend className="fold-panel-label">{label}</legend>
       <div className="fold-panel-top">
         <div className="fold-panel-summary">{summary}</div>

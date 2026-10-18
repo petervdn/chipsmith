@@ -3,9 +3,10 @@
 // under them the choices (none, a preset, a saved structure or your own, as chips), the structure
 // written short (editable), the selected section's editor or the selected gap's lead-ins, and
 // saving it, as new or over the saved one, or deleting a saved one;
-// the tiles stay where they are.
+// the tiles stay where they are. A tile or gap selected is let go when the panel is folded or the
+// page is pressed outside it.
 import { Plus } from 'lucide-react';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import {
   getSectionName,
   keepDetails,
@@ -28,6 +29,7 @@ import type { useStructureChoice } from './use-structure-choice.ts';
 import './StructurePanel.css';
 import { FoldPanel } from './FoldPanel.tsx';
 import { askToConfirm } from '../stores/confirm-store.ts';
+import { usePointerOutside } from './use-pointer-outside.ts';
 
 type StructurePanelProps = { choice: ReturnType<typeof useStructureChoice> };
 
@@ -43,7 +45,13 @@ export function StructurePanel({ choice }: StructurePanelProps) {
   const [newName, setNewName] = useState('');
   const [isOpen, setOpen] = useState(false);
   const [selectedGap, setSelectedGap] = useState<number | null>(null);
+  const panelRef = useRef<HTMLFieldSetElement>(null);
   const { source, sections, selected, saved, presets } = choice;
+  function clearSelection(): void {
+    choice.select(null);
+    setSelectedGap(null);
+  }
+  usePointerOutside(panelRef, clearSelection, selected !== null || selectedGap !== null);
   const gapSection = selectedGap === null ? undefined : sections[selectedGap];
   const gapBefore = selectedGap === null ? undefined : sections[selectedGap - 1];
   function isChosen(kind: string, id: string | null): boolean {
@@ -76,7 +84,11 @@ export function StructurePanel({ choice }: StructurePanelProps) {
         )
       }
       isOpen={isOpen}
-      onToggle={() => setOpen(!isOpen)}
+      onToggle={() => {
+        if (isOpen) clearSelection();
+        setOpen(!isOpen);
+      }}
+      panelRef={panelRef}
       toggleLabels={{
         open: 'hide the structure choices',
         closed: 'change the structure: pick one, edit it, save it',
