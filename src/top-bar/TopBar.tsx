@@ -1,4 +1,4 @@
-// The bar at the top of every page: the logo (home), Songs, Guides and Jobs (with how
+// The bar at the top of every page: the logo (home), Songs, Style guides and Jobs (with how
 // many are on their way, turning while one runs; the one open marked), a
 // button for a new song at the right, a link to the source on GitHub and the switch between light
 // and dark; always in the dark look.
@@ -44,7 +44,7 @@ export function TopBar({ route, jobs }: TopBarProps) {
           Songs
         </a>
         <a href="/guides" className={`top-bar-link${route.page === 'guides' ? ' is-on' : ''}`}>
-          Guides
+          Style guides
         </a>
         <a href="/jobs" className={`top-bar-link${route.page === 'jobs' ? ' is-on' : ''}`}>
           {runningCount > 0 && <span className="jobs-spinner" aria-hidden="true" />}

@@ -66,7 +66,7 @@ What they answer is typed in `shared/api.types.ts`.
 
 ## The pages
 
-`src/`, React (0013), a folder per area (a page, the top bar, the player, the lists; 0020). One top bar on every page, its content the window's full width whatever the page's (0046): the logo (home), Songs | Guides | Jobs (Jobs with how many
+`src/`, React (0013), a folder per area (a page, the top bar, the player, the lists; 0020). One top bar on every page, its content the window's full width whatever the page's (0046): the logo (home), Songs | Style guides | Jobs (Jobs with how many
 are on their way, turning while one runs), and at the right + New song (an action, not a section), a link to the source on GitHub. Every
 page but Home starts with breadcrumbs, the last its heading (Guides); a song's page
 with its title alone, the Songs tab marked above it.
