@@ -100,7 +100,7 @@ page but Home starts with breadcrumbs, the last its heading (Songs › Seven Tee
   volume; the first beat of a bar higher, `src/playback/metronome.ts`), zoom (and the tracks' height on a slider), the song's clips in a
   column at its right, its top level with the ruler's, kept in view under the editor's bar (each with its blocks counted and its takes under it, indented and smaller, those no block plays yet too; tapped,
   the clip is selected, not a block; folded to a strip, and on a phone folded at first and laid over
-  the timeline when open), the page (and the top bar with it) wider than the others, up to 1600 px,
+  the timeline when open), the page as wide as every other (1400 px at most, 0046),
   the timeline from the page's left, and under it, as wide, the details of what is selected, as sections each named by its kind (`src/editor/SelectionDetails.tsx`): a block selected
   shows the block's section as one bar (where it plays, the clip it plays, Show track (its track brought into the
   one row the shrunk tracks show), Loop it (the block's bars looped and played) and solo for its track, repeats, duplicate, untrim, remove) with its clip's under it; a
