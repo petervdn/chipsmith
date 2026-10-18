@@ -25,6 +25,9 @@ export type PromptSource = { songId: string; title: string; isChangedAfterPrompt
 /** How many songs a prompt makes to start with. */
 const DEFAULT_SONGS = 1;
 
+/** The example in the empty box's placeholder. */
+const PROMPT_EXAMPLE = 'a dark NES funk groove in 7/8, the bass doing most of the work';
+
 type PromptBoxProps = {
   initialText: string;
   source: PromptSource | null;
@@ -107,19 +110,26 @@ export function PromptBox({ initialText, source, onClearSource }: PromptBoxProps
       <div className="prompt-box-body">
         <div className="prompt-box-main">
           {error && <p className="error">{error.message}</p>}
-          <textarea
-            autoFocus={isFocusAtEnd}
-            onFocus={(event) => {
-              if (isFocusAtEnd) event.target.setSelectionRange(text.length, text.length);
-            }}
-            className="prompt-box-text"
-            placeholder="Describe what Claude should create"
-            value={text}
-            onChange={(event) => setText(event.target.value)}
-            onKeyDown={(event) => {
-              if (event.key === 'Enter' && (event.metaKey || event.ctrlKey)) send();
-            }}
-          />
+          <div className="prompt-box-field">
+            <textarea
+              autoFocus={isFocusAtEnd}
+              onFocus={(event) => {
+                if (isFocusAtEnd) event.target.setSelectionRange(text.length, text.length);
+              }}
+              className="prompt-box-text"
+              aria-label="Describe what Claude should create"
+              value={text}
+              onChange={(event) => setText(event.target.value)}
+              onKeyDown={(event) => {
+                if (event.key === 'Enter' && (event.metaKey || event.ctrlKey)) send();
+              }}
+            />
+            {text === '' && (
+              <p className="prompt-box-placeholder" aria-hidden="true">
+                Describe what Claude should create, e.g. <em>{PROMPT_EXAMPLE}</em>
+              </p>
+            )}
+          </div>
           <PromptBuilder
             isOpen={isBuilding}
             onToggle={() => setBuilding(!isBuilding)}

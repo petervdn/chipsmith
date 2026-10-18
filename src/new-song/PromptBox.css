@@ -7,6 +7,13 @@
   margin: 8px 0 12px;
 }
 
+/* the box with its placeholder drawn over it while empty, its example in italics */
+.prompt-box-field {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
 .prompt-box-text {
   min-height: 20vh;
   padding: 12px;
@@ -15,6 +22,16 @@
   border-radius: var(--radius);
   background: var(--card);
   resize: vertical;
+}
+
+.prompt-box-placeholder {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  padding: calc(12px + var(--border-width));
+  color: var(--faint);
+  font-size: 1rem;
+  pointer-events: none;
 }
 
 /* the prompt and its panels, with Create at their right (CreatePanel.css) */
