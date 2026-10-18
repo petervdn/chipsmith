@@ -126,9 +126,8 @@ export function PromptBox({ initialText, source, onClearSource }: PromptBoxProps
             />
             {text === '' && (
               <p className="prompt-box-placeholder" aria-hidden="true">
-                Describe what Claude should create, e.g. “<em>{PROMPT_EXAMPLE}</em>”
-                <br />
-                Or roll one in Build a prompt, below.
+                Describe what Claude should create, for example: “<em>{PROMPT_EXAMPLE}</em>”. Or
+                roll one in Build a prompt, below.
               </p>
             )}
           </div>
