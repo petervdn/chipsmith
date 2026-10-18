@@ -1,5 +1,5 @@
-// The filter bar above a list: words to find, ★ to show only the kept ones, and the tags in the list
-// to pick from. It shows and changes a ListFilter; what it filters is the list's.
+// The filter bar above a list: words to find, ★ favorites to show only the kept ones, and the tags
+// in the list to pick from. It shows and changes a ListFilter; what it filters is the list's.
 import { Star } from 'lucide-react';
 import type { ListFilter } from './list-filter.ts';
 import './lists.css';
@@ -43,10 +43,10 @@ export function FilterBar({ filter, onChange, tagCounts, placeholder }: FilterBa
         className={`filter-bar-kept${filter.isKeptOnly ? ' is-on' : ''}`}
         onClick={() => onChange({ ...filter, isKeptOnly: !filter.isKeptOnly })}
         aria-pressed={filter.isKeptOnly}
-        data-tooltip={filter.isKeptOnly ? 'show all' : 'show only the kept ones'}
+        data-tooltip={filter.isKeptOnly ? 'show all' : 'show only the favorites (★)'}
       >
         <Star fill={filter.isKeptOnly ? 'currentColor' : 'none'} />
-        kept
+        favorites
       </button>
       {tagCounts.length > 0 && (
         <div className="filter-bar-tags">
