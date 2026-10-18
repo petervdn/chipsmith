@@ -5,16 +5,20 @@ saved, playing from a cursor, the zoom, and the selected block's clip or track.
 
 - `block-drag.ts`: where a dragged block goes: moved on the grid and between tracks, or trimmed
 - `BlockDetails.css`: the look of BlockDetails.tsx
-- `BlockDetails.tsx`: the selected block: where it plays, its clip, the prompt for takes of it and its versions
+- `BlockDetails.tsx`: the selected block's section: where it plays, the clip it plays, Loop it, solo, repeats, duplicate, untrim, remove
+- `ClipDetails.css`: the look of ClipDetails.tsx
+- `ClipDetails.tsx`: a clip's section: its facts, its .fur, its takes, quick changes, the prompt for takes of it
+- `DetailsSection.css`: the look of DetailsSection.tsx
+- `DetailsSection.tsx`: a section of the details as a card: its kind (block, clip, track) over its title
 - `clip-prompt.ts`: the prompt on a clip: its quick asks, how a tap adds one, the most takes
 - `ClipPrompt.css`: the look of ClipPrompt.tsx
-- `ClipPrompt.tsx`: the prompt on the selected block's clip: what to change, how many takes, Send, the jobs on their way
+- `ClipPrompt.tsx`: the prompt on a clip: what to change, how many takes, Send, the jobs on their way
 - `ClipTakes.css`: the look of ClipTakes.tsx
-- `ClipTakes.tsx`: the takes of the selected block's clip as pills: a tap puts one in the block; the one in it renamed
+- `ClipTakes.tsx`: the takes of a clip as pills: a tap puts one in its place; the one shown renamed or deleted
 - `ClipFileLinks.css`: the look of ClipFileLinks.tsx
 - `ClipFileLinks.tsx`: a clip's .fur to look at: opened in Furnace (a copy), downloaded, or as text
 - `ClipOperations.css`: the look of ClipOperations.tsx
-- `ClipOperations.tsx`: changes to the selected block's clip without Claude: an octave or a semitone up or down, Edit notes (the grid)
+- `ClipOperations.tsx`: changes to a clip without Claude: an octave or a semitone up or down, Edit notes (the grid)
 - `clip-peaks.ts`: a clip's waveform as peaks, from its samples
 - `ControlGroup.css`: the look of ControlGroup.tsx
 - `ControlGroup.tsx`: controls grouped under a very small label over a line
@@ -25,7 +29,7 @@ saved, playing from a cursor, the zoom, and the selected block's clip or track.
 - `grid.ts`: the snap grid: its steps, and a time snapped to one
 - `lane-position.ts`: the track's lane under a point, and the tick a point is at, read from the page
 - `song-edits.ts`: the edits of the arrangement: move, trim, repeat, duplicate, remove a block; tracks
-- `song-clips.ts`: the song's clips in the order it plays them, their blocks counted; a clip's first block
+- `song-clips.ts`: the song's clips in the order it plays them, their blocks counted
 - `SongClips.css`: the look of SongClips.tsx
 - `SongClips.tsx`: the song's clips in a column left of the timeline, to select and drag onto a track
 - `loop-range.ts`: the loop in bars: the whole song's, where a drag puts it, and in seconds
@@ -44,7 +48,9 @@ saved, playing from a cursor, the zoom, and the selected block's clip or track.
 - `StructureLane.css`: the look of StructureLane.tsx
 - `StructureLane.tsx`: the structure a song was asked for, as a thin row of tiles above its first track
 - `SongEditor.css`: the look of SongEditor.tsx
-- `SongEditor.tsx`: the editor: its bar of controls and the timeline's head kept in view, the timeline, the mixer, the song's clips, the selected block's or track's details
+- `SelectionDetails.css`: the look of SelectionDetails.tsx
+- `SelectionDetails.tsx`: the details of what is selected: a block's section and its clip's, a clip's, or a track's
+- `SongEditor.tsx`: the editor: its bar of controls and the timeline's head kept in view, the timeline, the mixer, the song's clips, the details of what is selected
 - `Timeline.css`: the look of Timeline.tsx and TimelineHead.tsx
 - `timeline.ts`: where blocks lie in ticks, the bars shown, which bars are numbered
 - `Timeline.tsx`: the tracks: a row per track with its blocks, the playhead
@@ -62,7 +68,7 @@ saved, playing from a cursor, the zoom, and the selected block's clip or track.
 - `ToggleButton.css`: the look of ToggleButton.tsx
 - `ToggleButton.tsx`: a switch in the editor bar: a button with a checkbox left of its label
 - `TrackDetails.css`: the look of TrackDetails.tsx
-- `TrackDetails.tsx`: the selected track: its name, remove
+- `TrackDetails.tsx`: the selected track's section: its name, remove
 - `TransportButtons.css`: the look of TransportButtons.tsx
 - `TransportButtons.tsx`: the transport, large: ■ stop (again: back to the start), ▶ / ❚❚ play or pause on one button, the time
 - `use-block-drag.ts`: dragging blocks: moving and trimming them
@@ -84,7 +90,7 @@ saved, playing from a cursor, the zoom, and the selected block's clip or track.
 - `use-song-draft.ts`: the song being edited: a draft with undo and redo, the selection, save and revert
 - `use-song-transport.ts`: playing the song from its cursor, stopping, moving the cursor
 - `use-take-deletion.ts`: the take a block plays deleted, asked first, its clip's parent put in its blocks
-- `use-take-swap.ts`: a take put in the selected block, and in the other blocks of its clip if asked
+- `use-take-swap.ts`: a take put in the selected block (and its clip's other blocks if asked), or in every block of the selected clip
 - `use-timeline-pan.ts`: dragging empty space with a mouse scrolls the timeline
 - `use-track-mix.ts`: the tracks muted and soloed while editing
 - `use-track-name-resize.ts`: dragging the track names' edge resizes them, kept in the preferences

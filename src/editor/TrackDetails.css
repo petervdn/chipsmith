@@ -1,36 +1,28 @@
-/* The look of TrackDetails.tsx. */
-
-.track-details {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px 12px;
-  margin-top: 16px;
-  padding: 12px 16px;
-  border: var(--border-width) solid var(--line);
-  border-radius: var(--radius);
-  background: var(--card);
-}
+/* The look of TrackDetails.tsx: its name to edit as the title, how many blocks under it, Remove. */
 
 .track-details-name {
   min-height: var(--touch);
   padding: 0 10px;
   border: var(--border-width) solid var(--line);
   border-radius: var(--radius);
+  max-width: 100%;
   background: var(--bg);
+  font-size: 1rem;
   font-weight: 600;
 }
 
 .track-details-count {
+  display: block;
+  margin-top: 8px;
   color: var(--muted);
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
 }
 
 .track-details-actions {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-left: auto;
+  margin-top: 10px;
 }
 
 .track-details-actions button {

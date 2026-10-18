@@ -31,7 +31,7 @@ type SongClipsProps = {
  *
  * @param props - The component's props.
  * @param props.songClips - The clips, in the order the song first plays them, with their blocks.
- * @param props.selectedClipId - The clip of the selected block, or null.
+ * @param props.selectedClipId - The clip selected, or null (a block's clip is not: a block is not its clip).
  * @param props.waitingClipIds - The clips whose audio is still being rendered.
  * @param props.drag - The clip being dragged, or null.
  * @param props.onPress - Called on a press on a clip, which may become a drag.

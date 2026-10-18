@@ -1,4 +1,4 @@
-// Changes to the selected block's clip made without Claude (docs/adr/0037): an octave or a semitone
+// Changes to the selected clip (or the selected block's) made without Claude (docs/adr/0037): an octave or a semitone
 // up or down, and Edit notes, which opens the note grid. Each makes a take, rendered on the server,
 // and puts it in the block; it is listed with the clip's other takes. On a take, the note grid can
 // update it instead (docs/adr/0039). Shown only for a clip that plays pitched notes.

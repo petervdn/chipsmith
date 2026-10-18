@@ -1,12 +1,13 @@
 /* The look of SongEditor.tsx: the bar and the timeline's head kept in view at the top; the song's
-   clips in a column at the left of the timeline, and the selected block's or track's details in a
-   column at its right where there is room, else under it. The timeline scrolls sideways inside its
+   clips in a column at the left of the timeline, and the details of what is selected in a column at
+   its right where there is room, else under it. The timeline scrolls sideways inside its
    box, never the page. */
 
 /* the editor's columns, shared by its head and its body (subgrid), so the ruler's strip lies over
    the tracks exactly: the song's clips, the timeline, and from 1440 px the details */
 .song-editor {
   --transport-size: 56px;
+  --details-width: 240px;
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
   column-gap: 12px;
@@ -57,22 +58,21 @@
   grid-column: 2;
 }
 
-/* room at the right for the selected block's or track's details, beside the timeline */
+/* room at the right for the details of what is selected, beside the timeline */
 @media (min-width: 1440px) {
   .song-editor {
-    grid-template-columns: auto minmax(0, 1fr) 240px;
+    grid-template-columns: auto minmax(0, 1fr) var(--details-width);
   }
 
   .song-editor-main {
     position: relative;
   }
 
-  .song-editor-main > .block-details,
-  .song-editor-main > .track-details {
+  .song-editor-main > .selection-details {
     position: absolute;
     top: 0;
     left: calc(100% + 12px);
-    width: 240px;
+    width: var(--details-width);
     margin-top: 0;
   }
 }
@@ -112,11 +112,6 @@
   border-top: 0;
   border-radius: 0 0 var(--radius) var(--radius);
   background: var(--card);
-}
-
-.song-editor-hint {
-  color: var(--muted);
-  font-size: 0.875rem;
 }
 
 .song-editor-progress {

@@ -1,0 +1,7 @@
+/* The look of ClipDetails.tsx: its facts faint under its title. */
+
+.clip-details-facts {
+  margin: 8px 0;
+  color: var(--muted);
+  font-size: 0.8125rem;
+}

@@ -89,15 +89,17 @@ page but Home starts with breadcrumbs, the last its heading (Songs › Seven Tee
   follow (the playhead kept in the middle), a loop (the whole song, or bars drawn in a row under the
   ruler; 0031), a metronome (on or off, its own
   volume; the first beat of a bar higher, `src/playback/metronome.ts`), zoom (and the tracks' height on a slider), the song's clips in a
-  column at its left (each with its blocks counted; tapped, its first block is selected; folded to a
+  column at its left (each with its blocks counted; tapped, the clip is selected, not a block; folded to a
   strip, and on a phone folded at first and laid over the timeline when open), the page (and the
   top bar with it) wider than the others, up to 1800 px, the clips' column left of the timeline and
-  the selected block's or track's details in a column right of it where there is room (else under
-  it), and the selected block's
-  clip, its .fur to look at (open in Furnace, download, view as text), Loop it (the block's bars
-  looped and played) and solo for its track, its takes as pills (the original and every variation by
-  its label; a tap puts one in the block as an edit, heard at once if it plays, offered to the other
-  blocks of the same clip; the one in it renamed in place or deleted, asked first, its blocks going
+  the details of what is selected in a column right of it, 240 px, where there is room (else under
+  it), as sections each named by its kind (`src/editor/SelectionDetails.tsx`): a block selected
+  shows the block's section (where it plays, the clip it plays, Loop it (the block's bars looped and
+  played) and solo for its track, repeats, duplicate, untrim, remove) with its clip's under it; a
+  clip selected shows only the clip's; a track its own. The clip's section: its facts, its .fur to
+  look at (open in Furnace, download, view as text), its takes as pills (the original and every
+  variation by its label; a tap puts one in the block as an edit, heard at once if it plays, offered
+  to the other blocks of the same clip, or with a clip selected put in all its blocks and selected; the one in it renamed in place or deleted, asked first, its blocks going
   back to the clip it was made from (0039); `src/editor/ClipTakes.tsx`), quick
   changes for a clip of pitched notes (an octave or a semitone up or down: a take made on the server
   without Claude and put in the block; `src/editor/ClipOperations.tsx`, `make/transpose-take.ts`),

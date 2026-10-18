@@ -1,5 +1,5 @@
-// The song being edited: its tracks as a draft in the page, with undo and redo, the block or track
-// selected, and saving the draft to the server or going back to the saved song. A new arrangement
+// The song being edited: its tracks as a draft in the page, with undo and redo, the block, clip or
+// track selected, and saving the draft to the server or going back to the saved song. A new arrangement
 // from the server (saved, or a take deleted on it) starts a fresh draft unless the draft has edits
 // of its own; a clip replaced (a take deleted or updated) is replaced in every step of the draft. A
 // draft that is not saved is lost when the page is left (to be solved later).
@@ -10,9 +10,15 @@ import type { Track } from '../../shared/song.schema.ts';
 import { useSaveTracks } from '../queries/songs.ts';
 import type { BlockPlace, Edited } from './song-edits.ts';
 
-/** What is selected: a block, a track, or nothing. */
+/**
+ * What is selected: a block (a place on the timeline), a clip (what blocks play, from the song's
+ * clips), a track, or nothing.
+ */
 export type Selection =
-  { kind: 'block'; place: BlockPlace } | { kind: 'track'; trackId: string } | null;
+  | { kind: 'block'; place: BlockPlace }
+  | { kind: 'clip'; clipId: string }
+  | { kind: 'track'; trackId: string }
+  | null;
 
 /**
  * The draft's tracks now, the states before (for undo) and after (for redo), and what the last change

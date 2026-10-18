@@ -1,6 +1,7 @@
 // The selected track's details: its name to change, and removing it with its blocks (mute and solo
 // are on the track's row).
 import type { Track } from '../../shared/song.schema.ts';
+import { DetailsSection } from './DetailsSection.tsx';
 import './TrackDetails.css';
 import { askToConfirm } from '../stores/confirm-store.ts';
 
@@ -21,17 +22,21 @@ type TrackDetailsProps = {
  */
 export function TrackDetails({ track, onRename, onRemove }: TrackDetailsProps) {
   return (
-    <section className="track-details">
-      <input
-        key={track.id}
-        className="track-details-name"
-        defaultValue={track.name}
-        aria-label="track name"
-        onBlur={(event) => onRename(event.target.value)}
-        onKeyDown={(event) => {
-          if (event.key === 'Enter') event.currentTarget.blur();
-        }}
-      />
+    <DetailsSection
+      kind="track"
+      title={
+        <input
+          key={track.id}
+          className="track-details-name"
+          defaultValue={track.name}
+          aria-label="track name"
+          onBlur={(event) => onRename(event.target.value)}
+          onKeyDown={(event) => {
+            if (event.key === 'Enter') event.currentTarget.blur();
+          }}
+        />
+      }
+    >
       <span className="track-details-count">
         {track.blocks.length} {track.blocks.length === 1 ? 'block' : 'blocks'}
       </span>
@@ -47,6 +52,6 @@ export function TrackDetails({ track, onRename, onRemove }: TrackDetailsProps) {
           Remove track
         </button>
       </div>
-    </section>
+    </DetailsSection>
   );
 }

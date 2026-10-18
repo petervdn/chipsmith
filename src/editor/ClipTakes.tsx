@@ -1,6 +1,7 @@
-// The takes of the selected block's clip as pills (docs/adr/0037): the original and every variation
-// made from it, each by its label, the one in the block marked; a tap puts that take in the block.
-// The take in the block can be renamed in place, or deleted (docs/adr/0039).
+// The takes of a clip as pills (docs/adr/0037): the original and every variation made from it, each
+// by its label, the one shown marked; a tap puts that take in its place (in the selected block, or
+// in every block of the selected clip). The take shown can be renamed in place, or deleted
+// (docs/adr/0039).
 import { Check, Pencil, Trash2, X } from 'lucide-react';
 import { useState } from 'react';
 import type { Clip } from '../../shared/clip.schema.ts';
@@ -17,7 +18,7 @@ type ClipTakesProps = {
 };
 
 /**
- * Shows the takes of a clip, to put one in the block, or rename or delete the one in it.
+ * Shows the takes of a clip, to put one in its place, or rename or delete the one shown.
  *
  * @param props - The component's props.
  * @param props.versions - The clip's line of versions, oldest first.
@@ -65,8 +66,8 @@ export function ClipTakes({
             type="button"
             className="clip-takes-rename"
             onClick={() => setRenamed(current.variationLabel ?? '')}
-            data-tooltip="rename the take in this block"
-            aria-label="rename the take in this block"
+            data-tooltip="rename this take"
+            aria-label="rename this take"
           >
             <Pencil />
           </button>
@@ -77,8 +78,8 @@ export function ClipTakes({
             className="clip-takes-delete"
             disabled={deletion.isDeleting}
             onClick={() => void deletion.deleteTake(current)}
-            data-tooltip="delete the take in this block"
-            aria-label="delete the take in this block"
+            data-tooltip="delete this take"
+            aria-label="delete this take"
           >
             <Trash2 />
           </button>

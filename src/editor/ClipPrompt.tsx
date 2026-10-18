@@ -1,4 +1,4 @@
-// The prompt on a selected block's clip: a box to say what to change, quick asks a tap adds, how
+// The prompt on the selected clip (or the selected block's): a box to say what to change, quick asks a tap adds, how
 // many takes, and Send; then the jobs making takes of it, on their way (docs/adr/0037). Its takes
 // are listed with the clip's versions.
 import { Minus, Plus } from 'lucide-react';

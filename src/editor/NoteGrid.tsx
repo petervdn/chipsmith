@@ -1,4 +1,4 @@
-// The note grid (docs/adr/0037): one channel of the selected block's clip, time across as in the
+// The note grid (docs/adr/0037): one channel of the selected clip (or the selected block's), time across as in the
 // timeline and pitch up (docs/adr/0041), in a box that scrolls both ways over the channel's range
 // (docs/adr/0040), the bar numbers at the top and the pitch names at the left staying in view. A tap on an empty place puts a
 // note there; a tap on a note selects it, and the buttons under the grid move it in pitch or time,
@@ -185,7 +185,7 @@ export function NoteGrid({ clipId, songId, isTake, onMade, onUpdated }: NoteGrid
           className="note-grid-save"
           disabled={!grid.canUndo || grid.isMaking}
           onClick={grid.saveAsNewTake}
-          data-tooltip="make a take of these notes and put it in the block"
+          data-tooltip="make a take of these notes and put it in the clip's place"
         >
           {grid.isSaving ? 'Making…' : 'Save as new take'}
         </button>

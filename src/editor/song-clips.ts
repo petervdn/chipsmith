@@ -1,12 +1,11 @@
 /**
  * The clips a song plays, as the editor lists them: in the order the song first plays them, each
  * with how many of the draft's blocks play it; a clip of the song no block plays any more comes last.
- * Where a clip's first block is, to select it; and the clips the draft plays, a take swapped in from
- * the pool among them. Knows nothing of the page.
+ * And the clips the draft plays, a take swapped in from the pool among them. Knows nothing of the
+ * page.
  */
 import type { Clip } from '../../shared/clip.schema.ts';
 import type { Track } from '../../shared/song.schema.ts';
-import type { BlockPlace } from './song-edits.ts';
 
 /** A clip of the song, and how many blocks play it. */
 export type SongClip = { clip: Clip; blockCount: number };
@@ -33,27 +32,6 @@ export function getSongClips(tracks: Track[], clips: Clip[]): SongClip[] {
     }))
     .sort((first, second) => first.firstStart - second.firstStart || first.order - second.order)
     .map(({ clip, blockCount }) => ({ clip, blockCount }));
-}
-
-/**
- * Returns where the earliest block that plays a clip is.
- *
- * @param tracks - The song's tracks.
- * @param clipId - The clip.
- * @returns The place of its earliest block (the upper track's when two start together), or null
- *   when no block plays it.
- */
-export function getFirstBlockPlace(tracks: Track[], clipId: string): BlockPlace | null {
-  const places = tracks.flatMap((track) =>
-    track.blocks.flatMap((block, index) =>
-      block.clip === clipId ? [{ place: { trackId: track.id, index }, start: block.start }] : [],
-    ),
-  );
-  const first = places.reduce<(typeof places)[number] | null>(
-    (earliest, candidate) => (earliest && earliest.start <= candidate.start ? earliest : candidate),
-    null,
-  );
-  return first?.place ?? null;
 }
 
 /**

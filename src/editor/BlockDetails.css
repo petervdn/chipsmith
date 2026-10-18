@@ -1,33 +1,11 @@
-/* The look of BlockDetails.tsx. */
-
-.block-details {
-  margin-top: 16px;
-  padding: 12px 16px;
-  border: var(--border-width) solid var(--line);
-  border-radius: var(--radius);
-  background: var(--card);
-}
-
-.block-details-head {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 4px 12px;
-}
-
-.block-details-title {
-  margin: 0;
-  font-size: 1.125rem;
-}
-
-.block-details-place {
-  color: var(--muted);
-  font-size: 0.875rem;
-}
+/* The look of BlockDetails.tsx: ▶ from here beside the title, the clip it plays faint under it,
+   its buttons in rows. */
 
 .block-details-play {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   min-height: var(--touch);
-  margin-left: auto;
   padding: 0 14px;
   border: var(--border-width) solid var(--line);
   border-radius: var(--radius);
@@ -36,7 +14,7 @@
 }
 
 .block-details-facts {
-  margin: 8px 0;
+  margin: 8px 0 0;
   color: var(--muted);
   font-size: 0.8125rem;
 }
