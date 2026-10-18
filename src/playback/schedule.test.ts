@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import type { Clip } from '../../shared/clip.schema.ts';
 import type { Song } from '../../shared/song.schema.ts';
 import { TICKS_PER_BEAT } from '../../shared/ticks.ts';
-import { getEnd, getPieces, getStretches } from './schedule.ts';
+import { getEnd, getFittedStretches, getPieces, getStretches } from './schedule.ts';
 
 test('repeats follow each other and trims become offsets', () => {
   const song: Song = {
@@ -81,4 +81,12 @@ test('pieces are the parts of stretches between two seconds, moved', () => {
     { clipId: 'c1', trackId: 't1', at: 12, offset: 3, duration: 2 },
     { clipId: 'c2', trackId: 't1', at: 14, offset: 0, duration: 2 },
   ]);
+});
+
+test('fitted stretches end with their audio, and a clip with none plays nothing', () => {
+  const stretch = { clipId: 'c1', trackId: 't1', start: 0, offset: 1, duration: 4 };
+  const fitted = getFittedStretches([stretch, { ...stretch, clipId: 'c2' }], (clipId) =>
+    clipId === 'c1' ? 3 : undefined,
+  );
+  assert.deepEqual(fitted, [{ ...stretch, duration: 2 }]);
 });

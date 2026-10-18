@@ -14,14 +14,21 @@
 export async function requestJson<Answer>(path: string, init?: RequestInit): Promise<Answer> {
   const response = await fetch(path, init);
   const answer: unknown = await response.json();
-  if (!response.ok) {
-    const message =
-      typeof answer === 'object' && answer !== null && 'error' in answer
-        ? String(answer.error)
-        : response.statusText;
-    throw new Error(message);
-  }
+  if (!response.ok) throw new Error(getErrorMessage(answer, response));
   return asAnswer<Answer>(answer);
+}
+
+/**
+ * Returns what went wrong, from an answer that is not OK.
+ *
+ * @param answer - The server's answer, read as JSON, or null when it was not JSON.
+ * @param response - The response.
+ * @returns The server's `{ error }`, or the status text when it has none.
+ */
+export function getErrorMessage(answer: unknown, response: Response): string {
+  return typeof answer === 'object' && answer !== null && 'error' in answer
+    ? String(answer.error)
+    : response.statusText;
 }
 
 /**

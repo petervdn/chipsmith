@@ -11,7 +11,7 @@ import { usePreferencesStore } from '../stores/preferences-store.ts';
 import type { Loop } from './loop.ts';
 import { getLoopPass, getLoopedSecond } from './loop.ts';
 import type { Piece, Stretch } from './schedule.ts';
-import { getPieces } from './schedule.ts';
+import { getFittedStretches, getPieces } from './schedule.ts';
 import { clearTrackTaps, getTrackInput } from './track-taps.ts';
 
 /** Clips decoded at the same time; more stalls phone browsers. */
@@ -91,11 +91,7 @@ export async function playStretches(
   if (play !== playCount) return false;
   const audio = getContext();
   const zero = audio.currentTime + START_DELAY - from;
-  const fitted = stretches.flatMap((stretch) => {
-    const buffer = decoded.get(getUrl(stretch.clipId));
-    if (!buffer) return [];
-    return [{ ...stretch, duration: Math.min(stretch.duration, buffer.duration - stretch.offset) }];
-  });
+  const fitted = getFittedStretches(stretches, (clipId) => decoded.get(getUrl(clipId))?.duration);
   function playPieces(pieces: Piece[]): void {
     for (const piece of pieces) {
       const buffer = decoded.get(getUrl(piece.clipId));

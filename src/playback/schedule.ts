@@ -60,6 +60,25 @@ export function getEnd(stretches: Stretch[]): number {
   return stretches.reduce((end, { start, duration }) => Math.max(end, start + duration), 0);
 }
 
+/**
+ * Returns the stretches cut to their clips' audio, as it was decoded: none plays past its audio's
+ * end, and a stretch of a clip with no audio is left out.
+ *
+ * @param stretches - The stretches a song plays.
+ * @param getAudioSeconds - Returns the length of a clip's decoded audio, or undefined when it has none.
+ * @returns The stretches that play, each no longer than its clip's audio.
+ */
+export function getFittedStretches(
+  stretches: Stretch[],
+  getAudioSeconds: (clipId: string) => number | undefined,
+): Stretch[] {
+  return stretches.flatMap((stretch) => {
+    const seconds = getAudioSeconds(stretch.clipId);
+    if (seconds === undefined) return [];
+    return [{ ...stretch, duration: Math.min(stretch.duration, seconds - stretch.offset) }];
+  });
+}
+
 /** A piece of a stretch, placed: when it plays, from where in its clip's audio, for how long. */
 export type Piece = {
   clipId: string;

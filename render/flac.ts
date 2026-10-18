@@ -2,9 +2,8 @@
  * Encoding a WAV as FLAC, with ffmpeg (docs/adr/0007), and reading a FLAC's length from its header.
  * Knows nothing of Furnace.
  */
-import { spawn } from 'node:child_process';
 import { closeSync, openSync, readSync } from 'node:fs';
-import { getSettings } from '../config/settings.ts';
+import { runFfmpeg } from './ffmpeg.ts';
 
 /**
  * Writes a WAV's audio as a FLAC file with ffmpeg. Fails rather than replace a file that is there.
@@ -12,7 +11,7 @@ import { getSettings } from '../config/settings.ts';
  * @param wavFile - The path of the WAV to read.
  * @param flacFile - The path of the FLAC to write; it need not end in .flac.
  */
-export function encodeFlac(wavFile: string, flacFile: string): Promise<void> {
+export async function encodeFlac(wavFile: string, flacFile: string): Promise<void> {
   const args = [
     '-v',
     'error',
@@ -28,18 +27,7 @@ export function encodeFlac(wavFile: string, flacFile: string): Promise<void> {
     'flac',
     flacFile,
   ];
-  return new Promise((resolve, reject) => {
-    const ffmpeg = spawn(getSettings().ffmpeg, args, { stdio: ['ignore', 'ignore', 'pipe'] });
-    let errors = '';
-    ffmpeg.stderr.on('data', (chunk: Buffer) => {
-      errors += chunk.toString();
-    });
-    ffmpeg.on('error', reject);
-    ffmpeg.on('close', (code) => {
-      if (code === 0) resolve();
-      else reject(new Error(`ffmpeg exit ${code}: ${errors.trim()}`));
-    });
-  });
+  await runFfmpeg(args);
 }
 
 /** The bytes of a FLAC file's start that hold its length: the marker, a block header, STREAMINFO. */
