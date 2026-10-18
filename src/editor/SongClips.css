@@ -5,7 +5,7 @@
 
 .song-clips {
   position: relative;
-  width: 240px;
+  width: 300px;
 }
 
 .song-clips.is-folded {
@@ -29,7 +29,10 @@
 .song-clips-panel {
   display: flex;
   flex-direction: column;
-  max-height: calc(100vh - var(--top-bar-height, 0px) - var(--editor-head-height, 0px) - 24px);
+  max-height: calc(
+    100vh - var(--top-bar-height, 0px) - var(--editor-head-height, 0px) +
+      var(--editor-ruler-height, 0px) - 16px
+  );
   border: var(--border-width) solid var(--line);
   border-radius: var(--radius);
   background: var(--card);
@@ -90,7 +93,7 @@
   min-height: var(--touch);
   padding: 6px 10px;
   border: var(--border-width) solid var(--line);
-  border-radius: var(--radius);
+  border-radius: var(--small-radius);
   background: var(--bg);
   text-align: left;
   cursor: grab;

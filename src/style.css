@@ -18,6 +18,9 @@
   --keep: #f5b301;
   --reject: #dc2f4b;
   --on-reject: #ffffff;
+  /* a level meter's well, dark in both looks, and its peak mark */
+  --meter-well: #0b0b0d;
+  --meter-peak: #ececef;
   color-scheme: light;
   /* how tall a control is: 32 px with a mouse, 36 px under a finger (below) */
   --touch: 32px;
@@ -40,6 +43,8 @@
   --text-size: 16px;
   --line-height: 1.4;
   --radius: 8px;
+  /* a smaller rounding, for small things in a list (the song's clips) */
+  --small-radius: 4px;
   --round: 50%;
   --border-width: 1px;
   font-size: var(--text-size);

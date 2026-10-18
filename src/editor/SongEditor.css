@@ -16,19 +16,27 @@
   grid-column: 1 / -1;
 }
 
-/* the bar and the ruler's strip, kept in view under the top bar while the page scrolls */
+/* the bar and the ruler's strip, kept in view under the top bar while the page scrolls; beside the
+   ruler, nothing of it: the song's clips lie there, level with the timeline's box, and are reached
+   through it */
 .song-editor-head {
   position: sticky;
   top: var(--top-bar-height, 0px);
   z-index: 5;
   display: grid;
   grid-template-columns: subgrid;
-  padding-top: 8px;
-  background: var(--bg);
+  pointer-events: none;
+}
+
+.song-editor-head > * {
+  pointer-events: auto;
 }
 
 .song-editor-head > .editor-bar {
   grid-column: 1 / -1;
+  margin-bottom: 0;
+  padding: 8px 0;
+  background: var(--bg);
 }
 
 /* the timeline's head: scrolled sideways with the tracks under it, its own scrollbar hidden; one box
@@ -57,11 +65,20 @@
   grid-column: 1;
 }
 
-/* the song's clips, kept in view under the editor's head while the page scrolls */
+/* the song's clips, their top level with the ruler's, kept in view under the editor's bar while the
+   page scrolls */
 .song-editor-body > .song-clips {
   position: sticky;
-  top: calc(var(--top-bar-height, 0px) + var(--editor-head-height, 0px) + 8px);
+  top: calc(
+    var(--top-bar-height, 0px) + var(--editor-head-height, 0px) - var(--editor-ruler-height, 0px)
+  );
   grid-column: 2;
+}
+
+@media (min-width: 720px) {
+  .song-editor-body > .song-clips {
+    margin-top: calc(-1 * var(--editor-ruler-height, 0px));
+  }
 }
 
 /* a phone, where the bar's groups wrap to rows: only the transport and the ruler's strip stay in

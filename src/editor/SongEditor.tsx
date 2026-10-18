@@ -62,6 +62,7 @@ export function SongEditor({ detail }: SongEditorProps) {
   const tracksMarkRef = useRef<HTMLDivElement>(null);
   const tracksRoomRef = useRef<HTMLDivElement>(null);
   useHeightProperty(headRef, '--editor-head-height');
+  useHeightProperty(headScrollRef, '--editor-ruler-height');
   useScrollSync(scrollRef, headScrollRef);
   const { song, isWaitingForAudio, waitingClipIds } = detail;
   const { data: pool } = useClips();
