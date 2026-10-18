@@ -161,7 +161,8 @@ top bar's links open a list unfiltered, and the back button returns to a filtere
 
 ## Tooling
 
-- Settings (data folder, port, the programs called: Furnace, ffmpeg, Claude Code, Node) are read in one place, `config/settings.ts`: `CHIPSMITH_…` variables over a `.env` file over
+- Settings (data folder, port, the programs called: Furnace to render, the Furnace app to open a
+  file in, ffmpeg, Claude Code, Node) are read in one place, `config/settings.ts`: `CHIPSMITH_…` variables over a `.env` file over
   the defaults (README.md, "Settings"). `config/programs.ts` checks the programs when the server
   starts (each run once for its version; `GET`/`POST /api/programs`); a missing one shows as a bar on
   every page (`src/ProgramWarning.tsx`). Clips record the Furnace version read from Furnace itself.
@@ -182,8 +183,9 @@ git, all 1,534 of its .fur files were checked so.)
 
 ## Rendering and making songs
 
-- `render/`: a clip's source.fur rendered by the Furnace app's command line to a WAV, one at a time,
-  retried after a pause if it fails (0015), encoded as audio.flac with ffmpeg.
+- `render/`: a clip's source.fur rendered by Furnace's command line to a WAV, one at a time,
+  retried after a pause if it fails (0015): a headless build without GUI or MIDI if one is set, else
+  the app (0042). Encoded as audio.flac with ffmpeg.
 - `make/`: new songs on disk. `make-song.ts` makes a song of one whole clip from a .fur file: claims the
   ids (`ids.ts`, by making the folders), writes the clip's source.fur and script, renders its audio,
   writes clip.json and song.json, and the server is told to look again (`POST /api/rescan`).

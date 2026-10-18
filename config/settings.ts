@@ -16,8 +16,10 @@ export type Settings = {
   dataFolder: string;
   /** The port the app is served on. */
   port: number;
-  /** The Furnace binary that renders. */
+  /** The Furnace binary that renders: a headless build, or the app's own. */
   furnace: string;
+  /** The Furnace app that opens a clip's .fur to look at. */
+  furnaceApp: string;
   /** The ffmpeg binary that encodes FLAC. */
   ffmpeg: string;
   /** The Claude Code binary that composes. */
@@ -32,6 +34,7 @@ export const PROJECT_FOLDER = join(import.meta.dirname, '..');
 const DEFAULT_DATA_FOLDER = 'data';
 /** The default port: 6502, after the processor of the NES, the Commodore 64 and the Apple II. */
 const DEFAULT_PORT = 6502;
+/** The Furnace app's binary: it renders unless a headless build is set, and opens files to look at. */
 const DEFAULT_FURNACE = '/Applications/Furnace.app/Contents/MacOS/Furnace';
 
 /**
@@ -62,6 +65,7 @@ export function readSettings(
     dataFolder: get('DATA') ?? join(projectFolder, DEFAULT_DATA_FOLDER),
     port,
     furnace: get('FURNACE') ?? DEFAULT_FURNACE,
+    furnaceApp: get('FURNACE_APP') ?? DEFAULT_FURNACE,
     ffmpeg: get('FFMPEG') ?? 'ffmpeg',
     claude: get('CLAUDE') ?? (existsSync(localClaude) ? localClaude : 'claude'),
     node: get('NODE') ?? process.execPath,

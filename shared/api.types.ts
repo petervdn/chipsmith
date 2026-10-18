@@ -47,12 +47,14 @@ export type TakeMade = { clipId: string };
 export type TakeDeleted = { replacedBy: string };
 
 /** A program the app calls (config/settings.ts). */
-export type ProgramName = 'furnace' | 'ffmpeg' | 'claude' | 'node';
+export type ProgramName = 'furnace' | 'furnaceApp' | 'ffmpeg' | 'claude' | 'node';
 
 /** Whether a program can be run, its version, and what it is needed for. */
 export type ProgramCheck = {
   name: ProgramName;
   path: string;
+  /** The setting that points to it, such as `CHIPSMITH_FURNACE`. */
+  variable: string;
   neededFor: string;
   /** Its version, when it ran and named one. */
   version: string | null;

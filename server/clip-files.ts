@@ -79,7 +79,7 @@ export function openClipInFurnace(store: Store, clipId: string): string | null {
   mkdirSync(OPEN_FOLDER, { recursive: true });
   const copy = join(OPEN_FOLDER, getFurName(clip));
   copyFileSync(file, copy);
-  const furnace = spawn(getSettings().furnace, [copy], { detached: true, stdio: 'ignore' });
+  const furnace = spawn(getSettings().furnaceApp, [copy], { detached: true, stdio: 'ignore' });
   furnace.on('error', (error) => console.error(`Furnace did not open ${copy}: ${error.message}`));
   furnace.unref();
   return copy;

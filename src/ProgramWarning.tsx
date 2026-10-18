@@ -15,12 +15,12 @@ export function ProgramWarning() {
   if (missing.length === 0) return null;
   return (
     <div className="program-warning" role="alert">
-      {missing.map(({ name, path, neededFor, error }) => (
+      {missing.map(({ name, path, variable, neededFor, error }) => (
         <p key={name}>
           <strong>
             No {name} for {neededFor}:
           </strong>{' '}
-          {path} ({error}). Set <code>CHIPSMITH_{name.toUpperCase()}</code> in <code>.env</code>.
+          {path} ({error}). Set <code>{variable}</code> in <code>.env</code>.
         </p>
       ))}
       <button type="button" onClick={() => checkAgain()} disabled={isPending}>

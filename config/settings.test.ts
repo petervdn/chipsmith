@@ -9,6 +9,13 @@ test('what is not set has its default', () => {
   assert.equal(settings.port, 6502);
   assert.equal(settings.ffmpeg, 'ffmpeg');
   assert.equal(settings.claude, 'claude');
+  assert.equal(settings.furnace, settings.furnaceApp);
+});
+
+test('a headless Furnace renders while the app still opens files', () => {
+  const settings = readSettings({ CHIPSMITH_FURNACE: '/build/furnace' }, '/p', '/h');
+  assert.equal(settings.furnace, '/build/furnace');
+  assert.equal(settings.furnaceApp, '/Applications/Furnace.app/Contents/MacOS/Furnace');
 });
 
 test('a variable sets its setting; an empty one is not set', () => {

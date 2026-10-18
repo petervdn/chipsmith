@@ -42,14 +42,30 @@ How it is built and why: [docs/architecture.md](docs/architecture.md), the decis
 
 ## What it needs
 
-macOS (Furnace is called as the installed app), and:
+macOS, and:
 
 | Program | Used for | Found at, unless set (below) |
 |---|---|---|
 | Node 24 or later | the app, the tools, job scripts (runs TypeScript as it is) | the Node running the server |
-| [Furnace](https://github.com/tildearrow/furnace) 0.6.8.3 | rendering a .fur file to audio | `/Applications/Furnace.app/Contents/MacOS/Furnace` |
+| [Furnace](https://github.com/tildearrow/furnace) 0.6.8.3 | rendering a .fur file to audio (best a headless build, below), opening one to look at | `/Applications/Furnace.app/Contents/MacOS/Furnace` |
 | ffmpeg | encoding the renders as FLAC | `ffmpeg` on the PATH (`brew install ffmpeg`) |
 | [Claude Code](https://claude.com/claude-code) | composing songs from prompts | `~/.local/bin/claude`, else `claude` on the PATH |
+
+### A headless Furnace
+
+The app's binary renders, but it sets up MIDI each time it starts, and now and then macOS refuses and
+it aborts: the render is tried again, and a "Furnace quit unexpectedly" dialog is left on the screen
+(docs/adr/0042). A build without its GUI and MIDI does not do that. From Furnace's source, at the
+tag of the installed version:
+
+```bash
+git clone --recursive --branch v0.6.8.3 https://github.com/tildearrow/furnace.git
+cmake -S furnace -B furnace/build-headless -G Ninja -DCMAKE_BUILD_TYPE=Release -DBUILD_GUI=OFF -DUSE_RTMIDI=OFF -DUSE_SDL2=OFF -DWITH_PORTAUDIO=OFF -DWITH_JACK=OFF -DSYSTEM_ZLIB=ON
+cmake --build furnace/build-headless
+```
+
+(The vendored zlib does not compile against the current macOS SDK, hence `SYSTEM_ZLIB`.) Then set
+`CHIPSMITH_FURNACE` to `furnace/build-headless/furnace`; the app still opens files to look at.
 
 Claude Code must be logged in for jobs to compose: run `claude`, then `/login`. A job that cannot log
 in fails with that reason on its card.
@@ -74,7 +90,8 @@ is not in git). A variable set in the shell wins over the file; what is not set 
 |---|---|---|
 | `CHIPSMITH_DATA` | the folder holding `clips/`, `songs/` and `jobs/` | `data/` in the project folder |
 | `CHIPSMITH_PORT` | the port the app is served on | `6502` |
-| `CHIPSMITH_FURNACE` | the Furnace binary | the app in `/Applications` |
+| `CHIPSMITH_FURNACE` | the Furnace binary that renders | the app in `/Applications` |
+| `CHIPSMITH_FURNACE_APP` | the Furnace app that opens a clip's .fur | the app in `/Applications` |
 | `CHIPSMITH_FFMPEG` | the ffmpeg binary | `ffmpeg` |
 | `CHIPSMITH_CLAUDE` | the Claude Code binary | `~/.local/bin/claude`, else `claude` |
 | `CHIPSMITH_NODE` | the Node that runs a job's script | the Node running the server |

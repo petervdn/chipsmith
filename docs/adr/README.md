@@ -28,7 +28,7 @@ Consequences.
 | [0012](0012-standards-of-unknown-game.md) | The setup and coding standards follow unknown-game | accepted |
 | [0013](0013-react-for-the-page.md) | The page is React | accepted |
 | [0014](0014-a-variation-changes-only-its-block.md) | A new version of a clip changes only the block it was asked for | accepted |
-| [0015](0015-render-with-the-furnace-app.md) | A clip is rendered with the Furnace app's command line, one at a time | accepted |
+| [0015](0015-render-with-the-furnace-app.md) | A clip is rendered with the Furnace app's command line, one at a time | accepted; the app's binary superseded by 0042 |
 | [0016](0016-a-song-keeps-the-prompt-it-was-made-from.md) | A song keeps the prompt it was made from; prompting it again sends only that | accepted; the clips' prompts superseded by 0036 |
 | [0017](0017-where-state-lives.md) | Where state lives: local first, then lifted, then a store; the server's in TanStack Query | accepted |
 | [0018](0018-what-is-made-is-not-in-git.md) | What is made is never in git; five examples are, and missing audio is rendered on start | accepted |
@@ -55,3 +55,4 @@ Consequences.
 | [0039](0039-a-take-not-wanted-is-deleted.md) | A take not wanted is deleted; the take in a block can be updated | accepted |
 | [0040](0040-the-note-grid-scrolls-both-ways.md) | The note grid lays out the channel's whole range and scrolls both ways | accepted; its axes superseded by 0041 |
 | [0041](0041-the-note-grid-runs-time-across.md) | The note grid runs time across, as the timeline does, and pitch up | accepted |
+| [0042](0042-render-with-a-headless-furnace.md) | A clip is rendered with a headless Furnace build; the app only opens files | accepted |

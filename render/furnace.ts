@@ -1,10 +1,11 @@
 /**
- * Rendering a .fur to a WAV with the Furnace app's command line. Furnace opens a CoreMIDI client every
- * time it starts, which macOS has refused after many quick launches: renders run one at a time, and a
- * failed render is tried again after a pause that grows (docs/adr/0015, docs/later.md). 75 renders
- * back to back without a pause all worked (2026-10-17). A render that takes longer than RENDER_LIMIT
- * is stopped and not tried again: a .fur that Furnace hangs on (seen 2026-10-17) would hang again.
- * The same runs write a WAV per channel, or the song as Furnace's text export.
+ * Rendering a .fur to a WAV with Furnace's command line: a headless build, or the app's own binary
+ * (docs/adr/0042). The app opens a CoreMIDI client every time it starts, which macOS now and then
+ * refuses, and the app aborts: renders run one at a time, and a failed render is tried again after a
+ * pause that grows (docs/adr/0015). The headless build has no MIDI and does not fail so. A render
+ * that takes longer than RENDER_LIMIT is stopped and not tried again: a .fur that Furnace hangs on
+ * (seen 2026-10-17) would hang again. The same runs write a WAV per channel, or the song as
+ * Furnace's text export.
  */
 import { spawn } from 'node:child_process';
 import { getSettings } from '../config/settings.ts';

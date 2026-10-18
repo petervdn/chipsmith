@@ -7,28 +7,47 @@ import type { ProgramCheck, ProgramName } from '../shared/api.types.ts';
 import type { Settings } from './settings.ts';
 import { getSettings } from './settings.ts';
 
+/** How Furnace names its version, the app and a headless build alike. */
+const FURNACE_VERSION = /Furnace version ([\d.]*\d)/;
 /** How each program is asked for its version, what reads the version from its answer, and its use. */
 const PROGRAMS = {
   furnace: {
     args: ['-version'],
-    pattern: /Furnace version ([\d.]*\d)/,
+    pattern: FURNACE_VERSION,
+    variable: 'CHIPSMITH_FURNACE',
     neededFor: 'rendering songs',
+  },
+  furnaceApp: {
+    args: ['-version'],
+    pattern: FURNACE_VERSION,
+    variable: 'CHIPSMITH_FURNACE_APP',
+    neededFor: "opening a clip's .fur",
   },
   ffmpeg: {
     args: ['-version'],
     pattern: /ffmpeg version (\S+)/,
+    variable: 'CHIPSMITH_FFMPEG',
     neededFor: 'encoding renders as FLAC',
   },
   claude: {
     args: ['--version'],
     pattern: /^(\S+) \(Claude Code\)/m,
+    variable: 'CHIPSMITH_CLAUDE',
     neededFor: 'composing from prompts',
   },
-  node: { args: ['--version'], pattern: /^v(\S+)/m, neededFor: "running a job's script" },
-} satisfies Record<ProgramName, { args: string[]; pattern: RegExp; neededFor: string }>;
+  node: {
+    args: ['--version'],
+    pattern: /^v(\S+)/m,
+    variable: 'CHIPSMITH_NODE',
+    neededFor: "running a job's script",
+  },
+} satisfies Record<
+  ProgramName,
+  { args: string[]; pattern: RegExp; variable: string; neededFor: string }
+>;
 /** Milliseconds a program has to answer. */
 const ANSWER_TIME = 15000;
-const PROGRAM_NAMES: ProgramName[] = ['furnace', 'ffmpeg', 'claude', 'node'];
+const PROGRAM_NAMES: ProgramName[] = ['furnace', 'furnaceApp', 'ffmpeg', 'claude', 'node'];
 
 let furnaceVersion: Promise<string> | null = null;
 
@@ -36,7 +55,7 @@ let furnaceVersion: Promise<string> | null = null;
  * Checks every program the settings name: whether it runs, and its version.
  *
  * @param settings - The settings, which name the path of each program.
- * @returns A check per program, in the order furnace, ffmpeg, claude, node.
+ * @returns A check per program, in the order furnace, furnaceApp, ffmpeg, claude, node.
  */
 export function checkPrograms(settings: Settings): Promise<ProgramCheck[]> {
   return Promise.all(PROGRAM_NAMES.map((name) => checkProgram(name, settings[name])));
@@ -69,16 +88,24 @@ export function readVersion(name: ProgramName, answer: string): string | null {
 }
 
 async function checkProgram(name: ProgramName, path: string): Promise<ProgramCheck> {
-  const { args, neededFor } = PROGRAMS[name];
+  const { args, variable, neededFor } = PROGRAMS[name];
   try {
     const version = readVersion(name, await runForAnswer(path, args));
     return version
-      ? { name, path, neededFor, version, error: null }
-      : { name, path, neededFor, version: null, error: 'it ran, but did not name its version' };
+      ? { name, path, variable, neededFor, version, error: null }
+      : {
+          name,
+          path,
+          variable,
+          neededFor,
+          version: null,
+          error: 'it ran, but did not name its version',
+        };
   } catch (error) {
     return {
       name,
       path,
+      variable,
       neededFor,
       version: null,
       error: error instanceof Error ? error.message : String(error),

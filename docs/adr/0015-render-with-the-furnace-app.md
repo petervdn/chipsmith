@@ -1,6 +1,6 @@
 # 0015. A clip is rendered with the Furnace app's command line, one at a time
 
-- Status: accepted
+- Status: accepted; the app's binary superseded by 0042
 - Date: 2026-10-17
 
 ## Context
