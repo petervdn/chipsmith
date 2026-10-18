@@ -1,15 +1,14 @@
-/* The look of SongEditor.tsx: the bar and the timeline's head kept in view at the top; the song's
-   clips in a column at the left of the timeline, and the details of what is selected in a column at
-   its right where there is room, else under it. The timeline scrolls sideways inside its
-   box, never the page. */
+/* The look of SongEditor.tsx: the bar and the timeline's head kept in view at the top; the timeline
+   at the left with the song's clips in a column at its right, kept in view too, and the details of
+   what is selected under the timeline, as wide. The timeline scrolls sideways inside its box, never
+   the page. */
 
 /* the editor's columns, shared by its head and its body (subgrid), so the ruler's strip lies over
-   the tracks exactly: the song's clips, the timeline, and from 1440 px the details */
+   the tracks exactly: the timeline (and the details under it), then the song's clips */
 .song-editor {
   --transport-size: 56px;
-  --details-width: 384px;
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) auto;
   column-gap: 12px;
 }
 
@@ -35,7 +34,7 @@
 /* the timeline's head: scrolled sideways with the tracks under it, its own scrollbar hidden; one box
    with theirs */
 .song-editor-head-scroll {
-  grid-column: 2;
+  grid-column: 1;
   overflow-x: auto;
   scrollbar-width: none;
   border: var(--border-width) solid var(--line);
@@ -55,26 +54,14 @@
 }
 
 .song-editor-main {
-  grid-column: 2;
+  grid-column: 1;
 }
 
-/* room at the right for the details of what is selected, beside the timeline */
-@media (min-width: 1440px) {
-  .song-editor {
-    grid-template-columns: auto minmax(0, 1fr) var(--details-width);
-  }
-
-  .song-editor-main {
-    position: relative;
-  }
-
-  .song-editor-main > .selection-details {
-    position: absolute;
-    top: 0;
-    left: calc(100% + 12px);
-    width: var(--details-width);
-    margin-top: 0;
-  }
+/* the song's clips, kept in view under the editor's head while the page scrolls */
+.song-editor-body > .song-clips {
+  position: sticky;
+  top: calc(var(--top-bar-height, 0px) + var(--editor-head-height, 0px) + 8px);
+  grid-column: 2;
 }
 
 /* a phone, where the bar's groups wrap to rows: only the transport and the ruler's strip stay in

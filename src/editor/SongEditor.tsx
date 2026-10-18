@@ -1,6 +1,7 @@
 // An opened song in the editor: the bar of controls (play, undo and redo, the grid, a new track,
 // zoom, save and revert) and the timeline's head under it, which stay in view at the top, the
-// timeline of the draft, and the details of the block, clip or track selected, a take swapped into
+// timeline of the draft with the song's clips in a column at its right, and under it the details of
+// the block, clip or track selected, a take swapped into
 // the selected block or clip among its edits.
 import { useRef, useState } from 'react';
 import type { SongDetail } from '../../shared/api.types.ts';
@@ -39,6 +40,7 @@ import '../jobs/jobs.css';
 import './SongEditor.css';
 import { askToConfirm } from '../stores/confirm-store.ts';
 import { usePreferencesStore } from '../stores/preferences-store.ts';
+import { useHeightProperty } from '../use-height-property.ts';
 import { getTicksPerSecond } from '../../shared/song-length.ts';
 
 type SongEditorProps = { detail: SongDetail };
@@ -55,6 +57,8 @@ export function SongEditor({ detail }: SongEditorProps) {
   const [scrub, setScrub] = useState<number | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const headScrollRef = useRef<HTMLDivElement>(null);
+  const headRef = useRef<HTMLDivElement>(null);
+  useHeightProperty(headRef, '--editor-head-height');
   useScrollSync(scrollRef, headScrollRef);
   const { song, isWaitingForAudio, waitingClipIds } = detail;
   const { data: pool } = useClips();
@@ -157,7 +161,7 @@ export function SongEditor({ detail }: SongEditorProps) {
           play once all are rendered.
         </p>
       )}
-      <div className="song-editor-head">
+      <div ref={headRef} className="song-editor-head">
         <EditorBar
           transport={transport}
           isWaitingForAudio={isWaitingForAudio}
@@ -206,16 +210,6 @@ export function SongEditor({ detail }: SongEditorProps) {
         </div>
       </div>
       <div className="song-editor-body">
-        <SongClips
-          songClips={getSongClips(draft.tracks, clips)}
-          selectedClipId={selectedClipId}
-          waitingClipIds={waitingClipIds}
-          drag={clipDrag.drag}
-          onPress={clipDrag.startPress}
-          onSelect={(clipId) => {
-            if (!clipDrag.wasDragged()) draft.select({ kind: 'clip', clipId });
-          }}
-        />
         <div className="song-editor-main">
           <div ref={scrollRef} className="song-editor-scroll">
             <Timeline
@@ -263,6 +257,16 @@ export function SongEditor({ detail }: SongEditorProps) {
             getPlaceTicks={getPlaceTicks}
           />
         </div>
+        <SongClips
+          songClips={getSongClips(draft.tracks, clips)}
+          selectedClipId={selectedClipId}
+          waitingClipIds={waitingClipIds}
+          drag={clipDrag.drag}
+          onPress={clipDrag.startPress}
+          onSelect={(clipId) => {
+            if (!clipDrag.wasDragged()) draft.select({ kind: 'clip', clipId });
+          }}
+        />
       </div>
     </div>
   );

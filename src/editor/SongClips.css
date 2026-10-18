@@ -1,5 +1,5 @@
-/* The look of SongClips.tsx: a column at the left of the timeline, a list of the clips that scrolls
-   when long; folded, a strip with » and its name on its side. On a phone the strip stays and the
+/* The look of SongClips.tsx: a column at the right of the timeline, a list of the clips that
+   scrolls when long (the column no taller than the screen below the editor's head); folded, a strip with » and its name on its side. On a phone the strip stays and the
    open column lies over the timeline, hidden while a clip is dragged so the lanes are free to drop
    on. The chip that follows the pointer while dragging. */
 
@@ -29,7 +29,7 @@
 .song-clips-panel {
   display: flex;
   flex-direction: column;
-  max-height: 70vh;
+  max-height: calc(100vh - var(--top-bar-height, 0px) - var(--editor-head-height, 0px) - 24px);
   border: var(--border-width) solid var(--line);
   border-radius: var(--radius);
   background: var(--card);
@@ -132,7 +132,7 @@
   .song-clips:not(.is-folded) .song-clips-panel {
     position: absolute;
     top: 0;
-    left: 0;
+    right: 0;
     z-index: 6;
     width: min(280px, calc(100vw - 32px));
     box-shadow: 0 8px 24px rgb(0 0 0 / 25%);
