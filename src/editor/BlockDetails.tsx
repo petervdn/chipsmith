@@ -1,5 +1,5 @@
 // The selected block's details: where it plays, its clip (what it is, its facts, its .fur file to
-// look at), its takes to swap in and the prompt for more (docs/adr/0037); ▶ plays the song from the
+// look at), its takes to swap in, quick changes and the prompt for more takes (docs/adr/0037); ▶ plays the song from the
 // block, Loop it plays its bars round, and solo leaves its track alone.
 import { Minus, Play, Plus, Repeat } from 'lucide-react';
 import type { Clip } from '../../shared/clip.types.ts';
@@ -9,7 +9,8 @@ import { getClipLabel } from '../../shared/clip-label.ts';
 import { formatSeconds } from '../format.ts';
 import type { BlockSpan } from './timeline.ts';
 import { getTicksPerBar } from './timeline.ts';
-import { getChannelName } from '../../shared/clip-channels.ts';
+import { getChannelName, isPitchedChannel } from '../../shared/clip-channels.ts';
+import { ClipOperations } from './ClipOperations.tsx';
 import { ClipFileLinks } from './ClipFileLinks.tsx';
 import { ClipPrompt } from './ClipPrompt.tsx';
 import { ClipTakes } from './ClipTakes.tsx';
@@ -149,6 +150,9 @@ export function BlockDetails({
           <ClipFileLinks clipId={clip.id} />
           {versions.length > 1 && (
             <ClipTakes versions={versions} currentClipId={clip.id} onUse={onUseVersion} />
+          )}
+          {clip.channels.some((channel) => isPitchedChannel(clip.chips, channel)) && (
+            <ClipOperations clipId={clip.id} songId={song.id} onMade={onUseVersion} />
           )}
           <ClipPrompt clipId={clip.id} songId={song.id} />
         </>

@@ -1,9 +1,9 @@
 /**
- * The clips from the server: the pool, changing a clip's status or a variation's label, and opening
- * its .fur in Furnace.
+ * The clips from the server: the pool, changing a clip's status or a variation's label, a take made
+ * by transposing a clip, and opening its .fur in Furnace.
  */
 import { useMutation, useQuery } from '@tanstack/react-query';
-import type { ClipListing, ClipOpened } from '../../shared/api.types.ts';
+import type { ClipListing, ClipOpened, TakeMade } from '../../shared/api.types.ts';
 import type { Status } from '../../shared/catalogue.types.ts';
 import { getQueryKey, queryClient } from './client.ts';
 import { requestJson, sendJson } from './request.ts';
@@ -45,6 +45,35 @@ export function useSetVariationLabel() {
         variationLabel,
       }),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: getQueryKey({ type: 'clips' }) }),
+  });
+}
+
+/**
+ * Makes a take of a clip transposed by semitones (docs/adr/0037), rendered on the server; the pool
+ * is read again before it settles, so the take is there to be put in a block.
+ *
+ * @returns The mutation, called with the clip's id (`clipId`), the song it is asked in (`songId`)
+ * and how far to move it (`semitones`); it gives the take's id.
+ */
+export function useTransposeClip() {
+  return useMutation({
+    mutationFn: async ({
+      clipId,
+      songId,
+      semitones,
+    }: {
+      clipId: string;
+      songId: string;
+      semitones: number;
+    }) => {
+      const made = await sendJson<TakeMade>(
+        `/api/clips/${encodeURIComponent(clipId)}/transpose`,
+        'POST',
+        { song: songId, semitones },
+      );
+      await queryClient.invalidateQueries({ queryKey: getQueryKey({ type: 'clips' }) });
+      return made.clipId;
+    },
   });
 }
 

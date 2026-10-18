@@ -1,0 +1,39 @@
+/* The look of ClipOperations.tsx: the steps as buttons on a row that wraps, and a line while the
+   take is made. */
+
+.clip-operations {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.clip-operations-title {
+  margin: 0;
+  font-size: 0.875rem;
+}
+
+.clip-operations-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.clip-operations-buttons button {
+  min-width: var(--touch);
+  min-height: var(--touch);
+  padding: 0 12px;
+  border: var(--border-width) solid var(--line);
+  border-radius: var(--radius);
+  background: var(--raised);
+  cursor: pointer;
+}
+
+.clip-operations-making {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 0.8125rem;
+}

@@ -2,7 +2,7 @@
 // cut out of another cannot.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { getChannelName } from './clip-channels.ts';
+import { getChannelName, isPitchedChannel } from './clip-channels.ts';
 
 test('channels are named from the chips, counted over them in order', () => {
   assert.deepEqual(
@@ -21,4 +21,13 @@ test('a chip that comes again numbers its channels on', () => {
     ['SCC 5', 'SCC 6', 'SCC 10', 'SID 1'],
   );
   assert.equal(getChannelName(['NES', 'NES'], 7), 'Triangle (NES 2)');
+});
+
+test('the NES noise and DPCM channels are not pitched, wherever the NES comes', () => {
+  assert.deepEqual(
+    [0, 1, 2, 3, 4, 5].map((channel) => isPitchedChannel(['NES', 'SCC+'], channel)),
+    [true, true, true, false, false, true],
+  );
+  assert.equal(isPitchedChannel(['SCC+', 'NES'], 8), false);
+  assert.equal(isPitchedChannel(['SCC+', 'NES'], 4), true);
 });

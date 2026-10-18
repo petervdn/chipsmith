@@ -18,4 +18,5 @@ references) is read through Furnace's own text export.
 - `read.ts`: a .fur file read into memory
 - `sid.ts`: a SID instrument's settings (its `64` feature), written and read
 - `tracker-text.ts`: a whole .fur file as text, as the tracker shows it: orders of patterns side by side
+- `transpose.ts`: a .fur with the notes of some channels moved by semitones
 - `write.ts`: what is in memory written as a .fur file

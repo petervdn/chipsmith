@@ -43,6 +43,9 @@ export type CatalogueChange = { status?: Status; tags?: Tag[] };
 /** A change to a clip's record: its catalogue fields, and a variation's label (docs/adr/0036). */
 export type ClipChange = CatalogueChange & { variationLabel?: string };
 
+/** A take made of a clip without Claude (a transpose): the new clip's id. */
+export type TakeMade = { clipId: string };
+
 /** A program the app calls (config/settings.ts). */
 export type ProgramName = 'furnace' | 'ffmpeg' | 'claude' | 'node';
 

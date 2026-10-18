@@ -48,7 +48,10 @@ export function useTakeSwap({ tracks, place, clips, bpm, edit }: TakeSwapParts) 
         answer: `All ${others.length + 1} blocks`,
         refusal: 'Only this one',
       }));
-    const ticks = getClipTicks(clips, clipId, bpm);
+    // a take made a moment ago may not be among the clips yet; it is as long as its clip
+    const ticks = clips.some((clip) => clip.id === clipId)
+      ? getClipTicks(clips, clipId, bpm)
+      : null;
     edit((current) => {
       const edited = setBlockClip(current, place, clipId, ticks);
       if (!isEverywhere) return edited;

@@ -132,17 +132,21 @@ export function duplicateBlock(tracks: Track[], place: BlockPlace, clipTicks: nu
  * @param tracks - The song's tracks.
  * @param place - Where the block is.
  * @param clipId - The clip it plays from now on.
- * @param clipTicks - How long that clip is, in ticks.
+ * @param clipTicks - How long that clip is, in ticks, or null when not known yet (a take just made,
+ *   as long as the clip it was made of): the trim is kept as it is.
  * @returns The tracks with the block's clip changed, and where it is.
  */
 export function setBlockClip(
   tracks: Track[],
   place: BlockPlace,
   clipId: string,
-  clipTicks: number,
+  clipTicks: number | null,
 ): Edited {
   const block = getBlock(tracks, place);
   if (!block) return { tracks, place };
+  if (clipTicks === null) {
+    return { tracks: replaceBlock(tracks, place, { ...block, clip: clipId }), place };
+  }
   const { trim } = block;
   const keptTrim =
     trim && trim.offset < clipTicks

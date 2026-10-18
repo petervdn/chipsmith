@@ -135,6 +135,10 @@ test('a trim past the end of a shorter clip is cut to it, or dropped', () => {
     length: 384,
   });
   assert.equal(setBlockClip(trimmed, place, 'c9', 384).tracks[0]?.blocks[0]?.trim, null);
+  assert.deepEqual(setBlockClip(trimmed, place, 'c9', null).tracks[0]?.blocks[0]?.trim, {
+    offset: 384,
+    length: 768,
+  });
 });
 
 test('the places of the blocks that play a clip', () => {

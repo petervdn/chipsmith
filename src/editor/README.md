@@ -13,6 +13,8 @@ saved, playing from a cursor, the zoom, and the selected block's clip or track.
 - `ClipTakes.tsx`: the takes of the selected block's clip as pills: a tap puts one in the block; the one in it renamed
 - `ClipFileLinks.css`: the look of ClipFileLinks.tsx
 - `ClipFileLinks.tsx`: a clip's .fur to look at: opened in Furnace (a copy), downloaded, or as text
+- `ClipOperations.css`: the look of ClipOperations.tsx
+- `ClipOperations.tsx`: quick changes to the selected block's clip without Claude: an octave or a semitone up or down, as a take
 - `clip-peaks.ts`: a clip's waveform as peaks, from its samples
 - `ControlGroup.css`: the look of ControlGroup.tsx
 - `ControlGroup.tsx`: controls grouped under a very small label over a line

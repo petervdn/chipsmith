@@ -12,6 +12,7 @@ song that plays it. The server reads what was made when it is asked to look agai
 - `import-references.ts`: Furnace's demos imported as references: the .fur, its text, its mix and channels
 - `make-song.ts`: a new song of one whole clip, made from a .fur file
 - `make-take.ts`: a take of a clip, a variation with its label, made from a .fur file
+- `transpose-take.ts`: a take of a clip transposed, without Claude, labelled by how far
 - `take-check.ts`: whether a take fits its clip: the same chips and tempo, notes to play
 - `song-titles.ts`: the words each song's title is asked to have, and the titles already taken
 - `song-plan.ts`: what a job's script gives per song, and its check

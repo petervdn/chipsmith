@@ -136,7 +136,8 @@ tries the takes in the song and keeps one. No song is made.
 - Start from what wrote the clip: its `script.ts`, copied into the job's script and changed, or its
   `source.fur` read in the script (above). A take's own `script.ts` makes every take of its job:
   the one it is had the clip's `variationLabel` as its title (unless the user renamed it); when
-  unsure, or where the script no longer writes what the clip plays, work from `source.fur`.
+  unsure, or where the script no longer writes what the clip plays, work from `source.fur`. A take
+  made without Claude (a transpose, "octave up") has no `script.ts`: work from its `source.fur`.
 - A clip cut by channel (a stem, `parent` relation `split` somewhere up its line) keeps only its
   channel of what the script makes; the prompt names it. Change that channel and fit it to the rest
   of the song (the whole clip's `source.fur`, up its `parent`s), which is cut away after.

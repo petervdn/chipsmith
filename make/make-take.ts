@@ -28,8 +28,8 @@ export type NewTake = {
   furFile: FurFile;
   /** What the take changed, in a few words. */
   label: string;
-  /** The script that wrote the .fur file, copied into the clip. */
-  scriptFile: string;
+  /** The script that wrote the .fur file, copied into the clip; null for an operation's take. */
+  scriptFile: string | null;
   tags: Tag[];
   key: string | null;
 };
@@ -45,7 +45,8 @@ export type NewTake = {
  * @param newTake.songId - The song the take was asked in.
  * @param newTake.furFile - The .fur file the script built for the take.
  * @param newTake.label - What the take changed, kept as its variation label.
- * @param newTake.scriptFile - The script that wrote the .fur file, copied into the clip.
+ * @param newTake.scriptFile - The script that wrote the .fur file, copied into the clip, or null when
+ *   no script did (an operation, whose take is worked from its source.fur).
  * @param newTake.tags - The take's tags.
  * @param newTake.key - The music's key, or null for the clip's.
  * @returns The id of the clip made.
@@ -65,7 +66,7 @@ export async function makeTake({
   const clipId = claimId(root, CLIP_IDS);
   const clipFolder = join(root, 'clips', clipId);
   writeFileSync(join(clipFolder, 'source.fur'), getFurFileBytes(kept));
-  copyFileSync(scriptFile, join(clipFolder, 'script.ts'));
+  if (scriptFile) copyFileSync(scriptFile, join(clipFolder, 'script.ts'));
   const { furnace } = await renderClipAudio(clipFolder);
   const clip: ClipRecord = {
     id: clipId,

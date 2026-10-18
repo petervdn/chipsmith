@@ -1,6 +1,7 @@
 /**
- * What a clip says of its channels: their names, read from its chips, and whether it is a whole
- * piece (made from a prompt or imported) that can be split into its channels. Knows nothing of files
+ * What a clip says of its channels: their names, read from its chips, whether a channel's notes are
+ * pitches, and whether it is a whole piece (made from a prompt or imported) that can be split into
+ * its channels. Knows nothing of files
  * or the page.
  */
 import { FURNACE_CHIPS } from './chips.ts';
@@ -22,6 +23,24 @@ export function getChannelName(chips: string[], channel: number): string {
     return before === 0 ? channelNames : getRepeatedNames(name, channelNames, before);
   });
   return names[channel] ?? `Channel ${channel + 1}`;
+}
+
+/**
+ * Tells whether a channel's notes are pitches, to be transposed: not a noise or sample channel.
+ *
+ * @param chips - The clip's chips, by name, in order ("NES", "SCC+").
+ * @param channel - The channel's number, counted over the chips in order.
+ * @returns Whether its notes are pitches; true past the chips known.
+ */
+export function isPitchedChannel(chips: string[], channel: number): boolean {
+  let first = 0;
+  for (const name of chips) {
+    const chip = FURNACE_CHIPS.find((known) => known.name === name);
+    const count = chip?.channelNames.length ?? 0;
+    if (chip && channel < first + count) return !chip.unpitchedChannels.includes(channel - first);
+    first += count;
+  }
+  return true;
 }
 
 /** A channel's name that ends in its number: `SCC 3`. */
