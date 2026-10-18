@@ -46,6 +46,8 @@
   --track-7: #4d94ff;
   --track-8: #ff5e57;
   --font: system-ui, -apple-system, sans-serif;
+  /* code: a file name, a setting, a command */
+  --code-font: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
   --text-size: 16px;
   --line-height: 1.4;
   --radius: 8px;
@@ -123,6 +125,15 @@ select,
 textarea {
   font: inherit;
   color: inherit;
+}
+
+/* code in running text (a file name, a setting, a command): the code font on a faint ground */
+code {
+  padding: 0 0.3em;
+  border-radius: var(--small-radius);
+  background: var(--raised);
+  font-family: var(--code-font);
+  font-size: 0.9em;
 }
 
 /* an icon (Lucide's) is sized by the text around it and sits on its line; in a button or link beside

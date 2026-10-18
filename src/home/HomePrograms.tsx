@@ -3,6 +3,7 @@
 // that points to it; why there are two Furnaces when there are; and a button to look for them
 // again, beside when it last looked and what it found.
 import { Check, RefreshCw, X } from 'lucide-react';
+import type { ReactNode } from 'react';
 import { formatTime } from '../format.ts';
 import { getProgramRows, hasTwoFurnaces } from './program-rows.ts';
 import { HEADLESS_FURNACE_URL } from '../project-links.ts';
@@ -44,7 +45,7 @@ export function HomePrograms() {
                 <td>{problem ? <X aria-label="missing" /> : <Check aria-label="found" />}</td>
                 <td>
                   <span className="home-programs-name">{label}</span>
-                  <span className="home-programs-note">for {neededFor}</span>
+                  <span className="home-programs-note">for {getWithFileNames(neededFor)}</span>
                   {problem && (
                     <span className="home-programs-problem">
                       {problem}: set <code>{variable}</code>
@@ -61,9 +62,9 @@ export function HomePrograms() {
         <p className="home-page-note">
           Two Furnaces are set here. The renderer turns the songs into audio: a build of its own (
           <code>CHIPSMITH_FURNACE</code>), best one without its window,{' '}
-          <a href={HEADLESS_FURNACE_URL}>as the README shows</a>. The app opens a clip's .fur for
-          you to look at (<code>CHIPSMITH_FURNACE_APP</code>). With only the Furnace app installed,
-          it does both and is one row.
+          <a href={HEADLESS_FURNACE_URL}>as the README shows</a>. The app opens a clip's{' '}
+          <code>.fur</code> for you to look at (<code>CHIPSMITH_FURNACE_APP</code>). With only the
+          Furnace app installed, it does both and is one row.
         </p>
       )}
       <p className="home-page-note">
@@ -85,4 +86,16 @@ export function HomePrograms() {
       </div>
     </div>
   );
+}
+
+/**
+ * Returns a text with the file names in it (`.fur`) set as code.
+ *
+ * @param text - The text, as the server gives it.
+ * @returns The text's parts, each file name a code element.
+ */
+function getWithFileNames(text: string): ReactNode[] {
+  return text
+    .split(/(\.fur\b)/)
+    .map((part, i) => (part === '.fur' ? <code key={i}>{part}</code> : part));
 }

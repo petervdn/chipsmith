@@ -25,11 +25,20 @@ const STEPS = [
   },
   {
     name: 'Compose',
-    text: 'Claude Code runs in the background: it writes the music as a script, checks it and builds a Furnace file (.fur) per song. Jobs shows how far it is.',
+    text: (
+      <>
+        Claude Code runs in the background: it writes the music as a script, checks it and builds a
+        Furnace file (<code>.fur</code>) per song. Jobs shows how far it is.
+      </>
+    ),
   },
   {
     name: 'Render',
-    text: "Furnace's command line plays each .fur into audio, kept as FLAC beside it.",
+    text: (
+      <>
+        Furnace's command line plays each <code>.fur</code> into audio, kept as FLAC beside it.
+      </>
+    ),
   },
   {
     name: 'Listen and shape',
