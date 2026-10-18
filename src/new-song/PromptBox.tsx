@@ -142,6 +142,9 @@ export function PromptBox({ initialText, source, onClearSource }: PromptBoxProps
               setUsedText(built);
             }}
           />
+          <p className="prompt-box-sent-along">
+            Sent along with the prompt above: the structure, the harmony and the style guides.
+          </p>
           <StructurePanel choice={structureChoice} />
           <HarmonyPanel choice={harmonyChoice} />
           <GuideChips guides={guides} chosenIds={chosenIds} onToggle={toggleGuide} />

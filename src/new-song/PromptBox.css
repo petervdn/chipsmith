@@ -76,3 +76,10 @@
   color: var(--muted);
   cursor: pointer;
 }
+
+/* the line between Build a prompt and the panels sent beside the prompt */
+.prompt-box-sent-along {
+  margin: 4px 0 -6px;
+  color: var(--muted);
+  font-size: 0.875rem;
+}
