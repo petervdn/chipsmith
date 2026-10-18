@@ -1,9 +1,11 @@
-// The prompt on the selected clip (or the selected block's): a box to say what to change, quick asks a tap adds, how
-// many takes, and Send; then the jobs making takes of it, on their way (docs/adr/0037). Its takes
-// are listed with the clip's versions.
+// The prompt on the selected clip (or the selected block's): a box to say what to change, quick asks
+// a tap adds, how many takes, and Send; the style guides to send along, the song's own chosen at
+// first; then the jobs making takes of it, on their way (docs/adr/0037). Its takes are listed with
+// the clip's versions.
 import { Minus, Plus } from 'lucide-react';
 import { MOST_TAKES, QUICK_ASKS } from './clip-prompt.ts';
 import { useClipPrompt } from './use-clip-prompt.ts';
+import { GuideChips } from '../guides/GuideChips.tsx';
 import '../jobs/jobs.css';
 import './ClipPrompt.css';
 
@@ -80,6 +82,11 @@ export function ClipPrompt({ clipId, songId }: ClipPromptProps) {
             : `Make ${takeCount} ${takeCount === 1 ? 'take' : 'takes'}`}
         </button>
       </div>
+      <GuideChips
+        guides={prompt.guides}
+        chosenIds={prompt.chosenGuideIds}
+        onToggle={prompt.toggleGuide}
+      />
       {prompt.error && <p className="error">{prompt.error}</p>}
       {prompt.runningJobs.map((job) => (
         <p key={job.id} className="clip-prompt-running">

@@ -54,10 +54,18 @@ export async function routeJobs(
       if (songCount !== null && songCount > MOST_TAKES) {
         return sendError(response, 400, `body.songCount: at most ${MOST_TAKES} takes`);
       }
-      const song = store.songs.get(takesOf.song);
       return sendJson(
         response,
-        createJob(jobs, prompt, song?.guides ?? [], null, null, songCount ?? 1, null, takesOf),
+        createJob(
+          jobs,
+          prompt,
+          getSentGuides(guides, guideIds),
+          null,
+          null,
+          songCount ?? 1,
+          null,
+          takesOf,
+        ),
       );
     }
     const song = fromSong ? store.songs.get(fromSong) : null;

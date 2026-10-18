@@ -145,15 +145,18 @@ export function useSendTakes() {
       prompt,
       takesOf,
       takeCount,
+      guideIds,
     }: {
       prompt: string;
       takesOf: TakesTarget;
       takeCount: number;
+      guideIds: string[];
     }) =>
       sendJson<Job>('/api/jobs', 'POST', {
         prompt,
         takesOf,
         songCount: takeCount,
+        guideIds,
       } satisfies JobRequest),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: getQueryKey({ type: 'jobs' }) }),
   });

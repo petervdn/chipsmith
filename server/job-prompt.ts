@@ -124,7 +124,7 @@ export type TakesPromptParts = {
 /**
  * Returns the prompt a job's Claude is sent to make takes of a clip (docs/adr/0037): the job, where
  * its script goes, the clip and its song, how many takes, what a take keeps, the check, the user's
- * prompt and the song's guides.
+ * prompt and the style guides chosen with it.
  *
  * @param parts - What the prompt is made from.
  * @param parts.job - The job.

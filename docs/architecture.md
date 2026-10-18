@@ -117,7 +117,7 @@ with its title alone, the Songs tab marked above it.
   channel as edited, its effects left on their rows, and on a take Update this take puts one in its
   place, its label kept and the old one deleted (0039); `src/editor/NoteGrid.tsx`,
   `make/notes-take.ts`, `fur/channel-rows.ts`),
-  and Change this clip (0037): a prompt for takes of it, quick asks a tap adds, 1 to 5 takes, and its jobs on
+  and Change this clip (0037): a prompt for takes of it, quick asks a tap adds, 1 to 5 takes, the style guides to send along (the song's own chosen at first), and its jobs on
   their way (`src/editor/ClipPrompt.tsx`). Editing (0022): drag a block to move it (to another track too),
   its edges to trim it, drag a clip from the song's clips onto a track as a new block, snapped to a grid; repeat, duplicate, untrim, remove; add, rename and remove tracks; mute and solo
   (not saved); a mixer, a row under the tracks opened and folded from its own head: a strip per track (its fader,
@@ -244,7 +244,7 @@ phases:
 
 A job of **takes of a clip** (0037; `takesOf: { clip, song }` on `POST /api/jobs`, sent from the
 song's editor) goes the same way: Claude is told the clip, its song, what a take keeps and the
-song's guides (`server/job-prompt.ts`), its script gives a plan per take titled with its label, and
+style guides chosen with it (`guideIds`, the song's own chosen at first; `server/job-prompt.ts`), its script gives a plan per take titled with its label, and
 each take is made by `make/make-take.ts` (cut to the clip's channel when the clip is a stem, kept as
 a variation) instead of a song; `make/check-script.ts --takes-of <clip>` checks they fit the clip.
 

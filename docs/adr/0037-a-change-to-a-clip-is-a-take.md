@@ -46,3 +46,8 @@ versions are made and chosen.
 Every way of changing a clip ends in the same kind of thing, a labelled variation, chosen the same
 way. Takes not chosen are clips no song plays, left for the clean-up still to build. Not known yet:
 whether the audio engine can swap a block's clip while it plays.
+
+## Addendum (2026-10-18)
+A takes job was sent with the song's style guides without showing them. Now Change this clip shows
+the guides as chips, as New does: the song's own (those that still exist) chosen at first, and only
+the ones chosen go along (`guideIds`, as for songs).

@@ -1,10 +1,14 @@
 /**
- * The prompt on a selected block's clip: what is written, how many takes, sending it as a job of
- * takes (docs/adr/0037), and the jobs of takes of this clip still on their way.
+ * The prompt on a selected block's clip: what is written, how many takes, the style guides chosen
+ * to go with it (the song's own at first, shown and changeable), sending it as a job of takes
+ * (docs/adr/0037), and the jobs of takes of this clip still on their way.
  */
 import { useState } from 'react';
+import type { Guide } from '../../shared/guide.schema.ts';
 import type { Job } from '../../shared/job.schema.ts';
+import { useGuideChoice } from '../guides/use-guide-choice.ts';
 import { isJobRunning, useJobs, useSendTakes } from '../queries/jobs.ts';
+import { useSong } from '../queries/songs.ts';
 import { addAsk } from './clip-prompt.ts';
 
 /** What the prompt on a clip gives its component. */
@@ -15,6 +19,10 @@ export type ClipPrompt = {
   addQuickAsk: (ask: string) => void;
   takeCount: number;
   setTakeCount: (takeCount: number) => void;
+  /** Every style guide, the ids of those chosen to go along, and toggling one. */
+  guides: Guide[];
+  chosenGuideIds: string[];
+  toggleGuide: (guideId: string) => void;
   /** Sends the prompt, then empties it. */
   send: () => void;
   isSending: boolean;
@@ -25,16 +33,19 @@ export type ClipPrompt = {
 };
 
 /**
- * Keeps the prompt on a clip and sends it as takes of the clip in the song.
+ * Keeps the prompt on a clip, and the style guides chosen with it (the song's own at first), and
+ * sends it as takes of the clip in the song.
  *
  * @param target - What the takes are of.
  * @param target.clipId - The clip.
  * @param target.songId - The song it is asked in.
- * @returns The prompt's text and count, their setters, send, and the jobs on their way.
+ * @returns The prompt's text, count and guides, their setters, send, and the jobs on their way.
  */
 export function useClipPrompt({ clipId, songId }: { clipId: string; songId: string }): ClipPrompt {
   const [text, setText] = useState('');
   const [takeCount, setTakeCount] = useState(3);
+  const songGuideIds = useSong(songId).data?.song.guides.map((guide) => guide.id) ?? [];
+  const { guides, chosenIds, toggleGuide, resetChoice } = useGuideChoice(songGuideIds);
   const { mutate, isPending, error } = useSendTakes();
   const runningJobs = useJobs().filter(
     (job) => job.takesOf?.clip === clipId && job.takesOf.song === songId && isJobRunning(job),
@@ -43,8 +54,13 @@ export function useClipPrompt({ clipId, songId }: { clipId: string; songId: stri
     const prompt = text.trim();
     if (!prompt) return;
     mutate(
-      { prompt, takesOf: { clip: clipId, song: songId }, takeCount },
-      { onSuccess: () => setText('') },
+      { prompt, takesOf: { clip: clipId, song: songId }, takeCount, guideIds: chosenIds },
+      {
+        onSuccess: () => {
+          setText('');
+          resetChoice();
+        },
+      },
     );
   }
   return {
@@ -53,6 +69,9 @@ export function useClipPrompt({ clipId, songId }: { clipId: string; songId: stri
     addQuickAsk: (ask) => setText((written) => addAsk(written, ask)),
     takeCount,
     setTakeCount,
+    guides,
+    chosenGuideIds: chosenIds,
+    toggleGuide,
     send,
     isSending: isPending,
     error: error ? error.message : null,
