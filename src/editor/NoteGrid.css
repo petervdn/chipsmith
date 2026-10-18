@@ -50,7 +50,7 @@
   cursor: default;
 }
 
-.note-grid .note-grid-try {
+.note-grid .note-grid-save {
   margin-left: auto;
   border: 0;
   background: var(--accent);
@@ -58,7 +58,7 @@
   font-weight: 600;
 }
 
-.note-grid .note-grid-try:disabled {
+.note-grid .note-grid-save:disabled {
   background: var(--raised);
   color: var(--muted);
 }

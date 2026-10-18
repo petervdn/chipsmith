@@ -1,7 +1,7 @@
 // The note grid (docs/adr/0037): one channel of the selected block's clip, time down the screen and
 // pitch across, an octave and its top note at a time (‹ › for others). A tap on an empty place puts
 // a note there; a tap on a note selects it, and the buttons under the grid move it in pitch or
-// time, make it longer or shorter, or take it out. Try makes a take of the edits and puts it in the
+// time, make it longer or shorter, or take it out. Save as new take makes a take of the edits and puts it in the
 // block. Notes outside the pitches shown are marked at the edge.
 import type { MouseEvent } from 'react';
 import { getNoteName } from '../../fur/notes.ts';
@@ -23,7 +23,7 @@ type NoteGridProps = { clipId: string; songId: string; onMade: (clipId: string) 
  * @param props - The component's props.
  * @param props.clipId - The clip whose notes are edited.
  * @param props.songId - The song it is edited in.
- * @param props.onMade - Called with the take's id once Try has made it.
+ * @param props.onMade - Called with the take's id once it is made.
  * @returns The note grid element.
  */
 export function NoteGrid({ clipId, songId, onMade }: NoteGridProps) {
@@ -181,12 +181,12 @@ export function NoteGrid({ clipId, songId, onMade }: NoteGridProps) {
         </button>
         <button
           type="button"
-          className="note-grid-try"
+          className="note-grid-save"
           disabled={!grid.canUndo || grid.isMaking}
-          onClick={grid.tryTake}
+          onClick={grid.saveAsNewTake}
           data-tooltip="make a take of these notes and put it in the block"
         >
-          {grid.isMaking ? 'Making…' : 'Try as a take'}
+          {grid.isMaking ? 'Making…' : 'Save as new take'}
         </button>
       </div>
       {grid.error && <p className="error">{grid.error.message}</p>}

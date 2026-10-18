@@ -75,7 +75,7 @@ saved, playing from a cursor, the zoom, and the selected block's clip or track.
 - `use-loop.ts`: the editor's loop: on or off, the whole song until one is drawn
 - `use-loop-drag.ts`: dragging in the loop row: an edge, the loop, or a new one drawn
 - `use-metronome.ts`: the metronome clicking while the song plays, when it is on
-- `use-note-grid.ts`: the note grid's state: the notes read, the channel, the edits and their undo, Try
+- `use-note-grid.ts`: the note grid's state: the notes read, the channel, the edits and their undo, Save as new take
 - `use-playhead-line.ts`: the playhead moved every frame while the song plays
 - `use-press-drag.ts`: a press that becomes a drag: a mouse at once, a finger after holding still
 - `use-song-draft.ts`: the song being edited: a draft with undo and redo, the selection, save and revert

@@ -1,7 +1,7 @@
 /**
  * The note grid's state (docs/adr/0037): the clip's notes read, the channel shown, its rows as
  * edited with their undo steps, the note selected, the pitches shown; the edits on the selected
- * note; and Try, which makes a take of the edited rows and hands it on.
+ * note; and Save as new take, which makes a take of the edited rows and hands it on.
  */
 import { useState } from 'react';
 import type { ChannelRow } from '../../shared/clip-notes.schema.ts';
@@ -32,7 +32,7 @@ export type NoteGridTarget = {
  * @param target - What the grid edits.
  * @param target.clipId - The clip whose notes are edited.
  * @param target.songId - The song it is edited in.
- * @param target.onMade - Called with the take's id once Try has made it.
+ * @param target.onMade - Called with the take's id once it is made.
  * @returns The notes read (or the query's error), the channel shown and its rows as edited, the
  *   selected note's row, the lowest pitch shown, and the handlers.
  */
@@ -104,7 +104,7 @@ export function useNoteGrid({ clipId, songId, onMade }: NoteGridTarget) {
       setEdits([]);
       setSelectedRow(null);
     },
-    tryTake: () => {
+    saveAsNewTake: () => {
       if (!channel || edits.length === 0) return;
       saveNotes({ clipId, songId, channel: channel.channel, rows }, { onSuccess: onMade });
     },
