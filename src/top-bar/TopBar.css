@@ -44,19 +44,31 @@
   background: var(--raised);
 }
 
-/* the button for a new song, at the right: an action, not a section */
+/* the button for a new song, at the right: an action, not a section; quiet, outlined, its + in the
+   accent, so the page's own lit button (Save) is the one bright one */
 .top-bar-new {
   display: inline-flex;
   align-items: center;
+  gap: 6px;
   min-height: var(--touch);
   margin-left: auto;
   padding: 0 14px;
+  border: var(--border-width) solid var(--line);
   border-radius: var(--radius);
-  background: var(--accent);
-  color: var(--on-accent);
+  color: var(--fg);
   font-weight: 600;
   text-decoration: none;
   white-space: nowrap;
+}
+
+.top-bar-new svg {
+  color: var(--accent);
+}
+
+@media (hover: hover) {
+  .top-bar-new:hover {
+    background: var(--raised);
+  }
 }
 
 /* a phone: the logo, + New song and the switch on one row, the tabs under them sharing the row, each
