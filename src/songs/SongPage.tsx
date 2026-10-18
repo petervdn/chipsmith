@@ -1,6 +1,7 @@
-// One song, opened: its title with ★ to keep it, its header (its facts, the prompt it was made from
-// and what that was sent with), and the editor
-// (editor/SongEditor.tsx), with nothing but the song itself playing when it opens.
+// One song, opened: its title with ★ to keep it and, at the right, the place the editor puts Revert
+// and Save in; its header (its facts, the prompt it was made from and what that was sent with), and
+// the editor (editor/SongEditor.tsx), with nothing but the song itself playing when it opens.
+import { useState } from 'react';
 import { SongEditor } from '../editor/SongEditor.tsx';
 import { StatusButtons } from '../lists/StatusButtons.tsx';
 import { useSetSongStatus, useSong } from '../queries/songs.ts';
@@ -21,6 +22,7 @@ type SongPageProps = { songId: string };
  * @returns The page's section element, or a paragraph while it loads or when it could not be read.
  */
 export function SongPage({ songId }: SongPageProps) {
+  const [saveSlot, setSaveSlot] = useState<HTMLDivElement | null>(null);
   const { data: detail, error } = useSong(songId);
   const { mutate: setStatus } = useSetSongStatus();
   useStopOnOpen(songId);
@@ -36,6 +38,7 @@ export function SongPage({ songId }: SongPageProps) {
           status={song.status}
           onChange={(status) => setStatus({ songId: song.id, status })}
         />
+        <div ref={setSaveSlot} className="song-page-save" />
       </div>
       <SongHeader summary={getSongSummary(song, detail.clips)} />
       {/* other tracks from the server (split, one added or removed) start the editor afresh; a new
@@ -43,6 +46,7 @@ export function SongPage({ songId }: SongPageProps) {
       <SongEditor
         key={[song.id, ...song.tracks.map((track) => track.id)].join(' ')}
         detail={detail}
+        saveSlot={saveSlot}
       />
     </section>
   );

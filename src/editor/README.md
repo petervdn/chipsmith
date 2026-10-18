@@ -28,6 +28,8 @@ saved, playing from a cursor, the zoom, and the selected block's clip or track.
 - `Fader.tsx`: a level's fader in decibels, standing in the mixer
 - `grid.ts`: the snap grid: its steps, and a time snapped to one
 - `lane-position.ts`: the track's lane under a point, and the tick a point is at, read from the page
+- `SaveButtons.css`: the look of SaveButtons.tsx
+- `SaveButtons.tsx`: Revert and Save, at the right of the song's title row
 - `song-edits.ts`: the edits of the arrangement: move, trim, repeat, duplicate, remove a block; tracks
 - `song-clips.ts`: the song's clips in the order it plays them, their blocks counted, each with its takes
 - `SongClips.css`: the look of SongClips.tsx

@@ -1,6 +1,5 @@
 /* The look of EditorBar.tsx: the transport large at the left, the groups side by side beside it,
-   wrapping on a phone; its buttons alike, a disabled one clearly off, Save lit while there is
-   something to save. */
+   wrapping on a phone; its buttons alike, a disabled one clearly off. */
 
 .editor-bar {
   display: flex;
@@ -47,11 +46,4 @@
 .editor-bar-track-height {
   width: 72px;
   accent-color: var(--accent);
-}
-
-.editor-bar .editor-bar-button.is-primary:not(:disabled) {
-  border-color: var(--accent);
-  background: var(--accent);
-  color: var(--on-accent);
-  font-weight: 600;
 }

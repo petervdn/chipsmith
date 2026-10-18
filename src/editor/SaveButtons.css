@@ -1,0 +1,35 @@
+/* The look of SaveButtons.tsx: two quiet outlined buttons, Save filled in the accent while there is
+   something to save. */
+
+.save-buttons {
+  display: flex;
+  gap: 6px;
+}
+
+.save-buttons-button {
+  min-height: var(--touch);
+  padding: 0 14px;
+  border: var(--border-width) solid var(--line);
+  border-radius: var(--radius);
+  background: transparent;
+  cursor: pointer;
+}
+
+.save-buttons-button:disabled {
+  color: var(--muted);
+  opacity: 0.5;
+  cursor: default;
+}
+
+.save-buttons-button.is-lit:not(:disabled) {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--on-accent);
+  font-weight: 600;
+}
+
+@media (hover: hover) {
+  .save-buttons-button:not(:disabled):not(.is-lit):hover {
+    background: var(--raised);
+  }
+}

@@ -1,13 +1,15 @@
 // An opened song in the editor: the bar of controls (play, undo and redo, the grid, a new track,
-// zoom, save and revert) and the timeline's head under it, which stay in view at the top, the
+// zoom), Revert and Save put in the song's title row, and the timeline's head under it, which stay in view at the top, the
 // timeline of the draft with the song's clips in a column at its right, and under it the details of
 // the block, clip or track selected, a take swapped into
 // the selected block or clip among its edits.
 import { useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import type { SongDetail } from '../../shared/api.types.ts';
 import { useClips } from '../queries/clips.ts';
 import { useSplitSong } from '../queries/songs.ts';
 import { EditorBar } from './EditorBar.tsx';
+import { SaveButtons } from './SaveButtons.tsx';
 import { BAR_STEP } from './grid.ts';
 import { addTrack, getBlock, removeBlock, setTrackVolume } from './song-edits.ts';
 import type { BlockPlace } from './song-edits.ts';
@@ -44,16 +46,17 @@ import { usePreferencesStore } from '../stores/preferences-store.ts';
 import { useHeightProperty } from '../use-height-property.ts';
 import { getTicksPerSecond } from '../../shared/song-length.ts';
 
-type SongEditorProps = { detail: SongDetail };
+type SongEditorProps = { detail: SongDetail; saveSlot: HTMLElement | null };
 
 /**
  * Shows the song editor.
  *
  * @param props - The component's props.
  * @param props.detail - The song as saved, with the clips it plays.
+ * @param props.saveSlot - Where on the page Revert and Save go (the song's title row), once it is there.
  * @returns The editor's element.
  */
-export function SongEditor({ detail }: SongEditorProps) {
+export function SongEditor({ detail, saveSlot }: SongEditorProps) {
   const [step, setStep] = useState(BAR_STEP);
   const [scrub, setScrub] = useState<number | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -155,6 +158,7 @@ export function SongEditor({ detail }: SongEditorProps) {
   const shownSong = preview ? { ...song, tracks: preview.tracks } : draftSong;
   return (
     <div className="song-editor">
+      {saveSlot && createPortal(<SaveButtons draft={draft} />, saveSlot)}
       {draft.saveError && <p className="error">{draft.saveError.message}</p>}
       {splitError && <p className="error">{splitError.message}</p>}
       {waitingClipIds.length > 0 && (

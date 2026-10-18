@@ -1,6 +1,6 @@
 // The editor's bar of controls above the timeline: the transport, large at its left (stop, play or
-// pause, the time), then the groups: play (follow, loop), the metronome, edit (undo, redo, revert,
-// save: lit while there are changes), snap, tracks (split, when the song can be), zoom (in, out,
+// pause, the time), then the groups: play (follow, loop), the metronome, edit (undo, redo; revert
+// and save are by the song's title, SaveButtons.tsx), snap, tracks (split, when the song can be), zoom (in, out,
 // fit, and the tracks' height on a slider), view (the structure, when the song was asked for one).
 // It wraps on a phone. It knows nothing of what the controls do: it is given the values and
 // handlers, or keeps them in the preferences.
@@ -37,7 +37,7 @@ type EditorBarProps = {
  * @param props - The component's props.
  * @param props.transport - Playing the song: its mode, cursor and length, stop and play.
  * @param props.isWaitingForAudio - Whether the song's audio is still being rendered, so it cannot play.
- * @param props.draft - The song being edited: undo, redo, revert and save, and whether it changed.
+ * @param props.draft - The song being edited: undo and redo, and whether it changed.
  * @param props.loop - Looping: whether it is on, and switching it.
  * @param props.loop.isOn - Whether the song plays round its loop.
  * @param props.loop.toggle - Switches looping on or off.
@@ -106,24 +106,6 @@ export function EditorBar({
             aria-label="redo (⇧⌘Z)"
           >
             <Redo2 />
-          </button>
-          <button
-            type="button"
-            className="editor-bar-button"
-            onClick={draft.revert}
-            disabled={!draft.hasChanges || draft.isSaving}
-            data-tooltip="go back to the song as it was saved"
-          >
-            Revert
-          </button>
-          <button
-            type="button"
-            className="editor-bar-button is-primary"
-            onClick={draft.save}
-            disabled={!draft.hasChanges || draft.isSaving}
-            data-tooltip="save the song as it is now (⌘S)"
-          >
-            {draft.isSaving ? 'Saving…' : 'Save'}
           </button>
         </ControlGroup>
         <ControlGroup label="snap">
