@@ -11,7 +11,7 @@ cut to what applies. A rule that is not followed is taken out, not left to rot.
   is looked at for a second subject. Signs of one: the comment at the head needs an "and"; groups of
   functions that share no state; a reader of one part who never needs the other. The cut follows the
   data, never the line count.
-- **A subject's kinds of things go beside it, named by a role after a dot**: `clip.types.ts`,
+- **A subject's kinds of things go beside it, named by a role after a dot**: `clip.schema.ts`,
   `list-filter.test.ts`. No folders by kind of syntax (`types/`, `utils/`).
 - **Every folder of the source has a README.md** naming each file and folder in it, one line each
   (`- \`name.ts\`: what it is`); the layout test holds it.

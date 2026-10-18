@@ -4,7 +4,7 @@
 // progression kept per part. Kept while the page is open.
 import { useState } from 'react';
 import type { ProgressionPreset } from '../../shared/progression-presets.ts';
-import type { Section } from '../../shared/structure.types.ts';
+import type { Section } from '../../shared/structure.schema.ts';
 import type { HarmonyChoice, HarmonyPart, HarmonyRowName } from './random-harmony.ts';
 import {
   dropProgression,

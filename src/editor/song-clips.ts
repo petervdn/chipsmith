@@ -4,8 +4,8 @@
  * Where a clip's first block is, to select it; and the clips the draft plays, a take swapped in from
  * the pool among them. Knows nothing of the page.
  */
-import type { Clip } from '../../shared/clip.types.ts';
-import type { Track } from '../../shared/song.types.ts';
+import type { Clip } from '../../shared/clip.schema.ts';
+import type { Track } from '../../shared/song.schema.ts';
 import type { BlockPlace } from './song-edits.ts';
 
 /** A clip of the song, and how many blocks play it. */

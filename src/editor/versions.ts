@@ -3,7 +3,7 @@
  * it since, oldest first. A cut (`split`) starts a line of its own. Given the clip pool, gives
  * clips; knows nothing of the page.
  */
-import type { Clip } from '../../shared/clip.types.ts';
+import type { Clip } from '../../shared/clip.schema.ts';
 
 /**
  * Returns the line of versions a clip is in: the clip the line started from and every variation made

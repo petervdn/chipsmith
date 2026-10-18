@@ -2,7 +2,7 @@
 // channels a take of it keeps.
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import type { Clip, ClipParent } from './clip.types.ts';
+import type { Clip, ClipParent } from './clip.schema.ts';
 import { getTakeChannels, hasVariationInLineage } from './clip-lineage.ts';
 
 function getClip(id: string, parent: ClipParent | null): Clip {

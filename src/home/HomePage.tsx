@@ -1,7 +1,7 @@
 // The home page: the logo and what the app is, a button for a new song, the jobs on their way,
 // the songs made last and how many there are.
 import { Plus } from 'lucide-react';
-import type { Job } from '../../shared/job.types.ts';
+import type { Job } from '../../shared/job.schema.ts';
 import { formatMeter, formatSeconds } from '../format.ts';
 import { getLatestSongs, getSongCounts } from './home.ts';
 import { JobStrip } from '../jobs/JobStrip.tsx';

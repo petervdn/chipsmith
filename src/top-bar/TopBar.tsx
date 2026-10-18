@@ -3,7 +3,7 @@
 // button for a new song at the right, and the switch between light and dark.
 import { Plus } from 'lucide-react';
 import { useRef } from 'react';
-import type { Job } from '../../shared/job.types.ts';
+import type { Job } from '../../shared/job.schema.ts';
 import { Logo } from './Logo.tsx';
 import { LookSwitcher } from './LookSwitcher.tsx';
 import { isJobRunning } from '../queries/jobs.ts';

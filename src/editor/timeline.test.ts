@@ -2,8 +2,8 @@
 // and numbers fewer bars when they are narrow.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import type { Clip, ClipParent } from '../../shared/clip.types.ts';
-import type { Song } from '../../shared/song.types.ts';
+import type { Clip, ClipParent } from '../../shared/clip.schema.ts';
+import type { Song } from '../../shared/song.schema.ts';
 import {
   getBarLabelStep,
   getBlockSpans,

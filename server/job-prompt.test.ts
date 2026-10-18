@@ -1,7 +1,7 @@
 // The prompt for takes of a clip names the clip, its song, the count, what a take keeps and the check.
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import type { Job } from '../shared/job.types.ts';
+import type { Job } from '../shared/job.schema.ts';
 import { getTakesPrompt } from './job-prompt.ts';
 
 const JOB: Job = {

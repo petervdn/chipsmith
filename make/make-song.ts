@@ -5,18 +5,18 @@
  */
 import { copyFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import type { Status, Tag } from '../shared/catalogue.types.ts';
-import type { ClipRecord } from '../shared/clip.types.ts';
-import type { SentGuide } from '../shared/guide.types.ts';
-import type { Song } from '../shared/song.types.ts';
+import type { Status, Tag } from '../shared/catalogue.schema.ts';
+import type { ClipRecord } from '../shared/clip.schema.ts';
+import type { SentGuide } from '../shared/guide.schema.ts';
+import type { Song } from '../shared/song.schema.ts';
 import type { FurFile } from '../fur/fur.types.ts';
 import { getFurFileBytes } from '../fur/write.ts';
 import { renderClipAudio } from '../render/render-clip.ts';
 import { writeJsonAtomically } from '../server/store.ts';
 import { CLIP_IDS, SONG_IDS, claimId } from './ids.ts';
 import { getBeatsPerBar, getBpm } from './fur-file-facts.ts';
-import type { SentHarmony } from '../shared/harmony.types.ts';
-import type { SentStructure } from '../shared/structure.types.ts';
+import type { SentHarmony } from '../shared/harmony.schema.ts';
+import type { SentStructure } from '../shared/structure.schema.ts';
 
 /** What a new song is made from. */
 export type NewSong = {

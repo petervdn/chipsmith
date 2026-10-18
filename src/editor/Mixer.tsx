@@ -1,7 +1,7 @@
 // The mixer, opened under the timeline: a strip per track in the timeline's order and colours, and
 // at the end the master, which is the player's volume. What it shows and changes is the tracks'
 // own (levels, mute and solo), so their rows on the timeline follow it.
-import type { Track } from '../../shared/song.types.ts';
+import type { Track } from '../../shared/song.schema.ts';
 import { formatVolume, LOUDEST_DB } from '../player/volume.ts';
 import { usePreferencesStore } from '../stores/preferences-store.ts';
 import { Fader } from './Fader.tsx';

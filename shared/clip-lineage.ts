@@ -3,7 +3,7 @@
  * variation is among them, and the channels a take of it keeps. Given a way to find a clip, gives
  * answers; knows nothing of files or the page.
  */
-import type { Clip, ClipRecord, ClipRelation } from './clip.types.ts';
+import type { Clip, ClipRecord, ClipRelation } from './clip.schema.ts';
 
 /**
  * Returns whether a clip, or any clip it was made from, is a variation: its music was changed after

@@ -2,7 +2,7 @@
 // A variation has a label and no other clip has one.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import type { ClipParent } from '../shared/clip.types.ts';
+import type { ClipParent } from '../shared/clip.schema.ts';
 import { checkTracks, checkVariationLabel } from './model-checks.ts';
 
 const BLOCK = { clip: 'c0001', start: 0, trim: null, repeats: 1 };

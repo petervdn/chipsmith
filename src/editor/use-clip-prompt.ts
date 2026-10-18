@@ -3,7 +3,7 @@
  * takes (docs/adr/0037), and the jobs of takes of this clip still on their way.
  */
 import { useState } from 'react';
-import type { Job } from '../../shared/job.types.ts';
+import type { Job } from '../../shared/job.schema.ts';
 import { isJobRunning, useJobs, useSendTakes } from '../queries/jobs.ts';
 import { addAsk } from './clip-prompt.ts';
 

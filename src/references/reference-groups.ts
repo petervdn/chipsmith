@@ -3,7 +3,7 @@
  * (NES, SID, SCC), and the words of a reference's facts. Knows nothing of the page.
  */
 import type { ReferenceListing } from '../../shared/api.types.ts';
-import type { ChipFamily } from '../../shared/reference.types.ts';
+import type { ChipFamily } from '../../shared/reference.schema.ts';
 
 /** A group of references under one of the app's chips. */
 export type ReferenceGroup = { family: ChipFamily; label: string; listings: ReferenceListing[] };

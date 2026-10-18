@@ -2,7 +2,7 @@
  * The totals of a list of jobs: the songs they made, the time they took and the tokens Claude
  * wrote, as the Jobs page shows above them. Knows nothing of the page.
  */
-import type { Job } from '../../shared/job.types.ts';
+import type { Job } from '../../shared/job.schema.ts';
 
 /** What a list of jobs came to. */
 export type JobTotals = { songCount: number; seconds: number; tokens: number };

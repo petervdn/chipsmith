@@ -2,7 +2,7 @@
 // beside its meter, its level, and its M and S. Its M and S are the same as its row's on the
 // timeline; changing either changes both.
 import type { CSSProperties } from 'react';
-import type { Track } from '../../shared/song.types.ts';
+import type { Track } from '../../shared/song.schema.ts';
 import { formatVolume } from '../player/volume.ts';
 import { Fader } from './Fader.tsx';
 import { TrackMeter } from './TrackMeter.tsx';

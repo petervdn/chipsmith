@@ -2,8 +2,8 @@
 // block plays comes last. A clip's first block is its earliest.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import type { Clip } from '../../shared/clip.types.ts';
-import type { Track } from '../../shared/song.types.ts';
+import type { Clip } from '../../shared/clip.schema.ts';
+import type { Track } from '../../shared/song.schema.ts';
 import { getEditorClips, getFirstBlockPlace, getSongClips } from './song-clips.ts';
 
 /**

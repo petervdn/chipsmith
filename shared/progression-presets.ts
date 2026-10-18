@@ -3,7 +3,7 @@
  * modes it is written for (the first its own) and the feels it has: common progressions of songs
  * and game music. Knows nothing of files or the page.
  */
-import type { Chord } from './harmony.types.ts';
+import type { Chord } from './harmony.schema.ts';
 import { readProgression } from './progression-notation.ts';
 
 /** A preset: its id, its name, its chords, the modes it fits (its own first) and its feels. */

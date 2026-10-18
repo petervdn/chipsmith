@@ -2,7 +2,7 @@
 // level, at once, also while the song plays; leaving the editor hears every track again, as
 // rendered.
 import { useEffect } from 'react';
-import type { Track } from '../../shared/song.types.ts';
+import type { Track } from '../../shared/song.schema.ts';
 import { setTrackVolumes, setUnheardTracks } from '../playback/track-taps.ts';
 import type { TrackMix } from './track-mix.ts';
 import { getUnheardTrackIds } from './track-mix.ts';

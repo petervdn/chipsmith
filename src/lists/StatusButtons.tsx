@@ -1,7 +1,7 @@
 // The buttons at the end of a song's or a clip's row: ★ keeps it (pressed again, it goes back to
 // heard), and a quiet trash can deletes it, where it can be deleted.
 import { Star, Trash2 } from 'lucide-react';
-import type { Status } from '../../shared/catalogue.types.ts';
+import type { Status } from '../../shared/catalogue.schema.ts';
 import './StatusButtons.css';
 
 type StatusButtonsProps = {

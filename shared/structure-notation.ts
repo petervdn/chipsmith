@@ -4,7 +4,7 @@
  * Read into sections and written back; how a section stands to those before it follows from the
  * letters. Knows nothing of files or the page.
  */
-import type { Section, SectionRelation } from './structure.types.ts';
+import type { Section, SectionRelation } from './structure.schema.ts';
 
 /** The bars a section has when the notation leaves them out. */
 export const DEFAULT_BARS = 8;

@@ -6,7 +6,7 @@
  */
 import { getRelation, getSectionName, writeNotation } from './structure-notation.ts';
 import { getLeadIn } from './lead-ins.ts';
-import type { SectionRelation, SentStructure } from './structure.types.ts';
+import type { SectionRelation, SentStructure } from './structure.schema.ts';
 
 /** What a relation asks of the composer. */
 const RELATION_ASKS = {

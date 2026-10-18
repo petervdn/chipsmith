@@ -6,7 +6,7 @@
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { basename, join } from 'node:path';
 import type { ReferenceListing } from '../shared/api.types.ts';
-import type { Reference } from '../shared/reference.types.ts';
+import type { Reference } from '../shared/reference.schema.ts';
 import { getChannelNames, getChipFamily, getChipLabels } from '../fur/demo-chips.ts';
 import { readFurnaceText } from '../fur/furnace-text.ts';
 import { REFERENCE_IDS } from '../make/ids.ts';

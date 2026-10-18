@@ -1,7 +1,7 @@
 // A take fits its clip with the same chips and tempo and notes to play; another length is noted.
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import type { ClipFacts } from '../shared/clip.types.ts';
+import type { ClipFacts } from '../shared/clip.schema.ts';
 import { checkTake } from './take-check.ts';
 
 const CLIP: ClipFacts = { bpm: 150, beats: 4, chips: ['NES'], channels: [0, 1, 2], seconds: 32 };

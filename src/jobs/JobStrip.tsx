@@ -1,6 +1,6 @@
 // One line for a job on its way, above the songs list: its phase and its stages as dots, how long it
 // has been going and what it does now; it leads to the job's card on the Jobs page.
-import type { Job } from '../../shared/job.types.ts';
+import type { Job } from '../../shared/job.schema.ts';
 import { formatSeconds } from '../format.ts';
 import { getNowText, getPhaseName, useElapsed } from './JobCard.tsx';
 import { JobStages } from './JobStages.tsx';

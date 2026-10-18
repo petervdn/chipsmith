@@ -4,7 +4,7 @@
  * step of the grid; and where a clip dragged onto a track goes, as a new block snapped the same way.
  * Given the drag, gives the edited tracks; knows nothing of the page.
  */
-import type { Track } from '../../shared/song.types.ts';
+import type { Track } from '../../shared/song.schema.ts';
 import type { GridStep } from './grid.ts';
 import { getStepTicks, snapToGrid } from './grid.ts';
 import type { BlockPlace, Edited } from './song-edits.ts';

@@ -8,7 +8,7 @@ import type { ClipListing, ClipOpened, TakeMade } from '../shared/api.types.ts';
 import { makeTransposedTake } from '../make/transpose-take.ts';
 import { getArray, getNumber, getObject, getString } from './json-checks.ts';
 import { makeNotesTake, readClipNotes } from '../make/notes-take.ts';
-import type { ChannelRow } from '../shared/clip-notes.types.ts';
+import type { ChannelRow } from '../shared/clip-notes.schema.ts';
 import { MACRO_RELEASE } from '../fur/notes.ts';
 import { openClipInFurnace } from './clip-files.ts';
 import { readJsonBody, sendError, sendJson } from './http.ts';

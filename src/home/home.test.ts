@@ -2,7 +2,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import type { SongListing } from '../../shared/api.types.ts';
-import type { Status } from '../../shared/catalogue.types.ts';
+import type { Status } from '../../shared/catalogue.schema.ts';
 import { getLatestSongs, getSongCounts } from './home.ts';
 
 function getListing({ id, created, status }: { id: string; created: string; status: Status }) {

@@ -1,7 +1,7 @@
 // A job's songs as its card lists them, and their count in words.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import type { Job } from '../../shared/job.types.ts';
+import type { Job } from '../../shared/job.schema.ts';
 import { getJobSongRows, getSongCountText } from './job-songs.ts';
 
 const JOB: Job = {

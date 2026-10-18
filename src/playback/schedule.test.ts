@@ -1,8 +1,8 @@
 // A song's blocks become stretches of audio: repeats back to back, trims as offsets, in seconds.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import type { Clip } from '../../shared/clip.types.ts';
-import type { Song } from '../../shared/song.types.ts';
+import type { Clip } from '../../shared/clip.schema.ts';
+import type { Song } from '../../shared/song.schema.ts';
 import { TICKS_PER_BEAT } from '../../shared/ticks.ts';
 import { getEnd, getPieces, getStretches } from './schedule.ts';
 

@@ -3,9 +3,9 @@
  * seconds from the song's start, and the pieces of them that sound between two seconds. Given a song
  * and its clips, gives the stretches; knows no audio.
  */
-import type { Clip } from '../../shared/clip.types.ts';
+import type { Clip } from '../../shared/clip.schema.ts';
 import { getTicksPerSecond } from '../../shared/song-length.ts';
-import type { Song } from '../../shared/song.types.ts';
+import type { Song } from '../../shared/song.schema.ts';
 
 /** A stretch of a clip's audio played at a time of the song. */
 export type Stretch = {

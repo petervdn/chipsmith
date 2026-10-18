@@ -2,10 +2,10 @@
  * A song: tracks of blocks, each block a clip placed at a time. A song points to clips by id and
  * holds nothing else of them (docs/adr/0005).
  */
-import type { Status, Tag } from './catalogue.types.ts';
-import type { SentGuide } from './guide.types.ts';
-import type { SentHarmony } from './harmony.types.ts';
-import type { SentStructure } from './structure.types.ts';
+import type { Status, Tag } from './catalogue.schema.ts';
+import type { SentGuide } from './guide.schema.ts';
+import type { SentHarmony } from './harmony.schema.ts';
+import type { SentStructure } from './structure.schema.ts';
 
 /** The part of a clip a block plays, in ticks from the clip's start; null in a Block is all of it. */
 export type BlockTrim = { offset: number; length: number };

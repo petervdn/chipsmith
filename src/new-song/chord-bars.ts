@@ -4,7 +4,7 @@
  * of the page.
  */
 import { getChordNames } from '../../shared/harmony-prompt.ts';
-import type { Chord } from '../../shared/harmony.types.ts';
+import type { Chord } from '../../shared/harmony.schema.ts';
 
 /** What a bar a chord is held through shows. */
 const HELD = '–';

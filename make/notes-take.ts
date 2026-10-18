@@ -6,8 +6,8 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { getChannelName, isPitchedChannel } from '../shared/clip-channels.ts';
-import type { ChannelRow, ClipNotes } from '../shared/clip-notes.types.ts';
-import type { Clip } from '../shared/clip.types.ts';
+import type { ChannelRow, ClipNotes } from '../shared/clip-notes.schema.ts';
+import type { Clip } from '../shared/clip.schema.ts';
 import { getChannelRows, getRowCount, setChannelRows } from '../fur/channel-rows.ts';
 import type { FurFile } from '../fur/fur.types.ts';
 import { readFurFile } from '../fur/read.ts';

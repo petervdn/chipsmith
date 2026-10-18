@@ -1,7 +1,7 @@
 // A song is as long as its last block with its repeats, its trim counted, at the song's tempo.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import type { Song } from './song.types.ts';
+import type { Song } from './song.schema.ts';
 import { TICKS_PER_BEAT } from './ticks.ts';
 import { getSongSeconds } from './song-length.ts';
 

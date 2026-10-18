@@ -2,7 +2,7 @@
  * Which tracks are heard: none that is muted, and only the soloed ones while any is. Knows nothing
  * of the page.
  */
-import type { Track } from '../../shared/song.types.ts';
+import type { Track } from '../../shared/song.schema.ts';
 
 /** The tracks muted and soloed, by id. */
 export type TrackMix = { muted: string[]; soloed: string[] };

@@ -6,7 +6,7 @@
  */
 import { DEFAULT_BARS } from '../../shared/structure-notation.ts';
 import { LEAD_INS } from '../../shared/lead-ins.ts';
-import type { Section } from '../../shared/structure.types.ts';
+import type { Section } from '../../shared/structure.schema.ts';
 
 /** The roles offered for a section, besides none. */
 export const SECTION_ROLES = [

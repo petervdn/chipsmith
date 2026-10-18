@@ -2,7 +2,7 @@
 // longer and shorter, taken out; none where a note is in the way; and the pitches shown at first.
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import type { ChannelRow } from '../../shared/clip-notes.types.ts';
+import type { ChannelRow } from '../../shared/clip-notes.schema.ts';
 import {
   changeNoteLength,
   getFirstLowestPitch,

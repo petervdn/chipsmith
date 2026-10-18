@@ -4,10 +4,10 @@
  */
 import { useMutation, useQuery } from '@tanstack/react-query';
 import type { SongDeletion, SongDetail, SongListing } from '../../shared/api.types.ts';
-import type { Status } from '../../shared/catalogue.types.ts';
+import type { Status } from '../../shared/catalogue.schema.ts';
 import { getQueryKey, queryClient } from './client.ts';
 import { requestJson, sendJson } from './request.ts';
-import type { Track } from '../../shared/song.types.ts';
+import type { Track } from '../../shared/song.schema.ts';
 
 /** Milliseconds between reads while audio is being rendered. */
 const WAITING_INTERVAL = 3000;

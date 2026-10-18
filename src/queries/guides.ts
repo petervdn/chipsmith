@@ -1,6 +1,6 @@
 /** The style guides from the server, and making, changing and deleting one; each answers with the list. */
 import { useMutation, useQuery } from '@tanstack/react-query';
-import type { Guide, GuideDraft } from '../../shared/guide.types.ts';
+import type { Guide, GuideDraft } from '../../shared/guide.schema.ts';
 import { getQueryKey, queryClient } from './client.ts';
 import { requestJson, sendJson } from './request.ts';
 

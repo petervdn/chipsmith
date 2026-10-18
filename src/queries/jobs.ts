@@ -5,11 +5,11 @@
  */
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
-import type { Job, TakesTarget } from '../../shared/job.types.ts';
+import type { Job, TakesTarget } from '../../shared/job.schema.ts';
 import { getQueryKey, queryClient } from './client.ts';
 import { requestJson, sendJson } from './request.ts';
-import type { SentHarmony } from '../../shared/harmony.types.ts';
-import type { SentStructure } from '../../shared/structure.types.ts';
+import type { SentHarmony } from '../../shared/harmony.schema.ts';
+import type { SentStructure } from '../../shared/structure.schema.ts';
 
 /** Milliseconds between reads while a job runs, and while none does. */
 const RUNNING_INTERVAL = 1000;

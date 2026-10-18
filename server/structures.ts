@@ -5,7 +5,7 @@
  */
 import { existsSync, readFileSync, readdirSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
-import type { Structure, StructureDraft } from '../shared/structure.types.ts';
+import type { Structure, StructureDraft } from '../shared/structure.schema.ts';
 import { STRUCTURE_IDS, claimId } from '../make/ids.ts';
 import { checkStructure } from './structure-checks.ts';
 import { writeJsonAtomically } from './store.ts';

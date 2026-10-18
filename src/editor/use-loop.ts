@@ -1,9 +1,9 @@
 // The editor's loop: off to start with, the whole song until a loop is drawn, and back to the whole
 // song on asking. Not saved: it is how the song is listened to while editing.
 import { useState } from 'react';
-import type { Clip } from '../../shared/clip.types.ts';
+import type { Clip } from '../../shared/clip.schema.ts';
 import { getTicksPerSecond } from '../../shared/song-length.ts';
-import type { Song } from '../../shared/song.types.ts';
+import type { Song } from '../../shared/song.schema.ts';
 import type { Loop } from '../playback/loop.ts';
 import type { LoopRange } from './loop-range.ts';
 import { getLoopSeconds, getWholeSongRange } from './loop-range.ts';

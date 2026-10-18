@@ -4,11 +4,11 @@
  * from the presets that fit; and what of it is sent with the prompt. Knows nothing of the page.
  */
 import { COLOURS, FEELS } from '../../shared/harmony-words.ts';
-import type { PartProgression, Progression, SentHarmony } from '../../shared/harmony.types.ts';
+import type { PartProgression, Progression, SentHarmony } from '../../shared/harmony.schema.ts';
 import { getMode, MODES, NOTES } from '../../shared/modes.ts';
 import type { ProgressionPreset } from '../../shared/progression-presets.ts';
 import { getPresetsFor } from '../../shared/progression-presets.ts';
-import type { Section } from '../../shared/structure.types.ts';
+import type { Section } from '../../shared/structure.schema.ts';
 
 /** The harmony as it is being chosen: what is null is Claude's choice. */
 export type HarmonyChoice = {

@@ -4,7 +4,7 @@
 // last is the current step, Claude's live one while it is in the middle of something that is not a
 // step yet.
 import { Fragment, useState } from 'react';
-import type { Job } from '../../shared/job.types.ts';
+import type { Job } from '../../shared/job.schema.ts';
 import { formatSeconds, formatTokenCount, formatTokens } from '../format.ts';
 import { getStageName } from './job-stages.ts';
 import { getStageStarts, getStepLengths, getStepText } from './job-steps.ts';

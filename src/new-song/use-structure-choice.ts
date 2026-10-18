@@ -4,7 +4,7 @@
 import { useState } from 'react';
 import { readNotation } from '../../shared/structure-notation.ts';
 import { STRUCTURE_PRESETS } from '../../shared/structure-presets.ts';
-import type { Section, SentStructure } from '../../shared/structure.types.ts';
+import type { Section, SentStructure } from '../../shared/structure.schema.ts';
 import { useDeleteStructure, useSaveStructure, useStructures } from '../queries/structures.ts';
 
 /** Where the structure being edited came from: none, a preset, a saved structure, or a new one. */

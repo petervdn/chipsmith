@@ -11,7 +11,7 @@ clips made before, and a split copied the whole clip's length and Furnace versio
 audio was not rendered yet. The code guidelines now keep a fact in one place.
 
 ## Decision
-clip.json holds a clip's record (`ClipRecord`, `shared/clip.types.ts`): what no file of it can say.
+clip.json holds a clip's record (`ClipRecord`, `shared/clip.schema.ts`): what no file of it can say.
 Its facts (`ClipFacts`: bpm, beats, chips, channels, seconds) are read from its source.fur by
 `getClipFacts` (`make/fur-file-facts.ts`) when the server reads the clip, and are never written.
 The length is the song's rows at its speed; for all 101 clips there were, it is within 35 ms of the

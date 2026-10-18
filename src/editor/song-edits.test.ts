@@ -2,7 +2,7 @@
 // start, and say where the edited block is afterwards.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import type { Track } from '../../shared/song.types.ts';
+import type { Track } from '../../shared/song.schema.ts';
 import {
   addBlock,
   addTrack,

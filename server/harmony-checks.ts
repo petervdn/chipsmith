@@ -6,7 +6,7 @@
 import { normalizeNumeral } from '../shared/chord-numerals.ts';
 import type { HarmonyWord } from '../shared/harmony-words.ts';
 import { COLOURS, FEELS } from '../shared/harmony-words.ts';
-import type { Chord, PartProgression, Progression, SentHarmony } from '../shared/harmony.types.ts';
+import type { Chord, PartProgression, Progression, SentHarmony } from '../shared/harmony.schema.ts';
 import { MODES, NOTES } from '../shared/modes.ts';
 import { isChordLength } from '../shared/progression-notation.ts';
 import { getArray, getObject, getString, getStringOrNull } from './json-checks.ts';

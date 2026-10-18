@@ -9,8 +9,8 @@
 import { copyFileSync, existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { getChannelName } from '../shared/clip-channels.ts';
-import type { Clip, ClipRecord } from '../shared/clip.types.ts';
-import type { Song, Track } from '../shared/song.types.ts';
+import type { Clip, ClipRecord } from '../shared/clip.schema.ts';
+import type { Song, Track } from '../shared/song.schema.ts';
 import { getChannelFurFile, getPlayingChannels } from '../fur/cut.ts';
 import { readFurFile } from '../fur/read.ts';
 import { getFurFileBytes } from '../fur/write.ts';

@@ -3,10 +3,10 @@
 // opens the song.
 import { ChevronDown } from 'lucide-react';
 import { useState } from 'react';
-import type { Job } from '../../shared/job.types.ts';
+import type { Job } from '../../shared/job.schema.ts';
 import { JobStrip } from '../jobs/JobStrip.tsx';
 import { isJobRunning } from '../queries/jobs.ts';
-import type { Song } from '../../shared/song.types.ts';
+import type { Song } from '../../shared/song.schema.ts';
 import { FilterBar } from '../lists/FilterBar.tsx';
 import { PlayButton } from '../player/PlayButton.tsx';
 import { formatMeter, formatSeconds } from '../format.ts';

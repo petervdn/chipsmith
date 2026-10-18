@@ -3,7 +3,7 @@
 // block is drawn where it would go (snapped; Alt without the grid). Letting go over a lane makes it
 // an edit; anywhere else, nothing.
 import { useState } from 'react';
-import type { Track } from '../../shared/song.types.ts';
+import type { Track } from '../../shared/song.schema.ts';
 import { getDroppedTracks } from './block-drag.ts';
 import type { GridStep } from './grid.ts';
 import type { Edited } from './song-edits.ts';

@@ -4,7 +4,7 @@
  * note; and Try, which makes a take of the edited rows and hands it on.
  */
 import { useState } from 'react';
-import type { ChannelRow } from '../../shared/clip-notes.types.ts';
+import type { ChannelRow } from '../../shared/clip-notes.schema.ts';
 import { useClipNotes, useSaveNotes } from '../queries/clips.ts';
 import {
   OCTAVE,

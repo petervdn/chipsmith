@@ -3,7 +3,7 @@
  * saved, and saving or deleting it. A guide's change reaches only prompts sent after it.
  */
 import { useState } from 'react';
-import type { Guide, GuideDraft } from '../../shared/guide.types.ts';
+import type { Guide, GuideDraft } from '../../shared/guide.schema.ts';
 import { useDeleteGuide, useSaveGuide } from '../queries/guides.ts';
 import { askToConfirm } from '../stores/confirm-store.ts';
 

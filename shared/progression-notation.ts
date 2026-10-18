@@ -5,7 +5,7 @@
  * nothing of files or the page.
  */
 import { normalizeNumeral } from './chord-numerals.ts';
-import type { Chord } from './harmony.types.ts';
+import type { Chord } from './harmony.schema.ts';
 
 /** The progression a notation reads as, or what is wrong with it. */
 export type ReadProgression = { chords: Chord[]; error: null } | { chords: null; error: string };

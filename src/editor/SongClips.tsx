@@ -6,7 +6,7 @@
 import { ChevronsLeft, ChevronsRight } from 'lucide-react';
 import { useState } from 'react';
 import type { PointerEvent as ReactPointerEvent } from 'react';
-import type { Clip } from '../../shared/clip.types.ts';
+import type { Clip } from '../../shared/clip.schema.ts';
 import { getChannelName } from '../../shared/clip-channels.ts';
 import { getClipLabel } from '../../shared/clip-label.ts';
 import { formatSeconds } from '../format.ts';

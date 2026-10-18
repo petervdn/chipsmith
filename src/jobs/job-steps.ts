@@ -4,7 +4,7 @@
  * its note to the next one, the last until the job finished (or now, while it runs); and where in
  * them each stage of the job starts. Knows nothing of the page.
  */
-import type { JobNote } from '../../shared/job.types.ts';
+import type { JobNote } from '../../shared/job.schema.ts';
 import type { JobStageId } from '../../shared/job-stages.ts';
 import { JOB_STAGES } from '../../shared/job-stages.ts';
 

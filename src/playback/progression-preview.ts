@@ -5,7 +5,7 @@
  * short). It plays into the page's output, so the player's volume and the mute switch
  * apply to it.
  */
-import type { Chord } from '../../shared/harmony.types.ts';
+import type { Chord } from '../../shared/harmony.schema.ts';
 import { getContext, getOutput } from './audio-engine.ts';
 import { getVoicing } from './chord-voicing.ts';
 

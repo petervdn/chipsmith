@@ -2,7 +2,7 @@
  * The filter both lists share (songs and clips): words to find and tags that must all be there.
  * Given an item's text and tags, says whether it shows.
  */
-import type { Tag } from '../../shared/catalogue.types.ts';
+import type { Tag } from '../../shared/catalogue.schema.ts';
 
 /** What a list is filtered by. */
 export type ListFilter = { words: string; tags: string[] };

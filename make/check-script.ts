@@ -16,7 +16,7 @@ import { readFurFile } from '../fur/read.ts';
 import { getFurFileBytes } from '../fur/write.ts';
 import { getChannelName } from '../shared/clip-channels.ts';
 import { getTakeChannels } from '../shared/clip-lineage.ts';
-import type { Clip } from '../shared/clip.types.ts';
+import type { Clip } from '../shared/clip.schema.ts';
 import { openStore } from '../server/store.ts';
 import type { BuiltPlan } from './build-script.ts';
 import { buildScript } from './build-script.ts';

@@ -4,7 +4,7 @@
  * back. Written back, the channel gets a pattern of its own at every order (a pattern played at two
  * orders becomes two), and every row keeps its effects as they were. Knows nothing of clips.
  */
-import type { ChannelRow } from '../shared/clip-notes.types.ts';
+import type { ChannelRow } from '../shared/clip-notes.schema.ts';
 import type { FurFile, Pattern, Row } from './fur.types.ts';
 
 /**

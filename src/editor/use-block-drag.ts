@@ -5,7 +5,7 @@
 // follows the timeline when it scrolls during the drag.
 import { useState } from 'react';
 import type { PointerEvent as ReactPointerEvent } from 'react';
-import type { Track } from '../../shared/song.types.ts';
+import type { Track } from '../../shared/song.schema.ts';
 import type { DragMode } from './block-drag.ts';
 import { getDraggedTracks } from './block-drag.ts';
 import type { GridStep } from './grid.ts';

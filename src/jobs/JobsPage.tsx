@@ -2,7 +2,7 @@
 // done or failed, each with a trash can to take it off the list, under a heading with their totals
 // (songs, time, tokens) in the columns the cards show them in and a trash can to take them all off. Sending a
 // prompt on New leads here.
-import type { Job } from '../../shared/job.types.ts';
+import type { Job } from '../../shared/job.schema.ts';
 import { formatSeconds, formatTokens } from '../format.ts';
 import { JobCard } from './JobCard.tsx';
 import { getJobTotals } from './job-totals.ts';

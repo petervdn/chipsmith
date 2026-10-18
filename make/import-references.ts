@@ -23,7 +23,7 @@ import { readFurnaceText } from '../fur/furnace-text.ts';
 import { encodeFlac } from '../render/flac.ts';
 import { exportText, renderChannelsToWav, renderToWav } from '../render/furnace.ts';
 import { writeJsonAtomically } from '../server/store.ts';
-import type { Reference } from '../shared/reference.types.ts';
+import type { Reference } from '../shared/reference.schema.ts';
 import { REFERENCE_IDS, claimId } from './ids.ts';
 
 /** Where Furnace's demo songs are, in the project. */

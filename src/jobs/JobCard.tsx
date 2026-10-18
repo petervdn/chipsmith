@@ -4,7 +4,7 @@
 // style guides, structure and harmony sent with it, Claude's reply, and its steps. A job that is
 // over folds to one line.
 import { useEffect, useState } from 'react';
-import type { Job, JobPhase } from '../../shared/job.types.ts';
+import type { Job, JobPhase } from '../../shared/job.schema.ts';
 import { formatSeconds, formatTokens } from '../format.ts';
 import { getHarmonySummary } from '../../shared/harmony-prompt.ts';
 import { writeNotation } from '../../shared/structure-notation.ts';

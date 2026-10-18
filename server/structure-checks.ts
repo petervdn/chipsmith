@@ -7,7 +7,7 @@ import type {
   SentStructure,
   Structure,
   StructureDraft,
-} from '../shared/structure.types.ts';
+} from '../shared/structure.schema.ts';
 import { getLeadIn } from '../shared/lead-ins.ts';
 import { getArray, getNumber, getObject, getString, getStringOrNull } from './json-checks.ts';
 

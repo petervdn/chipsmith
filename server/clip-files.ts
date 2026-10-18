@@ -11,7 +11,7 @@ import { join } from 'node:path';
 import { getSettings } from '../config/settings.ts';
 import { getChannelName } from '../shared/clip-channels.ts';
 import { getClipLabel } from '../shared/clip-label.ts';
-import type { Clip } from '../shared/clip.types.ts';
+import type { Clip } from '../shared/clip.schema.ts';
 import { readFurFile } from '../fur/read.ts';
 import { getTrackerText } from '../fur/tracker-text.ts';
 import { sendError, sendFile, sendText } from './http.ts';

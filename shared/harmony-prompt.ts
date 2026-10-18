@@ -5,7 +5,7 @@
  */
 import { getChordName } from './chord-numerals.ts';
 import { COLOURS, FEELS, getHarmonyWord } from './harmony-words.ts';
-import type { Chord, PartProgression, SentHarmony } from './harmony.types.ts';
+import type { Chord, PartProgression, SentHarmony } from './harmony.schema.ts';
 import { getMode } from './modes.ts';
 import { getProgressionBars, writeBars } from './progression-notation.ts';
 

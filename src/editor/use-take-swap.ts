@@ -3,8 +3,8 @@
  * draft like any edit; when other blocks of the song play the clip it had, the page asks whether
  * the take goes in them too (docs/adr/0014).
  */
-import type { Clip } from '../../shared/clip.types.ts';
-import type { Track } from '../../shared/song.types.ts';
+import type { Clip } from '../../shared/clip.schema.ts';
+import type { Track } from '../../shared/song.schema.ts';
 import { askToConfirm } from '../stores/confirm-store.ts';
 import type { BlockPlace, Edited } from './song-edits.ts';
 import { getBlock, getClipPlaces, setBlockClip } from './song-edits.ts';

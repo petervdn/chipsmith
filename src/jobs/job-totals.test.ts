@@ -1,7 +1,7 @@
 // The totals of the jobs that are over: the songs they made, the time they took, the tokens.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import type { Job } from '../../shared/job.types.ts';
+import type { Job } from '../../shared/job.schema.ts';
 import { getJobTotals } from './job-totals.ts';
 
 const JOB: Job = {

@@ -1,5 +1,5 @@
 /** How long a song is: where its last block, with its trim and repeats, ends. Given numbers, gives numbers. */
-import type { Block, Song } from './song.types.ts';
+import type { Block, Song } from './song.schema.ts';
 import { TICKS_PER_BEAT } from './ticks.ts';
 
 /**

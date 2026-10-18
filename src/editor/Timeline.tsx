@@ -6,10 +6,10 @@
 import { Plus } from 'lucide-react';
 import { useRef, useState } from 'react';
 import type { CSSProperties, PointerEvent as ReactPointerEvent } from 'react';
-import type { Clip } from '../../shared/clip.types.ts';
+import type { Clip } from '../../shared/clip.schema.ts';
 import { getTicksPerSecond } from '../../shared/song-length.ts';
-import type { Song } from '../../shared/song.types.ts';
-import type { Section } from '../../shared/structure.types.ts';
+import type { Song } from '../../shared/song.schema.ts';
+import type { Section } from '../../shared/structure.schema.ts';
 import type { DragMode } from './block-drag.ts';
 import type { BlockPlace } from './song-edits.ts';
 import {

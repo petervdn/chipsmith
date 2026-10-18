@@ -2,7 +2,7 @@
 // never below a step of the grid. A clip dropped on a track is a new block, snapped the same way.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import type { Track } from '../../shared/song.types.ts';
+import type { Track } from '../../shared/song.schema.ts';
 import type { Drag } from './block-drag.ts';
 import { getDraggedTracks, getDroppedTracks } from './block-drag.ts';
 import { GRID_STEPS } from './grid.ts';

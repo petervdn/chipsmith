@@ -3,7 +3,7 @@
  * tools do become notes, what it is in the middle of (thinking, a line or a file being written) is
  * read as it happens, and its result ends the run. Knows nothing of how the run was started.
  */
-import type { NewNote } from '../shared/job.types.ts';
+import type { NewNote } from '../shared/job.schema.ts';
 import { closeSync, existsSync, openSync, readFileSync, readSync, statSync } from 'node:fs';
 import type { ComposeStep } from '../shared/job-stages.ts';
 import { COMPOSE_STEPS } from '../shared/job-stages.ts';

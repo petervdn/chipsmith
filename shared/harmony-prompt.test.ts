@@ -3,7 +3,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { getHarmonyLines, getHarmonySummary } from './harmony-prompt.ts';
-import type { SentHarmony } from './harmony.types.ts';
+import type { SentHarmony } from './harmony.schema.ts';
 
 const NOTHING: SentHarmony = { note: null, mode: null, feel: null, colour: null, parts: [] };
 

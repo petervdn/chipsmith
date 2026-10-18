@@ -26,19 +26,19 @@ docs/code-guidelines.md.
 - "Use as base" on a song's row opens New with `Based on <title> [<id>]: `; the composing Claude reads
   that song's files and starts from its music (the furnace-song skill). Nothing else is stored.
 
-The types are in `shared/clip.types.ts` and `shared/song.types.ts`.
+The types are in `shared/clip.schema.ts` and `shared/song.schema.ts`.
 
 ## The files
 
 ```
-clips/<id>/clip.json      a clip's record (shared/clip.types.ts); its facts are read from source.fur
+clips/<id>/clip.json      a clip's record (shared/clip.schema.ts); its facts are read from source.fur
 clips/<id>/audio.flac     its audio (rendered from source.fur when the server starts, if missing)
 clips/<id>/source.fur     its own Furnace file
 clips/<id>/script.ts      its own copy of the script that wrote it
-songs/<id>/song.json      a song's arrangement (shared/song.types.ts)
-guides/<id>/guide.json    a style guide (shared/guide.types.ts), sent with a prompt when chosen
-structures/<id>/structure.json  a song structure (shared/structure.types.ts), sent with a prompt when chosen
-references/<id>/          a Furnace demo to learn from (0033): reference.json (shared/reference.types.ts,
+songs/<id>/song.json      a song's arrangement (shared/song.schema.ts)
+guides/<id>/guide.json    a style guide (shared/guide.schema.ts), sent with a prompt when chosen
+structures/<id>/structure.json  a song structure (shared/structure.schema.ts), sent with a prompt when chosen
+references/<id>/          a Furnace demo to learn from (0033): reference.json (shared/reference.schema.ts,
                           its origin and the user's notes), source.fur, source.txt (Furnace's text
                           export, its facts read from it), audio.flac and channels/<nn>.flac
 ```

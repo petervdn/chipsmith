@@ -3,7 +3,7 @@
  * songs and game music. Knows nothing of files or the page.
  */
 import { readNotation } from './structure-notation.ts';
-import type { Section } from './structure.types.ts';
+import type { Section } from './structure.schema.ts';
 
 /** A preset: its id, its name and its sections. */
 export type StructurePreset = { id: string; name: string; sections: Section[] };

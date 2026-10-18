@@ -3,7 +3,7 @@
 // copy or remove it.
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { getSectionName } from '../../shared/structure-notation.ts';
-import type { Section } from '../../shared/structure.types.ts';
+import type { Section } from '../../shared/structure.schema.ts';
 import { SECTION_ROLES, getPartChoices } from './structure-edits.ts';
 import './SectionEditor.css';
 

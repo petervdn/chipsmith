@@ -6,7 +6,7 @@ import { Plus } from 'lucide-react';
 import type { CSSProperties } from 'react';
 import { getLeadIn } from '../../shared/lead-ins.ts';
 import { getRelation, getSectionName } from '../../shared/structure-notation.ts';
-import type { Section } from '../../shared/structure.types.ts';
+import type { Section } from '../../shared/structure.schema.ts';
 import { getTrackColor } from '../editor/timeline.ts';
 import './StructureTiles.css';
 

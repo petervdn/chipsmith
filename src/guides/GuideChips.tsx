@@ -3,7 +3,7 @@
 // under them a line saying what they do, each guide's text to read without leaving the prompt, and
 // a link to the Guides page to make or change them.
 import { useState } from 'react';
-import type { Guide } from '../../shared/guide.types.ts';
+import type { Guide } from '../../shared/guide.schema.ts';
 import { FoldPanel } from '../new-song/FoldPanel.tsx';
 import '../lists/lists.css';
 import './GuideChips.css';

@@ -1,6 +1,6 @@
 // One style guide opened for editing on the Guides page, or a new one: its name, its text, whether
 // it is chosen by default, Save, Delete and Cancel.
-import type { Guide } from '../../shared/guide.types.ts';
+import type { Guide } from '../../shared/guide.schema.ts';
 import { useGuideEditor } from './use-guide-editor.ts';
 import '../lists/lists.css';
 import './guides.css';

@@ -3,7 +3,7 @@
 // The take in the block can be renamed in place.
 import { Check, Pencil, X } from 'lucide-react';
 import { useState } from 'react';
-import type { Clip } from '../../shared/clip.types.ts';
+import type { Clip } from '../../shared/clip.schema.ts';
 import { useSetVariationLabel } from '../queries/clips.ts';
 import './ClipTakes.css';
 

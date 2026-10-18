@@ -2,7 +2,7 @@
 // where it failed or was stopped.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import type { Job } from '../../shared/job.types.ts';
+import type { Job } from '../../shared/job.schema.ts';
 import { getJobStages } from './job-stages.ts';
 
 const JOB: Job = {

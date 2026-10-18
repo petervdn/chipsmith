@@ -4,7 +4,7 @@
  * of a clip (docs/adr/0037) lists its takes the same way. Given a job,
  * gives values; knows nothing of the page.
  */
-import type { Job, JobSong } from '../../shared/job.types.ts';
+import type { Job, JobSong } from '../../shared/job.schema.ts';
 
 /** A line of a job's songs: a built song, or one asked for and not built (yet). */
 export type JobSongRow = {

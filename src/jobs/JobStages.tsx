@@ -2,7 +2,7 @@
 // rendering, done), each done, current, still to come, or where it failed or was stopped. Small, as
 // dots only, in the line of a running job.
 import { Check, X } from 'lucide-react';
-import type { Job } from '../../shared/job.types.ts';
+import type { Job } from '../../shared/job.schema.ts';
 import type { StageState } from './job-stages.ts';
 import { getJobStages } from './job-stages.ts';
 import './JobStages.css';

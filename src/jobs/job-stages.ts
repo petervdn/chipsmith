@@ -4,7 +4,7 @@
  * Each is done, the current one, still to come, or where the job failed or was stopped. Given a
  * job, gives the stages; knows nothing of the page.
  */
-import type { Job } from '../../shared/job.types.ts';
+import type { Job } from '../../shared/job.schema.ts';
 import type { JobStageId } from '../../shared/job-stages.ts';
 import { JOB_STAGES } from '../../shared/job-stages.ts';
 

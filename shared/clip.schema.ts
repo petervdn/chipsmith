@@ -4,7 +4,7 @@
  * (docs/adr/0004): its record, and what its source says, read from it (docs/adr/0024). Its audio and
  * source never change once made (docs/adr/0005).
  */
-import type { Status, Tag } from './catalogue.types.ts';
+import type { Status, Tag } from './catalogue.schema.ts';
 
 /** The bars a clip covers, from the first to the one after the last; null in a Clip is the whole piece. */
 export type BarRange = { from: number; to: number };

@@ -4,7 +4,7 @@
  * leave it where it is. Given sections, gives numbers and words; knows nothing of the page.
  */
 import { getRelation, getSectionName } from '../../shared/structure-notation.ts';
-import type { Section, SectionRelation } from '../../shared/structure.types.ts';
+import type { Section, SectionRelation } from '../../shared/structure.schema.ts';
 
 /** A section as the structure's lane draws it. */
 export type StructureSpan = {

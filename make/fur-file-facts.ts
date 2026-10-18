@@ -3,7 +3,7 @@
  * its length, which are a clip's facts (docs/adr/0024). Given a .fur file, gives values.
  */
 import { getFurnaceChip } from '../shared/chips.ts';
-import type { ClipFacts } from '../shared/clip.types.ts';
+import type { ClipFacts } from '../shared/clip.schema.ts';
 import { getPlayingChannels } from '../fur/cut.ts';
 import type { FurFile, FurSong } from '../fur/fur.types.ts';
 

@@ -14,8 +14,8 @@ import {
   writeFileSync,
 } from 'node:fs';
 import { join } from 'node:path';
-import type { Clip, ClipRecord } from '../shared/clip.types.ts';
-import type { Song } from '../shared/song.types.ts';
+import type { Clip, ClipRecord } from '../shared/clip.schema.ts';
+import type { Song } from '../shared/song.schema.ts';
 import { readFurFile } from '../fur/read.ts';
 import { getClipFacts } from '../make/fur-file-facts.ts';
 import { checkClipRecord, checkSong } from './model-checks.ts';

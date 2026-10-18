@@ -6,7 +6,7 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { isPitchedChannel } from '../shared/clip-channels.ts';
-import type { Clip } from '../shared/clip.types.ts';
+import type { Clip } from '../shared/clip.schema.ts';
 import { readFurFile } from '../fur/read.ts';
 import { transposeFurFile } from '../fur/transpose.ts';
 import { makeTake } from './make-take.ts';

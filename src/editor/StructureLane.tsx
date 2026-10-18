@@ -3,7 +3,7 @@
 // sent with the prompt; it does not follow the blocks, and nothing is done with it: it is only looked
 // at, so it takes no presses.
 import type { CSSProperties } from 'react';
-import type { Section } from '../../shared/structure.types.ts';
+import type { Section } from '../../shared/structure.schema.ts';
 import { getStructureSpans } from './structure-lane.ts';
 import { getTrackColor } from './timeline.ts';
 import './StructureLane.css';

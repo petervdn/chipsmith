@@ -1,6 +1,6 @@
 /** The saved structures from the server, and making, changing and deleting one; each answers with the list. */
 import { useMutation, useQuery } from '@tanstack/react-query';
-import type { Structure, StructureDraft } from '../../shared/structure.types.ts';
+import type { Structure, StructureDraft } from '../../shared/structure.schema.ts';
 import { getQueryKey, queryClient } from './client.ts';
 import { requestJson, sendJson } from './request.ts';
 

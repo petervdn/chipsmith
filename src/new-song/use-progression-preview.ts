@@ -1,7 +1,7 @@
 // A progression heard on New: one at a time, played from a tap (which wakes the audio), stopped by
 // another, by ■, or when the page closes; which one plays is known until it ends.
 import { useEffect, useRef, useState } from 'react';
-import type { Chord } from '../../shared/harmony.types.ts';
+import type { Chord } from '../../shared/harmony.schema.ts';
 import { unlockAudio } from '../playback/audio-engine.ts';
 import type { PreviewStyle } from '../playback/progression-preview.ts';
 import { playProgression } from '../playback/progression-preview.ts';

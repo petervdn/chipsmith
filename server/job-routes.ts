@@ -13,7 +13,7 @@ import { createJob, listJobs, removeJob } from './jobs.ts';
 import { getArray, getNumber, getObject, getString, getStringOrNull } from './json-checks.ts';
 import type { Store } from './store.ts';
 import { getClipFolder } from './store.ts';
-import type { TakesTarget } from '../shared/job.types.ts';
+import type { TakesTarget } from '../shared/job.schema.ts';
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { checkSentHarmony } from './harmony-checks.ts';

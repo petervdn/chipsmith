@@ -1,7 +1,7 @@
 // A step lasts until the next one, the last until the job's end; its share is of the whole job.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import type { JobNote } from '../../shared/job.types.ts';
+import type { JobNote } from '../../shared/job.schema.ts';
 import { getStageStarts, getStepLengths, getStepText } from './job-steps.ts';
 
 test('each step until the next, the last until the end', () => {

@@ -4,10 +4,10 @@
  * where it comes in).
  */
 import type { CatalogueChange, ClipChange } from '../shared/api.types.ts';
-import type { Status, Tag } from '../shared/catalogue.types.ts';
-import type { BarRange, ClipName, ClipParent, ClipRecord } from '../shared/clip.types.ts';
-import type { Guide, GuideDraft, SentGuide } from '../shared/guide.types.ts';
-import type { Block, BlockTrim, Song, Track } from '../shared/song.types.ts';
+import type { Status, Tag } from '../shared/catalogue.schema.ts';
+import type { BarRange, ClipName, ClipParent, ClipRecord } from '../shared/clip.schema.ts';
+import type { Guide, GuideDraft, SentGuide } from '../shared/guide.schema.ts';
+import type { Block, BlockTrim, Song, Track } from '../shared/song.schema.ts';
 import {
   getArray,
   getBoolean,

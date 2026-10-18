@@ -3,7 +3,7 @@
  * block, putting another clip (a take) in it, and adding, renaming and removing a track. Each takes the tracks and gives new ones (the old are
  * left as they were), with where the edited block is now. Knows nothing of the page.
  */
-import type { Block, BlockTrim, Track } from '../../shared/song.types.ts';
+import type { Block, BlockTrim, Track } from '../../shared/song.schema.ts';
 
 /** A block by where it is: its track and its place in the track's blocks. */
 export type BlockPlace = { trackId: string; index: number };

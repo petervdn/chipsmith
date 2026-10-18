@@ -4,7 +4,7 @@
  * channel plays one note at a time, so a row holds at most one. Each edit takes the rows and gives
  * new ones, or the same when it cannot be done. Knows nothing of the page.
  */
-import type { ChannelRow } from '../../shared/clip-notes.types.ts';
+import type { ChannelRow } from '../../shared/clip-notes.schema.ts';
 import { NOTE_OFF } from '../../fur/notes.ts';
 
 /** How many pitches the grid shows across: an octave and its top note. */

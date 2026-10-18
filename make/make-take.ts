@@ -6,8 +6,8 @@
  */
 import { copyFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import type { Tag } from '../shared/catalogue.types.ts';
-import type { ClipRecord } from '../shared/clip.types.ts';
+import type { Tag } from '../shared/catalogue.schema.ts';
+import type { ClipRecord } from '../shared/clip.schema.ts';
 import type { FurFile } from '../fur/fur.types.ts';
 import { getChannelFurFile } from '../fur/cut.ts';
 import { getFurFileBytes } from '../fur/write.ts';

@@ -6,7 +6,7 @@
 // all at once, as switched.
 import { Dices, Play, Square, X } from 'lucide-react';
 import type { CSSProperties } from 'react';
-import type { Chord, Progression } from '../../shared/harmony.types.ts';
+import type { Chord, Progression } from '../../shared/harmony.schema.ts';
 import type { ProgressionPreset } from '../../shared/progression-presets.ts';
 import { getProgressionBars, writeBars } from '../../shared/progression-notation.ts';
 import type { PreviewStyle } from '../playback/progression-preview.ts';

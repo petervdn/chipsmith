@@ -3,7 +3,7 @@
  * toggled; back to the defaults after a prompt is sent. Nothing carries over from another song.
  */
 import { useState } from 'react';
-import type { Guide } from '../../shared/guide.types.ts';
+import type { Guide } from '../../shared/guide.schema.ts';
 import { useGuides } from '../queries/guides.ts';
 
 /**

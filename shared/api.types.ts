@@ -1,8 +1,8 @@
 /** What the server's routes answer with and take (server/api.ts), so the page reads them typed. */
-import type { Status, Tag } from './catalogue.types.ts';
-import type { Clip } from './clip.types.ts';
-import type { ChipFamily, Reference } from './reference.types.ts';
-import type { Song } from './song.types.ts';
+import type { Status, Tag } from './catalogue.schema.ts';
+import type { Clip } from './clip.schema.ts';
+import type { ChipFamily, Reference } from './reference.schema.ts';
+import type { Song } from './song.schema.ts';
 
 /** A song in the songs list, with what the list shows of it. */
 export type SongListing = {

@@ -2,7 +2,7 @@
  * A clip's name as the page and the files it is given out as show it: its section and stem, or
  * "whole" for a clip that was not cut. Knows nothing of files or the page.
  */
-import type { Clip } from './clip.types.ts';
+import type { Clip } from './clip.schema.ts';
 
 /**
  * Returns a clip's name as it is shown.

@@ -5,7 +5,7 @@
  * or the page.
  */
 import { FURNACE_CHIPS } from './chips.ts';
-import type { Clip } from './clip.types.ts';
+import type { Clip } from './clip.schema.ts';
 
 /**
  * Returns the name of a channel.

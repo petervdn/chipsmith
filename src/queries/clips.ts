@@ -5,8 +5,8 @@
  */
 import { useMutation, useQuery } from '@tanstack/react-query';
 import type { ClipListing, ClipOpened, TakeMade } from '../../shared/api.types.ts';
-import type { Status } from '../../shared/catalogue.types.ts';
-import type { ChannelRow, ClipNotes } from '../../shared/clip-notes.types.ts';
+import type { Status } from '../../shared/catalogue.schema.ts';
+import type { ChannelRow, ClipNotes } from '../../shared/clip-notes.schema.ts';
 import { getQueryKey, queryClient } from './client.ts';
 import { requestJson, sendJson } from './request.ts';
 

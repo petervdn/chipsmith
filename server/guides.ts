@@ -4,7 +4,7 @@
  */
 import { existsSync, readFileSync, readdirSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
-import type { Guide, GuideDraft, SentGuide } from '../shared/guide.types.ts';
+import type { Guide, GuideDraft, SentGuide } from '../shared/guide.schema.ts';
 import { GUIDE_IDS, claimId } from '../make/ids.ts';
 import { checkGuide } from './model-checks.ts';
 import { writeJsonAtomically } from './store.ts';

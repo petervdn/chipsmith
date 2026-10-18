@@ -1,8 +1,8 @@
 // How wide a bar is drawn: the whole timeline (the song and the bars after it) fitted to its width
 // until zoomed, then a step in or out at a time, within bounds.
 import { useState } from 'react';
-import type { Clip } from '../../shared/clip.types.ts';
-import type { Song } from '../../shared/song.types.ts';
+import type { Clip } from '../../shared/clip.schema.ts';
+import type { Song } from '../../shared/song.schema.ts';
 import { getBlockSpans, getTicksPerBar, getTimelineBars } from './timeline.ts';
 
 /** The narrowest and widest a bar is drawn, in pixels. */

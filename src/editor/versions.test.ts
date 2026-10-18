@@ -2,7 +2,7 @@
 // cut out of it is not one of them.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import type { Clip, ClipParent } from '../../shared/clip.types.ts';
+import type { Clip, ClipParent } from '../../shared/clip.schema.ts';
 import { getVersions } from './versions.ts';
 
 function getClip(id: string, seconds: number, created: string, parent: ClipParent | null): Clip {

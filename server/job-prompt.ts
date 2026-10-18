@@ -6,8 +6,8 @@
  */
 import { isAbsolute, join, relative } from 'node:path';
 import { PROJECT_FOLDER } from '../config/settings.ts';
-import type { SentGuide } from '../shared/guide.types.ts';
-import type { Job, TakesTarget } from '../shared/job.types.ts';
+import type { SentGuide } from '../shared/guide.schema.ts';
+import type { Job, TakesTarget } from '../shared/job.schema.ts';
 import { getHarmonyLines } from '../shared/harmony-prompt.ts';
 import { getStructureLines } from '../shared/structure-prompt.ts';
 import { getTitleWordCounts } from '../make/song-titles.ts';

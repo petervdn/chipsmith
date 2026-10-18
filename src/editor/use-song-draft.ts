@@ -3,7 +3,7 @@
 // saved is lost when the page is left (to be solved later).
 import { useState } from 'react';
 import type { SongDetail } from '../../shared/api.types.ts';
-import type { Track } from '../../shared/song.types.ts';
+import type { Track } from '../../shared/song.schema.ts';
 import { useSaveTracks } from '../queries/songs.ts';
 import type { BlockPlace, Edited } from './song-edits.ts';
 

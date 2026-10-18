@@ -1,6 +1,6 @@
 // The selected track's details: its name to change, and removing it with its blocks (mute and solo
 // are on the track's row).
-import type { Track } from '../../shared/song.types.ts';
+import type { Track } from '../../shared/song.schema.ts';
 import './TrackDetails.css';
 import { askToConfirm } from '../stores/confirm-store.ts';
 

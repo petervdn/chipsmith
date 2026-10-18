@@ -3,9 +3,9 @@
  * moment it is sent. Its phases: Claude composes a script, the script builds a .fur file per song or
  * take, each is rendered; then done or failed.
  */
-import type { SentGuide } from './guide.types.ts';
-import type { SentHarmony } from './harmony.types.ts';
-import type { SentStructure } from './structure.types.ts';
+import type { SentGuide } from './guide.schema.ts';
+import type { SentHarmony } from './harmony.schema.ts';
+import type { SentStructure } from './structure.schema.ts';
 import type { ComposeStep, JobStageId } from './job-stages.ts';
 
 /** Where a job is. */

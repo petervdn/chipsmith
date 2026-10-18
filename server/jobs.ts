@@ -4,13 +4,13 @@
  */
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
-import type { SentGuide } from '../shared/guide.types.ts';
-import type { Job, JobPhase, NewNote, TakesTarget } from '../shared/job.types.ts';
+import type { SentGuide } from '../shared/guide.schema.ts';
+import type { Job, JobPhase, NewNote, TakesTarget } from '../shared/job.schema.ts';
 import type { JobStageId } from '../shared/job-stages.ts';
 import { JOB_IDS, claimId } from '../make/ids.ts';
 import { writeJsonAtomically } from './store.ts';
-import type { SentHarmony } from '../shared/harmony.types.ts';
-import type { SentStructure } from '../shared/structure.types.ts';
+import type { SentHarmony } from '../shared/harmony.schema.ts';
+import type { SentStructure } from '../shared/structure.schema.ts';
 
 /** The stage a phase starts; null for one that starts none (waiting, or the end of a failed job). */
 const PHASE_STAGES = {

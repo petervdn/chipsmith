@@ -3,7 +3,7 @@
  * plays in time with the song's other tracks, and notes to play; a length of its own is only noted,
  * as a prompt may ask for one. Given the facts of both, gives what is wrong; knows nothing of files.
  */
-import type { ClipFacts } from '../shared/clip.types.ts';
+import type { ClipFacts } from '../shared/clip.schema.ts';
 
 /** How far two tempos, or two lengths in seconds, may differ and count as the same. */
 const TOLERANCE = 0.01;

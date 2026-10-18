@@ -4,7 +4,7 @@
  * plain PCM DAC. For each: a short label, its channels' names in Furnace's order, and which of the
  * app's chips it belongs with. Knows nothing of files.
  */
-import type { ChipFamily } from '../shared/reference.types.ts';
+import type { ChipFamily } from '../shared/reference.schema.ts';
 
 /** A chip a reference may play on. */
 type DemoChip = { label: string; family: ChipFamily | null; channels: string[] };

@@ -2,9 +2,9 @@
 // look at), its takes to swap in, quick changes and the prompt for more takes (docs/adr/0037); ▶ plays the song from the
 // block, Loop it plays its bars round, and solo leaves its track alone.
 import { Minus, Play, Plus, Repeat } from 'lucide-react';
-import type { Clip } from '../../shared/clip.types.ts';
+import type { Clip } from '../../shared/clip.schema.ts';
 import { getTicksPerSecond } from '../../shared/song-length.ts';
-import type { Song } from '../../shared/song.types.ts';
+import type { Song } from '../../shared/song.schema.ts';
 import { getClipLabel } from '../../shared/clip-label.ts';
 import { formatSeconds } from '../format.ts';
 import type { BlockSpan } from './timeline.ts';

@@ -3,9 +3,9 @@
  * and its repeats; the bars of the song; which bars the ruler numbers at a zoom. Given a song and
  * its clips, gives numbers; knows nothing of the page.
  */
-import type { Clip } from '../../shared/clip.types.ts';
+import type { Clip } from '../../shared/clip.schema.ts';
 import { getTicksPerSecond } from '../../shared/song-length.ts';
-import type { Song } from '../../shared/song.types.ts';
+import type { Song } from '../../shared/song.schema.ts';
 import { TICKS_PER_BEAT } from '../../shared/ticks.ts';
 import { getSplitCount } from '../../shared/clip-channels.ts';
 
