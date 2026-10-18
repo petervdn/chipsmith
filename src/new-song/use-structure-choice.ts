@@ -1,4 +1,4 @@
-// The structure chosen for a prompt on New (AABA at first): none, a preset or a saved one, its
+// The structure chosen for a prompt on New (none at first): none, a preset or a saved one, its
 // sections as edited here (an edit leaves the preset or saved structure as it is until saved), the
 // section selected, and saving it as a new structure or over the saved one, or deleting a saved one.
 import { useState } from 'react';
@@ -14,11 +14,8 @@ export type StructureSource =
   | { kind: 'preset'; id: string }
   | { kind: 'saved'; id: string };
 
-/** The preset chosen when New opens. */
-const DEFAULT_PRESET = STRUCTURE_PRESETS.find((preset) => preset.id === 'aaba');
-
 /**
- * Keeps the structure chosen for a prompt, the default preset at first.
+ * Keeps the structure chosen for a prompt, none at first.
  *
  * @returns The presets and saved structures to choose from, the source chosen, its name and
  *   sections, whether they were edited, the section selected; `choose`, `edit` (sections changed,
@@ -26,11 +23,9 @@ const DEFAULT_PRESET = STRUCTURE_PRESETS.find((preset) => preset.id === 'aaba');
  *   (deletes the saved one), and `sent`: the structure to send with the prompt, or null.
  */
 export function useStructureChoice() {
-  const [source, setSource] = useState<StructureSource>(
-    DEFAULT_PRESET ? { kind: 'preset', id: DEFAULT_PRESET.id } : { kind: 'none' },
-  );
-  const [name, setName] = useState(DEFAULT_PRESET?.name ?? '');
-  const [sections, setSections] = useState<Section[]>(DEFAULT_PRESET?.sections ?? []);
+  const [source, setSource] = useState<StructureSource>({ kind: 'none' });
+  const [name, setName] = useState('');
+  const [sections, setSections] = useState<Section[]>([]);
   const [isEdited, setEdited] = useState(false);
   const [selected, setSelected] = useState<number | null>(null);
   const { data: saved } = useStructures();

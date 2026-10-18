@@ -137,7 +137,7 @@ with its title alone, the Songs tab marked above it.
 - **New** (`/new`): a prompt for Claude in a box, a prompt builder under it (the chips as switches: NES, PSG and SCC, the
   SID not offered for now (0035), one or more, each off, once or twice (0034); a part per row, rolled
   at random or picked, each with a lock, the sentence they make on top; "Use" fills the box, which is otherwise its own),
-  the Structure panel (AABA chosen at first; none, a preset, a saved structure or your own: written short and as tiles
+  the Structure panel (none chosen at first; none, a preset, a saved structure or your own: written short and as tiles
   as wide as their bars, a section edited when tapped; between two tiles the gap, how one section
   leads into the next (drums, bass, harmony, lead, all together; `shared/lead-ins.ts`), picked or
   rolled; saved as new or over a saved one; 0023), and
