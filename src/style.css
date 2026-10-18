@@ -18,6 +18,13 @@
   --keep: #f5b301;
   --reject: #dc2f4b;
   --on-reject: #ffffff;
+  /* a level meter, the same in both looks: its dark well, its level from green through yellow to
+     red, and its peak mark */
+  --meter-well: #0b0b0d;
+  --meter-level: #a6f23a;
+  --meter-hot: #ffc83d;
+  --meter-clip: #ff4d6d;
+  --meter-peak: #ececef;
   /* a level meter's well, dark in both looks, and its peak mark */
   --meter-well: #0b0b0d;
   --meter-peak: #ececef;

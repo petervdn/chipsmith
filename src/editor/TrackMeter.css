@@ -1,6 +1,6 @@
-/* The look of TrackMeter.tsx: an upright bar, its level and peak mark placed by `--level` and
-   `--peak` (shares of its height) as use-track-meter.ts sets them; where it stands and how tall is
-   the look of what holds it. */
+/* The look of TrackMeter.tsx: an upright bar in a dark well, the same in both looks, its level and
+   peak mark placed by `--level` and `--peak` (shares of its height) as use-track-meter.ts sets
+   them; where it stands and how tall is the look of what holds it. */
 
 .track-meter {
   --level: 0;
@@ -10,7 +10,7 @@
   flex: none;
   width: 6px;
   overflow: hidden;
-  background: var(--raised);
+  background: var(--meter-well);
 }
 
 .track-meter-level {
@@ -18,10 +18,10 @@
   inset: 0;
   background: linear-gradient(
     to top,
-    var(--accent) 0%,
-    var(--accent) 70%,
-    var(--keep) 88%,
-    var(--reject) 100%
+    var(--meter-level) 0%,
+    var(--meter-level) 70%,
+    var(--meter-hot) 88%,
+    var(--meter-clip) 100%
   );
   clip-path: inset(calc((1 - var(--level)) * 100%) 0 0 0);
 }
@@ -32,6 +32,6 @@
   bottom: calc(var(--peak) * (100% - 2px));
   left: 0;
   height: 2px;
-  background: var(--fg);
+  background: var(--meter-peak);
   opacity: min(1, calc(var(--peak) * 40));
 }
