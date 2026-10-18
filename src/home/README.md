@@ -11,3 +11,4 @@ The home page.
 - `HomeSettings.css`: the look of HomeSettings.tsx
 - `HomeSettings.tsx`: what this browser keeps of the page, and a button that clears it
 - `program-rows.ts`: the rows shown of the programs, Furnace's two as one when they are one
+- `use-clear-settings.ts`: clearing the saved settings, and whether that was just done

@@ -8,6 +8,9 @@
 }
 
 .home-settings-clear {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   min-height: var(--touch);
   padding: 0 14px;
   border: var(--border-width) solid var(--line);
@@ -21,4 +24,9 @@
   .home-settings-clear:hover {
     color: var(--fg);
   }
+}
+
+.home-settings-clear svg {
+  width: 16px;
+  height: 16px;
 }
