@@ -141,8 +141,10 @@ page but Home starts with breadcrumbs, the last its heading (Songs › Seven Tee
   played by the one player (`playReference` in the player store). Imported with
   `npm run import-references` (`make/import-references.ts`).
 
-The page is light or dark: as the system is set, until the top bar's ☾ / ☀ switches it (`src/top-bar/looks.ts`,
-the colours in `src/style.css`), kept in the preferences. The accent is a bright lime.
+The page is light or dark as the system is set, until the top bar's ‹ › steps to a look: light, four
+light greys with no green in them (mist, fog, slate, ash) or dark (`src/top-bar/looks.ts`, the
+colours in `src/style.css`), kept in the preferences. The top bar is always in the dark look's
+colours. The accent is a bright lime.
 
 Nothing pops up from the browser (0026): a question before a change is the page's own dialog
 (`src/dialog/`, asked through `src/stores/confirm-store.ts`), over a see-through black backdrop, and

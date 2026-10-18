@@ -1,5 +1,6 @@
-/* The base of the page: the colour tokens (light, or dark by the system's setting unless the top
-   bar's switch chose one, `data-look` on <html>), the page, links, form controls, and the shell
+/* The base of the page: the colour tokens (light, or dark by the system's setting until the top
+   bar's switch chooses a look, `data-look` on <html>; the light greys beside them; the top bar
+   always in the dark one), the page, links, form controls, and the shell
    (App.tsx). The accent is a bright lime, the one green: a fill with --on-accent on it, a line or
    a mark, never text on the page. The tracks' colours are bright too, the lime among them. A
    component's own look is in its own CSS file beside it. */
@@ -53,7 +54,7 @@
 }
 
 @media (prefers-color-scheme: dark) {
-  :root:not([data-look='light']) {
+  :root:not([data-look]) {
     --bg: #18181b;
     --card: #222226;
     --raised: #2e2e33;
@@ -69,7 +70,8 @@
   }
 }
 
-:root[data-look='dark'] {
+:root[data-look='dark'],
+.top-bar {
   --bg: #18181b;
   --card: #222226;
   --raised: #2e2e33;
@@ -82,6 +84,55 @@
   --keep: #ffb83d;
   --reject: #ff4d6d;
   color-scheme: dark;
+}
+
+/* the light greys, neutral as the dark look is, with no green in them: a pale grey (mist), a
+   darker one (fog), a cool blue-grey (slate) and the darkest (ash), whose cards and raised controls
+   are lighter than the page, as in the dark look */
+:root[data-look='mist'] {
+  --bg: #e4e4e7;
+  --card: #f4f4f5;
+  --raised: #d4d4d8;
+  --fg: #18181b;
+  --muted: #5b5b63;
+  --line: #c8c8ce;
+  --on-accent: #18181b;
+  --logo-outline: #18181b;
+}
+
+:root[data-look='fog'] {
+  --bg: #cfcfd4;
+  --card: #e0e0e4;
+  --raised: #bdbdc3;
+  --fg: #141416;
+  --muted: #4a4a52;
+  --line: #b0b0b8;
+  --on-accent: #141416;
+  --logo-outline: #141416;
+}
+
+:root[data-look='slate'] {
+  --bg: #d3d7de;
+  --card: #e5e8ed;
+  --raised: #c2c7d0;
+  --fg: #14171c;
+  --muted: #4a515d;
+  --line: #b3b9c4;
+  --on-accent: #14171c;
+  --logo-outline: #14171c;
+}
+
+:root[data-look='ash'] {
+  --bg: #a9a9b0;
+  --card: #b9b9bf;
+  --raised: #c9c9ce;
+  --fg: #111113;
+  --muted: #38383e;
+  --line: #919199;
+  --on-accent: #111113;
+  --logo-outline: #111113;
+  --keep: #8a5d00;
+  --reject: #b0122e;
 }
 
 * {

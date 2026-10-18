@@ -1,7 +1,8 @@
 /* The look of TopBar.tsx. */
 
-/* the top bar */
+/* the top bar, always in the dark look's colours (style.css) */
 .top-bar {
+  color: var(--fg);
   position: sticky;
   top: 0;
   z-index: 10;
