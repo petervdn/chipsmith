@@ -25,9 +25,6 @@
   --meter-hot: #ffc83d;
   --meter-clip: #ff4d6d;
   --meter-peak: #ececef;
-  /* a level meter's well, dark in both looks, and its peak mark */
-  --meter-well: #0b0b0d;
-  --meter-peak: #ececef;
   color-scheme: light;
   /* how tall a control is: 32 px with a mouse, 36 px under a finger (below) */
   --touch: 32px;
