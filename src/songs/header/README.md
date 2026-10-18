@@ -12,7 +12,7 @@ prompt was sent with, in five layouts to compare (the ones not chosen are delete
 - `PillsHeader.css`: the look of PillsHeader.tsx
 - `PillsHeader.tsx`: layout 3: the facts as pills, the prompt as a quote
 - `SectionsHeader.css`: the look of SectionsHeader.tsx
-- `SectionsHeader.tsx`: layout 4: sections under headings: the song, the prompt, what it was sent with
+- `SectionsHeader.tsx`: layout 4: sections under headings: the song, then the prompt beside what it was sent with
 - `SongHeader.css`: what the layouts share: the label over a part
 - `SongHeader.tsx`: the header in the layout chosen, and the list of layouts
 - `song-summary.ts`: what the header shows, as labelled facts: the song's, and what its prompt was sent with
