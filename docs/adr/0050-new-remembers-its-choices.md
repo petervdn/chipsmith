@@ -15,7 +15,7 @@ up for a run of prompts had to be set up again each time.
   a progression is being chosen for.
 - Not kept: the prompt's own text and the style guides chosen, which start from the guides marked
   as defaults (0019).
-- Home has Clear saved settings (after asking), which puts this store and the preferences back as
+- Home has Clear saved settings (at once, without asking: what it clears is minor), which puts this store and the preferences back as
   a first visit has them (`src/stores/saved-settings.ts`).
 
 ## Alternatives
