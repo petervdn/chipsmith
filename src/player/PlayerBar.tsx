@@ -1,7 +1,7 @@
 // The bar at the bottom of every page but a song's while a song is in the player: ▶ / ■ (the share
 // loaded while it loads), its title (a link to its editor), where it is, a slider to move in it,
-// and the mute switch for testing.
-import { ArrowUpRight, Play, Square, Volume2, VolumeX } from 'lucide-react';
+// the mute switch for testing, and ✕ to stop and close it.
+import { ArrowUpRight, Play, Square, Volume2, VolumeX, X } from 'lucide-react';
 import { formatSeconds } from '../format.ts';
 import { getSongPosition } from '../playback/audio-engine.ts';
 import { usePlayerStore } from '../stores/player-store.ts';
@@ -12,13 +12,13 @@ import './PlayerBar.css';
 
 /**
  * Shows the player bar while a song is in the player: ▶ / ■, its title, where it is, a slider to
- * move in it, and the mute switch.
+ * move in it, the mute switch, and ✕ to stop and close it.
  *
  * @returns The bar's element, or null when nothing is in the player.
  */
 export function PlayerBar() {
   const player = usePlayerStore();
-  const { song, playSong, seekSong, stopSong } = player;
+  const { song, playSong, seekSong, stopSong, closeSong } = player;
   const isMuteOn = usePreferencesStore((preferences) => preferences.isMuted);
   const setMuted = usePreferencesStore((preferences) => preferences.setMuted);
   const volume = usePreferencesStore((preferences) => preferences.volume);
@@ -92,6 +92,15 @@ export function PlayerBar() {
           {isMuteOn ? <VolumeX /> : <Volume2 />}
         </button>
       </span>
+      <button
+        type="button"
+        className="player-bar-close"
+        onClick={closeSong}
+        data-tooltip="stop and close"
+        aria-label="close the player"
+      >
+        <X />
+      </button>
       {player.error && <p className="player-bar-error">{player.error}</p>}
     </div>
   );

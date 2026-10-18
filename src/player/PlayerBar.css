@@ -7,7 +7,7 @@
   bottom: 0;
   z-index: 10;
   display: grid;
-  grid-template-columns: auto 1fr auto auto;
+  grid-template-columns: auto 1fr auto auto auto;
   align-items: center;
   gap: 4px 12px;
   padding: 8px 16px;
@@ -82,6 +82,28 @@
   background: none;
   font-size: 1.125rem;
   cursor: pointer;
+}
+
+/* quiet: grey and small, at the far right */
+.player-bar-close {
+  width: var(--touch);
+  height: var(--touch);
+  margin-right: -8px;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.player-bar-close .lucide {
+  width: 16px;
+  height: 16px;
+}
+
+@media (hover: hover) {
+  .player-bar-close:hover {
+    color: inherit;
+  }
 }
 
 .player-bar-error {

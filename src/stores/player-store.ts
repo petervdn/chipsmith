@@ -39,6 +39,8 @@ type PlayerStore = {
   stopSong: (at: number) => void;
   /** Moves to a second of the song, playing on from there (round the same loop) if it was playing. */
   seekSong: (to: number) => void;
+  /** Stops and takes the song out of the player, so nothing is in it. */
+  closeSong: () => void;
 };
 
 /**
@@ -146,6 +148,10 @@ export const usePlayerStore = create<PlayerStore>()((set, get) => {
       const { song, mode, loop, playSong } = get();
       if (song && mode !== 'stopped') void playSong(song, to, loop);
       else set({ from: to });
+    },
+    closeSong: () => {
+      stopPlaying();
+      set({ song: null, clipId: null, mode: 'stopped', from: 0, end: 0, loop: null, error: null });
     },
   };
 });
