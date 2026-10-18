@@ -162,6 +162,50 @@ select:not([multiple]) {
   background-position: right 11px center;
 }
 
+/* a slider, drawn alike in every browser and look: a thin track in the line's colour and a round
+   handle in the accent, ringed in --on-accent so it stands out on a light page too. Logical sizes,
+   so an upright slider (writing-mode: vertical-lr, the mixer's faders) is drawn the same way. */
+input[type='range'] {
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+input[type='range']::-webkit-slider-runnable-track {
+  block-size: 4px;
+  border-radius: 2px;
+  background: var(--line);
+}
+
+input[type='range']::-moz-range-track {
+  block-size: 4px;
+  border-radius: 2px;
+  background: var(--line);
+}
+
+input[type='range']::-webkit-slider-thumb {
+  appearance: none;
+  inline-size: 14px;
+  block-size: 14px;
+  margin-block-start: -5px;
+  border: var(--border-width) solid var(--on-accent);
+  border-radius: var(--round);
+  background: var(--accent);
+}
+
+input[type='range']::-moz-range-thumb {
+  inline-size: 14px;
+  block-size: 14px;
+  border: var(--border-width) solid var(--on-accent);
+  border-radius: var(--round);
+  background: var(--accent);
+}
+
+input[type='range']:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
 /* a page */
 .page {
   max-width: var(--page-width);

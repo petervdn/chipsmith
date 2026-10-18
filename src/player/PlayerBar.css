@@ -48,7 +48,6 @@
 
 .player-bar-seek {
   width: 100%;
-  accent-color: var(--accent);
 }
 
 .player-bar-time {
@@ -84,7 +83,6 @@
 .player-bar-volume {
   flex: none;
   width: 96px;
-  accent-color: var(--accent);
 }
 
 /* a phone has its own volume buttons, and the seek bar needs the room */

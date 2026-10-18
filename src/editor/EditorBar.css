@@ -45,5 +45,4 @@
 /* the tracks' height, the vertical zoom: a small slider after the zoom buttons */
 .editor-bar-track-height {
   width: 72px;
-  accent-color: var(--accent);
 }
