@@ -1,5 +1,5 @@
-/* The look of SongPrompt.tsx: the prompt in the page's text, three lines until opened, "more" and
-   the copy icon under it. */
+/* The look of SongPrompt.tsx: the prompt in the page's text, three lines until opened, the copy
+   icon after its last word (under it, beside "more", while the end is cut off). */
 
 .song-prompt {
   margin: 0 0 12px;
@@ -39,6 +39,10 @@
 .song-prompt-copy {
   display: inline-flex;
   align-items: center;
+}
+
+.song-prompt-copy.is-inline {
+  vertical-align: -0.1em;
 }
 
 .song-prompt-copy svg {
