@@ -13,7 +13,7 @@ export function HomeSettings() {
   async function clear(): Promise<void> {
     const isYes = await askToConfirm({
       question:
-        'Clear the settings this browser keeps? Light or dark mode, the volume and mute, the editor’s sizes and switches, and New’s choices go back to how they start. Songs, clips and guides stay.',
+        'Clear the settings this browser keeps? Light or dark mode, the volume and mute, the editor’s sizes and switches, and what the New Song page was left at go back to how they start. Songs, clips and guides stay.',
       answer: 'Clear',
     });
     if (isYes) clearSavedSettings();
@@ -22,7 +22,7 @@ export function HomeSettings() {
     <div className="home-settings">
       <p className="home-page-note">
         This browser keeps light or dark mode, the volume and mute, the editor’s sizes and switches,
-        and what New was left at.
+        and what the New Song page was left at.
       </p>
       <button type="button" className="home-settings-clear" onClick={() => void clear()}>
         Clear saved settings
