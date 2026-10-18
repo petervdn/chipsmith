@@ -88,10 +88,10 @@ page but Home starts with breadcrumbs, the last its heading (Songs › Seven Tee
   ruler; 0031), a metronome (on or off, its own
   volume; the first beat of a bar higher, `src/playback/metronome.ts`), zoom (and the tracks' height on a slider), the song's clips in a
   column at its left (each with its blocks counted; tapped, its first block is selected; folded to a
-  strip, and on a phone folded at first and laid over the timeline when open), the timeline as wide
-  as the page's content (as the top bar's), the clips' column out in the margin left of it and
-  the selected block's or track's details in the margin right of it where there is room (else beside
-  and under it), and the selected block's
+  strip, and on a phone folded at first and laid over the timeline when open), the page (and the
+  top bar with it) wider than the others, up to 1800 px, the clips' column left of the timeline and
+  the selected block's or track's details in a column right of it where there is room (else under
+  it), and the selected block's
   clip, its .fur to look at (open in Furnace, download, view as text), Loop it (the block's bars
   looped and played) and solo for its track, its takes as pills (the original and every variation by
   its label; a tap puts one in the block as an edit, heard at once if it plays, offered to the other

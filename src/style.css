@@ -24,6 +24,8 @@
   --pill: 28px;
   /* the widest the page's content gets, centred beyond that; the top bar's content keeps to it */
   --page-width: 1100px;
+  /* the widest a song's page gets, its editor wanting the room; the top bar keeps to it there too */
+  --wide-page-width: 1800px;
   /* the tracks' colours on the timeline, bright in light and dark alike, with --on-accent on them */
   --track-1: #a6f23a;
   --track-2: #2ee6ff;
