@@ -4,7 +4,7 @@ A song's header on its page, between its title and the editor: its facts, its pr
 prompt was sent with, in five layouts to compare (the ones not chosen are deleted once one is).
 
 - `CardHeader.css`: the look of CardHeader.tsx
-- `CardHeader.tsx`: layout 5: no card, the tempo, meter and length large, the prompt under a hairline
+- `CardHeader.tsx`: layout 5: no card, the tempo, meter and length large, every other fact in a grid, the prompt under a hairline
 - `FactList.css`: the look of FactList.tsx
 - `FactList.tsx`: facts with their labels, as tiles, rows, pills, a grid, or a few large
 - `HeaderLayoutSwitch.css`: the look of HeaderLayoutSwitch.tsx

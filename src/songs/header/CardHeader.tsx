@@ -1,5 +1,6 @@
 // Layout 5 of a song's header: on the page, no card around it. At its top the tempo, meter and length large, the other
-// facts in a grid beside them; under a hairline the prompt, and what it was sent with as rows.
+// facts and what the prompt was sent with (its tags too) in a grid beside them; under a hairline
+// only the prompt.
 import { SongPrompt } from '../SongPrompt.tsx';
 import { FactList } from './FactList.tsx';
 import type { SongSummary } from './song-summary.ts';
@@ -23,13 +24,15 @@ export function CardHeader({ summary }: CardHeaderProps) {
       <div className="card-header-top">
         <FactList facts={summary.facts.slice(0, LARGE_FACT_COUNT)} look="large" />
         <div className="card-header-rest">
-          <FactList facts={summary.facts.slice(LARGE_FACT_COUNT)} look="grid" />
+          <FactList
+            facts={[...summary.facts.slice(LARGE_FACT_COUNT), ...summary.promptFacts]}
+            look="grid"
+          />
         </div>
       </div>
       <section className="card-header-prompt">
         <h2 className="song-header-label">Prompt</h2>
         <SongPrompt prompt={summary.prompt} />
-        <FactList facts={summary.promptFacts} look="rows" />
       </section>
     </div>
   );
