@@ -64,3 +64,19 @@ export function formatDate(iso: string): string {
   const time = date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
   return `${day} ${time}`;
 }
+
+/**
+ * Returns the time of a date to the second, such as "22:09:41".
+ *
+ * @param iso - The date, in ISO form.
+ * @returns The time as it is shown, or the text as given when it is not a date.
+ */
+export function formatTime(iso: string): string {
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return iso;
+  return date.toLocaleTimeString('en-GB', {
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+  });
+}

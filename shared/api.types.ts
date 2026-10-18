@@ -60,6 +60,8 @@ export type ProgramCheck = {
   version: string | null;
   /** Why it cannot be used, or null. */
   error: string | null;
+  /** When it was checked, in ISO form. */
+  checkedAt: string;
 };
 
 /** What `POST /api/clips/<id>/open` answers: the copy of the clip's .fur file Furnace opened. */

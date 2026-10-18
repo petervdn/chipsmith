@@ -39,3 +39,24 @@
   color: var(--muted);
   font-size: 0.8125rem;
 }
+
+/* looking for the programs again, when it last looked and what it found beside it */
+.home-programs-again {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 12px;
+}
+
+.home-programs-again button {
+  min-height: var(--touch);
+  padding: 0 12px;
+  border: var(--border-width) solid var(--line);
+  border-radius: var(--radius);
+  background: var(--raised);
+  cursor: pointer;
+}
+
+.home-programs-again .home-page-note {
+  margin: 0;
+}

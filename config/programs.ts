@@ -89,10 +89,11 @@ export function readVersion(name: ProgramName, answer: string): string | null {
 
 async function checkProgram(name: ProgramName, path: string): Promise<ProgramCheck> {
   const { args, variable, neededFor } = PROGRAMS[name];
+  const checkedAt = new Date().toISOString();
   try {
     const version = readVersion(name, await runForAnswer(path, args));
     return version
-      ? { name, path, variable, neededFor, version, error: null }
+      ? { name, path, variable, neededFor, version, error: null, checkedAt }
       : {
           name,
           path,
@@ -100,6 +101,7 @@ async function checkProgram(name: ProgramName, path: string): Promise<ProgramChe
           neededFor,
           version: null,
           error: 'it ran, but did not name its version',
+          checkedAt,
         };
   } catch (error) {
     return {
@@ -109,6 +111,7 @@ async function checkProgram(name: ProgramName, path: string): Promise<ProgramChe
       neededFor,
       version: null,
       error: error instanceof Error ? error.message : String(error),
+      checkedAt,
     };
   }
 }

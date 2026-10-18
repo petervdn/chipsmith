@@ -77,7 +77,7 @@ page but Home starts with breadcrumbs, the last its heading (Songs › Seven Tee
 
 - **Home** (`/`): what the app is: the logo and a line, + New song, the running jobs; what it is
   and how it works (prompt, style guides, compose, render, listen and shape); what it needs, the programs as the
-  server checked them (found with their versions or not, with "Check again"); where to start (the
+  server checked them (found with their versions or not, with "Look again" and when it last looked); where to start (the
   examples, New, Guides, References); how many songs there are (kept, not heard yet) and the five
   made last with ▶; and a line linking the README and the source on GitHub (`src/project-links.ts`).
 - **Songs** (`/songs`): every song, with the filter bar (words, tags) and under it two tabs, All and
