@@ -21,7 +21,7 @@ const STEPS = [
   },
   {
     name: 'Style guides',
-    text: 'Optionally add reusable style guides that Claude can follow: your taste, written once on Guides and chosen with a prompt.',
+    text: 'Optionally add reusable style guides that Claude can follow: your taste, written once on Guides and attached to a prompt.',
   },
   {
     name: 'Compose',
