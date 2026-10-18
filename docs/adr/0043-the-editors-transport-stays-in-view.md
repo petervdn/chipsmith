@@ -1,6 +1,6 @@
 # 0043. A song's transport and ruler stay in view at the top; no player bar on its page
 
-- Status: accepted
+- Status: accepted; stopping the song itself on open superseded by 0045
 - Date: 2026-10-18
 
 ## Context

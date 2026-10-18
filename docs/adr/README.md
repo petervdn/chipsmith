@@ -56,5 +56,6 @@ Consequences.
 | [0040](0040-the-note-grid-scrolls-both-ways.md) | The note grid lays out the channel's whole range and scrolls both ways | accepted; its axes superseded by 0041 |
 | [0041](0041-the-note-grid-runs-time-across.md) | The note grid runs time across, as the timeline does, and pitch up | accepted |
 | [0042](0042-render-with-a-headless-furnace.md) | A clip is rendered with a headless Furnace build; the app only opens files | accepted |
-| [0043](0043-the-editors-transport-stays-in-view.md) | A song's transport and ruler stay in view at the top; no player bar on its page | accepted |
+| [0043](0043-the-editors-transport-stays-in-view.md) | A song's transport and ruler stay in view at the top; no player bar on its page | accepted; stopping the song itself on open superseded by 0045 |
 | [0044](0044-the-song-page-is-laid-out-around-the-timeline.md) | The song page is laid out around the timeline; the tracks shrink to one row in view | accepted |
+| [0045](0045-a-song-playing-plays-on-into-its-page.md) | A song playing when its page opens plays on in the editor | accepted |

@@ -1,5 +1,5 @@
 // One song, opened: its title with ★ to keep it, its facts, the prompt it was made from, and the
-// editor (editor/SongEditor.tsx), with nothing playing when it opens.
+// editor (editor/SongEditor.tsx), with nothing but the song itself playing when it opens.
 import { formatMeter } from '../format.ts';
 import { SongEditor } from '../editor/SongEditor.tsx';
 import { StatusButtons } from '../lists/StatusButtons.tsx';
@@ -22,7 +22,7 @@ type SongPageProps = { songId: string };
 export function SongPage({ songId }: SongPageProps) {
   const { data: detail, error } = useSong(songId);
   const { mutate: setStatus } = useSetSongStatus();
-  useStopOnOpen();
+  useStopOnOpen(songId);
   usePageTitle(detail?.song.title ?? songId);
   if (error) return <p className="error">{error.message}</p>;
   if (!detail) return <p className="empty">Loading…</p>;

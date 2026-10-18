@@ -206,7 +206,8 @@ The player's state is a Zustand store (`src/stores/player-store.ts`). The player
 (`src/player/PlayerBar.tsx`) sits at the bottom of every page but a song's: ▶ / ■ (the share loaded
 while loading), the title, a slider to move in the song, and a mute switch for testing (the
 preferences store). Every song row has ▶. A song's page has no player bar (0043): it opens with
-nothing playing (`src/songs/use-stop-on-open.ts`), the editor's transport and the timeline's head
+nothing playing but the song itself, which plays on where it was in the editor's timeline
+(`src/songs/use-stop-on-open.ts`; 0045), the editor's transport and the timeline's head
 (`src/editor/TimelineHead.tsx`, kept scrolled sideways with the tracks by `use-scroll-sync.ts`)
 stick under the top bar, and mute is in the mixer's master strip.
 
