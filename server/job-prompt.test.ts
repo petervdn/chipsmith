@@ -11,6 +11,7 @@ const JOB: Job = {
   tokens: null,
   nowTokens: null,
   songCount: 3,
+  model: null,
   takesOf: { clip: 'c0101', song: 's0050' },
   structure: null,
   harmony: null,

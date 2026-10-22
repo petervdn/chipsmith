@@ -4,6 +4,7 @@
  */
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
+import type { ComposerModel } from '../shared/composer-models.ts';
 import type { SentGuide } from '../shared/guide.schema.ts';
 import type { Job, JobPhase, NewNote, TakesTarget } from '../shared/job.schema.ts';
 import { jobSchema } from '../shared/job.schema.ts';
@@ -80,6 +81,7 @@ export function getJobFolder(store: JobStore, jobId: string): string {
  * @param asked.harmony - The harmony chosen with the prompt, copied, or null for none.
  * @param asked.takesOf - The clip to make takes of and the song it was asked in, or null to make
  *   songs.
+ * @param asked.model - The model Claude composes with.
  * @returns The job made.
  */
 export function createJob(
@@ -92,6 +94,7 @@ export function createJob(
     songCount = null,
     harmony = null,
     takesOf = null,
+    model,
   }: {
     prompt: string;
     guides: SentGuide[];
@@ -100,6 +103,7 @@ export function createJob(
     songCount?: number | null;
     harmony?: SentHarmony | null;
     takesOf?: TakesTarget | null;
+    model: ComposerModel;
   },
 ): Job {
   const id = claimId(store.root, JOB_IDS);
@@ -112,6 +116,7 @@ export function createJob(
     harmony,
     songCount,
     takesOf,
+    model,
     tokens: null,
     nowTokens: null,
     created: now,

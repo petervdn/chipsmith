@@ -1,4 +1,4 @@
-/* The look of CreatePanel.tsx: Create, and the number of songs small under it. At the right of the
+/* The look of CreatePanel.tsx: Create, and the number of songs and the model small under it. At the right of the
    prompt on a wide screen; above it, at the right, on a phone. Either way it sticks under the top
    bar as the page scrolls. */
 
@@ -64,6 +64,36 @@
   min-width: 1.5em;
   font-variant-numeric: tabular-nums;
   text-align: center;
+}
+
+.create-panel-models {
+  display: flex;
+  gap: 2px;
+  padding: 2px;
+  border-radius: var(--radius);
+  background: var(--raised);
+}
+
+.create-panel-models button {
+  flex: 1;
+  min-height: var(--pill);
+  padding: 0 4px;
+  border: 0;
+  border-radius: calc(var(--radius) * 0.5);
+  background: none;
+  color: var(--muted);
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.create-panel-models button:hover:not(.is-on) {
+  color: var(--fg);
+}
+
+.create-panel-models button.is-on {
+  background: var(--bg);
+  color: var(--fg);
+  font-weight: 600;
 }
 
 @media (max-width: 639px) {

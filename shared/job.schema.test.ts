@@ -21,8 +21,8 @@ const OLD_JOB = {
 test('an old job reads what it leaves out as none', () => {
   const job = parseChecked(jobSchema, OLD_JOB, 'job.json');
   assert.deepEqual(
-    [job.guides, job.takesOf, job.harmony, job.removed, job.notes[0]?.stage],
-    [[], null, null, null, null],
+    [job.guides, job.takesOf, job.harmony, job.removed, job.notes[0]?.stage, job.model],
+    [[], null, null, null, null, null],
   );
 });
 

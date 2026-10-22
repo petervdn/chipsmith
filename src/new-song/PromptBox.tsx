@@ -5,6 +5,8 @@
 // the note is cleared.
 import { X } from 'lucide-react';
 import { useState } from 'react';
+import type { ComposerModel } from '../../shared/composer-models.ts';
+import { DEFAULT_COMPOSER_MODEL } from '../../shared/composer-models.ts';
 import { GuideChips } from '../guides/GuideChips.tsx';
 import { CreatePanel } from './CreatePanel.tsx';
 import { PromptBuilder } from './PromptBuilder.tsx';
@@ -51,6 +53,7 @@ export function PromptBox({ initialText, source, onClearSource }: PromptBoxProps
   const [isBuilding, setBuilding] = useState(false);
   const [usedText, setUsedText] = useState('');
   const [songCount, setSongCount] = useState(DEFAULT_SONGS);
+  const [model, setModel] = useState<ComposerModel>(DEFAULT_COMPOSER_MODEL);
   const isFocusAtEnd = initialText.endsWith(': ');
   const { mutate: sendPrompt, isPending: isSending, error } = useSendPrompt();
   const { guides, chosenIds, toggleGuide, resetChoice } = useGuideChoice();
@@ -67,6 +70,7 @@ export function PromptBox({ initialText, source, onClearSource }: PromptBoxProps
         structure: structureChoice.sent,
         harmony: harmonyChoice.sent,
         songCount,
+        model,
       },
       {
         onSuccess: () => {
@@ -152,6 +156,8 @@ export function PromptBox({ initialText, source, onClearSource }: PromptBoxProps
         </div>
         <CreatePanel
           songCount={songCount}
+          model={model}
+          onModelChange={setModel}
           canSend={text.trim() !== ''}
           isSending={isSending}
           onSongCountChange={setSongCount}

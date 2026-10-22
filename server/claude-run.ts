@@ -15,6 +15,7 @@ import { getSettings } from '../config/settings.ts';
  * @param run.prompt - The prompt.
  * @param run.systemPrompt - What is added to Claude's system prompt.
  * @param run.allowedTools - The tools Claude may use without asking.
+ * @param run.model - The model Claude runs with, as `--model` names it.
  * @param run.logFile - The file Claude's stream-json output is appended to.
  * @returns The process id of Claude, or undefined when it did not start.
  */
@@ -23,12 +24,14 @@ export function startClaude({
   prompt,
   systemPrompt,
   allowedTools,
+  model,
   logFile,
 }: {
   projectFolder: string;
   prompt: string;
   systemPrompt: string;
   allowedTools: string[];
+  model: string;
   logFile: string;
 }): number | undefined {
   const args = [
@@ -38,6 +41,8 @@ export function startClaude({
     'stream-json',
     '--verbose',
     '--include-partial-messages',
+    '--model',
+    model,
     '--permission-mode',
     'dontAsk',
     '--allowedTools',

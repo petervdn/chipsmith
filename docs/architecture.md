@@ -146,7 +146,9 @@ with its title alone, the Songs tab marked above it.
   the colour in plain words, each a row with a die and a lock; and chords to hear and keep per part
   of the structure, or for the whole song: three presets that fit the scale and feel, each heard
   in the browser on chip-like sounds, `src/playback/progression-preview.ts`), and the style
-  guides as chips to send with it (their texts readable in place). Sending it leads to Jobs.
+  guides as chips to send with it (their texts readable in place). Under Create, how many songs and
+  the model that composes (Opus at first, Sonnet, Haiku; `shared/composer-models.ts`, 0054). Sending it
+  leads to Jobs.
 - **Jobs** (`/jobs`): every prompt sent, as a card, newest first; one that is over can be removed
   (✕; `removed` in its job.json, its files kept). The tab counts the jobs on their way.
 
@@ -234,7 +236,8 @@ step keeps the stage it shows, and the list of steps has a labelled line where a
 its songs from the start (a line for each asked for, its title once built; `src/jobs/job-songs.ts`); a running job also has one line above the songs list and on the
 home page, and the Jobs tab turns while one runs. The runner (`server/job-runner.ts`) takes one job at a time through its
 phases:
-1. **composing**: Claude Code runs headless (`server/claude-run.ts`: `claude -p`, detached, its
+1. **composing**: Claude Code runs headless (`server/claude-run.ts`: `claude -p` with the job's model
+   (`--model`), detached, its
    stream written to `jobs/<id>/claude.log`). It follows the write-song skill (`.claude/skills/`) and writes
    `jobs/<id>/script.ts`, whose default export gives a plan per song (`make/song-plan.ts`), its music
    made with `make/fur-file-builder.ts`, each title in the number of words the prompt gives (2 to 6,

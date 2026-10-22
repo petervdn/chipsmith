@@ -1,11 +1,12 @@
 // A job's card on the Jobs page, from the moment its prompt is sent: in its top row its phase, how
 // long it has been going and the tokens it used; under it its stages from start to end; then,
-// labelled, the prompt, the clip it makes takes of, the songs or takes it makes (a line for each asked for, its title once built), the
+// labelled, the prompt, the model that composed it, the clip it makes takes of, the songs or takes it makes (a line for each asked for, its title once built), the
 // style guides, structure and harmony sent with it, Claude's reply, and its steps. A job that is
 // over folds to one line.
 import { useEffect, useState } from 'react';
 import type { Job, JobPhase } from '../../shared/job.schema.ts';
 import { formatSeconds, formatTokens } from '../format.ts';
+import { COMPOSER_MODEL_FACTS } from '../../shared/composer-models.ts';
 import { getHarmonySummary } from '../../shared/harmony-prompt.ts';
 import { writeNotation } from '../../shared/structure-notation.ts';
 import { isJobRunning, useCancelJob } from '../queries/jobs.ts';
@@ -203,6 +204,12 @@ export function JobCard({ job, onRemove }: JobCardProps) {
       <dl className="job-card-facts">
         <dt>Prompt</dt>
         <dd className="job-card-prompt">{job.prompt}</dd>
+        {job.model && (
+          <>
+            <dt>Composed by</dt>
+            <dd>{COMPOSER_MODEL_FACTS[job.model].name}</dd>
+          </>
+        )}
         {job.takesOf && (
           <>
             <dt>Takes of</dt>

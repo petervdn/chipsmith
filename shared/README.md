@@ -15,6 +15,7 @@ Nothing here reads files or touches the page.
 - `clip-channels.ts`: a clip's channels named from its chips, and whether it can be split
 - `clip-lineage.ts`: a clip's lineage, the clips it was made from: whether a variation is among them, the channels a take keeps
 - `clip.schema.ts`: a clip, what it was made from and what slice of the music it is
+- `composer-models.ts`: the models a job's Claude can compose with, and the one chosen at first
 - `guide.schema.ts`: a style guide, and a guide as it was sent with a prompt
 - `harmony-prompt.ts`: a harmony as the lines of a prompt that ask for it, and as one short line
 - `harmony-words.ts`: a harmony's feels and colours in plain words, and how a prompt asks for each

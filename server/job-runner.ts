@@ -6,6 +6,7 @@
  */
 import { spawn } from 'node:child_process';
 import { PROJECT_FOLDER, getSettings } from '../config/settings.ts';
+import { DEFAULT_COMPOSER_MODEL } from '../shared/composer-models.ts';
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import type { Job, JobSong, TakesTarget } from '../shared/job.schema.ts';
@@ -106,6 +107,7 @@ function startComposing(jobs: JobStore, store: Store, job: Job): ClaudeWatch {
       : getJobPrompt(job, folder, jobs.root),
     systemPrompt: JOB_SYSTEM_PROMPT,
     allowedTools: getAllowedTools(folder),
+    model: job.model ?? DEFAULT_COMPOSER_MODEL,
     logFile: join(folder, 'claude.log'),
   });
   updateJob(jobs, job.id, { claudePid: pid ?? null });

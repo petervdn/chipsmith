@@ -12,8 +12,18 @@ import { createJob, openJobs, setPhase } from './jobs.ts';
 
 test('a job waiting is cancelled; one that is done stays done', () => {
   const store = openJobs(mkdtempSync(join(tmpdir(), 'chiptune-cancel-')));
-  const waiting = createJob(store, { prompt: 'a fugue', guides: [], promptedFrom: null });
-  const done = createJob(store, { prompt: 'a march', guides: [], promptedFrom: null });
+  const waiting = createJob(store, {
+    prompt: 'a fugue',
+    guides: [],
+    promptedFrom: null,
+    model: 'opus',
+  });
+  const done = createJob(store, {
+    prompt: 'a march',
+    guides: [],
+    promptedFrom: null,
+    model: 'opus',
+  });
   setPhase(store, done.id, 'done', 'done');
   cancelJob(store, waiting.id);
   cancelJob(store, done.id);

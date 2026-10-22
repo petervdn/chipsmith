@@ -44,11 +44,8 @@ export async function routeJobs(
 ): Promise<void> {
   if (!id && method === 'GET') return sendJson(response, listJobs(jobs));
   if (!id && method === 'POST') {
-    const { prompt, fromSong, guideIds, structure, harmony, songCount, takesOf } = parseChecked(
-      jobRequestSchema,
-      await readJsonBody(request),
-      'body',
-    );
+    const { prompt, fromSong, guideIds, structure, harmony, songCount, takesOf, model } =
+      parseChecked(jobRequestSchema, await readJsonBody(request), 'body');
     if (takesOf) {
       checkTakesTarget(store, takesOf);
       if (songCount !== null && songCount > MOST_TAKES) {
@@ -62,6 +59,7 @@ export async function routeJobs(
           promptedFrom: null,
           songCount: songCount ?? 1,
           takesOf,
+          model,
         }),
       );
     }
@@ -77,6 +75,7 @@ export async function routeJobs(
         structure,
         songCount,
         harmony,
+        model,
       }),
     );
   }
