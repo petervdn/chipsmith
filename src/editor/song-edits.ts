@@ -192,7 +192,10 @@ export function removeBlock(tracks: Track[], place: BlockPlace): Edited {
 export function addTrack(tracks: Track[]): Track[] {
   const numbers = tracks.map((track) => Number(/^t(\d+)$/.exec(track.id)?.[1] ?? 0));
   const next = Math.max(0, ...numbers) + 1;
-  return [...tracks, { id: `t${next}`, name: `Track ${tracks.length + 1}`, volume: 0, blocks: [] }];
+  return [
+    ...tracks,
+    { id: `t${next}`, name: `Track ${tracks.length + 1}`, volume: 0, isMuted: false, blocks: [] },
+  ];
 }
 
 /**
@@ -282,5 +285,18 @@ function replaceBlock(tracks: Track[], place: BlockPlace, block: Block): Track[]
     track.id === place.trackId
       ? { ...track, blocks: track.blocks.map((old, i) => (i === place.index ? block : old)) }
       : track,
+  );
+}
+
+/**
+ * Mutes a track, or unmutes it.
+ *
+ * @param tracks - The song's tracks.
+ * @param trackId - The track.
+ * @returns The tracks with the track's mute switched.
+ */
+export function toggleTrackMute(tracks: Track[], trackId: string): Track[] {
+  return tracks.map((track) =>
+    track.id === trackId ? { ...track, isMuted: !track.isMuted } : track,
   );
 }

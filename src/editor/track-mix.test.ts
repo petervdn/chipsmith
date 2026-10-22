@@ -11,7 +11,13 @@ test('muted is never heard; soloed tracks are the only ones heard', () => {
 });
 
 test('the tracks not heard, by id', () => {
-  const tracks = ['t1', 't2', 't3'].map((id) => ({ id, name: id, volume: 0, blocks: [] }));
+  const tracks = ['t1', 't2', 't3'].map((id) => ({
+    id,
+    name: id,
+    volume: 0,
+    isMuted: false,
+    blocks: [],
+  }));
   assert.deepEqual(getUnheardTrackIds(tracks, { muted: ['t3'], soloed: [] }), ['t3']);
   assert.deepEqual(getUnheardTrackIds(tracks, { muted: [], soloed: ['t2'] }), ['t1', 't3']);
 });

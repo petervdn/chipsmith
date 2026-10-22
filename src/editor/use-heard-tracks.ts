@@ -1,6 +1,6 @@
 // Keeps the player hearing only the tracks the editor's mute and solo leave heard, each at its
 // level, at once, also while the song plays; leaving the editor hears every track again, as
-// rendered.
+// rendered, until ▶ elsewhere plays a song as it was saved (track-taps.ts).
 import { useEffect } from 'react';
 import type { Track } from '../../shared/song.schema.ts';
 import { setTrackVolumes, setUnheardTracks } from '../playback/track-taps.ts';

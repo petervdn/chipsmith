@@ -113,7 +113,7 @@ saved, playing from a cursor, the zoom, and the selected block's clip or track.
 - `use-take-deletion.ts`: the take a block plays deleted, asked first, its clip's parent put in its blocks
 - `use-take-swap.ts`: a take put in the selected block (and its clip's other blocks if asked), or in every block of the selected clip
 - `use-timeline-pan.ts`: dragging empty space with a mouse scrolls the timeline
-- `use-track-mix.ts`: the tracks muted and soloed while editing
+- `use-track-mix.ts`: the tracks muted (the tracks' own, saved) and soloed (not saved) while editing
 - `use-track-name-resize.ts`: dragging the track names' edge resizes them, kept in the preferences
 - `use-track-meter.ts`: a track's meter moved every frame while its song plays
 - `use-wheel-zoom.ts`: scrolling over the timeline zooms it, about the moment under the pointer

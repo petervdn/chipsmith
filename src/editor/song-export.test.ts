@@ -20,9 +20,9 @@ test("a file's name is the title, without what a name cannot hold, and the type'
 
 test('a track goes in at its fader, and one left out at 0', () => {
   const tracks: Track[] = [
-    { id: 't1', name: 'a', volume: 0, blocks: [] },
-    { id: 't2', name: 'b', volume: -6, blocks: [] },
-    { id: 't3', name: 'c', volume: 0, blocks: [] },
+    { id: 't1', name: 'a', volume: 0, isMuted: false, blocks: [] },
+    { id: 't2', name: 'b', volume: -6, isMuted: false, blocks: [] },
+    { id: 't3', name: 'c', volume: 0, isMuted: false, blocks: [] },
   ];
   const gains = getExportTrackGains(tracks, ['t3']);
   assert.equal(gains['t1'], 1);

@@ -118,6 +118,7 @@ export async function makeSong({
         id: 't1',
         name: 'Whole',
         volume: 0,
+        isMuted: false,
         blocks: [{ clip: clipId, start: 0, trim: null, repeats: 1 }],
       },
     ],

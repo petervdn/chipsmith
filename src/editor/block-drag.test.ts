@@ -13,9 +13,10 @@ const TRACKS: Track[] = [
     id: 't1',
     name: 'Bass',
     volume: 0,
+    isMuted: false,
     blocks: [{ clip: 'c1', start: 384, trim: null, repeats: 1 }],
   },
-  { id: 't2', name: 'Lead', volume: 0, blocks: [] },
+  { id: 't2', name: 'Lead', volume: 0, isMuted: false, blocks: [] },
 ];
 const PLACE = { trackId: 't1', index: 0 };
 

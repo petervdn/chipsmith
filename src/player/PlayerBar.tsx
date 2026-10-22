@@ -4,6 +4,7 @@
 import { ArrowUpRight, Play, Square, Volume2, VolumeX, X } from 'lucide-react';
 import { formatSeconds } from '../format.ts';
 import { getSongPosition } from '../playback/audio-engine.ts';
+import { setSavedMix } from '../playback/track-taps.ts';
 import { usePlayerStore } from '../stores/player-store.ts';
 import { usePreferencesStore } from '../stores/preferences-store.ts';
 import { LOUDEST_DB, QUIETEST_DB, formatVolume } from './volume.ts';
@@ -29,7 +30,10 @@ export function PlayerBar() {
 
   function togglePlay(): void {
     if (player.mode !== 'stopped') stopSong(getSongPosition() ?? position);
-    else if (song) void playSong(song, position);
+    else if (song) {
+      setSavedMix(song.song.tracks);
+      void playSong(song, position);
+    }
   }
 
   return (

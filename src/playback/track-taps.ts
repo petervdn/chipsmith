@@ -9,6 +9,7 @@ const SAMPLE_COUNT = 1024;
 /** Seconds in which a track's gain moves most of the way to a new one, so muting does not click. */
 const GAIN_SMOOTHING = 0.005;
 
+import type { Track } from '../../shared/song.schema.ts';
 import { TRACK_LOUDEST_DB, getGain as getVolumeGain } from '../player/volume.ts';
 
 /** A track's tap: what its sources play into, and its two channels' analysers. */
@@ -46,6 +47,18 @@ export function getTrackInput(
  */
 export function setUnheardTracks(trackIds: string[]): void {
   unheardTrackIds = new Set(trackIds);
+  setTapGains();
+}
+
+/**
+ * Sets the tracks heard as a song was saved: its muted tracks not heard, each other at its level.
+ * For playing a song outside its editor, which sets them from what is being edited instead.
+ *
+ * @param tracks - The song's saved tracks.
+ */
+export function setSavedMix(tracks: Track[]): void {
+  unheardTrackIds = new Set(tracks.filter((track) => track.isMuted).map((track) => track.id));
+  trackVolumes = Object.fromEntries(tracks.map((track) => [track.id, track.volume]));
   setTapGains();
 }
 

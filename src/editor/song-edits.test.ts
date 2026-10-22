@@ -14,6 +14,7 @@ import {
   setBlockClip,
   setRepeats,
   setTrackVolume,
+  toggleTrackMute,
   trimBlock,
 } from './song-edits.ts';
 
@@ -22,12 +23,13 @@ const TRACKS: Track[] = [
     id: 't1',
     name: 'Bass',
     volume: 0,
+    isMuted: false,
     blocks: [
       { clip: 'c1', start: 0, trim: null, repeats: 1 },
       { clip: 'c2', start: 768, trim: null, repeats: 1 },
     ],
   },
-  { id: 't2', name: 'Lead', volume: 0, blocks: [] },
+  { id: 't2', name: 'Lead', volume: 0, isMuted: false, blocks: [] },
 ];
 
 test('a block moved to another track goes in order of its start, the old tracks untouched', () => {
@@ -73,7 +75,7 @@ test('a copy goes right after the block and its repeats', () => {
 
 test('a new track gets the next id; a track is renamed and removed', () => {
   const added = addTrack(TRACKS);
-  assert.deepEqual(added[2], { id: 't3', name: 'Track 3', volume: 0, blocks: [] });
+  assert.deepEqual(added[2], { id: 't3', name: 'Track 3', volume: 0, isMuted: false, blocks: [] });
   assert.equal(renameTrack(added, 't3', '  Drums ')[2]?.name, 'Drums');
   assert.equal(renameTrack(added, 't3', '  ')[2]?.name, 'Track 3');
   assert.deepEqual(
@@ -106,6 +108,7 @@ test('another clip in a block keeps its start, repeats and trim', () => {
       id: 't1',
       name: 'Bass',
       volume: 0,
+      isMuted: false,
       blocks: [{ clip: 'c1', start: 96, trim: { offset: 384, length: 384 }, repeats: 2 }],
     },
   ];
@@ -126,6 +129,7 @@ test('a trim past the end of a shorter clip is cut to it, or dropped', () => {
       id: 't1',
       name: 'Bass',
       volume: 0,
+      isMuted: false,
       blocks: [{ clip: 'c1', start: 0, trim: { offset: 384, length: 768 }, repeats: 1 }],
     },
   ];
@@ -148,6 +152,7 @@ test('the places of the blocks that play a clip', () => {
       id: 't2',
       name: 'Lead',
       volume: 0,
+      isMuted: false,
       blocks: [{ clip: 'c1', start: 0, trim: null, repeats: 1 }],
     },
   ];
@@ -155,4 +160,14 @@ test('the places of the blocks that play a clip', () => {
     { trackId: 't1', index: 0 },
     { trackId: 't2', index: 0 },
   ]);
+});
+
+test('a track is muted and unmuted, the others and the old tracks untouched', () => {
+  const muted = toggleTrackMute(TRACKS, 't2');
+  assert.deepEqual(
+    muted.map((track) => track.isMuted),
+    [false, true],
+  );
+  assert.equal(TRACKS[1]?.isMuted, false);
+  assert.equal(toggleTrackMute(muted, 't2')[1]?.isMuted, false);
 });

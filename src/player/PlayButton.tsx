@@ -1,8 +1,10 @@
-// ▶ for one song in a list or on its page: loads the song when pressed and plays it from the start,
+// ▶ for one song in a list or on its page: loads the song when pressed and plays it from the start
+// as saved (its muted tracks not heard, each other at its fader's level),
 // or stops it when it is the one playing. Filled orange while its song plays; … and not pressable
 // while the server renders its audio.
 import { LoaderCircle, Play, Square } from 'lucide-react';
 import { getSongPosition } from '../playback/audio-engine.ts';
+import { setSavedMix } from '../playback/track-taps.ts';
 import { fetchSong } from '../queries/songs.ts';
 import { usePlayerStore } from '../stores/player-store.ts';
 import './PlayButton.css';
@@ -36,7 +38,9 @@ export function PlayButton({ songId, isWaitingForAudio }: PlayButtonProps) {
       stopSong(getSongPosition() ?? 0);
       return;
     }
-    await playSong(await fetchSong(songId));
+    const song = await fetchSong(songId);
+    setSavedMix(song.song.tracks);
+    await playSong(song);
   }
 
   if (isWaitingForAudio) {

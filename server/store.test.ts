@@ -72,6 +72,7 @@ const SONG: Song = {
       id: 't1',
       name: 'Bass',
       volume: 0,
+      isMuted: false,
       blocks: [{ clip: 'c0001', start: 0, trim: null, repeats: 2 }],
     },
   ],
@@ -138,11 +139,14 @@ test('a song deleted takes the clips only it played, and the clips they were mad
     { clip: 'c0002', start: 0, trim: null, repeats: 1 },
     { clip: 'c0003', start: 0, trim: null, repeats: 1 },
   ];
-  saveSong(store, { ...SONG, tracks: [{ id: 't1', name: 'Bass', volume: 0, blocks }] });
+  saveSong(store, {
+    ...SONG,
+    tracks: [{ id: 't1', name: 'Bass', volume: 0, isMuted: false, blocks }],
+  });
   saveSong(store, {
     ...SONG,
     id: 's0002',
-    tracks: [{ id: 't1', name: 'Bass', volume: 0, blocks: blocks.slice(1) }],
+    tracks: [{ id: 't1', name: 'Bass', volume: 0, isMuted: false, blocks: blocks.slice(1) }],
   });
   assert.deepEqual(deleteSong(store, 's0001'), ['c0002', 'c0001']);
   assert.equal(existsSync(join(root, 'songs', 's0001')), false);

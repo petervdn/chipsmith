@@ -44,6 +44,7 @@ const SONG: Song = {
       id: 't1',
       name: 'All',
       volume: 0,
+      isMuted: false,
       blocks: [{ clip: 'c1', start: 0, trim: null, repeats: 1 }],
     },
   ],

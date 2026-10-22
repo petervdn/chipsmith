@@ -36,6 +36,8 @@ export const trackSchema = z.object({
    * the clips' audio never changes. A song saved before tracks had a level plays at 0 dB.
    */
   volume: z.number().default(0),
+  /** Whether it is muted: not heard in playback; saved with the song. Older files: not muted. */
+  isMuted: z.boolean().default(false),
   blocks: z.array(blockSchema),
 });
 

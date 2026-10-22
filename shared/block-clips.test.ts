@@ -9,6 +9,7 @@ const TRACKS: Track[] = [
     id: 't1',
     name: 'Bass',
     volume: 0,
+    isMuted: false,
     blocks: [
       { clip: 'c0002', start: 0, trim: { offset: 48, length: 96 }, repeats: 2 },
       { clip: 'c0003', start: 192, trim: null, repeats: 1 },
@@ -18,6 +19,7 @@ const TRACKS: Track[] = [
     id: 't2',
     name: 'Lead',
     volume: -3,
+    isMuted: false,
     blocks: [{ clip: 'c0002', start: 0, trim: null, repeats: 1 }],
   },
 ];

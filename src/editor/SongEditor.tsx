@@ -17,7 +17,7 @@ import { ExportButton } from './ExportButton.tsx';
 import { useSongExport } from './use-song-export.ts';
 import { getUnheardTrackIds } from './track-mix.ts';
 import { BAR_STEP } from './grid.ts';
-import { addTrack, getBlock, removeBlock, setTrackVolume } from './song-edits.ts';
+import { addTrack, getBlock, removeBlock, setTrackVolume, toggleTrackMute } from './song-edits.ts';
 import type { BlockPlace } from './song-edits.ts';
 import { Timeline } from './Timeline.tsx';
 import { TimelineHead } from './TimelineHead.tsx';
@@ -87,7 +87,9 @@ export function SongEditor({ detail, actionSlot, saveSlot }: SongEditorProps) {
   const draft = useSongDraft(detail);
   const clips = getEditorClips(draft.tracks, detail.clips, poolClips);
   const songClips = getSongClips(draft.tracks, clips, poolClips);
-  const { mix, toggleMute, toggleSolo } = useTrackMix();
+  const { mix, toggleMute, toggleSolo } = useTrackMix(draft.tracks, (trackId) =>
+    draft.changeTracks((tracks) => toggleTrackMute(tracks, trackId)),
+  );
   const draftSong = { ...song, tracks: draft.tracks };
   useHeardTracks(draft.tracks, mix);
   const unheardTrackIds = getUnheardTrackIds(draft.tracks, mix);

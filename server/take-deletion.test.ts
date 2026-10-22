@@ -79,7 +79,7 @@ function getSong(id: string, clipIds: string[]): Song {
     structure: null,
     harmony: null,
     promptedFrom: null,
-    tracks: [{ id: 't1', name: 'Bass', volume: 0, blocks }],
+    tracks: [{ id: 't1', name: 'Bass', volume: 0, isMuted: false, blocks }],
   };
 }
 

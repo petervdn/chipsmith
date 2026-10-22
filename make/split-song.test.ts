@@ -73,6 +73,7 @@ test('a whole song becomes a track per channel of blocks of new clips', () => {
         id: 't1',
         name: 'Whole',
         volume: 0,
+        isMuted: false,
         blocks: [{ clip: 'c0001', start: 0, trim: null, repeats: 1 }],
       },
     ],
@@ -113,12 +114,14 @@ test('a whole song becomes a track per channel of blocks of new clips', () => {
       id: 't1',
       name: 'Lead · Pulse 1',
       volume: 0,
+      isMuted: false,
       blocks: [{ clip: 'c0002', start: 0, trim: null, repeats: 1 }],
     },
     {
       id: 't2',
       name: 'Triangle',
       volume: 0,
+      isMuted: false,
       blocks: [{ clip: 'c0003', start: 0, trim: null, repeats: 1 }],
     },
   ]);
