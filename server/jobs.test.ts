@@ -12,8 +12,8 @@ function makeStore() {
 
 test('a job that is over is taken off the list, and stays off when read again', () => {
   const store = makeStore();
-  const kept = createJob(store, 'a fugue', [], null);
-  const removed = createJob(store, 'a funk groove', [], null);
+  const kept = createJob(store, { prompt: 'a fugue', guides: [], promptedFrom: null });
+  const removed = createJob(store, { prompt: 'a funk groove', guides: [], promptedFrom: null });
   setPhase(store, removed.id, 'done', 'done');
   removeJob(store, removed.id);
   assert.deepEqual(
@@ -28,6 +28,6 @@ test('a job that is over is taken off the list, and stays off when read again', 
 
 test('a job on its way cannot be removed', () => {
   const store = makeStore();
-  const job = createJob(store, 'a fugue', [], null);
+  const job = createJob(store, { prompt: 'a fugue', guides: [], promptedFrom: null });
   assert.throws(() => removeJob(store, job.id));
 });

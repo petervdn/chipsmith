@@ -71,24 +71,36 @@ export function getJobFolder(store: JobStore, jobId: string): string {
  * Makes a new job for a prompt and the guides chosen with it, queued, and writes it to its file.
  *
  * @param store - The jobs in memory.
- * @param prompt - The prompt.
- * @param guides - Copies of the guides chosen with the prompt.
- * @param promptedFrom - The id of the song whose prompt was sent again, or null.
- * @param structure - The structure chosen with the prompt, copied, or null for none.
- * @param songCount - How many songs to make, or null to leave it to the prompt.
- * @param harmony - The harmony chosen with the prompt, copied, or null for none.
- * @param takesOf - The clip to make takes of and the song it was asked in, or null to make songs.
+ * @param asked - What the job is asked.
+ * @param asked.prompt - The prompt.
+ * @param asked.guides - Copies of the guides chosen with the prompt.
+ * @param asked.promptedFrom - The id of the song whose prompt was sent again, or null.
+ * @param asked.structure - The structure chosen with the prompt, copied, or null for none.
+ * @param asked.songCount - How many songs to make, or null to leave it to the prompt.
+ * @param asked.harmony - The harmony chosen with the prompt, copied, or null for none.
+ * @param asked.takesOf - The clip to make takes of and the song it was asked in, or null to make
+ *   songs.
  * @returns The job made.
  */
 export function createJob(
   store: JobStore,
-  prompt: string,
-  guides: SentGuide[],
-  promptedFrom: string | null,
-  structure: SentStructure | null = null,
-  songCount: number | null = null,
-  harmony: SentHarmony | null = null,
-  takesOf: TakesTarget | null = null,
+  {
+    prompt,
+    guides,
+    promptedFrom,
+    structure = null,
+    songCount = null,
+    harmony = null,
+    takesOf = null,
+  }: {
+    prompt: string;
+    guides: SentGuide[];
+    promptedFrom: string | null;
+    structure?: SentStructure | null;
+    songCount?: number | null;
+    harmony?: SentHarmony | null;
+    takesOf?: TakesTarget | null;
+  },
 ): Job {
   const id = claimId(store.root, JOB_IDS);
   const now = new Date().toISOString();

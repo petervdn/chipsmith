@@ -56,16 +56,13 @@ export async function routeJobs(
       }
       return sendJson(
         response,
-        createJob(
-          jobs,
+        createJob(jobs, {
           prompt,
-          getSentGuides(guides, guideIds),
-          null,
-          null,
-          songCount ?? 1,
-          null,
+          guides: getSentGuides(guides, guideIds),
+          promptedFrom: null,
+          songCount: songCount ?? 1,
           takesOf,
-        ),
+        }),
       );
     }
     const song = fromSong ? store.songs.get(fromSong) : null;
@@ -73,7 +70,14 @@ export async function routeJobs(
     const sent = getSentGuides(guides, guideIds);
     return sendJson(
       response,
-      createJob(jobs, prompt, sent, song ? song.id : null, structure, songCount, harmony),
+      createJob(jobs, {
+        prompt,
+        guides: sent,
+        promptedFrom: song ? song.id : null,
+        structure,
+        songCount,
+        harmony,
+      }),
     );
   }
   if (!id) return sendError(response, 404, 'not found');
