@@ -1,6 +1,8 @@
 // The loop, as a row under the ruler while looping is on: the loop's bars as a band with an edge at
 // each end. Its edges are dragged to move them, the band to move the loop, and a drag over empty
-// space draws a new loop; the corner goes back to the whole song.
+// space draws a new loop; the corner goes back to the whole song, or takes the loop's bars out of
+// the song (✂, an edit like any other).
+import { Scissors } from 'lucide-react';
 import type { CSSProperties } from 'react';
 import type { LoopRange } from './loop-range.ts';
 import { LOOP_MODE_ATTRIBUTE, useLoopDrag } from './use-loop-drag.ts';
@@ -13,6 +15,7 @@ type LoopLaneProps = {
   bars: number;
   onChange: (range: LoopRange) => void;
   onWhole: () => void;
+  onTakeOut: () => void;
 };
 
 /**
@@ -25,9 +28,18 @@ type LoopLaneProps = {
  * @param props.bars - How many bars the timeline shows.
  * @param props.onChange - Called with the loop's bars when a drag is let go.
  * @param props.onWhole - Called to loop the whole song again.
+ * @param props.onTakeOut - Called to take the loop's bars out of the song.
  * @returns The row's element.
  */
-export function LoopLane({ range, isWhole, pixelsPerBar, bars, onChange, onWhole }: LoopLaneProps) {
+export function LoopLane({
+  range,
+  isWhole,
+  pixelsPerBar,
+  bars,
+  onChange,
+  onWhole,
+  onTakeOut,
+}: LoopLaneProps) {
   const { shown, handlers } = useLoopDrag({ range, pixelsPerBar, bars, onChange });
   const style: CSSProperties = {
     left: shown.startBar * pixelsPerBar,
@@ -38,6 +50,20 @@ export function LoopLane({ range, isWhole, pixelsPerBar, bars, onChange, onWhole
     <div className="timeline-row loop-lane">
       <div className="timeline-corner loop-lane-corner">
         <span className="loop-lane-label">loop</span>
+        <button
+          type="button"
+          className="loop-lane-cut"
+          onClick={onTakeOut}
+          disabled={isWhole}
+          data-tooltip={
+            isWhole
+              ? 'draw a loop to take its bars out of the song'
+              : `take bars ${range.startBar + 1}–${range.endBar} out of the song, closing the gap`
+          }
+          aria-label="take the loop's bars out of the song"
+        >
+          <Scissors />
+        </button>
         <button
           type="button"
           className="loop-lane-whole"

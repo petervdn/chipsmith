@@ -1,4 +1,4 @@
-/* The look of LoopLane.tsx: a thin row; the loop a band in the accent, its edges a bar to grab
+/* The look of LoopLane.tsx: a thin row, ✂ and whole song in its corner; the loop a band in the accent, its edges a bar to grab
    inside each end (so the first bar's is not under the track names; wider under a finger); empty
    space a crosshair, to draw a new loop. */
 
@@ -26,6 +26,29 @@
   font-size: 0.6875rem;
   white-space: nowrap;
   cursor: pointer;
+}
+
+.loop-lane-cut {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+  padding: 0 4px;
+  border: 0;
+  background: none;
+  color: var(--fg);
+  cursor: pointer;
+}
+
+.loop-lane-cut svg {
+  width: 13px;
+  height: 13px;
+}
+
+.loop-lane-cut:disabled {
+  color: var(--muted);
+  opacity: 0.5;
+  cursor: default;
 }
 
 .loop-lane-whole:disabled {

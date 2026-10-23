@@ -22,6 +22,7 @@ import type { BlockPlace } from './song-edits.ts';
 import { Timeline } from './Timeline.tsx';
 import { TimelineHead } from './TimelineHead.tsx';
 import { getClipTicks, getSongSplitCount, getTicksPerBar } from './timeline.ts';
+import { removeTicks } from './bar-cut.ts';
 import { SongClips } from './SongClips.tsx';
 import { getEditorClips, getSongClips } from './song-clips.ts';
 import { SelectionDetails } from './SelectionDetails.tsx';
@@ -137,6 +138,13 @@ export function SongEditor({ detail, actionSlot, saveSlot }: SongEditorProps) {
   const pan = useTimelinePan(scrollRef);
   const isFollowingPlayhead = usePreferencesStore((state) => state.isFollowingPlayhead);
   const isStructureShown = usePreferencesStore((state) => state.isStructureShown);
+  function takeOutLoop(): void {
+    const range = { from: loop.range.startBar * ticksPerBar, to: loop.range.endBar * ticksPerBar };
+    draft.changeTracks((tracks) =>
+      removeTicks(tracks, range, (clipId) => getClipTicks(clips, clipId, song.bpm)),
+    );
+    loop.setWhole();
+  }
   function setVolume(trackId: string, volume: number): void {
     draft.changeTracks((tracks) => setTrackVolume(tracks, trackId, volume), `volume ${trackId}`);
   }
@@ -238,6 +246,7 @@ export function SongEditor({ detail, actionSlot, saveSlot }: SongEditorProps) {
                     isWhole: loop.isWhole,
                     onChange: loop.setRange,
                     onWhole: loop.setWhole,
+                    onTakeOut: takeOutLoop,
                   }
                 : null
             }

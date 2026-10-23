@@ -71,3 +71,4 @@ Consequences.
 | [0056](0056-a-job-is-given-its-skills.md) | A job's Claude is given its skills in full, not left to load them | accepted |
 | [0057](0057-a-job-starts-lean.md) | A job's Claude starts with only its tools, and no settings, CLAUDE.md, skills or MCP | accepted |
 | [0058](0058-a-take-starts-from-its-clip.md) | A take starts from its clip's .fur and writes only what it changes | accepted |
+| [0059](0059-bars-are-taken-out-in-the-arrangement.md) | Bars are taken out of a song in its blocks, not by a new clip | accepted |

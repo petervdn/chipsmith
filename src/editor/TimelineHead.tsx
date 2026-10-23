@@ -31,6 +31,8 @@ export type TimelineLoop = {
   isWhole: boolean;
   onChange: (range: LoopRange) => void;
   onWhole: () => void;
+  /** Takes the loop's bars out of the song, as an edit. */
+  onTakeOut: () => void;
 };
 
 type TimelineHeadProps = {
@@ -166,6 +168,7 @@ export function TimelineHead({
           bars={bars}
           onChange={loop.onChange}
           onWhole={loop.onWhole}
+          onTakeOut={loop.onTakeOut}
         />
       )}
       {structure && <StructureLane sections={structure} pixelsPerBar={pixelsPerBar} />}

@@ -3,6 +3,7 @@
 The song editor on an opened song's page: the timeline of its tracks and blocks, edited as a draft and
 saved, playing from a cursor, the zoom, and the selected block's clip or track.
 
+- `bar-cut.ts`: taking a stretch of time out of a song's blocks, the rest closing up
 - `block-drag.ts`: where a dragged block goes: moved on the grid and between tracks, or trimmed
 - `BlockDetails.css`: the look of BlockDetails.tsx
 - `BlockDetails.tsx`: the selected block's section, one bar: where it plays, the clip it plays, Show track, Loop it, solo, repeats, duplicate, untrim, remove
