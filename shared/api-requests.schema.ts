@@ -6,7 +6,7 @@
 import { z } from 'zod';
 import { statusSchema, tagSchema } from './catalogue.schema.ts';
 import { channelRowSchema } from './clip-notes.schema.ts';
-import { COMPOSER_MODELS, DEFAULT_COMPOSER_MODEL } from './composer-models.ts';
+import { COMPOSER_MODELS } from './composer-models.ts';
 import { sentHarmonySchema } from './harmony.schema.ts';
 import { takesTargetSchema } from './job.schema.ts';
 import { trackSchema } from './song.schema.ts';
@@ -49,8 +49,6 @@ export const jobRequestSchema = z.object({
   /** How many songs (or takes) to make, or null to leave it to the prompt. */
   songCount: z.number().int().min(1).max(MOST_SONGS).nullable().default(null),
   takesOf: takesTargetSchema.nullable().default(null),
-  /** The model Claude composes with. */
-  model: z.enum(COMPOSER_MODELS).default(DEFAULT_COMPOSER_MODEL),
 });
 
 /** A prompt sent as a job, as the page sends it. */
@@ -90,3 +88,11 @@ export const takeDeletionRequestSchema = z.object({ song: z.string() });
 
 /** A take deleted from the song it is edited in. */
 export type TakeDeletionRequest = z.input<typeof takeDeletionRequestSchema>;
+
+/** A change to the app's settings: the settings changed, the others left as they are. */
+export const appSettingsChangeSchema = z.object({
+  composerModel: z.enum(COMPOSER_MODELS).exactOptional(),
+});
+
+/** A change to the app's settings. */
+export type AppSettingsChange = z.infer<typeof appSettingsChangeSchema>;

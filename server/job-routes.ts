@@ -6,6 +6,7 @@
 import type { IncomingMessage, ServerResponse } from 'node:http';
 import type { GuideStore } from './guides.ts';
 import { getSentGuides } from './guides.ts';
+import { getAppSettings } from './app-settings.ts';
 import { readJsonBody, sendError, sendJson } from './http.ts';
 import { cancelJob } from './job-runner.ts';
 import type { JobStore } from './jobs.ts';
@@ -44,8 +45,12 @@ export async function routeJobs(
 ): Promise<void> {
   if (!id && method === 'GET') return sendJson(response, listJobs(jobs));
   if (!id && method === 'POST') {
-    const { prompt, fromSong, guideIds, structure, harmony, songCount, takesOf, model } =
-      parseChecked(jobRequestSchema, await readJsonBody(request), 'body');
+    const { prompt, fromSong, guideIds, structure, harmony, songCount, takesOf } = parseChecked(
+      jobRequestSchema,
+      await readJsonBody(request),
+      'body',
+    );
+    const model = getAppSettings(jobs.root).composerModel;
     if (takesOf) {
       checkTakesTarget(store, takesOf);
       if (songCount !== null && songCount > MOST_TAKES) {

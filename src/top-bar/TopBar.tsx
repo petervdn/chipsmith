@@ -1,9 +1,9 @@
 // The bar at the top of every page: the logo (home), Songs, Style guides and Jobs (with how
 // many are on their way, turning while one runs; the one open marked), a
-// button for a new song at the right, a link to the source on GitHub and the switch between light
+// button for a new song at the right, a link to the settings, a link to the source on GitHub and the switch between light
 // and dark; always in the dark look.
 import { MarkGithubIcon } from '@primer/octicons-react';
-import { Plus } from 'lucide-react';
+import { Plus, Settings } from 'lucide-react';
 import { useRef } from 'react';
 import type { Job } from '../../shared/job.schema.ts';
 import { Logo } from './Logo.tsx';
@@ -53,6 +53,14 @@ export function TopBar({ route, jobs }: TopBarProps) {
       </nav>
       <a href="/new" className="top-bar-new">
         <Plus /> New song
+      </a>
+      <a
+        href="/settings"
+        className={`top-bar-settings${route.page === 'settings' ? ' is-on' : ''}`}
+        data-tooltip="settings"
+        aria-label="settings"
+      >
+        <Settings />
       </a>
       <a
         href={SOURCE_URL}

@@ -11,5 +11,6 @@ Everything the page reads from or sends to the server, as TanStack Query queries
 - `peaks.ts`: a clip's waveform as peaks, read once from its audio
 - `programs.ts`: the check of the programs the app calls
 - `request.ts`: a route read as JSON or a change sent
+- `settings.ts`: the app's settings, and changing one
 - `songs.ts`: the songs list, one song, and changing a song's status
 - `structures.ts`: the saved structures, and making, changing and deleting one

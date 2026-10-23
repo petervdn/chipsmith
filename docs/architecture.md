@@ -40,6 +40,7 @@ clips/<id>/script.ts      its own copy of the script that wrote it
 songs/<id>/song.json      a song's arrangement (shared/song.schema.ts)
 guides/<id>/guide.json    a style guide (shared/guide.schema.ts), sent with a prompt when chosen
 structures/<id>/structure.json  a song structure (shared/structure.schema.ts), sent with a prompt when chosen
+settings.json             the app's settings (shared/app-settings.schema.ts), every setting at its default without it
 ```
 
 The files are the data (0006). Ids are a letter and a number: `c0001` for clips, `s0001` for songs.
@@ -57,7 +58,7 @@ a song waiting for its audio shows … for ▶ and its list is read again until 
 
 Routes: `GET /api/songs`, `GET /api/songs/<id>`, `PATCH /api/songs/<id>` (status, tags),
 `DELETE /api/songs/<id>` (with the clips only it played), `PUT /api/songs/<id>/tracks` (the
-arrangement, saved from the editor), `POST /api/songs/<id>/split`, `GET /api/clips`, `PATCH /api/clips/<id>` (status, tags, a variation's label), `DELETE /api/clips/<id>` (a take, 0039), and `GET /media/clips/<id>/audio.flac` with byte ranges, `GET /media/clips/<id>/source.fur` (a
+arrangement, saved from the editor), `POST /api/songs/<id>/split`, `GET` and `PATCH /api/settings` (the app's settings), `GET /api/clips`, `PATCH /api/clips/<id>` (status, tags, a variation's label), `DELETE /api/clips/<id>` (a take, 0039), and `GET /media/clips/<id>/audio.flac` with byte ranges, `GET /media/clips/<id>/source.fur` (a
 download) and `source.txt` (the .fur as tracker text, `fur/tracker-text.ts`), and
 `POST /api/encode/<type>` (a song's mix, as the page rendered it to a WAV, encoded to FLAC or MP3, 0049), `POST /api/clips/<id>/transpose` (a take of it transposed, 0037), `GET` and `POST
 /api/clips/<id>/notes` (its notes for the note grid, and a take of them as edited), `POST /api/clips/<id>/open` (a copy in the system's temporary folder opened in Furnace,
@@ -67,7 +68,7 @@ What they answer is typed in `shared/api.types.ts`.
 ## The pages
 
 `src/`, React (0013), a folder per area (a page, the top bar, the player, the lists; 0020). One top bar on every page, its content the window's full width whatever the page's (0046): the logo (home), Songs | Style guides | Jobs (Jobs with how many
-are on their way, turning while one runs), and at the right + New song (an action, not a section), a link to the source on GitHub. Every
+are on their way, turning while one runs), and at the right + New song (an action, not a section), ⚙ to the settings, a link to the source on GitHub. Every
 page but Home starts with breadcrumbs, the last its heading (Guides); a song's page
 with its title alone, the Songs tab marked above it.
 
@@ -146,9 +147,11 @@ with its title alone, the Songs tab marked above it.
   the colour in plain words, each a row with a die and a lock; and chords to hear and keep per part
   of the structure, or for the whole song: three presets that fit the scale and feel, each heard
   in the browser on chip-like sounds, `src/playback/progression-preview.ts`), and the style
-  guides as chips to send with it (their texts readable in place). Under Create, how many songs and
-  the model that composes (Opus at first, Sonnet, Haiku; `shared/composer-models.ts`, 0054). Sending it
-  leads to Jobs.
+  guides as chips to send with it (their texts readable in place). Sending it leads to Jobs.
+- **Settings** (`/settings`, the ⚙ in the top bar): the app's settings, for every prompt and every
+  browser, each saved the moment it is chosen (`src/settings/`, `server/app-settings.ts`;
+  0055). For now one: the model that composes every job, songs and takes (Opus at first, Sonnet,
+  Haiku; `shared/composer-models.ts`).
 - **Jobs** (`/jobs`): every prompt sent, as a card, newest first; one that is over can be removed
   (✕; `removed` in its job.json, its files kept). The tab counts the jobs on their way.
 
@@ -236,8 +239,8 @@ step keeps the stage it shows, and the list of steps has a labelled line where a
 its songs from the start (a line for each asked for, its title once built; `src/jobs/job-songs.ts`); a running job also has one line above the songs list and on the
 home page, and the Jobs tab turns while one runs. The runner (`server/job-runner.ts`) takes one job at a time through its
 phases:
-1. **composing**: Claude Code runs headless (`server/claude-run.ts`: `claude -p` with the job's model
-   (`--model`), detached, its
+1. **composing**: Claude Code runs headless (`server/claude-run.ts`: `claude -p` with the job's model, the
+   settings' when it was sent (`--model`), detached, its
    stream written to `jobs/<id>/claude.log`). It follows the write-song skill (`.claude/skills/`) and writes
    `jobs/<id>/script.ts`, whose default export gives a plan per song (`make/song-plan.ts`), its music
    made with `make/fur-file-builder.ts`, each title in the number of words the prompt gives (2 to 6,

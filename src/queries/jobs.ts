@@ -6,7 +6,6 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import type { JobRequest } from '../../shared/api-requests.schema.ts';
-import type { ComposerModel } from '../../shared/composer-models.ts';
 import type { Job, TakesTarget } from '../../shared/job.schema.ts';
 import { getQueryKey, queryClient } from './client.ts';
 import { requestJson, sendJson } from './request.ts';
@@ -102,8 +101,7 @@ export function useCancelJob() {
  *
  * @returns The mutation, called with the `prompt`, the song it is sent again from (`fromSong`, or
  * null), the ids of the style guides sent with it (`guideIds`), the structure and the harmony sent
- * with it (`structure`, `harmony`, each or null), how many songs to make (`songCount`) and the model
- * Claude composes with (`model`).
+ * with it (`structure`, `harmony`, each or null), and how many songs to make (`songCount`).
  */
 export function useSendPrompt() {
   return useMutation({
@@ -114,7 +112,6 @@ export function useSendPrompt() {
       structure,
       harmony,
       songCount,
-      model,
     }: {
       prompt: string;
       fromSong: string | null;
@@ -122,7 +119,6 @@ export function useSendPrompt() {
       structure: SentStructure | null;
       harmony: SentHarmony | null;
       songCount: number;
-      model: ComposerModel;
     }) =>
       sendJson<Job>('/api/jobs', 'POST', {
         prompt,
@@ -131,7 +127,6 @@ export function useSendPrompt() {
         structure,
         harmony,
         songCount,
-        model,
       } satisfies JobRequest),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: getQueryKey({ type: 'jobs' }) }),
   });

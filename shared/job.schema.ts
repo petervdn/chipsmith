@@ -75,7 +75,7 @@ export const jobSchema = z.object({
   /** How many songs (or takes) to make, set beside the Create button; null for a job from before it was. */
   songCount: z.number().nullable().default(null),
   /**
-   * The model Claude composes with, as chosen beside Create; null for a job from before it could be
+   * The model Claude composes with, as the settings had it when the job was sent; null for a job from before it could be
    * chosen, which composed with Claude Code's own default.
    */
   model: z.enum(COMPOSER_MODELS).nullable().default(null),

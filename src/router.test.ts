@@ -11,6 +11,7 @@ test('addresses read as their pages', () => {
   assert.deepEqual(getRoute('/songs/favorites?q=dark'), { page: 'songs', isFavoritesOnly: true });
   assert.deepEqual(getRoute('/clips'), { page: 'clips' });
   assert.deepEqual(getRoute('/guides'), { page: 'guides' });
+  assert.deepEqual(getRoute('/settings'), { page: 'settings' });
   assert.deepEqual(getRoute('/new'), { page: 'new' });
   assert.deepEqual(getRoute('/jobs'), { page: 'jobs' });
   assert.deepEqual(getRoute('/new?from=s0031'), { page: 'new' });

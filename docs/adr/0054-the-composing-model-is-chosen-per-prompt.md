@@ -1,6 +1,6 @@
 # 0054. The model that composes is chosen per prompt
 
-- Status: accepted
+- Status: superseded by 0055
 - Date: 2026-10-22
 
 ## Context

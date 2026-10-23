@@ -5,6 +5,8 @@ The app's server, run inside Vite's (docs/architecture.md, "The server"). The fi
 back to its file (docs/adr/0006).
 
 - `api.ts`: the Vite plugin: the routes of `/api/` and `/media/`
+- `app-settings-routes.ts`: `/api/settings`: the app's settings read and changed
+- `app-settings.ts`: the app's settings in the data folder (settings.json), read and changed
 - `claude-log.ts`: a Claude run's log read as it grows: notes, what it is doing now, its result
 - `claude-words.ts`: what Claude does said in a step's words: a tool call, a stretch of thinking
 - `claude-run.ts`: Claude Code started headless for a job, detached, its output into claude.log

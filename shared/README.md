@@ -5,6 +5,7 @@ Nothing here reads files or touches the page.
 
 - `api-requests.schema.ts`: what a request sends in its body, a schema each, parsed where it comes in
 - `api.types.ts`: what the server's routes answer with
+- `app-settings.schema.ts`: the app's settings, for every prompt and browser (the model that composes)
 - `audio-export.ts`: the file types a song is exported to as audio, and how ffmpeg encodes each
 - `block-clips.ts`: the clip a song's blocks play, replaced in all of them at once
 - `catalogue.schema.ts`: the status and the tags songs and clips share

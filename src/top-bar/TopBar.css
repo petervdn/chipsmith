@@ -72,7 +72,9 @@
   }
 }
 
-/* the link to the source on GitHub, beside the switch between light and dark */
+/* the links to the settings and to the source on GitHub, beside the switch between light and dark;
+   the settings' marked while they are open */
+.top-bar-settings,
 .top-bar-source {
   display: inline-flex;
   align-items: center;
@@ -85,7 +87,11 @@
   color: var(--fg);
 }
 
-/* a phone: the logo, + New song, the source and the switch on one row, the tabs under them sharing the row, each
+.top-bar-settings.is-on {
+  border-color: var(--fg);
+}
+
+/* a phone: the logo, + New song, the settings, the source and the switch on one row, the tabs under them sharing the row, each
    its count beside its name */
 @media (max-width: 600px) {
   .top-bar {
@@ -114,4 +120,11 @@
   padding-right: 4px;
   text-decoration: none;
   font-weight: 700;
+}
+
+/* a narrow phone: the logo without its name, so the buttons keep to one row */
+@media (max-width: 420px) {
+  .top-bar-logo-name {
+    display: none;
+  }
 }

@@ -23,6 +23,7 @@ import { isAudioMissing, renderMissingAudio } from './missing-audio.ts';
 import { catalogueChangeSchema, tracksChangeSchema } from '../shared/api-requests.schema.ts';
 import { guideDraftSchema } from '../shared/guide.schema.ts';
 import { parseChecked } from '../shared/schema-parse.ts';
+import { routeAppSettings } from './app-settings-routes.ts';
 import type { GuideStore } from './guides.ts';
 import { createGuide, deleteGuide, listGuides, openGuides, updateGuide } from './guides.ts';
 import type { Store } from './store.ts';
@@ -173,6 +174,7 @@ async function route(
   if (kind === 'structures') {
     return routeStructures(structures, request, response, { id, method });
   }
+  if (kind === 'settings' && !id) return routeAppSettings(store.root, request, response, method);
   if (kind === 'rescan' && method === 'POST') {
     rescanStore(store);
     return sendJson(response, { songs: store.songs.size, clips: store.clips.size });

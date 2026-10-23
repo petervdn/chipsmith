@@ -1,0 +1,58 @@
+/* The look of SettingsPage.tsx: each setting a card with its name in its border, its options as
+   buttons in a row that wraps, the one chosen marked in the accent. */
+
+.settings-page-section {
+  min-width: 0;
+  margin: 0;
+  padding: 4px 16px 16px;
+  border: var(--border-width) solid var(--line);
+  border-radius: var(--radius);
+  background: var(--card);
+}
+
+.settings-page-label {
+  margin-left: -6px;
+  padding: 0 6px;
+  font-weight: 600;
+}
+
+.settings-page-about {
+  margin: 4px 0 12px;
+  color: var(--muted);
+}
+
+.settings-page-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.settings-page-option {
+  display: flex;
+  flex: 1 1 180px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  min-height: var(--touch);
+  padding: 8px 12px;
+  border: var(--border-width) solid var(--line);
+  border-radius: var(--radius);
+  background: var(--bg);
+  color: var(--fg);
+  text-align: left;
+  cursor: pointer;
+}
+
+.settings-page-option.is-on {
+  border-color: var(--accent);
+  box-shadow: inset 0 0 0 var(--border-width) var(--accent);
+}
+
+.settings-page-option-name {
+  font-weight: 600;
+}
+
+.settings-page-option-about {
+  color: var(--muted);
+  font-size: 0.875rem;
+}

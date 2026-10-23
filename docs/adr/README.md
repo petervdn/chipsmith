@@ -66,4 +66,5 @@ Consequences.
 | [0051](0051-new-is-not-saved-in-the-browser.md) | New keeps its choices while the page is open, not in the browser's storage | superseded by 0052 |
 | [0052](0052-new-starts-afresh-on-every-visit.md) | New starts afresh on every visit | accepted |
 | [0053](0053-a-tracks-mute-is-saved.md) | A track's mute is saved with the song; solo is not | accepted |
-| [0054](0054-the-composing-model-is-chosen-per-prompt.md) | The model that composes is chosen per prompt, beside Create | accepted |
+| [0054](0054-the-composing-model-is-chosen-per-prompt.md) | The model that composes is chosen per prompt, beside Create | superseded by 0055 |
+| [0055](0055-the-composing-model-is-a-setting.md) | The model that composes is a setting of the app, on a Settings page | accepted |

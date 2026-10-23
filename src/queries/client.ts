@@ -19,6 +19,7 @@ export type QueryKeyParams =
   | { type: 'guides' }
   | { type: 'structures' }
   | { type: 'programs' }
+  | { type: 'settings' }
   | { type: 'peaks'; clipId: string }
   | { type: 'clipNotes'; clipId: string };
 
@@ -45,6 +46,8 @@ export function getQueryKey(params: QueryKeyParams): QueryKey {
       return ['structures'];
     case 'programs':
       return ['programs'];
+    case 'settings':
+      return ['settings'];
     case 'peaks':
       return ['peaks', params.clipId];
     case 'clipNotes':

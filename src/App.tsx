@@ -7,6 +7,7 @@ import { GuidesPage } from './guides/GuidesPage.tsx';
 import { HomePage } from './home/HomePage.tsx';
 import { JobsPage } from './jobs/JobsPage.tsx';
 import { NewPage } from './new-song/NewPage.tsx';
+import { SettingsPage } from './settings/SettingsPage.tsx';
 import { SongPage } from './songs/SongPage.tsx';
 import { SongsPage } from './songs/SongsPage.tsx';
 import { PlayerBar } from './player/PlayerBar.tsx';
@@ -40,6 +41,7 @@ export function App() {
         {route.page === 'guides' && <GuidesPage />}
         {route.page === 'new' && <NewPage />}
         {route.page === 'jobs' && <JobsPage jobs={jobs} />}
+        {route.page === 'settings' && <SettingsPage />}
         {route.page === 'song' && <SongPage key={route.songId} songId={route.songId} />}
       </main>
       {route.page !== 'song' && <PlayerBar />}

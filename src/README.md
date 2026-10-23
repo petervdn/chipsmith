@@ -25,6 +25,7 @@ At the top: the app's shell and what every area uses.
 - `project-links.ts`: where the project is on GitHub: its source, its README and its part on a headless Furnace
 - `queries/`: everything read from or sent to the server (TanStack Query)
 - `router.ts`: which page the address is, and moving between them
+- `settings/`: the app's settings page
 - `songs/`: the songs list and a song opened
 - `stores/`: Zustand stores: the player, the preferences and the confirm question
 - `style.css`: the base: the colour tokens, the page, links, form controls and the shell
