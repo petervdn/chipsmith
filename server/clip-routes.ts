@@ -6,12 +6,14 @@
  */
 import type { IncomingMessage, ServerResponse } from 'node:http';
 import type { ClipListing, ClipOpened, TakeDeleted, TakeMade } from '../shared/api.types.ts';
+import { makeTakeWithoutSlides } from '../make/slides-take.ts';
 import { makeTransposedTake } from '../make/transpose-take.ts';
 import { NOTES_TAKE_LABEL, makeNotesTake, readClipNotes } from '../make/notes-take.ts';
 import {
   clipChangeSchema,
   notesRequestSchema,
   takeDeletionRequestSchema,
+  slidesRequestSchema,
   transposeRequestSchema,
 } from '../shared/api-requests.schema.ts';
 import { parseChecked } from '../shared/schema-parse.ts';
@@ -23,14 +25,16 @@ import { getTakeDeletionProblem, replaceTake } from './take-deletion.ts';
 
 /**
  * Answers a request to `/api/clips`, `/api/clips/<id>` (changed, or a take deleted),
- * `/api/clips/<id>/open`, `/api/clips/<id>/transpose` or `/api/clips/<id>/notes`.
+ * `/api/clips/<id>/open`, `/api/clips/<id>/transpose`, `/api/clips/<id>/without-slides` or
+ * `/api/clips/<id>/notes`.
  *
  * @param store - The clips and songs.
  * @param request - The request.
  * @param response - The response to answer on.
  * @param target - What the request is to.
  * @param target.id - The clip's id, or undefined for the pool.
- * @param target.file - What of the clip (`open`, `transpose`, `notes`), or undefined.
+ * @param target.file - What of the clip (`open`, `transpose`, `without-slides`, `notes`), or
+ *   undefined.
  * @param target.method - The request's method.
  * @returns A promise that settles when the answer is sent.
  */
@@ -58,6 +62,16 @@ export async function routeClips(
     );
     if (!store.songs.has(songId)) return sendError(response, 400, `no song ${songId}`);
     const clipId = await makeTransposedTake({ root: store.root, parent: clip, songId, semitones });
+    rescanStore(store);
+    const made: TakeMade = { clipId };
+    return sendJson(response, made);
+  }
+  if (file === 'without-slides' && method === 'POST') {
+    const clip = store.clips.get(id);
+    if (!clip) return sendError(response, 404, `no clip ${id}`);
+    const { song: songId } = parseChecked(slidesRequestSchema, await readJsonBody(request), 'body');
+    if (!store.songs.has(songId)) return sendError(response, 400, `no song ${songId}`);
+    const clipId = await makeTakeWithoutSlides({ root: store.root, parent: clip, songId });
     rescanStore(store);
     const made: TakeMade = { clipId };
     return sendJson(response, made);

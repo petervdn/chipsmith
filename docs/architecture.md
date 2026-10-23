@@ -60,7 +60,7 @@ Routes: `GET /api/songs`, `GET /api/songs/<id>`, `PATCH /api/songs/<id>` (status
 `DELETE /api/songs/<id>` (with the clips only it played), `PUT /api/songs/<id>/tracks` (the
 arrangement, saved from the editor), `POST /api/songs/<id>/split`, `GET` and `PATCH /api/settings` (the app's settings), `GET /api/clips`, `PATCH /api/clips/<id>` (status, tags, a variation's label), `DELETE /api/clips/<id>` (a take, 0039), and `GET /media/clips/<id>/audio.flac` with byte ranges, `GET /media/clips/<id>/source.fur` (a
 download) and `source.txt` (the .fur as tracker text, `fur/tracker-text.ts`), and
-`POST /api/encode/<type>` (a song's mix, as the page rendered it to a WAV, encoded to FLAC or MP3, 0049), `POST /api/clips/<id>/transpose` (a take of it transposed, 0037), `GET` and `POST
+`POST /api/encode/<type>` (a song's mix, as the page rendered it to a WAV, encoded to FLAC or MP3, 0049), `POST /api/clips/<id>/transpose` (a take of it transposed, 0037), `POST /api/clips/<id>/without-slides` (a take of it without its pitch slides), `GET` and `POST
 /api/clips/<id>/notes` (its notes for the note grid, and a take of them as edited), `POST /api/clips/<id>/open` (a copy in the system's temporary folder opened in Furnace,
 `server/clip-files.ts`, so the clip never changes).
 What they answer is typed in `shared/api.types.ts`.
@@ -114,8 +114,9 @@ with its title alone, the Songs tab marked above it.
   changes; `src/editor/ClipFamily.tsx`, `getVersionTree`); the take shown renamed in place or
   deleted, asked first, its blocks going back to the clip it was made from (0039;
   `src/editor/TakeActions.tsx`), quick
-  changes for a clip of pitched notes (an octave or a semitone up or down: a take made on the server
-  without Claude and put in the block; `src/editor/ClipOperations.tsx`, `make/transpose-take.ts`),
+  changes for a clip of pitched notes (an octave or a semitone up or down, or No slides, its pitch
+  slides taken out: a take made on the server without Claude and put in the block;
+  `src/editor/ClipOperations.tsx`, `make/transpose-take.ts`, `make/slides-take.ts`),
   Edit notes (the note grid: one pitched channel at a time, time across as in the timeline and pitch up (0041), in a box
   that scrolls both ways over the channel's range and an octave either side (0040), opened at its
   notes; a tap puts a note in or selects one, buttons move it

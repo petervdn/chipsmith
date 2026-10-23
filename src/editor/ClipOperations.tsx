@@ -1,8 +1,9 @@
 // Changes to the selected clip (or the selected block's) made without Claude (docs/adr/0037): an
-// octave or a semitone up or down, each a take rendered on the server and put in the clip's place;
+// octave or a semitone up or down, or its slides taken out, each a take rendered on the server and
+// put in the clip's place;
 // it is listed with the clip's other takes. Edit notes opens the note grid, which the clip's section
 // lays out under it. Shown only for a clip that plays pitched notes.
-import { useTransposeClip } from '../queries/clips.ts';
+import { useRemoveSlides, useTransposeClip } from '../queries/clips.ts';
 import '../jobs/jobs.css';
 import './ClipOperations.css';
 
@@ -40,7 +41,10 @@ export function ClipOperations({
   onToggleGrid,
   onMade,
 }: ClipOperationsProps) {
-  const { mutate: transpose, isPending, error } = useTransposeClip();
+  const transposing = useTransposeClip();
+  const removingSlides = useRemoveSlides();
+  const isPending = transposing.isPending || removingSlides.isPending;
+  const error = transposing.error ?? removingSlides.error;
   return (
     <div className="clip-operations">
       <h3 className="clip-operations-title">Quick changes</h3>
@@ -50,12 +54,20 @@ export function ClipOperations({
             key={semitones}
             type="button"
             disabled={isPending}
-            onClick={() => transpose({ clipId, songId, semitones }, { onSuccess: onMade })}
+            onClick={() => transposing.mutate({ clipId, songId, semitones }, { onSuccess: onMade })}
             data-tooltip={`a take with every note ${Math.abs(semitones) === 12 ? 'an octave' : 'a semitone'} ${semitones > 0 ? 'higher' : 'lower'}`}
           >
             {label}
           </button>
         ))}
+        <button
+          type="button"
+          disabled={isPending}
+          onClick={() => removingSlides.mutate({ clipId, songId }, { onSuccess: onMade })}
+          data-tooltip="a take with every pitch slide taken out (portamento, pitch and note slides)"
+        >
+          No slides
+        </button>
         <button
           type="button"
           className={isGridOpen ? 'is-open' : ''}

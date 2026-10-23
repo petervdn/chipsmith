@@ -13,6 +13,7 @@ song that plays it. The server reads what was made when it is asked to look agai
 - `make-take.ts`: a take of a clip, a variation with its label, made from a .fur file
 - `notes-take.ts`: a clip's notes for the note grid, and a take made from them once edited
 - `score.ts`: the kit a job's script writes its parts with: empty rows, notes in true pitch, bars and drum patterns as strings
+- `slides-take.ts`: a take of a clip without its pitch slides, made without Claude
 - `transpose-take.ts`: a take of a clip transposed, without Claude, labelled by how far
 - `take-check.ts`: whether a take fits its clip: the same chips and tempo, notes to play
 - `song-titles.ts`: the words each song's title is asked to have, and the titles already taken

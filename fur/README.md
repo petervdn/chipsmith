@@ -17,6 +17,7 @@ through Furnace's own text export.
 - `pattern.ts`: a pattern's rows, packed and unpacked
 - `read.ts`: a .fur file read into memory
 - `sid.ts`: a SID instrument's settings (its `64` feature), written and read
+- `slides.ts`: a .fur file without its pitch slides (01, 02, 03, E1, E2)
 - `tracker-text.ts`: a whole .fur file as text, as the tracker shows it: orders of patterns side by side
 - `transpose.ts`: a .fur with the notes of some channels moved by semitones
 - `write.ts`: what is in memory written as a .fur file

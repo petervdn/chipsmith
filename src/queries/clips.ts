@@ -8,6 +8,7 @@ import type { ClipListing, ClipOpened, TakeDeleted, TakeMade } from '../../share
 import type {
   NotesRequest,
   TakeDeletionRequest,
+  SlidesRequest,
   TransposeRequest,
 } from '../../shared/api-requests.schema.ts';
 import type { Status } from '../../shared/catalogue.schema.ts';
@@ -76,6 +77,28 @@ export function useTransposeClip() {
       const body: TransposeRequest = { song: songId, semitones };
       const made = await sendJson<TakeMade>(
         `/api/clips/${encodeURIComponent(clipId)}/transpose`,
+        'POST',
+        body,
+      );
+      await queryClient.invalidateQueries({ queryKey: getQueryKey({ type: 'clips' }) });
+      return made.clipId;
+    },
+  });
+}
+
+/**
+ * Makes a take of a clip without its slides, rendered on the server; the pool is read again before
+ * it settles, so the take is there to be put in a block.
+ *
+ * @returns The mutation, called with the clip's id (`clipId`) and the song it is asked in
+ * (`songId`); it gives the take's id.
+ */
+export function useRemoveSlides() {
+  return useMutation({
+    mutationFn: async ({ clipId, songId }: { clipId: string; songId: string }) => {
+      const body: SlidesRequest = { song: songId };
+      const made = await sendJson<TakeMade>(
+        `/api/clips/${encodeURIComponent(clipId)}/without-slides`,
         'POST',
         body,
       );

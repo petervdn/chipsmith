@@ -69,6 +69,12 @@ export const transposeRequestSchema = z.object({
 /** A take of a clip asked by transposing it. */
 export type TransposeRequest = z.input<typeof transposeRequestSchema>;
 
+/** A take of a clip asked without its slides, in a song. */
+export const slidesRequestSchema = z.object({ song: z.string() });
+
+/** A take of a clip asked without its slides. */
+export type SlidesRequest = z.input<typeof slidesRequestSchema>;
+
 /**
  * A take of a clip asked from one channel's rows as the note grid edited them: a new take, or the
  * take edited updated (docs/adr/0039).
