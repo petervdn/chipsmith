@@ -1,338 +1,237 @@
 /**
- * A job's way from prompt to songs or takes of a clip, one job at a time: Claude composes a script
- * (its notes read from its log every second), the script is built into a .fur file per song or take,
- * each is rendered and made, and the store is told to look again after each, so finished ones show
- * while the rest render.
+ * Jobs on their way from prompt to songs or takes of a clip. Each job has a Claude run per song or
+ * take asked for (job-runs.ts); up to MOST_RUNS go at once across the jobs, oldest job first, each
+ * followed every second. A run's script is built and rendered as soon as it has composed, one
+ * render at a time (job-render.ts), so its songs show while other runs still compose. A job is done
+ * once all its runs are; a run that fails fails its part, and the job fails when nothing is made.
  */
-import { spawn } from 'node:child_process';
-import { PROJECT_FOLDER, getSettings } from '../config/settings.ts';
-import { DEFAULT_COMPOSER_MODEL } from '../shared/composer-models.ts';
-import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import type { Job, JobSong } from '../shared/job.schema.ts';
-import type { BuiltPlan } from '../make/build-script.ts';
-import { makeSong } from '../make/make-song.ts';
-import { makeTake } from '../make/make-take.ts';
-import type { FurFile } from '../fur/fur.types.ts';
-import type { Tag } from '../shared/catalogue.schema.ts';
-import { getTakeChannels } from '../shared/clip-lineage.ts';
-import { readFurFile } from '../fur/read.ts';
-import type { LogPlace } from './claude-log.ts';
-import { LOG_START, getLaterStep, readLogNews, readRunTokens } from './claude-log.ts';
-import { isRunning, startClaude, stopClaude } from './claude-run.ts';
-import {
-  JOB_TOOLS,
-  getAllowedTools,
-  getJobPrompt,
-  getJobSystemPrompt,
-  getTakesPrompt,
-} from './job-prompt.ts';
-import { getJobKnowledge } from './job-knowledge.ts';
-import { getTakeContext } from './take-context.ts';
+import type { Job, JobRun } from '../shared/job.schema.ts';
+import { readRunTokens } from './claude-log.ts';
+import { stopClaude } from './claude-run.ts';
+import { getMessage, renderRun } from './job-render.ts';
+import type { RunPlace } from './job-run-state.ts';
+import { getNewRuns, getRunName, updateRun } from './job-run-state.ts';
+import type { RunWatch } from './job-runs.ts';
+import { followRun, resumeRun, startRun } from './job-runs.ts';
 import type { JobStore } from './jobs.ts';
 import { addNotes, getJobFolder, setPhase, updateJob } from './jobs.ts';
 import type { Store } from './store.ts';
-import { rescanStore } from './store.ts';
 
-/** Milliseconds between looks at running jobs. */
+/** Milliseconds between looks at the runs. */
 const TICK = 1000;
-/** What the runner keeps of the Claude run of the job in its composing phase. */
-type ClaudeWatch = { jobId: string; pid: number | undefined; place: LogPlace };
+/** The most Claude runs that compose at once, across all jobs. */
+const MOST_RUNS = 4;
 
 /**
- * Starts the ticker that moves jobs on, one at a time. A job that was building or rendering when the
- * server stopped goes on where it stopped: its .fur files are built again unless it was rendering,
- * and the songs it made already are kept.
+ * Starts the ticker that moves jobs on. The runs that were composing when it started are followed
+ * again; the ones that had composed are rendered, and, in a new process, the ones whose render was
+ * under way are rendered again (a song made already is kept).
  *
  * @param jobs - The jobs in memory.
  * @param store - The clips and songs, looked at again as each song is made.
- * @param isResuming - Whether this is a new process, whose jobs that were building or rendering
- *   are resumed; in a restart within the process that work is still going on.
- * @returns A function that stops the ticker.
+ * @param isResuming - Whether this is a new process; in a restart within the process a render under
+ *   way is still going on.
+ * @returns A function that stops the ticker; a render under way finishes, no other starts.
  */
 export function startJobRunner(jobs: JobStore, store: Store, isResuming: boolean): () => void {
-  let watch: ClaudeWatch | null = null;
-  let isBusy = false;
-  for (const job of jobs.jobs.values()) {
-    if (
-      (job.tokens ?? null) === null &&
-      (job.phase === 'done' || job.phase === 'failed' || job.phase === 'cancelled')
+  const watches = new Map<string, RunWatch>();
+  const renders: RunPlace[] = [];
+  let isRendering = false;
+  let isStopped = false;
+  fillInTokens(jobs);
+  for (const job of [...jobs.jobs.values()].filter((each) => !isOver(each))) {
+    getRunsOf(jobs, job).forEach((run, index) => {
+      const place = { jobId: job.id, index };
+      if (run.state === 'composing') {
+        watches.set(getKey(place), resumeRun(jobs, place, run.pid ?? undefined));
+      } else if (run.state === 'composed' || (isResuming && run.state === 'building')) {
+        renders.push(place);
+      }
+    });
+  }
+  function tick(): void {
+    for (const [key, watch] of watches) {
+      const job = jobs.jobs.get(watch.jobId);
+      if (!job || isOver(job)) {
+        watches.delete(key);
+        continue;
+      }
+      try {
+        const next = followRun(jobs, watch);
+        if (next) watches.set(key, next);
+        else {
+          watches.delete(key);
+          renders.push({ jobId: watch.jobId, index: watch.index });
+        }
+      } catch (error) {
+        watches.delete(key);
+        failRun(jobs, watch, error);
+      }
+    }
+    for (
+      let next = takeNextRun(jobs);
+      next;
+      next = watches.size < MOST_RUNS ? takeNextRun(jobs) : null
     ) {
-      const tokens = readRunTokens(join(getJobFolder(jobs, job.id), 'claude.log'));
-      if (tokens !== null) updateJob(jobs, job.id, { tokens });
+      if (watches.size >= MOST_RUNS) break;
+      try {
+        watches.set(getKey(next), startRun(jobs, store, next));
+      } catch (error) {
+        failRun(jobs, next, error);
+      }
     }
+    void renderNext();
   }
-  const resuming = isResuming
-    ? [...jobs.jobs.values()].filter((job) => job.phase === 'building' || job.phase === 'rendering')
-    : [];
-  async function tick(): Promise<void> {
-    if (isBusy) return;
-    isBusy = true;
+  async function renderNext(): Promise<void> {
+    if (isRendering || isStopped) return;
+    const run = renders.shift();
+    if (!run) return;
+    isRendering = true;
     try {
-      const resumed = resuming.shift();
-      if (resumed) {
-        const note = 'the server restarted; going on where it stopped';
-        addNotes(jobs, resumed.id, [{ text: note, tokens: null, stage: null }]);
-        await buildAndRender(jobs, store, resumed.id);
-      } else if (watch && jobs.jobs.get(watch.jobId)?.phase === 'cancelled') {
-        watch = null;
-      } else if (watch) {
-        watch = await followClaude(jobs, store, watch);
-      } else {
-        const composing = [...jobs.jobs.values()].find((job) => job.phase === 'composing');
-        const queued = [...jobs.jobs.values()].find((job) => job.phase === 'queued');
-        if (composing) watch = resumeWatching(jobs, composing);
-        else if (queued) watch = startComposing(jobs, store, queued);
-      }
+      await renderRun(jobs, store, run);
     } catch (error) {
-      const failedId = watch?.jobId ?? null;
-      if (failedId && jobs.jobs.get(failedId)?.phase !== 'cancelled') {
-        failJob(jobs, failedId, error);
-      }
-      watch = null;
+      failRun(jobs, run, error);
     } finally {
-      isBusy = false;
+      isRendering = false;
+      settleJob(jobs, run.jobId);
     }
   }
-  const timer = setInterval(() => void tick(), TICK);
-  return () => clearInterval(timer);
-}
-
-function startComposing(jobs: JobStore, store: Store, job: Job): ClaudeWatch {
-  setPhase(jobs, job.id, 'composing', 'Claude starts composing');
-  const folder = getJobFolder(jobs, job.id);
-  const pid = startClaude({
-    projectFolder: PROJECT_FOLDER,
-    prompt: job.takesOf
-      ? getTakesPrompt({
-          job,
-          folder,
-          root: jobs.root,
-          context: getTakeContext(store, job.takesOf),
-        })
-      : getJobPrompt(job, folder, jobs.root),
-    systemPrompt: getJobSystemPrompt(getJobKnowledge(PROJECT_FOLDER)),
-    tools: JOB_TOOLS,
-    allowedTools: getAllowedTools(folder),
-    model: job.model ?? DEFAULT_COMPOSER_MODEL,
-    effort: job.effort,
-    logFile: join(folder, 'claude.log'),
-  });
-  updateJob(jobs, job.id, { claudePid: pid ?? null });
-  return { jobId: job.id, pid, place: LOG_START };
+  const timer = setInterval(tick, TICK);
+  return () => {
+    clearInterval(timer);
+    isStopped = true;
+  };
 }
 
 /**
- * Watches a job that was composing when the server started. Its notes so far are in job.json, so the
- * log is read from its end, unless Claude finished meanwhile.
+ * Returns the key a run is kept under while it composes.
  *
- * @param jobs - The jobs in memory.
- * @param job - The job that was composing.
- * @returns What the runner keeps of the job's Claude run.
+ * @param run - The run.
+ * @param run.jobId - Its job.
+ * @param run.index - Its place among the job's runs.
+ * @returns Its job's id and its place.
  */
-function resumeWatching(jobs: JobStore, job: Job): ClaudeWatch {
-  const logFile = join(getJobFolder(jobs, job.id), 'claude.log');
-  const news = readLogNews(logFile, LOG_START, PROJECT_FOLDER);
-  const pid = job.claudePid ?? undefined;
-  return { jobId: job.id, pid, place: news.result ? LOG_START : news };
+function getKey({ jobId, index }: RunPlace): string {
+  return `${jobId}:${index}`;
 }
 
 /**
- * Reads what Claude said since the last look and adds it to the job's notes; when Claude is done,
- * builds and renders the songs. A Claude that ended with an error, or stopped without a result, is
- * an error.
+ * Returns whether a job is over: done, failed or cancelled.
  *
- * @param jobs - The jobs in memory.
- * @param store - The clips and songs.
- * @param watch - What the runner keeps of the job's Claude run.
- * @returns The watch, read further, or null when the job has moved past composing.
- */
-async function followClaude(
-  jobs: JobStore,
-  store: Store,
-  watch: ClaudeWatch,
-): Promise<ClaudeWatch | null> {
-  const folder = getJobFolder(jobs, watch.jobId);
-  const news = readLogNews(join(folder, 'claude.log'), watch.place, PROJECT_FOLDER);
-  if (news.notes.length > 0) addNotes(jobs, watch.jobId, news.notes);
-  const composeStep = jobs.jobs.get(watch.jobId)?.composeStep ?? null;
-  const laterStep = getLaterStep(composeStep, news.composeStep);
-  if (laterStep !== composeStep) updateJob(jobs, watch.jobId, { composeStep: laterStep });
-  if (news.tokens > 0) {
-    updateJob(jobs, watch.jobId, {
-      tokens: (jobs.jobs.get(watch.jobId)?.tokens ?? 0) + news.tokens,
-    });
-  }
-  const current = jobs.jobs.get(watch.jobId);
-  if (current?.now !== news.now || current.nowTokens !== news.nowTokens) {
-    updateJob(jobs, watch.jobId, { now: news.now, nowTokens: news.nowTokens });
-  }
-  if (news.result) {
-    updateJob(jobs, watch.jobId, {
-      summary: news.result.text,
-      now: null,
-      nowTokens: null,
-      tokens: news.result.tokens ?? jobs.jobs.get(watch.jobId)?.tokens ?? null,
-    });
-    if (news.result.isError) throw new Error(`Claude stopped with an error: ${news.result.text}`);
-    await buildAndRender(jobs, store, watch.jobId);
-    return null;
-  }
-  if (watch.pid !== undefined && !isRunning(watch.pid)) {
-    throw new Error('Claude stopped without a result (see claude.log)');
-  }
-  return { ...watch, place: { position: news.position, progress: news.progress } };
-}
-
-async function buildAndRender(jobs: JobStore, store: Store, jobId: string): Promise<void> {
-  const folder = getJobFolder(jobs, jobId);
-  const scriptFile = join(folder, 'script.ts');
-  if (!existsSync(scriptFile)) throw new Error('Claude wrote no script.ts');
-  const buildFolder = join(folder, 'build');
-  const planFile = join(buildFolder, 'plan.json');
-  const before = jobs.jobs.get(jobId);
-  if (before?.phase !== 'rendering' || !existsSync(planFile)) {
-    setPhase(jobs, jobId, 'building', 'running the script');
-    await runBuild(scriptFile, buildFolder);
-    if (jobs.jobs.get(jobId)?.phase === 'cancelled') return;
-  }
-  const plans: BuiltPlan[] = JSON.parse(readFileSync(planFile, 'utf8'));
-  let songs: JobSong[] = plans.map(({ title }, i) => {
-    const made = before?.songs[i];
-    return made?.state === 'done' && made.title === title
-      ? made
-      : { title, state: 'waiting', songId: null };
-  });
-  updateJob(jobs, jobId, { songs });
-  setPhase(
-    jobs,
-    jobId,
-    'rendering',
-    `rendering ${plans.length} ${getMadeNoun(before, plans.length)}`,
-  );
-  const job = jobs.jobs.get(jobId);
-  if (!job) return;
-  for (const [i, plan] of plans.entries()) {
-    if (jobs.jobs.get(jobId)?.phase === 'cancelled') return;
-    if (songs[i]?.state === 'done') continue;
-    songs = songs.map((song, index) => (index === i ? { ...song, state: 'rendering' } : song));
-    updateJob(jobs, jobId, { songs });
-    try {
-      const furFile = readFurFile(readFileSync(join(buildFolder, plan.furFileName)));
-      const songId = await makePlan(store, job, plan, furFile, scriptFile);
-      songs = songs.map((song, index) => (index === i ? { ...song, state: 'done', songId } : song));
-      rescanStore(store);
-    } catch (error) {
-      songs = songs.map((song, index) => (index === i ? { ...song, state: 'failed' } : song));
-      addNotes(jobs, jobId, [
-        { text: `${plan.title} failed: ${getMessage(error)}`, tokens: null, stage: null },
-      ]);
-    }
-    updateJob(jobs, jobId, { songs });
-  }
-  if (jobs.jobs.get(jobId)?.phase === 'cancelled') return;
-  const failed = songs.filter((song) => song.state === 'failed').length;
-  setPhase(
-    jobs,
-    jobId,
-    failed === songs.length ? 'failed' : 'done',
-    failed ? `done, ${failed} failed` : 'done',
-  );
-}
-
-/**
- * Makes what one plan of a job's script asks for: a song, or a take of the job's clip.
- *
- * @param store - The clips and songs.
  * @param job - The job.
- * @param plan - The plan, as plan.json holds it.
- * @param furFile - The .fur file the script built for it.
- * @param scriptFile - The job's script, copied into the clip made.
- * @returns The id of the song made, or of the song a take was asked in.
+ * @returns Whether it is over.
  */
-async function makePlan(
-  store: Store,
-  job: Job,
-  plan: BuiltPlan,
-  furFile: FurFile,
-  scriptFile: string,
-): Promise<string> {
-  const tags = plan.tags.map((name): Tag => ({ name, by: 'claude' }));
-  if (job.takesOf) {
-    const parent = store.clips.get(job.takesOf.clip);
-    if (!parent) throw new Error(`the clip ${job.takesOf.clip} is gone`);
-    await makeTake({
-      root: store.root,
-      parent,
-      channels: getTakeChannels(parent, (clipId) => store.clips.get(clipId)),
-      songId: job.takesOf.song,
-      furFile,
-      label: plan.title,
-      scriptFile,
-      tags,
-      key: plan.key,
-    });
-    return job.takesOf.song;
-  }
-  const made = await makeSong({
-    root: store.root,
-    title: plan.title,
-    furFile,
-    prompt: job.prompt,
-    guides: job.guides,
-    structure: job.structure,
-    harmony: job.harmony,
-    scriptFile,
-    tags,
-    status: 'new',
-    key: plan.key,
-    promptedFrom: job.promptedFrom,
-  });
-  return made.songId;
+function isOver(job: Job): boolean {
+  return job.phase === 'done' || job.phase === 'failed' || job.phase === 'cancelled';
 }
 
 /**
- * Returns what a job makes, as a word for a count of them.
+ * Returns a job's runs, giving a job from before runs the one run it had: composing, or composed
+ * when it was building or rendering.
  *
- * @param job - The job, or undefined when it is gone.
- * @param count - How many.
- * @returns "song", "songs", "take" or "takes".
+ * @param jobs - The jobs in memory.
+ * @param job - The job, not over.
+ * @returns Its runs.
  */
-function getMadeNoun(job: Job | undefined, count: number): string {
-  const noun = job?.takesOf ? 'take' : 'song';
-  return count === 1 ? noun : `${noun}s`;
-}
-
-function runBuild(scriptFile: string, buildFolder: string): Promise<void> {
-  return new Promise((resolve, reject) => {
-    const build = spawn(getSettings().node, ['make/build-script.ts', scriptFile, buildFolder], {
-      cwd: PROJECT_FOLDER,
-      stdio: ['ignore', 'ignore', 'pipe'],
-    });
-    let errors = '';
-    build.stderr.on('data', (chunk: Buffer) => {
-      errors = (errors + chunk.toString()).slice(-2000);
-    });
-    build.on('error', reject);
-    build.on('close', (code) => {
-      if (code === 0) resolve();
-      else reject(new Error(`the script failed: ${errors.trim().split('\n').slice(-3).join(' ')}`));
-    });
-  });
-}
-
-function failJob(jobs: JobStore, jobId: string, error: unknown): void {
-  updateJob(jobs, jobId, { error: getMessage(error) });
-  setPhase(jobs, jobId, 'failed', `failed: ${getMessage(error)}`);
-}
-
-function getMessage(error: unknown): string {
-  return error instanceof Error ? error.message : String(error);
+function getRunsOf(jobs: JobStore, job: Job): JobRun[] {
+  if (job.runs.length > 0 || job.phase === 'queued') return job.runs;
+  const run: JobRun = {
+    state: job.phase === 'composing' ? 'composing' : 'composed',
+    pid: job.claudePid,
+    composeStep: job.composeStep,
+    tokens: job.tokens,
+    summary: job.summary,
+  };
+  return updateJob(jobs, job.id, { runs: [run] }).runs;
 }
 
 /**
- * Cancels a job on its way: one waiting or composing stops at once (Claude is stopped), one building
- * or rendering stops after the song it is on. The songs made already stay.
+ * Returns the next run to start: the first waiting run of the oldest job that has one. A queued
+ * job is given its runs and moves to composing.
+ *
+ * @param jobs - The jobs in memory.
+ * @returns The run, or null when none waits.
+ */
+function takeNextRun(jobs: JobStore): RunPlace | null {
+  const waiting = [...jobs.jobs.values()]
+    .filter((job) => job.phase === 'queued' || job.phase === 'composing')
+    .sort((first, second) => first.created.localeCompare(second.created));
+  for (const job of waiting) {
+    const runs = job.runs.length > 0 ? job.runs : getNewRuns(job.songCount);
+    const index = runs.findIndex((run) => run.state === 'waiting');
+    if (index < 0) continue;
+    if (job.phase === 'queued') {
+      updateJob(jobs, job.id, { runs });
+      setPhase(jobs, job.id, 'composing', 'Claude starts composing');
+    }
+    return { jobId: job.id, index };
+  }
+  return null;
+}
+
+/**
+ * Marks a run failed. A job of one run fails with it; in a job of several the failure is a note,
+ * and the job settles once its other runs are over.
+ *
+ * @param jobs - The jobs in memory.
+ * @param run - The run.
+ * @param error - What went wrong.
+ */
+function failRun(jobs: JobStore, run: RunPlace, error: unknown): void {
+  const job = jobs.jobs.get(run.jobId);
+  if (!job || isOver(job)) return;
+  updateRun(jobs, run, { state: 'failed', pid: null });
+  if (job.runs.length === 1) {
+    updateJob(jobs, job.id, { error: getMessage(error), now: null, nowTokens: null });
+    setPhase(jobs, job.id, 'failed', `failed: ${getMessage(error)}`);
+    return;
+  }
+  const text = `${getRunName(job, run.index)} failed: ${getMessage(error)}`;
+  addNotes(jobs, job.id, [{ text, tokens: null, stage: null }]);
+  settleJob(jobs, job.id);
+}
+
+/**
+ * Ends a job once none of its runs has anything left to do: done when it made something, failed
+ * when it made nothing.
+ *
+ * @param jobs - The jobs in memory.
+ * @param jobId - The job.
+ */
+function settleJob(jobs: JobStore, jobId: string): void {
+  const job = jobs.jobs.get(jobId);
+  if (!job || isOver(job)) return;
+  if (job.runs.some((run) => run.state !== 'built' && run.state !== 'failed')) return;
+  const made = job.songs.filter((song) => song.state === 'done').length;
+  const failed =
+    job.songs.filter((song) => song.state === 'failed').length +
+    job.runs.filter((run) => run.state === 'failed').length;
+  if (made === 0) {
+    const error = job.runs.length > 1 ? 'no run made anything (see the steps)' : 'nothing was made';
+    updateJob(jobs, jobId, { error, now: null, nowTokens: null });
+    setPhase(jobs, jobId, 'failed', `failed: ${error}`);
+    return;
+  }
+  setPhase(jobs, jobId, 'done', failed ? `done, ${failed} failed` : 'done');
+}
+
+/**
+ * Fills in the tokens of jobs over before tokens were kept, from their logs.
+ *
+ * @param jobs - The jobs in memory.
+ */
+function fillInTokens(jobs: JobStore): void {
+  for (const job of jobs.jobs.values()) {
+    if ((job.tokens ?? null) !== null || !isOver(job)) continue;
+    const tokens = readRunTokens(join(getJobFolder(jobs, job.id), 'claude.log'));
+    if (tokens !== null) updateJob(jobs, job.id, { tokens });
+  }
+}
+
+/**
+ * Cancels a job on its way: its runs' Claudes are stopped at once, and a render under way stops
+ * after the song it is on. The songs made already stay.
  *
  * @param jobs - The jobs in memory.
  * @param jobId - The job to cancel; one that is over is left as it is.
@@ -340,12 +239,14 @@ function getMessage(error: unknown): string {
 export function cancelJob(jobs: JobStore, jobId: string): void {
   const job = jobs.jobs.get(jobId);
   if (!job || job.finished) return;
-  if (job.phase === 'composing' && job.claudePid) stopClaude(job.claudePid);
+  const pids = [job.claudePid, ...job.runs.map((run) => run.pid)];
+  for (const pid of pids) if (pid) stopClaude(pid);
+  const isMaking = job.runs.some((run) => run.state === 'building');
   setPhase(
     jobs,
     jobId,
     'cancelled',
-    job.phase === 'building' || job.phase === 'rendering'
+    isMaking || job.phase === 'building' || job.phase === 'rendering'
       ? 'cancelled; the song being made is finished, the rest are not'
       : 'cancelled',
   );

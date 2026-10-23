@@ -72,3 +72,4 @@ Consequences.
 | [0057](0057-a-job-starts-lean.md) | A job's Claude starts with only its tools, and no settings, CLAUDE.md, skills or MCP | accepted |
 | [0058](0058-a-take-starts-from-its-clip.md) | A take starts from its clip's .fur and writes only what it changes | accepted |
 | [0059](0059-bars-are-taken-out-in-the-arrangement.md) | Bars are taken out of a song in its blocks, not by a new clip | accepted |
+| [0060](0060-a-job-composes-a-song-per-run.md) | A job composes each song in a run of its own; up to four runs go at once | accepted |

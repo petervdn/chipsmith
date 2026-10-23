@@ -135,6 +135,7 @@ export function createJob(
     summary: null,
     error: null,
     claudePid: null,
+    runs: [],
     promptedFrom,
     removed: null,
   };

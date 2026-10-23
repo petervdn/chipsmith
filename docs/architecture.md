@@ -240,26 +240,33 @@ checking it, building, rendering, done; `src/jobs/job-stages.ts`, the compose st
 tool calls: writing once it first writes the script, checking once it first runs the check; each
 step keeps the stage it shows, and the list of steps has a labelled line where a stage starts) and
 its songs from the start (a line for each asked for, its title once built; `src/jobs/job-songs.ts`); a running job also has one line above the songs list and on the
-home page, and the Jobs tab turns while one runs. The runner (`server/job-runner.ts`) takes one job at a time through its
-phases:
-1. **composing**: Claude Code runs headless (`server/claude-run.ts`: `claude -p` with the job's model, the
-   settings' when it was sent (`--model`), and only the tools it uses, without the project's or the
-   user's settings, CLAUDE.md, memory, skills or MCP servers; detached, its
-   stream written to `jobs/<id>/claude.log`). Its system prompt holds the composing skills
-   (`.claude/skills/`) and the example script in full, read when the job starts
-   (`server/job-knowledge.ts`; 0056). It follows the write-song skill and writes
-   `jobs/<id>/script.ts`, whose default export gives a plan per song (`make/song-plan.ts`), its music
-   made with `make/fur-file-builder.ts`, each title in the number of words the prompt gives (2 to 6,
-   chosen at random; `make/song-titles.ts`); it checks them with `make/check-script.ts`, which fails
-   on a title another song has (0032). Its lines and what
-   its tools do are read from the log every second (`server/claude-log.ts`) and become the job's
-   notes; what it is in the middle of (thinking, a line or a file being written, from the streamed
-   partial messages) is the card's "now" line.
-2. **building**: `make/build-script.ts` runs the script in a process of its own and writes a .fur per
-   song; the card lists the songs.
+home page, and the Jobs tab turns while one runs. A job has a Claude run per song or take asked for (one when no count
+was asked for), each writing its own script and composing at once with the others; the runner
+(`server/job-runner.ts`) keeps up to four runs going across all jobs, the oldest job first, and
+renders one at a time (0060). Each run goes through:
+1. **composing**: Claude Code runs headless (`server/claude-run.ts`, `server/job-runs.ts`: `claude -p`
+   with the job's model, the settings' when it was sent (`--model`), and only the tools it uses,
+   without the project's or the user's settings, CLAUDE.md, memory, skills or MCP servers; detached,
+   its stream written to `jobs/<id>/claude.log`, the second run's to `claude-2.log`, and so on;
+   `server/job-run-state.ts`). Its system prompt holds the composing skills (`.claude/skills/`) and
+   the example script in full, read when it starts (`server/job-knowledge.ts`; 0056); its prompt
+   says its part when there are several (song 2 of 3, and how it stands apart from the others,
+   which it cannot see). It follows the write-song skill and writes its script (`jobs/<id>/script.ts`,
+   `script-2.ts`, …), whose default export gives a plan per song (`make/song-plan.ts`), its music
+   made with `make/score.ts` and `make/fur-file-builder.ts`, each title in the number of words the
+   prompt gives (2 to 6, chosen at random; `make/song-titles.ts`); it checks it with
+   `make/check-script.ts`, which fails on a title another song has (0032). Its lines and what its
+   tools do are read from its log every second (`server/claude-log.ts`) and become the job's notes,
+   named by the run's part when there are several; what it is in the middle of (thinking, a line or
+   a file being written, from the streamed partial messages) is the card's "now" line. The job's
+   tokens are its runs' added up, and its compose stage the least advanced run's.
+2. **building**, as soon as the run is done: `make/build-script.ts` runs its script in a process of
+   its own and writes a .fur per song (`server/job-render.ts`).
 3. **rendering**: each song is made and rendered in turn (`make/make-song.ts`) and shows in the list as
-   soon as it is done.
-4. **done** with Claude's reply, or **failed** with the reason.
+   soon as it is done, while other runs may still compose. The job shows as building and rendering
+   only once none of its runs composes.
+4. The job is **done** once all its runs are, with Claude's replies, or **failed** when nothing was
+   made. A run that fails fails its part only.
 
 A job of **takes of a clip** (0037; `takesOf: { clip, song }` on `POST /api/jobs`, sent from the
 song's editor) goes the same way: Claude is told the clip, worked out by the server (its facts, its song and

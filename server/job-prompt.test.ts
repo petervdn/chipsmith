@@ -2,7 +2,7 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import type { Job } from '../shared/job.schema.ts';
-import { getTakesPrompt } from './job-prompt.ts';
+import { getJobPrompt, getTakesPrompt } from './job-prompt.ts';
 import type { TakeContext } from './take-context.ts';
 
 const JOB: Job = {
@@ -29,6 +29,7 @@ const JOB: Job = {
   error: null,
   promptedFrom: null,
   claudePid: null,
+  runs: [],
   removed: null,
 };
 
@@ -54,6 +55,8 @@ test('a prompt for takes of a stem names it, the count, the channel kept and the
     job: JOB,
     folder: '/data/jobs/j0042',
     root: '/data',
+    scriptFile: '/data/jobs/j0042/script.ts',
+    part: { index: 0, count: 1 },
     context: CONTEXT,
   });
   assert.match(prompt, /\/data\/clips\/c0101\//);
@@ -71,10 +74,40 @@ test('a prompt for takes of a whole clip keeps every channel', () => {
     job: { ...JOB, songCount: 1 },
     folder: '/data/jobs/j0042',
     root: '/data',
+    scriptFile: '/data/jobs/j0042/script.ts',
+    part: { index: 0, count: 1 },
     context: { ...CONTEXT, keptChannels: null, script: null, trackerText: 'C-4 00 ..' },
   });
   assert.match(prompt, /Make 1 take:/);
   assert.match(prompt, /keeps every channel/);
   assert.match(prompt, /as tracker text/);
   assert.match(prompt, /C-4 00 \.\./);
+});
+
+test('a run of several makes one take and is told its part and its lean', () => {
+  const prompt = getTakesPrompt({
+    job: JOB,
+    folder: '/data/jobs/j0042',
+    root: '/data',
+    scriptFile: '/data/jobs/j0042/script-2.ts',
+    part: { index: 1, count: 3 },
+    context: CONTEXT,
+  });
+  assert.match(prompt, /Write the script to \/data\/jobs\/j0042\/script-2\.ts/);
+  assert.match(prompt, /Make 1 take:/);
+  assert.match(prompt, /take 2 of 3/);
+  assert.match(prompt, /leaning on the register/);
+});
+
+test('a run of several songs makes one, placed among the others by tempo', () => {
+  const prompt = getJobPrompt({
+    job: { ...JOB, takesOf: null },
+    folder: '/data/jobs/j0042',
+    root: '/data',
+    scriptFile: '/data/jobs/j0042/script-3.ts',
+    part: { index: 2, count: 3 },
+  });
+  assert.match(prompt, /Make 1 song:/);
+  assert.match(prompt, /song 3 of 3/);
+  assert.match(prompt, /yours is number 3/);
 });

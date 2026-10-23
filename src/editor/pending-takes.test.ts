@@ -27,13 +27,14 @@ const JOB: Job = {
   notes: [],
   now: null,
   songs: [
-    { title: 'walking bass', state: 'done', songId: 's1' },
-    { title: 'octave jumps', state: 'rendering', songId: null },
+    { title: 'walking bass', state: 'done', songId: 's1', run: null },
+    { title: 'octave jumps', state: 'rendering', songId: null, run: null },
   ],
   summary: null,
   error: null,
   promptedFrom: null,
   claudePid: null,
+  runs: [],
   removed: null,
 };
 

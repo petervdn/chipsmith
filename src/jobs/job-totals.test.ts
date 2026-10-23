@@ -24,13 +24,14 @@ const JOB: Job = {
   notes: [],
   now: null,
   songs: [
-    { title: 'One', state: 'done', songId: 's0001' },
-    { title: 'Two', state: 'failed', songId: null },
+    { title: 'One', state: 'done', songId: 's0001', run: null },
+    { title: 'Two', state: 'failed', songId: null, run: null },
   ],
   summary: null,
   error: null,
   promptedFrom: null,
   claudePid: null,
+  runs: [],
   removed: null,
 };
 

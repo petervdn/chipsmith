@@ -58,10 +58,44 @@ export const jobSongSchema = z.object({
   title: z.string(),
   state: z.enum(['waiting', 'rendering', 'done', 'failed']),
   songId: z.string().nullable(),
+  /** The run whose script built it, by its place among the job's runs; null from before runs. */
+  run: z.number().nullable().default(null),
 });
 
 /** A song a job makes, or a take. */
 export type JobSong = z.infer<typeof jobSongSchema>;
+
+/**
+ * Where one Claude run of a job is: a job runs one per song or take asked for, side by side; each
+ * writes its own script, built and rendered as soon as it is done.
+ */
+export const jobRunStateSchema = z.enum([
+  'waiting',
+  'composing',
+  'composed',
+  'building',
+  'built',
+  'failed',
+]);
+
+/** Where one Claude run of a job is. */
+export type JobRunState = z.infer<typeof jobRunStateSchema>;
+
+/** One Claude run of a job, writing one song or take (or, asked for none in number, all of them). */
+export const jobRunSchema = z.object({
+  state: jobRunStateSchema,
+  /** Claude's process id while it composes, to see after a restart whether it still runs. */
+  pid: z.number().nullable().default(null),
+  /** How far its composing has come. */
+  composeStep: z.enum(COMPOSE_STEPS).nullable().default(null),
+  /** Its output tokens, thinking included: counted as it runs, exact at its end. */
+  tokens: z.number().nullable().default(null),
+  /** Claude's reply at its end. */
+  summary: z.string().nullable().default(null),
+});
+
+/** One Claude run of a job. */
+export type JobRun = z.infer<typeof jobRunSchema>;
 
 /** A job as jobs/<id>/job.json holds it. */
 export const jobSchema = z.object({
@@ -110,8 +144,10 @@ export const jobSchema = z.object({
   error: z.string().nullable().default(null),
   /** The song whose prompt this is, sent again; the songs the job makes note it. */
   promptedFrom: z.string().nullable().default(null),
-  /** The process id of Claude while it composes, to see after a restart whether it still runs. */
+  /** The process id of Claude while it composed, for a job from before it had runs. */
   claudePid: z.number().nullable().default(null),
+  /** Its Claude runs, one per song or take asked for; none for a job from before they were. */
+  runs: z.array(jobRunSchema).default([]),
   /** When it was taken off the Jobs page, once over; its files are kept. */
   removed: z.string().nullable().default(null),
 });

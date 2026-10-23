@@ -29,6 +29,7 @@ const JOB: Job = {
   error: null,
   promptedFrom: null,
   claudePid: null,
+  runs: [],
   removed: null,
 };
 
@@ -61,7 +62,7 @@ test('a job that failed or was stopped shows where', () => {
     getStates({ phase: 'cancelled', composeStep: 'checking', notes: [NOTE] }),
     'done done stopped todo todo todo',
   );
-  const songs = [{ title: 'A', state: 'failed' as const, songId: null }];
+  const songs = [{ title: 'A', state: 'failed' as const, songId: null, run: null }];
   assert.equal(
     getStates({ phase: 'failed', songs, notes: [NOTE] }),
     'done done done done failed todo',

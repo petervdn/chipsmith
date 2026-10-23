@@ -28,12 +28,13 @@ const JOB: Job = {
   error: null,
   promptedFrom: null,
   claudePid: null,
+  runs: [],
   removed: null,
 };
 
 const BUILT: Job['songs'] = [
-  { title: 'One', state: 'done', songId: 's0001' },
-  { title: 'Two', state: 'failed', songId: null },
+  { title: 'One', state: 'done', songId: 's0001', run: null },
+  { title: 'Two', state: 'failed', songId: null, run: null },
 ];
 
 test('before its script is built, a line for each song asked for, to be written', () => {

@@ -94,27 +94,73 @@ function getGuideLines(guides: SentGuide[]): string[] {
   ];
 }
 
+/** A run's part of its job: its place among the runs, from 0, and how many there are. */
+export type RunPart = { index: number; count: number };
+
+/** What each take of several leans on to stand apart, by its place. */
+const TAKE_LEANS = ['the rhythm', 'the register', 'the contour', 'the density', 'the articulation'];
+
 /**
- * Returns the prompt a job's Claude is sent: the job, where its script goes, the user's prompt and
- * the guides, structure and harmony sent with it.
+ * Returns the lines that tell a run its part of a job of several runs, which compose at once
+ * without seeing each other, and how its song or take stands apart from the others.
  *
- * @param job - The job.
- * @param folder - The job's folder.
- * @param root - The data folder.
+ * @param part - The run's part.
+ * @param part.index - Its place among the runs, from 0.
+ * @param part.count - How many runs there are.
+ * @param isTakes - Whether the job makes takes of a clip.
+ * @returns The lines, or none for a job of one run.
+ */
+function getPartLines({ index, count }: RunPart, isTakes: boolean): string[] {
+  if (count <= 1) return [];
+  const noun = isTakes ? 'take' : 'song';
+  const number = index + 1;
+  return [
+    `This is ${noun} ${number} of ${count}: the others are made at the same time by other runs, which you cannot see.`,
+    isTakes
+      ? `Make yours stand apart from them by leaning on ${TAKE_LEANS[index % TAKE_LEANS.length]}.`
+      : `Make yours stand apart: of the ${count}, from the slowest to the fastest, yours is number ${number} (unless the prompt sets the tempo); choose its meter and groove to differ too.`,
+  ];
+}
+
+/** What a prompt for songs is made from. */
+export type JobPromptParts = {
+  job: Job;
+  /** The job's folder. */
+  folder: string;
+  /** The data folder. */
+  root: string;
+  /** The run's script. */
+  scriptFile: string;
+  /** The run's part of the job. */
+  part: RunPart;
+};
+
+/**
+ * Returns the prompt a run of a job is sent: the job, where its script goes, how many songs and
+ * its part of them, the user's prompt and the guides, structure and harmony sent with it.
+ *
+ * @param parts - What the prompt is made from.
+ * @param parts.job - The job.
+ * @param parts.folder - The job's folder.
+ * @param parts.root - The data folder.
+ * @param parts.scriptFile - The run's script.
+ * @param parts.part - The run's part of the job.
  * @returns The prompt, as lines joined.
  */
-export function getJobPrompt(job: Job, folder: string, root: string): string {
+export function getJobPrompt({ job, folder, root, scriptFile, part }: JobPromptParts): string {
+  const songCount = part.count > 1 ? 1 : job.songCount;
   return [
-    `Job ${job.id}. Write the script to ${getProjectPath(join(folder, 'script.ts'))}.`,
+    `Job ${job.id}. Write the script to ${getProjectPath(scriptFile)}.`,
     `The data folder (songs/, clips/) is ${getProjectPath(root)}.`,
-    `The script imports the project's modules from ${relative(folder, PROJECT_FOLDER)}/ (e.g. ${relative(folder, PROJECT_FOLDER)}/make/fur-file-builder.ts).`,
+    `The script imports the project's modules from ${relative(folder, PROJECT_FOLDER)}/ (e.g. ${relative(folder, PROJECT_FOLDER)}/make/score.ts).`,
     '',
-    job.songCount
-      ? `Make ${job.songCount} ${job.songCount === 1 ? 'song' : 'songs'}: this count wins over any in the prompt.`
+    songCount
+      ? `Make ${songCount} ${songCount === 1 ? 'song' : 'songs'}: this count wins over any in the prompt.`
       : '',
-    job.songCount
-      ? `Title the songs in this many words, in order: ${getTitleWordCounts(job.songCount).join(', ')}.`
+    songCount
+      ? `Title the songs in this many words, in order: ${getTitleWordCounts(songCount).join(', ')}.`
       : '',
+    ...getPartLines(part, false),
     "The user's prompt:",
     job.prompt,
     ...getGuideLines(job.guides),
@@ -130,6 +176,10 @@ export type TakesPromptParts = {
   folder: string;
   /** The data folder. */
   root: string;
+  /** The run's script. */
+  scriptFile: string;
+  /** The run's part of the job. */
+  part: RunPart;
   /** What the server worked out of the clip (take-context.ts). */
   context: TakeContext;
 };
@@ -172,12 +222,21 @@ function getClipLines(context: TakeContext, clipFolder: string): string[] {
  * @param parts.job - The job.
  * @param parts.folder - The job's folder.
  * @param parts.root - The data folder.
+ * @param parts.scriptFile - The run's script.
+ * @param parts.part - The run's part of the job.
  * @param parts.context - What the server worked out of the clip.
  * @returns The prompt, as lines joined.
  */
-export function getTakesPrompt({ job, folder, root, context }: TakesPromptParts): string {
-  const scriptFile = getProjectPath(join(folder, 'script.ts'));
-  const takeCount = job.songCount ?? 1;
+export function getTakesPrompt({
+  job,
+  folder,
+  root,
+  scriptFile: runScript,
+  part,
+  context,
+}: TakesPromptParts): string {
+  const scriptFile = getProjectPath(runScript);
+  const takeCount = part.count > 1 ? 1 : (job.songCount ?? 1);
   return [
     `Job ${job.id}: takes of a clip (the furnace-song skill, "Takes of a clip"). Write the script to ${scriptFile}.`,
     `The data folder (songs/, clips/) is ${getProjectPath(root)}.`,
@@ -187,6 +246,7 @@ export function getTakesPrompt({ job, folder, root, context }: TakesPromptParts)
     '',
     `Make ${takeCount} ${takeCount === 1 ? 'take' : 'takes'}: one plan each, the clip changed as the prompt asks${takeCount === 1 ? '' : ', each in its own way'}.`,
     'Title each plan with its label: what it changed, in 2 to 5 words, lower case ("walking bass", "octave jumps").',
+    ...getPartLines(part, true),
     "Keep the clip's chips and tempo, and its length unless the prompt asks for another.",
     `Check it with: node make/check-script.ts ${scriptFile} --takes-of ${context.clipId}`,
     '',

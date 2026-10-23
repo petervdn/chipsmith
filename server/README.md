@@ -17,8 +17,11 @@ back to its file (docs/adr/0006).
 - `http.ts`: answering a request: JSON, plain text, a file with byte ranges or as a download, an error
 - `job-knowledge.ts`: the skills and example script a job's Claude is given in full when it starts
 - `job-prompt.ts`: what a job's Claude is told: its prompt, what comes before it, the tools it may use
+- `job-render.ts`: a run's script built and its songs or takes rendered and made, one at a time
 - `job-routes.ts`: `/api/jobs`: the jobs listed, a prompt sent as a job, a job cancelled or removed
-- `job-runner.ts`: a job's way from prompt to songs: compose, build, render
+- `job-run-state.ts`: a job's runs as job.json keeps them, their files, and what the job shows of them together
+- `job-runner.ts`: jobs on their way: up to four Claude runs at once, each run's script rendered as soon as it is done
+- `job-runs.ts`: one Claude run of a job: started with its part, followed through its log, picked up again
 - `jobs.ts`: the jobs in memory and in jobs/<id>/job.json
 - `missing-audio.ts`: clips with a source and no audio, rendered when the server starts
 - `store.ts`: the clips and songs in memory, read from their folders and written back to them
