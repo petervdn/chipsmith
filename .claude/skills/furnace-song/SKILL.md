@@ -16,9 +16,8 @@ Your work is that one file, a script that makes the songs. The app builds it, re
 puts them in the songs list; you do not write clips or songs. You run in the project folder; so do
 the commands below.
 
-1. Read `CLAUDE.md` (working rules).
-2. Write the script, starting from `make/example-script.ts`.
-3. Check it: `node make/check-script.ts <data>/jobs/<id>/script.ts`. It builds and renders every song
+1. Write the script, starting from `make/example-script.ts`, with the modules in "The API" below.
+2. Check it: `node make/check-script.ts <data>/jobs/<id>/script.ts`. It builds and renders every song
    once and prints its length, peak and the gain that brings the peak to 0.75. Set the chips' volumes
    (`chipVolumes`) from it and check again. That is the whole check, unless something new needs more
    (`node fur/dump.ts <file.fur> --ins --pat CHANNEL,ORDER` shows a .fur file).
@@ -57,6 +56,43 @@ export default function makeSongs(): SongPlan[] {
   and splitting the song into channels names its tracks by them ("Bass · Triangle").
 - Rows (`fur/fur.types.ts`): `{ note, instrument, volume, effects }`, any left out. Notes from
   `getNoteValue('D-3')` (`fur/notes.ts`); `NOTE_OFF` ends one.
+
+## The API
+
+What a script uses, from the project folder (each import names its file with `.ts`):
+
+```ts
+// fur/fur.types.ts
+type Effect = { code: number | null; value: number | null }; // 0x03 portamento, 0xed delay, …
+type Row = { note?: number; instrument?: number; volume?: number; effects?: Effect[] };
+
+// fur/notes.ts: a note's value from its Furnace name ("D-3", "C#5", "OFF"; C-0 is 60), and back
+getNoteValue(name: string): number;
+getNoteName(value: number): string;
+NOTE_OFF; NOTE_RELEASE; MACRO_RELEASE;
+
+// fur/instrument.ts
+type Macro = { kind: MacroKind; values: number[]; loop?: number; release?: number; speed?: number };
+// MacroKind: 'vol' | 'arp' | 'duty' | 'wave' | 'pitch'; the SID's 'filterMode' | 'resonance' |
+// 'cutoff' | 'special'; the PSG's 'ex2' | 'ex3' | 'alg' | 'phaseReset' (their skills)
+makeInstrument(name: string, type: number, macros: Macro[], features?: Uint8Array[]): Uint8Array;
+makeWavetable(samples: number[], name?: string): Uint8Array; // 0..255 each, 32 for the SCC
+ARP_FIXED; NES_INSTRUMENT; PSG_INSTRUMENT; // the SCC's and the SID's: their skills
+
+// make/fur-file-builder.ts
+buildFurFile(draft: {
+  title: string; comment?: string; chips: ('nes' | 'psg' | 'scc' | 'sid')[];
+  bpm: number; beatsPerBar: number; rowsPerBeat?: number; patternLength?: number; // 4, 64
+  channels: (Row | null)[][]; instruments: Uint8Array[]; wavetables?: Uint8Array[];
+  chipVolumes?: number[]; channelNames?: string[];
+}): FurFile;
+
+// make/song-plan.ts: what the script's default export returns, one per song
+type SongPlan = { title: string; furFile: FurFile; tags?: string[]; key?: string | null };
+
+// fur/read.ts: an existing .fur file, to start from
+readFurFile(file: Uint8Array): FurFile;
+```
 
 ## Pitch (measured)
 

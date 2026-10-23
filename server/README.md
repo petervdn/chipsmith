@@ -15,6 +15,7 @@ back to its file (docs/adr/0006).
 - `examples.ts`: the example songs copied into an empty data folder
 - `guides.ts`: the style guides in memory and in guides/<id>/guide.json
 - `http.ts`: answering a request: JSON, plain text, a file with byte ranges or as a download, an error
+- `job-knowledge.ts`: the skills and example script a job's Claude is given in full when it starts
 - `job-prompt.ts`: what a job's Claude is told: its prompt, what comes before it, the tools it may use
 - `job-routes.ts`: `/api/jobs`: the jobs listed, a prompt sent as a job, a job cancelled or removed
 - `job-runner.ts`: a job's way from prompt to songs: compose, build, render

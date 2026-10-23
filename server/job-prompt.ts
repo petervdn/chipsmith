@@ -32,14 +32,26 @@ export function getAllowedTools(jobFolder: string): string[] {
     'Bash(node fur/dump.ts *)',
   ];
 }
-/** What a job's Claude is told before the prompt: how it runs and what it ends with. */
-export const JOB_SYSTEM_PROMPT = [
-  'You are running headless, started from the chiptune app; the user is not at this terminal and cannot answer.',
-  'Use the write-song skill first and follow it; it leads to furnace-song and the chip skills.',
-  'Before each step, say in one short line what you are about to do; the user sees these lines live.',
-  'That includes the long ones: say a line before you plan the songs and before you write or rewrite the script.',
-  'Finish with a short plain reply (1-3 sentences): what you made and anything the user should know.',
-].join(' ');
+/**
+ * Returns what a job's Claude is told before the prompt: how it runs, what it ends with, and the
+ * skills and example script it composes by, given in full (job-knowledge.ts).
+ *
+ * @param knowledge - The skills and the example script, as one text.
+ * @returns The system prompt's addition.
+ */
+export function getJobSystemPrompt(knowledge: string): string {
+  return [
+    [
+      'You are running headless, started from the chiptune app; the user is not at this terminal and cannot answer.',
+      'Follow the write-song skill; it leads to furnace-song and the chip skills.',
+      'Those skills and make/example-script.ts are given below in full, with the API furnace-song lists: do not load the skills or read those files again.',
+      'Before each step, say in one short line what you are about to do; the user sees these lines live.',
+      'That includes the long ones: say a line before you plan the songs and before you write or rewrite the script.',
+      'Finish with a short plain reply (1-3 sentences): what you made and anything the user should know.',
+    ].join(' '),
+    knowledge,
+  ].join('\n\n');
+}
 
 /**
  * Returns a folder as Claude Code's permissions read it: relative to the project folder it runs in,

@@ -241,7 +241,9 @@ home page, and the Jobs tab turns while one runs. The runner (`server/job-runner
 phases:
 1. **composing**: Claude Code runs headless (`server/claude-run.ts`: `claude -p` with the job's model, the
    settings' when it was sent (`--model`), detached, its
-   stream written to `jobs/<id>/claude.log`). It follows the write-song skill (`.claude/skills/`) and writes
+   stream written to `jobs/<id>/claude.log`). Its system prompt holds the composing skills
+   (`.claude/skills/`) and the example script in full, read when the job starts
+   (`server/job-knowledge.ts`; 0056). It follows the write-song skill and writes
    `jobs/<id>/script.ts`, whose default export gives a plan per song (`make/song-plan.ts`), its music
    made with `make/fur-file-builder.ts`, each title in the number of words the prompt gives (2 to 6,
    chosen at random; `make/song-titles.ts`); it checks them with `make/check-script.ts`, which fails
