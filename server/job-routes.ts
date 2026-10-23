@@ -50,7 +50,7 @@ export async function routeJobs(
       await readJsonBody(request),
       'body',
     );
-    const model = getAppSettings(jobs.root).composerModel;
+    const { composerModel: model, composerEffort: effort } = getAppSettings(jobs.root);
     if (takesOf) {
       checkTakesTarget(store, takesOf);
       if (songCount !== null && songCount > MOST_TAKES) {
@@ -65,6 +65,7 @@ export async function routeJobs(
           songCount: songCount ?? 1,
           takesOf,
           model,
+          effort,
         }),
       );
     }
@@ -81,6 +82,7 @@ export async function routeJobs(
         songCount,
         harmony,
         model,
+        effort,
       }),
     );
   }

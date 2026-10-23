@@ -150,8 +150,9 @@ with its title alone, the Songs tab marked above it.
   guides as chips to send with it (their texts readable in place). Sending it leads to Jobs.
 - **Settings** (`/settings`, the ⚙ in the top bar): the app's settings, for every prompt and every
   browser, each saved the moment it is chosen (`src/settings/`, `server/app-settings.ts`;
-  0055). For now one: the model that composes every job, songs and takes (Opus at first, Sonnet,
-  Haiku; `shared/composer-models.ts`).
+  0055): the model that composes every job, songs and takes (Opus at first, Sonnet, Haiku;
+  `shared/composer-models.ts`), and how hard it thinks (Claude Code's default at first, or low to
+  max, `--effort`; `shared/composer-efforts.ts`).
 - **Jobs** (`/jobs`): every prompt sent, as a card, newest first; one that is over can be removed
   (✕; `removed` in its job.json, its files kept). The tab counts the jobs on their way.
 

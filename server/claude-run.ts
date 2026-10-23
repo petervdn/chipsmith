@@ -19,6 +19,7 @@ import { getSettings } from '../config/settings.ts';
  * @param run.tools - The only tools Claude has.
  * @param run.allowedTools - The tools Claude may use without asking.
  * @param run.model - The model Claude runs with, as `--model` names it.
+ * @param run.effort - Its effort, as `--effort` names it, or null for Claude Code's default.
  * @param run.logFile - The file Claude's stream-json output is appended to.
  * @returns The process id of Claude, or undefined when it did not start.
  */
@@ -29,6 +30,7 @@ export function startClaude({
   tools,
   allowedTools,
   model,
+  effort,
   logFile,
 }: {
   projectFolder: string;
@@ -37,6 +39,7 @@ export function startClaude({
   tools: string[];
   allowedTools: string[];
   model: string;
+  effort: string | null;
   logFile: string;
 }): number | undefined {
   const args = [
@@ -48,6 +51,7 @@ export function startClaude({
     '--include-partial-messages',
     '--model',
     model,
+    ...(effort ? ['--effort', effort] : []),
     '--tools',
     ...tools,
     '--setting-sources',

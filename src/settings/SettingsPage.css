@@ -1,9 +1,14 @@
-/* The look of SettingsPage.tsx: each setting a card with its name in its border, its options as
+/* The look of SettingsPage.tsx: a line on what the settings do, then each setting a card with its name in its border, its options as
    buttons in a row that wraps, the one chosen marked in the accent. */
+
+.settings-page-intro {
+  margin: 0 0 12px;
+  color: var(--muted);
+}
 
 .settings-page-section {
   min-width: 0;
-  margin: 0;
+  margin: 0 0 12px;
   padding: 4px 16px 16px;
   border: var(--border-width) solid var(--line);
   border-radius: var(--radius);
@@ -29,7 +34,7 @@
 
 .settings-page-option {
   display: flex;
-  flex: 1 1 180px;
+  flex: 1 1 120px;
   flex-direction: column;
   align-items: flex-start;
   gap: 2px;

@@ -17,12 +17,14 @@ test('a job that is over is taken off the list, and stays off when read again', 
     guides: [],
     promptedFrom: null,
     model: 'opus',
+    effort: null,
   });
   const removed = createJob(store, {
     prompt: 'a funk groove',
     guides: [],
     promptedFrom: null,
     model: 'opus',
+    effort: null,
   });
   setPhase(store, removed.id, 'done', 'done');
   removeJob(store, removed.id);
@@ -43,6 +45,7 @@ test('a job on its way cannot be removed', () => {
     guides: [],
     promptedFrom: null,
     model: 'opus',
+    effort: null,
   });
   assert.throws(() => removeJob(store, job.id));
 });

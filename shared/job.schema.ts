@@ -6,6 +6,7 @@
 import { z } from 'zod';
 import { sentGuideSchema } from './guide.schema.ts';
 import { sentHarmonySchema } from './harmony.schema.ts';
+import { COMPOSER_EFFORTS } from './composer-efforts.ts';
 import { COMPOSER_MODELS } from './composer-models.ts';
 import { COMPOSE_STEPS, JOB_STAGES } from './job-stages.ts';
 import { sentStructureSchema } from './structure.schema.ts';
@@ -79,6 +80,8 @@ export const jobSchema = z.object({
    * chosen, which composed with Claude Code's own default.
    */
   model: z.enum(COMPOSER_MODELS).nullable().default(null),
+  /** The effort Claude composes with, as the settings had it; null for Claude Code's default. */
+  effort: z.enum(COMPOSER_EFFORTS).nullable().default(null),
   /** The clip this job makes takes of, or null for a job that makes songs. */
   takesOf: takesTargetSchema.nullable().default(null),
   /** The structure chosen with the prompt, copied when it was sent, or null. */

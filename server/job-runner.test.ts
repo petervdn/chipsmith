@@ -17,12 +17,14 @@ test('a job waiting is cancelled; one that is done stays done', () => {
     guides: [],
     promptedFrom: null,
     model: 'opus',
+    effort: null,
   });
   const done = createJob(store, {
     prompt: 'a march',
     guides: [],
     promptedFrom: null,
     model: 'opus',
+    effort: null,
   });
   setPhase(store, done.id, 'done', 'done');
   cancelJob(store, waiting.id);

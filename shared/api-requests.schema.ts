@@ -6,6 +6,7 @@
 import { z } from 'zod';
 import { statusSchema, tagSchema } from './catalogue.schema.ts';
 import { channelRowSchema } from './clip-notes.schema.ts';
+import { COMPOSER_EFFORTS } from './composer-efforts.ts';
 import { COMPOSER_MODELS } from './composer-models.ts';
 import { sentHarmonySchema } from './harmony.schema.ts';
 import { takesTargetSchema } from './job.schema.ts';
@@ -92,6 +93,7 @@ export type TakeDeletionRequest = z.input<typeof takeDeletionRequestSchema>;
 /** A change to the app's settings: the settings changed, the others left as they are. */
 export const appSettingsChangeSchema = z.object({
   composerModel: z.enum(COMPOSER_MODELS).exactOptional(),
+  composerEffort: z.enum(COMPOSER_EFFORTS).nullable().exactOptional(),
 });
 
 /** A change to the app's settings. */

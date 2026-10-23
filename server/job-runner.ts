@@ -116,6 +116,7 @@ function startComposing(jobs: JobStore, store: Store, job: Job): ClaudeWatch {
     tools: JOB_TOOLS,
     allowedTools: getAllowedTools(folder),
     model: job.model ?? DEFAULT_COMPOSER_MODEL,
+    effort: job.effort,
     logFile: join(folder, 'claude.log'),
   });
   updateJob(jobs, job.id, { claudePid: pid ?? null });

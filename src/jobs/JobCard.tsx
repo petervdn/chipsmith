@@ -6,6 +6,7 @@
 import { useEffect, useState } from 'react';
 import type { Job, JobPhase } from '../../shared/job.schema.ts';
 import { formatSeconds, formatTokens } from '../format.ts';
+import { COMPOSER_EFFORT_NAMES } from '../../shared/composer-efforts.ts';
 import { COMPOSER_MODEL_FACTS } from '../../shared/composer-models.ts';
 import { getHarmonySummary } from '../../shared/harmony-prompt.ts';
 import { writeNotation } from '../../shared/structure-notation.ts';
@@ -207,7 +208,10 @@ export function JobCard({ job, onRemove }: JobCardProps) {
         {job.model && (
           <>
             <dt>Composed by</dt>
-            <dd>{COMPOSER_MODEL_FACTS[job.model].name}</dd>
+            <dd>
+              {COMPOSER_MODEL_FACTS[job.model].name}
+              {job.effort && `, effort ${COMPOSER_EFFORT_NAMES[job.effort].toLowerCase()}`}
+            </dd>
           </>
         )}
         {job.takesOf && (

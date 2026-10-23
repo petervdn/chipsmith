@@ -9,7 +9,7 @@ import { changeAppSettings, getAppSettings } from './app-settings.ts';
 test('no settings file is every setting at its default', () => {
   const root = mkdtempSync(join(tmpdir(), 'chiptune-settings-'));
   try {
-    assert.deepEqual(getAppSettings(root), { composerModel: 'opus' });
+    assert.deepEqual(getAppSettings(root), { composerModel: 'opus', composerEffort: null });
   } finally {
     rmSync(root, { recursive: true, force: true });
   }
@@ -20,9 +20,13 @@ test('a change is written and read back', () => {
   try {
     assert.deepEqual(changeAppSettings(root, { composerModel: 'haiku' }), {
       composerModel: 'haiku',
+      composerEffort: null,
     });
-    assert.deepEqual(changeAppSettings(root, {}), { composerModel: 'haiku' });
-    assert.equal(getAppSettings(root).composerModel, 'haiku');
+    assert.deepEqual(changeAppSettings(root, { composerEffort: 'low' }), {
+      composerModel: 'haiku',
+      composerEffort: 'low',
+    });
+    assert.deepEqual(getAppSettings(root), { composerModel: 'haiku', composerEffort: 'low' });
   } finally {
     rmSync(root, { recursive: true, force: true });
   }
