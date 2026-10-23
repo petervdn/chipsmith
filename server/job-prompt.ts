@@ -7,10 +7,11 @@
 import { isAbsolute, join, relative } from 'node:path';
 import { PROJECT_FOLDER } from '../config/settings.ts';
 import type { SentGuide } from '../shared/guide.schema.ts';
-import type { Job, TakesTarget } from '../shared/job.schema.ts';
+import type { Job } from '../shared/job.schema.ts';
 import { getHarmonyLines } from '../shared/harmony-prompt.ts';
 import { getStructureLines } from '../shared/structure-prompt.ts';
 import { getTitleWordCounts } from '../make/song-titles.ts';
+import type { TakeContext } from './take-context.ts';
 
 /** The only tools a job's Claude has: their definitions are most of its context otherwise. */
 export const JOB_TOOLS = ['Read', 'Glob', 'Grep', 'Write', 'Edit', 'Bash'];
@@ -125,50 +126,69 @@ export function getJobPrompt(job: Job, folder: string, root: string): string {
 /** What a prompt for takes of a clip is made from. */
 export type TakesPromptParts = {
   job: Job;
-  takesOf: TakesTarget;
   /** The job's folder. */
   folder: string;
   /** The data folder. */
   root: string;
-  /** The names of the channels a take keeps, or null when it keeps every channel. */
-  keptChannels: string[] | null;
+  /** What the server worked out of the clip (take-context.ts). */
+  context: TakeContext;
 };
 
 /**
+ * Returns the lines that tell Claude the clip: its facts, its song, the channels a take keeps and
+ * how to start from it, and the script that wrote it (or the clip as tracker text).
+ *
+ * @param context - What the server worked out of the clip.
+ * @param clipFolder - The clip's folder, as seen from the project folder.
+ * @returns The lines.
+ */
+function getClipLines(context: TakeContext, clipFolder: string): string[] {
+  const { keptChannels, script, trackerText } = context;
+  const kept = keptChannels?.map(({ channel, name }) => `${name} (channel ${channel})`).join(', ');
+  return [
+    `The clip ${context.clipId}, "${context.label}", in the song "${context.songTitle}" (${context.songId}): ${context.bpm} bpm, ${context.beats} beats to a bar, ${context.seconds.toFixed(1)} s, on ${context.chips.join(' + ')}.`,
+    `Its .fur file is ${clipFolder}/source.fur: every channel a run of ${context.rowCount} rows, ${context.rowsPerBar} to a bar.`,
+    kept
+      ? `The clip is the song's ${kept} alone: a take keeps only that channel of what your script makes, so change it there and leave the rest as it is.`
+      : 'The clip is the whole song: a take keeps every channel.',
+    'Start each take from that .fur file and replace only the channels it changes (furnace-song, "Takes of a clip").',
+    `The song's tracks: ${context.tracks.join('; ')}.`,
+    '',
+    script === null
+      ? 'The clip has no script; here it is as tracker text (given: do not read clip.json, song.json or source.fur as text):'
+      : 'The script that wrote the clip (given: do not read it, clip.json or song.json):',
+    '```' + (script === null ? '' : 'ts'),
+    (script ?? trackerText ?? '').trim(),
+    '```',
+  ];
+}
+
+/**
  * Returns the prompt a job's Claude is sent to make takes of a clip (docs/adr/0037): the job, where
- * its script goes, the clip and its song, how many takes, what a take keeps, the check, the user's
+ * its script goes, the clip, its song and what a take keeps, the count, the check, the user's
  * prompt and the style guides chosen with it.
  *
  * @param parts - What the prompt is made from.
  * @param parts.job - The job.
- * @param parts.takesOf - The clip the takes are of, and the song it was asked in.
  * @param parts.folder - The job's folder.
  * @param parts.root - The data folder.
- * @param parts.keptChannels - The names of the channels a take keeps, or null for every channel.
+ * @param parts.context - What the server worked out of the clip.
  * @returns The prompt, as lines joined.
  */
-export function getTakesPrompt({
-  job,
-  takesOf,
-  folder,
-  root,
-  keptChannels,
-}: TakesPromptParts): string {
+export function getTakesPrompt({ job, folder, root, context }: TakesPromptParts): string {
   const scriptFile = getProjectPath(join(folder, 'script.ts'));
   const takeCount = job.songCount ?? 1;
   return [
     `Job ${job.id}: takes of a clip (the furnace-song skill, "Takes of a clip"). Write the script to ${scriptFile}.`,
     `The data folder (songs/, clips/) is ${getProjectPath(root)}.`,
-    `The script imports the project's modules from ${relative(folder, PROJECT_FOLDER)}/ (e.g. ${relative(folder, PROJECT_FOLDER)}/make/fur-file-builder.ts).`,
+    `The script imports the project's modules from ${relative(folder, PROJECT_FOLDER)}/ (e.g. ${relative(folder, PROJECT_FOLDER)}/make/score.ts).`,
     '',
-    `The clip: ${getProjectPath(join(root, 'clips', takesOf.clip))}/ (clip.json, source.fur, script.ts), in the song ${getProjectPath(join(root, 'songs', takesOf.song, 'song.json'))}.`,
-    keptChannels
-      ? `The clip is the song's ${keptChannels.join(', ')} alone: a take keeps only that channel of what your script makes, so change it there and leave the rest as it is.`
-      : 'The clip is the whole song: a take keeps every channel.',
+    ...getClipLines(context, getProjectPath(join(root, 'clips', context.clipId))),
+    '',
     `Make ${takeCount} ${takeCount === 1 ? 'take' : 'takes'}: one plan each, the clip changed as the prompt asks${takeCount === 1 ? '' : ', each in its own way'}.`,
     'Title each plan with its label: what it changed, in 2 to 5 words, lower case ("walking bass", "octave jumps").',
     "Keep the clip's chips and tempo, and its length unless the prompt asks for another.",
-    `Check it with: node make/check-script.ts ${scriptFile} --takes-of ${takesOf.clip}`,
+    `Check it with: node make/check-script.ts ${scriptFile} --takes-of ${context.clipId}`,
     '',
     "The user's prompt:",
     job.prompt,

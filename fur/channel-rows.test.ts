@@ -3,7 +3,13 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import type { FurFile } from './fur.types.ts';
-import { getChannelRows, getRowCount, setChannelRows } from './channel-rows.ts';
+import {
+  getChannelRows,
+  getChannelRun,
+  getRowCount,
+  setChannelRows,
+  setChannelRun,
+} from './channel-rows.ts';
 
 const SPEED = { code: 0x0f, value: 6 };
 
@@ -86,4 +92,15 @@ test('a row past the run is an error', () => {
     () => setChannelRows(FUR, 0, [{ row: 8, note: 100, instrument: null, volume: null }]),
     /row 8/,
   );
+});
+
+test("a channel's whole run is replaced, effects and all, the other channels kept", () => {
+  const run = getChannelRun(FUR, 0);
+  assert.equal(run.length, 8);
+  assert.deepEqual(run[4], { note: 100, instrument: 1, effects: [SPEED] });
+  const rows = run.map((row, i) => (i === 5 ? { note: 120, effects: [SPEED] } : row));
+  const replaced = setChannelRun(FUR, 0, rows);
+  assert.deepEqual(getChannelRun(replaced, 0), rows);
+  assert.deepEqual(getChannelRun(replaced, 1), getChannelRun(FUR, 1));
+  assert.throws(() => setChannelRun(FUR, 0, rows.slice(1)), /has 8 rows, not 7/);
 });

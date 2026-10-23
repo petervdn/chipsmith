@@ -93,6 +93,10 @@ type SongPlan = { title: string; furFile: FurFile; tags?: string[]; key?: string
 // fur/read.ts: an existing .fur file, to start from
 readFurFile(file: Uint8Array): FurFile;
 
+// fur/channel-rows.ts: a channel of a .fur file as its whole run of rows, effects and all
+getChannelRun(furFile: FurFile, channel: number): Rows;
+setChannelRun(furFile: FurFile, channel: number, rows: Rows): FurFile; // as many rows as the run
+
 // make/score.ts: the kit to write parts with (the example uses it)
 type Rows = (Row | null)[];
 PITCH_SHIFT; // { pulse: -12, scc: -12, triangle: 0, psg: 0, sid: 0, noise: 0 }
@@ -185,15 +189,25 @@ A job may ask for takes of one clip instead of songs: its prompt says so and nam
 song, how many takes and the check to run. A take is the clip changed as the prompt asks; the user
 tries the takes in the song and keeps one. No song is made.
 
-- Start from what wrote the clip: its `script.ts`, copied into the job's script and changed, or its
-  `source.fur` read in the script (above). A take's own `script.ts` makes every take of its job:
-  the one it is had the clip's `variationLabel` as its title (unless the user renamed it); when
-  unsure, or where the script no longer writes what the clip plays, work from `source.fur`. A take
-  made without Claude (a transpose, "octave up", or "notes edited" in the note grid) has no
-  `script.ts`: work from its `source.fur`.
-- A clip cut by channel (a stem, `parent` relation `split` somewhere up its line) keeps only its
-  channel of what the script makes; the prompt names it. Change that channel and fit it to the rest
-  of the song (the whole clip's `source.fur`, up its `parent`s), which is cut away after.
+- The prompt gives the clip: its facts, its song, the channels a take keeps (by number), the size of
+  its channels' runs, and the script that wrote it (or the clip as tracker text when it has none).
+  Do not read those files again.
+- **Start each take from the clip's `source.fur`** and write only what changes: read it
+  (`readFurFile(readFileSync('<data>/clips/<clip>/source.fur'))`), take the run of each channel the
+  take changes (`getChannelRun`), change it or write it anew with the kit (`getEmptyRows` with the
+  run's bars, `writeBars`, `writeHits`), and put it back (`setChannelRun`). Every other channel,
+  the instruments, the tempo and the chip volumes stay as the clip has them. A new instrument is
+  added after the clip's (`{ ...furFile, instruments: [...furFile.instruments, newOne] }`, its
+  index the old count). Do not copy the clip's script and write the whole song out again.
+- A take of another length (the prompt asks for one) cannot keep the clip's runs: build it with
+  `buildFurFile` from every channel's run (`getChannelRun`) cut or lengthened, with the clip's
+  instruments, wavetables, chip volumes and channel names, at its bpm and meter.
+- The clip's script shows how its music was written: read it there to know the other parts, the
+  harmony and the form. A take's own script makes every take of its job: the one it is had the
+  clip's `variationLabel` as its title (unless the user renamed it).
+- A clip cut by channel (a stem) keeps only its channel of what the script makes; the prompt names
+  it. Its `source.fur` holds that channel alone: change it there and fit it to the rest of the song,
+  which the clip's script shows.
 - One plan per take. Its `title` is the take's label: what it changed, in 2 to 5 words, lower case
   ("walking bass", "half-time drums"), a different one for each take. `tags` and `key` as for a song.
 - Keep the clip's chips and tempo (tick rate, speeds, virtual tempo), and its length unless the

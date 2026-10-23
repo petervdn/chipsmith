@@ -24,4 +24,5 @@ back to its file (docs/adr/0006).
 - `store.ts`: the clips and songs in memory, read from their folders and written back to them
 - `structure-routes.ts`: `/api/structures`: the saved structures listed, made, changed, deleted
 - `structures.ts`: the saved structures in memory and in structures/<id>/structure.json
+- `take-context.ts`: what a job of takes is told of its clip, worked out by the server
 - `take-deletion.ts`: deleting a take: whether it can go, and it replaced in songs and as a parent, then deleted

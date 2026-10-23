@@ -1,8 +1,9 @@
 /**
  * A channel of a .fur file as one run of rows, from its first order to its last, for editing its
  * notes (docs/adr/0037's note grid): read out with its notes, instruments and volumes, and written
- * back. Written back, the channel gets a pattern of its own at every order (a pattern played at two
- * orders becomes two), and every row keeps its effects as they were. Knows nothing of clips.
+ * back, every row keeping its effects as they were; or, for a take's script, its whole run of rows
+ * read and written with their effects. Written back, the channel gets a pattern of its own at every
+ * order (a pattern played at two orders becomes two). Knows nothing of clips.
  */
 import type { ChannelRow } from '../shared/clip-notes.schema.ts';
 import type { FurFile, Pattern, Row } from './fur.types.ts';
@@ -15,7 +16,7 @@ import type { FurFile, Pattern, Row } from './fur.types.ts';
  * @returns The rows, by their place in the channel's run of rows.
  */
 export function getChannelRows(furFile: FurFile, channel: number): ChannelRow[] {
-  return getRunRows(furFile, channel).flatMap((row, i) =>
+  return getChannelRun(furFile, channel).flatMap((row, i) =>
     row && (row.note !== undefined || row.instrument !== undefined || row.volume !== undefined)
       ? [
           {
@@ -51,20 +52,52 @@ export function getRowCount(furFile: FurFile, channel: number): number {
  * @returns The .fur file with the channel's rows set.
  */
 export function setChannelRows(furFile: FurFile, channel: number, rows: ChannelRow[]): FurFile {
-  const { patternLength, orders } = furFile.song;
-  const run = getRunRows(furFile, channel);
+  const run = getChannelRun(furFile, channel);
   const byRow = new Map(rows.map((row) => [row.row, row]));
   for (const row of byRow.keys()) {
     if (!Number.isInteger(row) || row < 0 || row >= run.length) {
       throw new Error(`row ${row} is past the channel's ${run.length} rows`);
     }
   }
-  const edited = run.map((old, i) => getEditedRow(old, byRow.get(i)));
+  return putChannelRun(
+    furFile,
+    channel,
+    run.map((old, i) => getEditedRow(old, byRow.get(i))),
+  );
+}
+
+/**
+ * Returns a .fur file with a channel's whole run of rows replaced, effects and all; the channel gets
+ * a pattern of its own at every order.
+ *
+ * @param furFile - The .fur file; it is left as it was.
+ * @param channel - The channel.
+ * @param rows - The channel's rows, as many as its run has (`getChannelRun`); others are an error.
+ * @returns The .fur file with the channel's rows replaced.
+ */
+export function setChannelRun(furFile: FurFile, channel: number, rows: (Row | null)[]): FurFile {
+  const count = getRowCount(furFile, channel);
+  if (rows.length !== count) {
+    throw new Error(`channel ${channel} has ${count} rows, not ${rows.length}`);
+  }
+  return putChannelRun(furFile, channel, rows);
+}
+
+/**
+ * Returns a .fur file with a channel's run of rows put in, a pattern of its own at every order.
+ *
+ * @param furFile - The .fur file; it is left as it was.
+ * @param channel - The channel.
+ * @param rows - The channel's rows, as many as its run has.
+ * @returns The .fur file with the channel's rows put in.
+ */
+function putChannelRun(furFile: FurFile, channel: number, rows: (Row | null)[]): FurFile {
+  const { patternLength, orders } = furFile.song;
   const channelOrders = orders[channel] ?? [];
   const patterns: Pattern[] = channelOrders.map((_unused, order) => ({
     channel,
     index: order,
-    rows: edited.slice(order * patternLength, (order + 1) * patternLength),
+    rows: rows.slice(order * patternLength, (order + 1) * patternLength),
   }));
   return {
     ...furFile,
@@ -79,13 +112,14 @@ export function setChannelRows(furFile: FurFile, channel: number, rows: ChannelR
 }
 
 /**
- * Returns a channel's rows in the order played: each order's pattern, a row null where empty.
+ * Returns a channel's rows in the order played, effects and all: each order's pattern, a row null
+ * where empty.
  *
  * @param furFile - The .fur file.
  * @param channel - The channel.
  * @returns The rows, the pattern length to an order.
  */
-function getRunRows(furFile: FurFile, channel: number): (Row | null)[] {
+export function getChannelRun(furFile: FurFile, channel: number): (Row | null)[] {
   const { patternLength, orders } = furFile.song;
   return (orders[channel] ?? []).flatMap((index) => {
     const pattern = furFile.patterns.find(

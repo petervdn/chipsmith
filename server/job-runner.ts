@@ -9,7 +9,7 @@ import { PROJECT_FOLDER, getSettings } from '../config/settings.ts';
 import { DEFAULT_COMPOSER_MODEL } from '../shared/composer-models.ts';
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import type { Job, JobSong, TakesTarget } from '../shared/job.schema.ts';
+import type { Job, JobSong } from '../shared/job.schema.ts';
 import type { BuiltPlan } from '../make/build-script.ts';
 import { makeSong } from '../make/make-song.ts';
 import { makeTake } from '../make/make-take.ts';
@@ -28,7 +28,7 @@ import {
   getTakesPrompt,
 } from './job-prompt.ts';
 import { getJobKnowledge } from './job-knowledge.ts';
-import { getChannelName } from '../shared/clip-channels.ts';
+import { getTakeContext } from './take-context.ts';
 import type { JobStore } from './jobs.ts';
 import { addNotes, getJobFolder, setPhase, updateJob } from './jobs.ts';
 import type { Store } from './store.ts';
@@ -106,10 +106,9 @@ function startComposing(jobs: JobStore, store: Store, job: Job): ClaudeWatch {
     prompt: job.takesOf
       ? getTakesPrompt({
           job,
-          takesOf: job.takesOf,
           folder,
           root: jobs.root,
-          keptChannels: getKeptChannelNames(store, job.takesOf),
+          context: getTakeContext(store, job.takesOf),
         })
       : getJobPrompt(job, folder, jobs.root),
     systemPrompt: getJobSystemPrompt(getJobKnowledge(PROJECT_FOLDER)),
@@ -121,20 +120,6 @@ function startComposing(jobs: JobStore, store: Store, job: Job): ClaudeWatch {
   });
   updateJob(jobs, job.id, { claudePid: pid ?? null });
   return { jobId: job.id, pid, place: LOG_START };
-}
-
-/**
- * Returns the names of the channels a take of a clip keeps, for Claude to be told.
- *
- * @param store - The clips and songs.
- * @param takesOf - The clip the takes are of.
- * @returns The channels' names, or null when every channel is kept; an error when the clip is gone.
- */
-function getKeptChannelNames(store: Store, takesOf: TakesTarget): string[] | null {
-  const clip = store.clips.get(takesOf.clip);
-  if (!clip) throw new Error(`the clip ${takesOf.clip} is gone`);
-  const channels = getTakeChannels(clip, (clipId) => store.clips.get(clipId));
-  return channels?.map((channel) => getChannelName(clip.chips, channel)) ?? null;
 }
 
 /**

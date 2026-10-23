@@ -260,8 +260,12 @@ phases:
 4. **done** with Claude's reply, or **failed** with the reason.
 
 A job of **takes of a clip** (0037; `takesOf: { clip, song }` on `POST /api/jobs`, sent from the
-song's editor) goes the same way: Claude is told the clip, its song, what a take keeps and the
-style guides chosen with it (`guideIds`, the song's own chosen at first; `server/job-prompt.ts`), its script gives a plan per take titled with its label, and
+song's editor) goes the same way: Claude is told the clip, worked out by the server (its facts, its song and
+tracks, the channels a take keeps, the size of its runs of rows, and the script that wrote it;
+`server/take-context.ts`), and the style guides chosen with it (`guideIds`, the song's own chosen
+at first; `server/job-prompt.ts`). Its script starts each take from the clip's `source.fur` and
+replaces only the channels it changes (`getChannelRun`, `setChannelRun` in `fur/channel-rows.ts`;
+0058), gives a plan per take titled with its label, and
 each take is made by `make/make-take.ts` (cut to the clip's channel when the clip is a stem, kept as
 a variation) instead of a song; `make/check-script.ts --takes-of <clip>` checks they fit the clip.
 
