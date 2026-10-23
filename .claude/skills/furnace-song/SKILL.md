@@ -92,7 +92,23 @@ type SongPlan = { title: string; furFile: FurFile; tags?: string[]; key?: string
 
 // fur/read.ts: an existing .fur file, to start from
 readFurFile(file: Uint8Array): FurFile;
+
+// make/score.ts: the kit to write parts with (the example uses it)
+type Rows = (Row | null)[];
+PITCH_SHIFT; // { pulse: -12, scc: -12, triangle: 0, psg: 0, sid: 0, noise: 0 }
+getEmptyRows({ bars, rowsPerBar }): Rows;
+getNote(name: string, shift?: number): number; // true pitch: "D4", "C#3", "Bb2"
+getEffect(code: number, value: number): Effect;
+// bars: one string per bar, slots parted by spaces, as many to a bar as divide its rows:
+// "D4 - . F4:10" plays D4, holds it, rests (a note off), plays F4 at volume 10
+writeBars(rows, { bar, rowsPerBar, bars: string[], instrument, volume?, shift?, effects? }): void;
+// patterns: a letter per slot ("k.h.s.h.k.h.s.h."), each letter's row from `hits`
+writeHits(rows, { bar, rowsPerBar, patterns: string[], hits: Map<string, Row> }): void;
 ```
+
+Write the parts with the kit: notes in true pitch with `shift: PITCH_SHIFT.<channel>`, bars as
+strings, drums as patterns. Write a helper of your own only for what it does not do (a figure built
+from a chord, a fill), and set rows by hand only where a row needs more (an effect on one note).
 
 ## Pitch (measured)
 

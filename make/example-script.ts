@@ -1,16 +1,16 @@
 /**
  * An example of a job's script (the furnace-song skill): one short NES song in D minor, eight bars of
- * a bouncing bass, a held pulse motif and a drum pattern, with instruments after the old project's fm_01.
+ * a bouncing bass, a held pulse motif and a drum pattern, with instruments after the old project's
+ * fm_01, its parts written with the kit (`make/score.ts`).
  * Check: `node make/check-script.ts make/example-script.ts`.
  */
-import type { Row } from '../fur/fur.types.ts';
 import { ARP_FIXED, makeInstrument, NES_INSTRUMENT } from '../fur/instrument.ts';
-import { getNoteValue } from '../fur/notes.ts';
 import { buildFurFile } from './fur-file-builder.ts';
+import type { Rows } from './score.ts';
+import { getEmptyRows, getNote, PITCH_SHIFT, writeBars, writeHits } from './score.ts';
 import type { SongPlan } from './song-plan.ts';
 
-const ROWS_PER_BAR = 16;
-const BARS = 8;
+const SIZE = { bars: 8, rowsPerBar: 16 };
 
 /** Instruments by index, as the rows name them. */
 const LEAD = 0;
@@ -20,80 +20,39 @@ const SNARE = 3;
 const HAT = 4;
 
 /**
- * Returns a row that plays a note. Pulse notes are written an octave down (CLAUDE.md, "Pitch naming").
- *
- * @param note - The note's name, such as `D-3`.
- * @param instrument - The index of the instrument that plays it.
- * @param volume - The row's volume, or undefined to leave the volume column empty.
- * @returns The row.
- */
-function getRow(note: string, instrument: number, volume?: number): Row {
-  return { note: getNoteValue(note), instrument, ...(volume === undefined ? {} : { volume }) };
-}
-
-/**
- * Returns the empty rows of a whole song.
- *
- * @returns One empty row for every row of the song.
- */
-function getEmpty(): (Row | null)[] {
-  return Array.from({ length: BARS * ROWS_PER_BAR }, () => null);
-}
-
-/**
- * Returns the bass part: 16ths with octave jumps and rests, on the triangle, following D - Bb - C - A.
+ * Returns the bass part on the triangle: 16ths with octave jumps and held gaps, D - Bb - C - A.
  *
  * @returns The bass's rows for the whole song.
  */
-function getBass(): (Row | null)[] {
-  const rows = getEmpty();
-  const roots = ['D-3', 'D-3', 'A#2', 'A#2', 'C-3', 'C-3', 'A-2', 'A-2'];
-  roots.forEach((root, bar) => {
-    const high = root.replace(/(\d)$/, (octave) => String(Number(octave) + 1));
-    const figure = [
-      root,
-      null,
-      high,
-      root,
-      null,
-      root,
-      high,
-      null,
-      root,
-      null,
-      root,
-      high,
-      root,
-      null,
-      high,
-      root,
-    ];
-    figure.forEach((note, i) => {
-      if (note) rows[bar * ROWS_PER_BAR + i] = getRow(note, BASS);
-    });
+function getBass(): Rows {
+  const rows = getEmptyRows(SIZE);
+  const bars = ['D3', 'D3', 'Bb2', 'Bb2', 'C3', 'C3', 'A2', 'A2'].map((root) => {
+    const high = root.replace(/\d$/, (octave) => String(Number(octave) + 1));
+    return `${root} - ${high} ${root} - ${root} ${high} - ${root} - ${root} ${high} ${root} - ${high} ${root}`;
   });
+  writeBars(rows, { ...SIZE, bar: 0, bars, instrument: BASS, shift: PITCH_SHIFT.triangle });
   return rows;
 }
 
 /**
- * Returns the lead part: a dotted-8th + 16th pickup leaping to a held note, sequenced over the chords.
+ * Returns the lead part on a pulse: a dotted-8th + 16th pickup leaping to a held note, sequenced
+ * over the chords, two bars to a motif.
  *
  * @returns The lead's rows for the whole song.
  */
-function getLead(): (Row | null)[] {
-  const rows = getEmpty();
+function getLead(): Rows {
+  const rows = getEmptyRows(SIZE);
   const motifs = [
-    ['A-2', 'D-3'],
-    ['F-2', 'A#2'],
-    ['G-2', 'C-3'],
-    ['E-2', 'A-2'],
+    ['A3', 'D4'],
+    ['F3', 'Bb3'],
+    ['G3', 'C4'],
+    ['E3', 'A3'],
   ];
-  motifs.forEach(([pickup = 'A-2', target = 'D-3'], phrase) => {
-    const start = phrase * 2 * ROWS_PER_BAR;
-    rows[start] = getRow(pickup, LEAD, 12);
-    rows[start + 3] = getRow(pickup, LEAD, 10);
-    rows[start + 4] = getRow(target, LEAD, 13);
-  });
+  const bars = motifs.flatMap(([pickup, target]) => [
+    `${pickup}:12 - - ${pickup}:10 ${target}:13 - - - - - - - - - - -`,
+    '- - - - - - - - - - - - - - - -',
+  ]);
+  writeBars(rows, { ...SIZE, bar: 0, bars, instrument: LEAD, shift: PITCH_SHIFT.pulse });
   return rows;
 }
 
@@ -102,16 +61,19 @@ function getLead(): (Row | null)[] {
  *
  * @returns The drums' rows for the whole song.
  */
-function getDrums(): (Row | null)[] {
-  const rows = getEmpty();
-  for (let bar = 0; bar < BARS; bar++) {
-    for (let step = 0; step < ROWS_PER_BAR; step += 2) {
-      const at = bar * ROWS_PER_BAR + step;
-      if (step % 8 === 0) rows[at] = getRow('C-4', KICK);
-      else if (step % 8 === 4) rows[at] = getRow('C-4', SNARE);
-      else rows[at] = getRow('C-4', HAT, 9);
-    }
-  }
+function getDrums(): Rows {
+  const rows = getEmptyRows(SIZE);
+  const note = getNote('C4');
+  writeHits(rows, {
+    ...SIZE,
+    bar: 0,
+    patterns: Array(SIZE.bars).fill('k.h.s.h.k.h.s.h.'),
+    hits: new Map([
+      ['k', { note, instrument: KICK }],
+      ['s', { note, instrument: SNARE }],
+      ['h', { note, instrument: HAT, volume: 9 }],
+    ]),
+  });
   return rows;
 }
 
@@ -140,7 +102,7 @@ export default function makeSongs(): SongPlan[] {
       { kind: 'duty', values: [0] },
     ]),
   ];
-  const empty = getEmpty();
+  const empty = getEmptyRows(SIZE);
   return [
     {
       title: 'Example - D minor bounce',
@@ -153,6 +115,7 @@ export default function makeSongs(): SongPlan[] {
         beatsPerBar: 4,
         channels: [getLead(), empty, getBass(), getDrums(), empty],
         instruments,
+        channelNames: ['Lead', '', 'Bass', 'Drums', ''],
       }),
     },
   ];
