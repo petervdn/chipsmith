@@ -69,3 +69,4 @@ Consequences.
 | [0054](0054-the-composing-model-is-chosen-per-prompt.md) | The model that composes is chosen per prompt, beside Create | superseded by 0055 |
 | [0055](0055-the-composing-model-is-a-setting.md) | The model that composes is a setting of the app, on a Settings page | accepted |
 | [0056](0056-a-job-is-given-its-skills.md) | A job's Claude is given its skills in full, not left to load them | accepted |
+| [0057](0057-a-job-starts-lean.md) | A job's Claude starts with only its tools, and no settings, CLAUDE.md, skills or MCP | accepted |

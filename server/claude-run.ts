@@ -1,6 +1,8 @@
 /**
  * Claude Code run headless for a job: `claude -p` in the project folder, detached, its stream-json
  * output (partial messages on) written to the job's claude.log, so a server restart does not stop it.
+ * It starts lean: only the tools named, and no settings, CLAUDE.md files, memory, skills or MCP
+ * servers of the project's or the user's; what it needs is in its system prompt.
  * The log is read by claude-log.ts.
  */
 import { spawn } from 'node:child_process';
@@ -14,6 +16,7 @@ import { getSettings } from '../config/settings.ts';
  * @param run.projectFolder - The folder Claude runs in.
  * @param run.prompt - The prompt.
  * @param run.systemPrompt - What is added to Claude's system prompt.
+ * @param run.tools - The only tools Claude has.
  * @param run.allowedTools - The tools Claude may use without asking.
  * @param run.model - The model Claude runs with, as `--model` names it.
  * @param run.logFile - The file Claude's stream-json output is appended to.
@@ -23,6 +26,7 @@ export function startClaude({
   projectFolder,
   prompt,
   systemPrompt,
+  tools,
   allowedTools,
   model,
   logFile,
@@ -30,6 +34,7 @@ export function startClaude({
   projectFolder: string;
   prompt: string;
   systemPrompt: string;
+  tools: string[];
   allowedTools: string[];
   model: string;
   logFile: string;
@@ -43,6 +48,12 @@ export function startClaude({
     '--include-partial-messages',
     '--model',
     model,
+    '--tools',
+    ...tools,
+    '--setting-sources',
+    '',
+    '--disable-slash-commands',
+    '--strict-mcp-config',
     '--permission-mode',
     'dontAsk',
     '--allowedTools',

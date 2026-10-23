@@ -20,7 +20,13 @@ import { readFurFile } from '../fur/read.ts';
 import type { LogPlace } from './claude-log.ts';
 import { LOG_START, getLaterStep, readLogNews, readRunTokens } from './claude-log.ts';
 import { isRunning, startClaude, stopClaude } from './claude-run.ts';
-import { getAllowedTools, getJobPrompt, getJobSystemPrompt, getTakesPrompt } from './job-prompt.ts';
+import {
+  JOB_TOOLS,
+  getAllowedTools,
+  getJobPrompt,
+  getJobSystemPrompt,
+  getTakesPrompt,
+} from './job-prompt.ts';
 import { getJobKnowledge } from './job-knowledge.ts';
 import { getChannelName } from '../shared/clip-channels.ts';
 import type { JobStore } from './jobs.ts';
@@ -107,6 +113,7 @@ function startComposing(jobs: JobStore, store: Store, job: Job): ClaudeWatch {
         })
       : getJobPrompt(job, folder, jobs.root),
     systemPrompt: getJobSystemPrompt(getJobKnowledge(PROJECT_FOLDER)),
+    tools: JOB_TOOLS,
     allowedTools: getAllowedTools(folder),
     model: job.model ?? DEFAULT_COMPOSER_MODEL,
     logFile: join(folder, 'claude.log'),

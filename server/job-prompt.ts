@@ -12,6 +12,9 @@ import { getHarmonyLines } from '../shared/harmony-prompt.ts';
 import { getStructureLines } from '../shared/structure-prompt.ts';
 import { getTitleWordCounts } from '../make/song-titles.ts';
 
+/** The only tools a job's Claude has: their definitions are most of its context otherwise. */
+export const JOB_TOOLS = ['Read', 'Glob', 'Grep', 'Write', 'Edit', 'Bash'];
+
 /**
  * Returns the tools a job's Claude may use without asking, since nobody is at its terminal.
  *
@@ -24,8 +27,6 @@ export function getAllowedTools(jobFolder: string): string[] {
     'Read',
     'Glob',
     'Grep',
-    'TodoWrite',
-    'Skill',
     `Write(${writable}/**)`,
     `Edit(${writable}/**)`,
     'Bash(node make/check-script.ts *)',
